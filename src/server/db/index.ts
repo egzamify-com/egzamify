@@ -2,8 +2,13 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import { env } from "~/env";
-import * as schema from "./schema";
+import * as mainSchema from "./schema/schema";
+import * as authSchema from "./schema/auth-schema";
 
+const schema = {
+  ...mainSchema,
+  ...authSchema,
+};
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR
  * update.
