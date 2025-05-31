@@ -11,8 +11,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  console.log("user", user);
-
   if (pathname.includes("sign-in") || pathname.includes("dashboard")) {
     return null;
   }

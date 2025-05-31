@@ -2,6 +2,7 @@
 
 import { IconDotsVertical } from "@tabler/icons-react";
 import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
@@ -22,6 +23,7 @@ import useAuth from "~/hooks/useAuth";
 import { authClient } from "~/lib/auth-client";
 
 export function NavUser() {
+  const router = useRouter();
   const { isMobile } = useSidebar();
   const { user } = useAuth();
   if (!user) return null;
@@ -81,6 +83,8 @@ export function NavUser() {
                     onSuccess: (data) => {
                       console.log("[AUTH] succesfully signed out: ", data);
                       toast.success("Succefully loged out");
+                      history.replaceState(null, "", "/");
+                      router.push("/");
                     },
                   },
                 });
