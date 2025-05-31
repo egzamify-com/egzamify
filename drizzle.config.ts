@@ -1,4 +1,5 @@
 import { type Config } from "drizzle-kit";
+import { pgTableCreator } from "drizzle-orm/pg-core";
 
 import { env } from "~/env";
 
@@ -10,3 +11,5 @@ export default {
   },
   tablesFilter: ["ai-learning-platform_*"],
 } satisfies Config;
+
+export const pgTable = pgTableCreator((name) => `ai_learning_platform_${name}`);
