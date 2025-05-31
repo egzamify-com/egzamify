@@ -1,5 +1,13 @@
 import { relations } from "drizzle-orm";
-import { boolean, char, index, integer, text, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  char,
+  index,
+  integer,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { pgTable } from "drizzle.config";
 
 // ----------------QUALIFICATIONS----------------------
@@ -9,6 +17,7 @@ export const qualifications = pgTable(
     id: uuid("id").notNull().primaryKey().defaultRandom(),
     name: text("name").notNull().unique(),
     label: text("label").notNull().unique(),
+    created_at: timestamp("created_at").defaultNow(),
   },
   (table) => [
     index("qualification_id_idx").on(table.id),
@@ -34,6 +43,7 @@ export const questions = pgTable(
     content: text("content").notNull(),
     year: integer("year").notNull(),
     image_url: text("image_url"),
+    created_at: timestamp("created_at").defaultNow(),
   },
   (table) => [
     index("question_id_idx").on(table.id),
@@ -58,7 +68,7 @@ export const answers = pgTable(
       .references(() => questions.id, { onDelete: "cascade" }),
     content: text("content").notNull(),
     image_url: text("image_url"),
-    isCorrect: boolean("isCorrect").notNull(),
+    is_correct: boolean("is_correct").notNull(),
     label: char("label").notNull(),
   },
   (table) => [
