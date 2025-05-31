@@ -10,7 +10,10 @@ export const qualifications = pgTable(
     name: text("name").notNull().unique(),
     label: text("label").notNull().unique(),
   },
-  (table) => [index("id_idx").on(table.id), index("label_idx").on(table.label)],
+  (table) => [
+    index("qualification_id_idx").on(table.id),
+    index("qualification_label_idx").on(table.label),
+  ],
 );
 
 export const qualificationsRelations = relations(
@@ -33,8 +36,8 @@ export const questions = pgTable(
     image_url: text("image_url"),
   },
   (table) => [
-    index("id_idx").on(table.id),
-    index("qualification_id_idx").on(table.qualification_id),
+    index("question_id_idx").on(table.id),
+    index("qualification_question_id_idx").on(table.qualification_id),
   ],
 );
 
@@ -59,8 +62,8 @@ export const answers = pgTable(
     label: char("label").notNull(),
   },
   (table) => [
-    index("id_idx").on(table.id),
-    index("question_id_idx").on(table.question_id),
+    index("answer_id_idx").on(table.id),
+    index("answer_question_id_idx").on(table.question_id),
   ],
 );
 
