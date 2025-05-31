@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useAuth from "~/hooks/useAuth";
 import { toast } from "sonner";
+import { authClient } from "~/lib/auth-client";
 
 export default function SignIn() {
   const { signInWithEmail } = useAuth();
@@ -84,15 +85,18 @@ export default function SignIn() {
             disabled={loading}
             onClick={async () => {
               setLoading(true);
-              await signInWithEmail(
-                email,
-                password,
-                () => {
-                  setLoading(false);
-                  toast.error("Failed to sign in");
-                },
-                () => {
-                  router.push(`/`);
+
+              await authClient.signIn.email(
+                { email, password },
+                {
+                  onError: (ctx) => {
+                    console.log("[AUTH] sign in error: ", ctx.error);
+                  },
+                  onSuccess: (data) => {
+                    console.log("[AUTH] succesfully signed in: ", data);
+                    toast.success("Succesfully signed in");
+                    router.push("/");
+                  },
                 },
               );
             }}

@@ -3,8 +3,8 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/theme/theme-provider";
-import { ModeToggle } from "~/components/theme/theme-toggle";
 import { Toaster } from "~/components/ui/sonner";
+import Navbar from "~/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Learn with AI",
@@ -30,9 +30,12 @@ export default function RootLayout({
           enableSystem={false}
         >
           <TRPCReactProvider>
-            <ModeToggle />
-            {children}
-            <Toaster />
+            <Navbar />
+            <main>
+              {children}
+
+              <Toaster />
+            </main>
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

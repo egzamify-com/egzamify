@@ -11,12 +11,10 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useState } from "react";
-import Image from "next/image";
-import { Loader2, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { authClient } from "~/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import useAuth from "~/hooks/useAuth";
 
 export function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -24,23 +22,8 @@ export function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { signUpWithEmail } = useAuth();
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   return (
     <Card className="z-50 max-w-md rounded-md rounded-t-none">
@@ -113,59 +96,31 @@ export function SignUp() {
               placeholder="Confirm Password"
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="image">Profile Image (optional)</Label>
-            <div className="flex items-end gap-4">
-              {imagePreview && (
-                <div className="relative h-16 w-16 overflow-hidden rounded-sm">
-                  <Image
-                    src={imagePreview}
-                    alt="Profile preview"
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </div>
-              )}
-              <div className="flex w-full items-center gap-2">
-                <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full"
-                />
-                {imagePreview && (
-                  <X
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setImage(null);
-                      setImagePreview(null);
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
           <Button
             type="submit"
             className="w-full"
             disabled={loading}
             onClick={async () => {
               setLoading(true);
-              await signUpWithEmail(
-                firstName,
-                lastName,
+
+              await authClient.signUp.email({
                 email,
                 password,
-                () => {
-                  setLoading(false);
-                  toast.error("Failed to signup");
+                name: `${firstName} ${lastName}`,
+                callbackURL: "/",
+                fetchOptions: {
+                  onError: (ctx) => {
+                    setLoading(false);
+                    toast.error("Failed to signup");
+                    console.log("[AUTH] Failed to sign up: ", ctx.error);
+                  },
+                  onSuccess: async (data) => {
+                    console.log("[AUTH] succesfully signed up: ", data);
+                    toast.success("Succesfully signed up");
+                    router.push("/");
+                  },
                 },
-                () => {
-                  toast.success("Succesfully signed up");
-                  router.push("/");
-                },
-              );
+              });
             }}
           >
             {loading ? (
@@ -178,13 +133,4 @@ export function SignUp() {
       </CardContent>
     </Card>
   );
-}
-
-async function convertImageToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }
