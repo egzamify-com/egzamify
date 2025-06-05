@@ -1,6 +1,12 @@
-import { AppSidebar } from "~/components/app-sidebar";
-import { SiteHeader } from "~/components/site-header";
+"use client";
+
+import { usePathname } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { AppSidebar } from "~/components/dashboardSidebar/app-sidebar";
+import { SiteHeader } from "~/components/dashboardSidebar/site-header";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
+import { updateDashboardBreadcrumbs } from "~/lib/stores/breadcrumbsStore";
+import { log } from "~/utils/log";
 
 export default function LayoutDashboard({
   children,
@@ -18,7 +24,27 @@ export default function LayoutDashboard({
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>
+        <Suspense fallback={null}>
+          <DashbboardBreadcrumbs />
+        </Suspense>
       </SidebarInset>
     </SidebarProvider>
   );
+}
+function DashbboardBreadcrumbs() {
+  const pathname = usePathname();
+  useEffect(() => {
+    log(pathname);
+    switch (pathname) {
+      case "/dashboard/teoria":
+        updateDashboardBreadcrumbs("Egzamin Teoretyczny");
+        break;
+      case "/dashboard/praktyka":
+        updateDashboardBreadcrumbs("Egzamin Praktyczny");
+        break;
+      case "/dashboard":
+        updateDashboardBreadcrumbs("Witaj!");
+    }
+  }, [pathname]);
+  return null;
 }

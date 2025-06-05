@@ -1,0 +1,2 @@
+ALTER TABLE "ai_learning_platform_qualifications" ADD COLUMN "created_at" timestamp DEFAULT now();--> statement-breakpoint
+ALTER TABLE "ai_learning_platform_questions" ADD COLUMN "created_at" timestamp DEFAULT now();

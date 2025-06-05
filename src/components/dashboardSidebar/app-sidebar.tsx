@@ -1,16 +1,12 @@
 "use client";
 
-import * as React from "react";
 import {
-  IconChartBar,
   IconDashboard,
-  IconFolder,
   IconInnerShadowTop,
   IconListDetails,
-  IconUsers,
 } from "@tabler/icons-react";
-import { NavMain } from "~/components/nav-main";
-import { NavUser } from "~/components/nav-user";
+import Link from "next/link";
+import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,7 +16,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import Link from "next/link";
+import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
 
 const data = {
   navMain: [
@@ -33,16 +30,6 @@ const data = {
       title: "Egzamin Teoretyczny",
       url: "/dashboard/teoria",
       icon: IconListDetails,
-    },
-    {
-      title: "Egzamin Praktyczny",
-      url: "/dashboard/praktyka",
-      icon: IconChartBar,
-    },
-    {
-      title: "Chat AI",
-      url: "#",
-      icon: IconFolder,
     },
   ],
 };
