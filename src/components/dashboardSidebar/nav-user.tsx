@@ -1,7 +1,8 @@
 "use client";
 
 import { IconDotsVertical } from "@tabler/icons-react";
-import { LogOut } from "lucide-react";
+import { LogOut, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -26,6 +27,7 @@ export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
   const { user } = useAuth();
+  const { setTheme, theme } = useTheme();
   if (!user) return null;
   return (
     <SidebarMenu>
@@ -70,6 +72,24 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+
+            {theme === "dark" ? (
+              <DropdownMenuItem
+                onClick={() => setTheme("light")}
+                className="cursor-pointer"
+              >
+                <Sun />
+                Light Theme
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => setTheme("dark")}
+                className="cursor-pointer"
+              >
+                <Moon />
+                Dark Theme
+              </DropdownMenuItem>
+            )}
 
             <DropdownMenuItem
               className="cursor-pointer"
