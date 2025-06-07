@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { headers } from "next/headers";
-import auth from "~/server/auth";
+import Link from "next/link";
+import { auth } from "~/server/auth";
 import { Button } from "../ui/button";
 
 export async function SignInButton() {
