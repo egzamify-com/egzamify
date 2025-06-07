@@ -32,7 +32,16 @@ export const aiWyjasniaRouter = createTRPCRouter({
             message: "Failed to get user requesting explanation",
           });
         }
+        console.log(
+          user,
+          userPrompt,
+          previousExplanation,
+          followUpQuestion,
+          reroll,
+        );
         const systemPrompt = `You are an AI-powered educational assistant specialized in explaining complex terms and concepts. Your primary goal is to provide clear, concise, and accurate explanations tailored to the user's requested mode.
+
+Dont welcome user, eg. welcome, hi, hello, hey, greetings, how are you, what's up, what's going on, etc.
 
 When a user provides a term and a mode, generate a comprehensive explanation.
 
@@ -42,7 +51,7 @@ If you are unsure about a term or if it falls outside common knowledge, state th
 
 If a PREVIOUS_EXPLANATION is provided, understand the new prompt in that context and update/refine the explanation based on the new query, rather than starting fresh.
 
-If a FOLLOW_UP_QUESTION is provided, generate a follow-up explanation based on the context of previous explanation and the user follow up question, new answer has to answer the question. Provide only answer to the question.
+If a FOLLOW_UP_QUESTION is provided, you have to ignore the user prompt and generate a follow-up explanation based on the context of previous explanation and the user follow up question, new answer has to answer the question. Provide only answer to the question.
 
 Your answer has to be in polish language.
 
@@ -69,7 +78,7 @@ ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
           model: groq("llama-3.3-70b-versatile"),
           system: systemPrompt,
           maxTokens: 500,
-          prompt: userPrompt,
+          prompt: followUpQuestion ? "" : userPrompt,
         });
 
         // const regex = /<think>(.*?)<\/think>/s;

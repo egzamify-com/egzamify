@@ -2,12 +2,16 @@
 
 import { MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import AiResponses from "~/components/ai-wyjasnia/AiResponses";
+import ResponseLoader from "~/components/ai-wyjasnia/ResponseLoader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { api } from "~/trpc/react";
+import { tryCatch } from "~/utils/tryCatch";
+import FollowUpQuestion from "./FollowUpQuestion";
 import ModeSelector from "./ModeSelector";
 import UserManual from "./UserManual";
 
@@ -18,15 +22,11 @@ export default function AIExplainerPage() {
   const [selectedMode, setSelectedMode] = useState("");
   const [appState, setAppState] = useState<AppState>("initialConfig");
   const [followUpQuestion, setFollowUpQuestion] = useState<string>("");
-  const {
-    mutateAsync: requestAIExplanation,
-    isPending,
-    isError,
-    data,
-    error,
-  } = api.aiWyjasnia.requestAiExplanation.useMutation();
+  const [aiResponses, setAiResponses] = useState<string[]>([]);
+  const { mutateAsync: requestAIExplanation, isPending } =
+    api.aiWyjasnia.requestAiExplanation.useMutation();
 
-  const handleSubmit = async () => {
+  async function handleSubmit() {
     if ((appState === "initialConfig" && !userPrompt.trim()) || !selectedMode)
       return;
 
@@ -34,21 +34,56 @@ export default function AIExplainerPage() {
 
     setAppState("requestPending");
 
-    await requestAIExplanation({
-      mode: selectedMode,
-      userPrompt: userPrompt,
-      reroll: false,
-    });
+    const [data, error] = await tryCatch(
+      requestAIExplanation({
+        mode: selectedMode,
+        userPrompt: userPrompt,
+        reroll: false,
+      }),
+    );
 
-    if (isError) {
+    if (error || !data?.reponse) {
       console.log("[AI WYJASNIA] error while getting explanation", error);
+      toast.error(
+        "Wystąpił błąd podczas wykonywania zapytania, spróbuj ponownie",
+      );
+      setAppState("initialConfig");
       return;
     }
-    setAppState("followUpPart");
-  };
 
-  function handleFollowUp() {
+    setAiResponses((prev) => [...prev, data.reponse]);
+    setAppState("followUpPart");
+  }
+
+  async function handleFollowUp() {
     console.log("follow up", followUpQuestion);
+
+    if (!followUpQuestion.trim()) return;
+
+    setAppState("requestPending");
+
+    console.log("ai reponses previous", aiResponses.join("\n"));
+    const [data, error] = await tryCatch(
+      requestAIExplanation({
+        mode: selectedMode,
+        userPrompt: userPrompt,
+        reroll: false,
+        previousExplanation: aiResponses.join("\n"),
+        followUpQuestion: followUpQuestion,
+      }),
+    );
+    if (error || !data?.reponse) {
+      console.log("[AI WYJASNIA] error while getting explanation", error);
+      toast.error(
+        "Wystąpił błąd podczas wykonywania zapytania, spróbuj ponownie",
+      );
+      setAppState("initialConfig");
+      return;
+    }
+
+    setAiResponses((prev) => [...prev, data.reponse]);
+    setAppState("followUpPart");
+    setFollowUpQuestion("");
   }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
@@ -84,7 +119,6 @@ export default function AIExplainerPage() {
                 disabled={appState !== "initialConfig"}
               />
 
-              {/* Submit and Reroll Buttons */}
               {appState == "initialConfig" && (
                 <div className="flex gap-3">
                   <Button
@@ -95,64 +129,28 @@ export default function AIExplainerPage() {
                     <Send className="h-4 w-4 mr-2" />
                     {isPending ? "Generating..." : "Submit"}
                   </Button>
-                  {/* <Button
-   variant="outline"
-   onClick={handleReroll}
-   disabled={!initialPrompt.trim() || !selectedMode || isLoading}
- >
-   <RotateCcw className="h-4 w-4 mr-2" />
-   Reroll
- </Button> */}
                 </div>
               )}
             </>
 
-            {/* Explanation Result Area */}
             {appState === "requestPending" && (
-              <Card className="bg-slate-50">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <span className="ml-3 text-slate-600">
-                      Generating explanation...
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
+              <>
+                <AiResponses aiResponses={aiResponses} />
+                <ResponseLoader />
+              </>
             )}
 
             {appState === "followUpPart" && (
-              <Card className="bg-slate-50">
-                <CardContent className="">
-                  <div className="flex items-center justify-center">
-                    {data?.reponse}
-                    <span className="ml-3 text-slate-600"></span>
-                  </div>
-                </CardContent>
-              </Card>
+              <AiResponses aiResponses={aiResponses} />
             )}
 
             {appState === "followUpPart" && (
-              <div className="space-y-2 pt-4 border-t">
-                <label className="text-sm font-medium text-slate-700">
-                  Follow-up Question
-                </label>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Ask a follow-up question about the explanation..."
-                    value={followUpQuestion}
-                    onChange={(e) => setFollowUpQuestion(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleFollowUp()}
-                  />
-                  <Button
-                    onClick={handleFollowUp}
-                    disabled={!followUpQuestion.trim() || isLoading}
-                    size="sm"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+              <FollowUpQuestion
+                followUpQuestion={followUpQuestion}
+                handleFollowUp={(input: string) => setFollowUpQuestion(input)}
+                isPending={isPending}
+                submitFollowUpQuestion={handleFollowUp}
+              />
             )}
           </CardContent>
         </Card>
