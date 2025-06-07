@@ -1,7 +1,7 @@
 "use client";
 
 import { MessageCircle, Send } from "lucide-react";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
 import AiResponses from "~/components/ai-wyjasnia/AiResponses";
 import ResponseLoader from "~/components/ai-wyjasnia/ResponseLoader";
@@ -15,14 +15,17 @@ import FollowUpQuestion from "./FollowUpQuestion";
 import ModeSelector from "./ModeSelector";
 import UserManual from "./UserManual";
 
+// initial config -> first user prompt and mode selection
+// follow up -> user can keep asking addidtional questions
 type AppState = "initialConfig" | "followUpPart" | "requestPending";
 
 export default function AIExplainerPage() {
-  const [userPrompt, setUserPrompt] = useState<string>("What is gravity?");
-  const [selectedMode, setSelectedMode] = useState("");
   const [appState, setAppState] = useState<AppState>("initialConfig");
+  const [userPrompt, setUserPrompt] = useState<string>("Co to grawitacja?");
+  const [selectedMode, setSelectedMode] = useState<string>("");
   const [followUpQuestion, setFollowUpQuestion] = useState<string>("");
   const [aiResponses, setAiResponses] = useState<string[]>([]);
+
   const { mutateAsync: requestAIExplanation, isPending } =
     api.aiWyjasnia.requestAiExplanation.useMutation();
 
@@ -97,41 +100,41 @@ export default function AIExplainerPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <>
-              <div className="space-y-2 flex flex-col">
-                <Label className="text-sm font-medium text-slate-700">
-                  What would you like me to explain?
-                </Label>
-                <Textarea
-                  disabled={appState !== "initialConfig"}
-                  placeholder={
-                    "Enter your topic, question, or concept here... (e.g., 'How does machine learning work?' or 'Explain quantum computing"
-                  }
-                  value={userPrompt}
-                  onChange={(e) => setUserPrompt(e.target.value)}
-                  className="min-h-[100px] resize-none"
-                />
-              </div>
-
-              <ModeSelector
-                selectedMode={selectedMode}
-                handleSelectMode={(mode: string) => setSelectedMode(mode)}
+            <div className="space-y-2 flex flex-col">
+              <Label className="text-sm font-medium text-slate-700">
+                What would you like me to explain?
+              </Label>
+              <Textarea
                 disabled={appState !== "initialConfig"}
+                placeholder={
+                  "Enter your topic, question, or concept here... (e.g., 'How does machine learning work?' or 'Explain quantum computing"
+                }
+                value={userPrompt}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                  setUserPrompt(e.target.value)
+                }
+                className="min-h-[100px] resize-none"
               />
+            </div>
 
-              {appState == "initialConfig" && (
-                <div className="flex gap-3">
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={!userPrompt.trim() || !selectedMode || isPending}
-                    className="flex-1"
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    {isPending ? "Generating..." : "Submit"}
-                  </Button>
-                </div>
-              )}
-            </>
+            <ModeSelector
+              selectedMode={selectedMode}
+              handleSelectMode={(mode: string) => setSelectedMode(mode)}
+              disabled={appState !== "initialConfig"}
+            />
+
+            {appState == "initialConfig" && (
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!userPrompt.trim() || !selectedMode || isPending}
+                  className="flex-1"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  {isPending ? "Generating..." : "Submit"}
+                </Button>
+              </div>
+            )}
 
             {appState === "requestPending" && (
               <>
@@ -141,16 +144,15 @@ export default function AIExplainerPage() {
             )}
 
             {appState === "followUpPart" && (
-              <AiResponses aiResponses={aiResponses} />
-            )}
-
-            {appState === "followUpPart" && (
-              <FollowUpQuestion
-                followUpQuestion={followUpQuestion}
-                handleFollowUp={(input: string) => setFollowUpQuestion(input)}
-                isPending={isPending}
-                submitFollowUpQuestion={handleFollowUp}
-              />
+              <>
+                <AiResponses aiResponses={aiResponses} />
+                <FollowUpQuestion
+                  followUpQuestion={followUpQuestion}
+                  handleFollowUp={(input: string) => setFollowUpQuestion(input)}
+                  isPending={isPending}
+                  submitFollowUpQuestion={handleFollowUp}
+                />
+              </>
             )}
           </CardContent>
         </Card>
