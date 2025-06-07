@@ -4,15 +4,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import { Clock, CheckCircle, XCircle, RotateCcw } from "lucide-react";
-
-interface Question {
-  id: number;
-  question: string;
-  answers: string[];
-  correctAnswer: number;
-  explanation?: string;
-}
+import { Clock, CheckCircle, XCircle, RotateCcw, Loader2 } from "lucide-react";
+import { api } from "~/trpc/react";
 
 interface RandomQuestionGameProps {
   qualificationId: string;
@@ -21,22 +14,24 @@ interface RandomQuestionGameProps {
 export default function RandomQuestionGame({
   qualificationId,
 }: RandomQuestionGameProps) {
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(120); // 2 minuty
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  const generateRandomQuestion = (): Question | null => {
-    return null;
-  };
+  // Pobieranie losowego pytania z tRPC
+  const {
+    data: questionData,
+    isLoading,
+    error,
+    refetch,
+  } = api.questions.getRandomQuestion.useQuery({
+    qualificationId,
+  });
 
-  // Inicjalizacja pytania
-  useEffect(() => {
-    const question = generateRandomQuestion();
-    setCurrentQuestion(question);
-  }, []);
+  const currentQuestion = questionData?.question;
 
+  // Timer
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -51,6 +46,7 @@ export default function RandomQuestionGame({
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
+
   const handleAnswerSelect = (answerIndex: number) => {
     if (showResult || !currentQuestion) return;
 
@@ -65,24 +61,60 @@ export default function RandomQuestionGame({
     setShowResult(true);
   };
 
-  const handleNewQuestion = () => {
-    const question = generateRandomQuestion();
-    setCurrentQuestion(question);
+  const handleNewQuestion = async () => {
     setSelectedAnswer(null);
     setShowResult(false);
     setIsCorrect(null);
     setTimeLeft(120);
+    await refetch();
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-4xl px-4 py-8">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="py-12 text-center">
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <h1 className="mb-4 text-2xl font-bold">Ładowanie pytania...</h1>
+            <p className="text-gray-500">Losowanie pytania z bazy danych</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="container mx-auto max-w-4xl px-4 py-8">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="py-12 text-center">
+            <h1 className="mb-4 text-2xl font-bold text-red-600">
+              Błąd ładowania
+            </h1>
+            <p className="mb-4 text-gray-500">{error.message}</p>
+            <div className="flex justify-center gap-4">
+              <Button onClick={() => window.history.back()} variant="outline">
+                Powrót do trybów
+              </Button>
+              <Button onClick={() => refetch()}>Spróbuj ponownie</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Brak pytania
   if (!currentQuestion) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
             <h1 className="mb-4 text-2xl font-bold">Losowe pytanie</h1>
-            <p className="text-lg text-gray-500">Brak pytań w bazie danych.</p>
-            <p className="mt-2 text-sm text-gray-400">
-              Połącz z bazą danych aby załadować pytania.
+            <p className="text-lg text-gray-500">
+              Brak pytań dla tej kwalifikacji.
             </p>
             <Button
               onClick={() => window.history.back()}
@@ -110,7 +142,10 @@ export default function RandomQuestionGame({
                 {formatTime(timeLeft)}
               </span>
             </div>
-            <Badge variant="secondary">Pytanie #{currentQuestion.id}</Badge>
+            <Badge variant="secondary">
+              Pytanie #{currentQuestion.id.slice(-8)}
+              {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
+            </Badge>
           </div>
         </div>
       </div>
@@ -122,6 +157,16 @@ export default function RandomQuestionGame({
         </CardHeader>
         <CardContent>
           <p className="mb-6 text-lg">{currentQuestion.question}</p>
+
+          {currentQuestion.imageUrl && (
+            <div className="mb-6">
+              <img
+                src={currentQuestion.imageUrl || "/placeholder.svg"}
+                alt="Obrazek do pytania"
+                className="h-auto max-w-full rounded-lg border"
+              />
+            </div>
+          )}
 
           <div className="space-y-3">
             {currentQuestion.answers.map((answer, index) => {
@@ -180,6 +225,11 @@ export default function RandomQuestionGame({
                         </div>
                       )}
                     </div>
+                    <span className="mr-2 font-semibold">
+                      {currentQuestion.answerLabels?.[index] ||
+                        String.fromCharCode(65 + index)}
+                      .
+                    </span>
                     <span>{answer}</span>
                   </div>
                 </button>

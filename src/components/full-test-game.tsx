@@ -5,15 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { Badge } from "~/components/ui/badge";
-import { Clock, SkipForward, Flag } from "lucide-react";
-
-interface Question {
-  id: number;
-  question: string;
-  answers: string[];
-  correctAnswer: number;
-  explanation?: string;
-}
+import { Clock, SkipForward, Flag, Loader2 } from "lucide-react";
+import { api } from "~/trpc/react";
 
 interface FullTestGameProps {
   qualificationId: string;
@@ -26,15 +19,25 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
   const [isFinished, setIsFinished] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  // Puste dane - gotowe na integrację z API
-  const questions: Question[] = [];
+  // Pobieranie pytań z tRPC
+  const {
+    data: questionsData,
+    isLoading,
+    error,
+  } = api.questions.getQuestionsByQualification.useQuery({
+    qualificationId,
+  });
 
+  const questions = questionsData?.questions || [];
+
+  // Inicjalizacja tablicy odpowiedzi gdy pytania się załadują
   useEffect(() => {
     if (questions.length > 0) {
       setSelectedAnswers(new Array(questions.length).fill(null));
     }
   }, [questions.length]);
 
+  // Timer
   useEffect(() => {
     if (timeLeft > 0 && !isFinished && questions.length > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -89,15 +92,49 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
   const progress =
     questions.length > 0 ? (answeredQuestions / questions.length) * 100 : 0;
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="py-12 text-center">
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <h1 className="mb-4 text-2xl font-bold">Ładowanie testu...</h1>
+            <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="py-12 text-center">
+            <h1 className="mb-4 text-2xl font-bold text-red-600">
+              Błąd ładowania
+            </h1>
+            <p className="mb-4 text-gray-500">{error.message}</p>
+            <Button onClick={() => window.history.back()} variant="outline">
+              Powrót do trybów
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Brak pytań
   if (questions.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
-            <h1 className="mb-4 text-2xl font-bold">Test - 40 pytań</h1>
-            <p className="text-lg text-gray-500">Brak pytań w bazie danych.</p>
-            <p className="mt-2 text-sm text-gray-400">
-              Połącz z bazą danych aby załadować pytania.
+            <h1 className="mb-4 text-2xl font-bold">Test - 0 pytań</h1>
+            <p className="text-lg text-gray-500">
+              Brak pytań dla tej kwalifikacji.
             </p>
             <Button
               onClick={() => window.history.back()}
@@ -178,6 +215,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Header z timerem i postępem */}
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">
@@ -207,14 +245,30 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
         </div>
       </div>
 
+      {/* Pytanie */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">
             Pytanie {currentQuestion + 1}
+            {questions[currentQuestion]?.year && (
+              <Badge variant="outline" className="ml-2">
+                Rok {questions[currentQuestion].year}
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="mb-6 text-lg">{questions[currentQuestion]?.question}</p>
+
+          {questions[currentQuestion]?.imageUrl && (
+            <div className="mb-6">
+              <img
+                src={questions[currentQuestion].imageUrl || "/placeholder.svg"}
+                alt="Obrazek do pytania"
+                className="h-auto max-w-full rounded-lg border"
+              />
+            </div>
+          )}
 
           <div className="space-y-3">
             {questions[currentQuestion]?.answers.map((answer, index) => (
@@ -239,6 +293,11 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
                       <div className="h-full w-full scale-50 rounded-full bg-white"></div>
                     )}
                   </div>
+                  <span className="mr-2 font-semibold">
+                    {questions[currentQuestion]?.answerLabels?.[index] ||
+                      String.fromCharCode(65 + index)}
+                    .
+                  </span>
                   <span>{answer}</span>
                 </div>
               </button>
@@ -247,6 +306,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
         </CardContent>
       </Card>
 
+      {/* Nawigacja */}
       <div className="flex items-center justify-between">
         <Button
           onClick={handlePrevQuestion}

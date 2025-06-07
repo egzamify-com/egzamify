@@ -5,17 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Badge } from "~/components/ui/badge";
-import { Search, ChevronDown, ChevronUp, BookOpen, Filter } from "lucide-react";
-
-interface Question {
-  id: number;
-  question: string;
-  answers: string[];
-  correctAnswer: number;
-  explanation?: string;
-  category: string;
-  difficulty: string;
-}
+import {
+  Search,
+  ChevronDown,
+  ChevronUp,
+  BookOpen,
+  Filter,
+  Loader2,
+} from "lucide-react";
+import { api } from "~/trpc/react";
 
 interface BrowseQuestionsProps {
   qualificationId: string;
@@ -25,30 +23,32 @@ export default function BrowseQuestions({
   qualificationId,
 }: BrowseQuestionsProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedDifficulty, setSelectedDifficulty] = useState("all");
-  const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined,
+  );
+  const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
 
-  // Puste dane - gotowe na integrację z API
-  const questions: Question[] = [];
-
-  const categories = ["all"];
-  const difficulties = ["all"];
-
-  const filteredQuestions = questions.filter((question) => {
-    const matchesSearch = question.question
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || question.category === selectedCategory;
-    const matchesDifficulty =
-      selectedDifficulty === "all" ||
-      question.difficulty === selectedDifficulty;
-
-    return matchesSearch && matchesCategory && matchesDifficulty;
+  // Pobieranie pytań z tRPC
+  const {
+    data: questionsData,
+    isLoading,
+    error,
+  } = api.questions.getBrowseQuestions.useQuery({
+    qualificationId,
+    search: searchTerm || undefined,
+    year: selectedYear,
+    limit: 100,
   });
 
-  const toggleQuestion = (questionId: number) => {
+  // Pobieranie statystyk
+  const { data: statsData } = api.questions.getQuestionsStats.useQuery({
+    qualificationId,
+  });
+
+  const questions = questionsData?.questions || [];
+  const stats = statsData || { total: 0, years: [] };
+
+  const toggleQuestion = (questionId: string) => {
     setExpandedQuestion(expandedQuestion === questionId ? null : questionId);
   };
 
@@ -65,8 +65,43 @@ export default function BrowseQuestions({
     }
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="py-12 text-center">
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <h1 className="mb-4 text-2xl font-bold">Ładowanie pytań...</h1>
+            <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="mx-auto max-w-2xl">
+          <CardContent className="py-12 text-center">
+            <h1 className="mb-4 text-2xl font-bold text-red-600">
+              Błąd ładowania
+            </h1>
+            <p className="mb-4 text-gray-500">{error.message}</p>
+            <Button onClick={() => window.history.back()} variant="outline">
+              Powrót do trybów
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Header */}
       <div className="mb-6">
         <h1 className="mb-2 text-2xl font-bold">Baza pytań</h1>
         <p className="text-gray-600">
@@ -74,6 +109,7 @@ export default function BrowseQuestions({
         </p>
       </div>
 
+      {/* Filtry */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -94,56 +130,59 @@ export default function BrowseQuestions({
 
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="mb-2 block text-sm font-medium">
-                Kategoria
-              </label>
+              <label className="mb-2 block text-sm font-medium">Rok</label>
               <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                value={selectedYear || ""}
+                onChange={(e) =>
+                  setSelectedYear(
+                    e.target.value
+                      ? Number.parseInt(e.target.value)
+                      : undefined,
+                  )
+                }
                 className="w-full rounded-md border border-gray-300 p-2"
               >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category === "all" ? "Wszystkie kategorie" : category}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex-1">
-              <label className="mb-2 block text-sm font-medium">
-                Poziom trudności
-              </label>
-              <select
-                value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full rounded-md border border-gray-300 p-2"
-              >
-                {difficulties.map((difficulty) => (
-                  <option key={difficulty} value={difficulty}>
-                    {difficulty === "all" ? "Wszystkie poziomy" : difficulty}
-                  </option>
-                ))}
+                <option value="">Wszystkie lata</option>
+                {stats.years
+                  .sort((a, b) => b - a)
+                  .map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>
         </CardContent>
       </Card>
 
+      {/* Statystyki */}
       <div className="mb-6">
         <div className="flex items-center gap-4 text-sm text-gray-600">
           <span>
-            Znaleziono: <strong>{filteredQuestions.length}</strong> pytań
+            Znaleziono: <strong>{questions.length}</strong> pytań
           </span>
           <span>•</span>
           <span>
-            Łącznie: <strong>{questions.length}</strong> pytań w bazie
+            Łącznie: <strong>{stats.total}</strong> pytań w bazie
           </span>
+          {stats.years.length > 0 && (
+            <>
+              <span>•</span>
+              <span>
+                Lata:{" "}
+                <strong>
+                  {Math.min(...stats.years)} - {Math.max(...stats.years)}
+                </strong>
+              </span>
+            </>
+          )}
         </div>
       </div>
 
+      {/* Lista pytań */}
       <div className="space-y-4">
-        {filteredQuestions.map((question) => (
+        {questions.map((question) => (
           <Card key={question.id} className="overflow-hidden">
             <CardHeader
               className="cursor-pointer transition-colors hover:bg-gray-50"
@@ -152,11 +191,14 @@ export default function BrowseQuestions({
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="mb-2 flex items-center gap-3">
-                    <Badge variant="outline">#{question.id}</Badge>
+                    <Badge variant="outline">#{question.id.slice(-8)}</Badge>
                     <Badge className={getDifficultyColor(question.difficulty)}>
                       {question.difficulty}
                     </Badge>
                     <Badge variant="secondary">{question.category}</Badge>
+                    {question.year && (
+                      <Badge variant="outline">Rok {question.year}</Badge>
+                    )}
                   </div>
                   <CardTitle className="text-base font-medium">
                     {question.question}
@@ -175,6 +217,16 @@ export default function BrowseQuestions({
             {expandedQuestion === question.id && (
               <CardContent className="pt-0">
                 <div className="space-y-4">
+                  {question.imageUrl && (
+                    <div>
+                      <img
+                        src={question.imageUrl || "/placeholder.svg"}
+                        alt="Obrazek do pytania"
+                        className="h-auto max-w-full rounded-lg border"
+                      />
+                    </div>
+                  )}
+
                   <div>
                     <h4 className="mb-3 font-medium">Odpowiedzi:</h4>
                     <div className="space-y-2">
@@ -191,6 +243,11 @@ export default function BrowseQuestions({
                             {index === question.correctAnswer && (
                               <Badge className="bg-green-600">Poprawna</Badge>
                             )}
+                            <span className="font-semibold">
+                              {question.answerLabels?.[index] ||
+                                String.fromCharCode(65 + index)}
+                              .
+                            </span>
                             <span>{answer}</span>
                           </div>
                         </div>
@@ -214,34 +271,27 @@ export default function BrowseQuestions({
         ))}
       </div>
 
-      {questions.length === 0 && (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-lg text-gray-500">Brak pytań w bazie danych.</p>
-            <p className="mt-2 text-sm text-gray-400">
-              Połącz z bazą danych aby załadować pytania.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {filteredQuestions.length === 0 && questions.length > 0 && (
+      {/* Brak danych */}
+      {questions.length === 0 && !isLoading && (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-lg text-gray-500">
-              Nie znaleziono pytań spełniających kryteria wyszukiwania.
+              {searchTerm || selectedYear
+                ? "Nie znaleziono pytań spełniających kryteria wyszukiwania."
+                : "Brak pytań dla tej kwalifikacji."}
             </p>
-            <Button
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("all");
-                setSelectedDifficulty("all");
-              }}
-              variant="outline"
-              className="mt-4"
-            >
-              Wyczyść filtry
-            </Button>
+            {(searchTerm || selectedYear) && (
+              <Button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedYear(undefined);
+                }}
+                variant="outline"
+                className="mt-4"
+              >
+                Wyczyść filtry
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}
