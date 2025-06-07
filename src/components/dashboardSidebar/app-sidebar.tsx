@@ -31,6 +31,11 @@ const data = {
       url: "/dashboard/teoria",
       icon: IconListDetails,
     },
+    {
+      title: "AI Wyjaśnia",
+      url: "/dashboard/ai-wyjasnia",
+      icon: IconListDetails,
+    },
   ],
 };
 
