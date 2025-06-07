@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import { eq, sql } from "drizzle-orm";
-import { questions } from "~/server/db/schema/schema";
+import { questions } from "~/server/db/schema/teoria";
 
 export const questionsRouter = createTRPCRouter({
   getQuestionsByQualification: publicProcedure

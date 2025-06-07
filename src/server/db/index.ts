@@ -3,7 +3,7 @@ import postgres from "postgres";
 
 import { env } from "~/env";
 import * as authSchema from "./schema/auth.schema";
-import * as mainSchema from "./schema/schema";
+import * as mainSchema from "./schema/teoria";
 
 const schema = {
   ...mainSchema,
