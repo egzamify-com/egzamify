@@ -1,19 +1,20 @@
 "use client";
 
 import { MessageCircle, Send } from "lucide-react";
-import { useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
-import AiResponses from "~/components/ai-wyjasnia/AiResponses";
+import RenderAiResponses from "~/components/ai-wyjasnia/RenderAiResponses";
 import ResponseLoader from "~/components/ai-wyjasnia/ResponseLoader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
+import type { AiResponseWithFollowUpQuesion } from "~/server/db/schema/ai-wyjasnia";
 import { api } from "~/trpc/react";
 import { tryCatch } from "~/utils/tryCatch";
+import UserManual from "../../../components/ai-wyjasnia/UserManual";
 import FollowUpQuestion from "./FollowUpQuestion";
 import ModeSelector from "./ModeSelector";
-import UserManual from "./UserManual";
 
 // initial config -> first user prompt and mode selection
 // follow up -> user can keep asking addidtional questions
@@ -24,7 +25,10 @@ export default function AIExplainerPage() {
   const [userPrompt, setUserPrompt] = useState<string>("Co to grawitacja?");
   const [selectedMode, setSelectedMode] = useState<string>("");
   const [followUpQuestion, setFollowUpQuestion] = useState<string>("");
-  const [aiResponses, setAiResponses] = useState<string[]>([]);
+  const [aiResponses, setAiResponses] = useState<
+    AiResponseWithFollowUpQuesion[]
+  >([]);
+  const explanationId = useRef<string>("");
 
   const { mutateAsync: requestAIExplanation, isPending } =
     api.aiWyjasnia.requestAiExplanation.useMutation();
@@ -54,7 +58,12 @@ export default function AIExplainerPage() {
       return;
     }
 
-    setAiResponses((prev) => [...prev, data.reponse]);
+    setAiResponses((prev) => [
+      ...prev,
+      { aiResponse: data.reponse, followUpQuestion: followUpQuestion },
+    ]);
+    explanationId.current = data.explanationId;
+
     setAppState("followUpPart");
   }
 
@@ -65,14 +74,18 @@ export default function AIExplainerPage() {
 
     setAppState("requestPending");
 
-    console.log("ai reponses previous", aiResponses.join("\n"));
+    console.log(
+      "ai reponses previous",
+      aiResponses.map((x) => x.aiResponse).join("\n"),
+    );
     const [data, error] = await tryCatch(
       requestAIExplanation({
         mode: selectedMode,
         userPrompt: userPrompt,
         reroll: false,
-        previousExplanation: aiResponses.join("\n"),
+        previousExplanationWithFollowUpQuestions: aiResponses,
         followUpQuestion: followUpQuestion,
+        explanationId: explanationId.current,
       }),
     );
     if (error || !data?.reponse) {
@@ -83,8 +96,14 @@ export default function AIExplainerPage() {
       setAppState("initialConfig");
       return;
     }
+    console.log(aiResponses);
+    console.log(data.reponse);
+    setAiResponses((prev) => [
+      ...prev,
+      { aiResponse: data.reponse, followUpQuestion: followUpQuestion },
+    ]);
 
-    setAiResponses((prev) => [...prev, data.reponse]);
+    console.log(aiResponses);
     setAppState("followUpPart");
     setFollowUpQuestion("");
   }
@@ -138,14 +157,14 @@ export default function AIExplainerPage() {
 
             {appState === "requestPending" && (
               <>
-                <AiResponses aiResponses={aiResponses} />
+                <RenderAiResponses aiResponses={aiResponses} />
                 <ResponseLoader />
               </>
             )}
 
             {appState === "followUpPart" && (
               <>
-                <AiResponses aiResponses={aiResponses} />
+                <RenderAiResponses aiResponses={aiResponses} />
                 <FollowUpQuestion
                   followUpQuestion={followUpQuestion}
                   handleFollowUp={(input: string) => setFollowUpQuestion(input)}

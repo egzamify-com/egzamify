@@ -12,7 +12,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "auth:generate": "pnpm dlx @better-auth/cli@latest generate --config ./src/server/auth.ts --y --output ./src/server/db/schema/auth.schema.ts && prettier --write ./src/server/db/schema/auth.schema.ts",
+    "auth:generate": "pnpm dlx @better-auth/cli@latest generate  --y --output ./src/server/db/schema/auth.schema.ts && prettier --write ./src/server/db/schema/auth.schema.ts",
     "ui": "pnpm dlx shadcn@latest",
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",

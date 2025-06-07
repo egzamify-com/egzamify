@@ -4,11 +4,11 @@ import {
   char,
   index,
   integer,
+  pgTable,
   text,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { pgTable } from "drizzle.config";
 
 // ----------------QUALIFICATIONS----------------------
 export const qualifications = pgTable(

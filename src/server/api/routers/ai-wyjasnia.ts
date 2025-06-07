@@ -1,8 +1,16 @@
 import { groq } from "@ai-sdk/groq";
 import { TRPCError } from "@trpc/server";
 import { generateText } from "ai";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { db } from "~/server/db";
+import {
+  AiResponseWithFollowUpQuesionSchma,
+  explanations,
+} from "~/server/db/schema/ai-wyjasnia";
+import { tryCatch } from "~/utils/tryCatch";
+
 export const aiWyjasniaRouter = createTRPCRouter({
   requestAiExplanation: protectedProcedure
     .input(
@@ -10,8 +18,11 @@ export const aiWyjasniaRouter = createTRPCRouter({
         mode: z.string(),
         userPrompt: z.string(),
         reroll: z.boolean(),
-        previousExplanation: z.string().optional(),
+        previousExplanationWithFollowUpQuestions: z
+          .array(AiResponseWithFollowUpQuesionSchma)
+          .optional(),
         followUpQuestion: z.string().optional(),
+        explanationId: z.string().optional(),
       }),
     )
     .mutation(
@@ -20,8 +31,9 @@ export const aiWyjasniaRouter = createTRPCRouter({
           mode,
           reroll,
           userPrompt,
-          previousExplanation,
+          previousExplanationWithFollowUpQuestions,
           followUpQuestion,
+          explanationId,
         },
         ctx: { auth },
       }) => {
@@ -32,13 +44,9 @@ export const aiWyjasniaRouter = createTRPCRouter({
             message: "Failed to get user requesting explanation",
           });
         }
-        console.log(
-          user,
-          userPrompt,
-          previousExplanation,
-          followUpQuestion,
-          reroll,
-        );
+
+        // check for user credits before ai interaction
+
         const systemPrompt = `You are an AI-powered educational assistant specialized in explaining complex terms and concepts. Your primary goal is to provide clear, concise, and accurate explanations tailored to the user's requested mode.
 
 Dont welcome user, eg. welcome, hi, hello, hey, greetings, how are you, what's up, what's going on, etc.
@@ -69,27 +77,80 @@ Your task is to provide a comprehensive and in-depth explanation of the term. In
 Your task is to explain the term as if you are talking to a five-year-old child. Use very simple words, short sentences, and relatable analogies from everyday life (like toys, games, animals, or food). Focus on the core idea, not technical details. Make it fun and easy to grasp.
 
 MODE: ${mode}
-${previousExplanation && `PREVIOUS_EXPLANATION: ${previousExplanation}`}
+${previousExplanationWithFollowUpQuestions && `PREVIOUS_EXPLANATION: ${previousExplanationWithFollowUpQuestions.map((x) => x.aiResponse).join("\n")}`}
 ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
 
 `;
 
-        const result = await generateText({
-          model: groq("llama-3.3-70b-versatile"),
-          system: systemPrompt,
-          maxTokens: 500,
-          prompt: followUpQuestion ? "" : userPrompt,
-        });
+        const [result, error] = await tryCatch(
+          generateText({
+            model: groq("llama-3.3-70b-versatile"),
+            system: systemPrompt,
+            maxTokens: 500,
+            prompt: followUpQuestion ? "" : userPrompt,
+          }),
+        );
 
-        // const regex = /<think>(.*?)<\/think>/s;
+        if (error || !result) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Wystąpił błąd podczas generowania wyjaśnienia",
+          });
+        }
+        console.log("current chat history ----------->");
+        if (previousExplanationWithFollowUpQuestions) {
+          previousExplanationWithFollowUpQuestions.map((x) => {
+            console.log(`reponse: ${x.aiResponse}`);
+            console.log(`follow up question: ${x.followUpQuestion}`);
+          });
+        }
+        if (previousExplanationWithFollowUpQuestions && explanationId) {
+          console.log(`user qusetion : ${userPrompt}`);
+          console.log(`answer to follorUP : ${result.text}`);
+          console.log("SHOULD UPDATE EXISTING ENTRY HERRE WITH NEW FOLLOWUPS");
+          const [dbResult, error] = await tryCatch(
+            db
+              .update(explanations)
+              .set({
+                aiResponsesWithQuestions:
+                  previousExplanationWithFollowUpQuestions,
+              })
+              .where(eq(explanations.id, explanationId))
+              .returning(),
+          );
+          if (error || !dbResult[0]) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: error?.message,
+            });
+          }
+          return {
+            reponse: result.text,
+            explanationId: dbResult[0].id,
+          };
+        } else {
+          console.log("SHOULD CREATE NEW ENTRY HERRE");
+          console.log(`user prompt: ${userPrompt}`);
+          console.log(`ai response: ${result.text}`);
+          const [dbResult, error] = await tryCatch(
+            db
+              .insert(explanations)
+              .values({ user_id: user.id, userPrompt: userPrompt, mode: mode })
+              .returning(),
+          );
+          if (error || !dbResult[0]) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: error?.message,
+            });
+          }
+          return {
+            reponse: result.text,
+            explanationId: dbResult[0].id,
+          };
+        }
 
-        // const cleaned = result.text.replace(regex, "");
-
-        console.log(result);
-        console.log("llm : ", result.text);
-        return {
-          reponse: result.text,
-        };
+        // success ai interaction -> put in db, charge credits
       },
     ),
 });
