@@ -6,7 +6,6 @@ import { AppSidebar } from "~/components/dashboardSidebar/app-sidebar";
 import { SiteHeader } from "~/components/dashboardSidebar/site-header";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { updateDashboardBreadcrumbs } from "~/lib/stores/breadcrumbsStore";
-import { log } from "~/utils/log";
 
 export default function LayoutDashboard({
   children,
@@ -34,7 +33,7 @@ export default function LayoutDashboard({
 function DashbboardBreadcrumbs() {
   const pathname = usePathname();
   useEffect(() => {
-    log(pathname);
+    console.log(pathname);
     switch (pathname) {
       case "/dashboard/teoria":
         updateDashboardBreadcrumbs("Egzamin Teoretyczny");
@@ -44,6 +43,9 @@ function DashbboardBreadcrumbs() {
         break;
       case "/dashboard":
         updateDashboardBreadcrumbs("Witaj!");
+      case "/dashboard/ai-wyjasnia":
+        updateDashboardBreadcrumbs("AI Wyjaśnienia");
+        break;
     }
   }, [pathname]);
   return null;
