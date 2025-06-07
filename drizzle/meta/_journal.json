@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1748450519287,
-      "tag": "0000_steady_sue_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1748706445558,
-      "tag": "0001_zippy_sandman",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1748709725880,
-      "tag": "0002_hesitant_wild_pack",
+      "when": 1749304658439,
+      "tag": "0000_rare_meltdown",
       "breakpoints": true
     }
   ]

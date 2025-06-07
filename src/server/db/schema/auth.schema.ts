@@ -1,6 +1,4 @@
-import { text, timestamp, boolean, pgTableCreator } from "drizzle-orm/pg-core";
-
-const pgTable = pgTableCreator((name) => `ai_learning_platform_${name}`);
+import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
