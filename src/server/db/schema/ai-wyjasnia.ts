@@ -5,6 +5,7 @@ import { user } from "./auth.schema";
 export type AiResponseWithFollowUpQuesion = {
   aiResponse: string;
   followUpQuestion: string;
+  mode: string;
 };
 export const AiResponseWithFollowUpQuesionSchma = z.object({
   aiResponse: z.string(),

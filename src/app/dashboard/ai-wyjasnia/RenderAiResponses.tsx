@@ -1,5 +1,6 @@
+import { Badge } from "~/components/ui/badge";
 import type { AiResponseWithFollowUpQuesion } from "~/server/db/schema/ai-wyjasnia";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 export default function RenderAiResponses({
   aiResponses,
 }: {
@@ -25,7 +26,12 @@ export default function RenderAiResponses({
             )}
             <Card className="bg-slate-50">
               <CardContent className="">
-                <div className="flex items-center justify-center">
+                <div className="flex items-start justify-start  flex-col  gap-2">
+                  <div className="ml-3">
+                    <Badge asChild>
+                      <p>{aiResponse.mode}</p>
+                    </Badge>
+                  </div>
                   <span className="ml-3 text-slate-600">
                     {aiResponse.aiResponse}
                   </span>

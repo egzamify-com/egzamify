@@ -3,7 +3,7 @@
 import { MessageCircle, Send } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
-import RenderAiResponses from "~/components/ai-wyjasnia/RenderAiResponses";
+import RenderAiResponses from "~/app/dashboard/ai-wyjasnia/RenderAiResponses";
 import ResponseLoader from "~/components/ai-wyjasnia/ResponseLoader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -60,7 +60,11 @@ export default function AIExplainerPage() {
 
     setAiResponses((prev) => [
       ...prev,
-      { aiResponse: data.reponse, followUpQuestion: followUpQuestion },
+      {
+        aiResponse: data.reponse,
+        followUpQuestion: followUpQuestion,
+        mode: selectedMode,
+      },
     ]);
     explanationId.current = data.explanationId;
 
@@ -100,7 +104,11 @@ export default function AIExplainerPage() {
     console.log(data.reponse);
     setAiResponses((prev) => [
       ...prev,
-      { aiResponse: data.reponse, followUpQuestion: followUpQuestion },
+      {
+        aiResponse: data.reponse,
+        followUpQuestion: followUpQuestion,
+        mode: selectedMode,
+      },
     ]);
 
     console.log(aiResponses);
@@ -115,32 +123,36 @@ export default function AIExplainerPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" />
-              Customize your experience
+              {appState === "initialConfig"
+                ? "Customize your experience"
+                : "Now can ask follow up questions too"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2 flex flex-col">
-              <Label className="text-sm font-medium text-slate-700">
-                What would you like me to explain?
-              </Label>
-              <Textarea
-                disabled={appState !== "initialConfig"}
-                placeholder={
-                  "Enter your topic, question, or concept here... (e.g., 'How does machine learning work?' or 'Explain quantum computing"
-                }
-                value={userPrompt}
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                  setUserPrompt(e.target.value)
-                }
-                className="min-h-[100px] resize-none"
-              />
-            </div>
+            {appState === "initialConfig" && (
+              <>
+                <div className="space-y-2 flex flex-col">
+                  <Label className="text-sm font-medium text-slate-700">
+                    What would you like me to explain?
+                  </Label>
+                  <Textarea
+                    placeholder={
+                      "Enter your topic, question, or concept here... (e.g., 'How does machine learning work?' or 'Explain quantum computing"
+                    }
+                    value={userPrompt}
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                      setUserPrompt(e.target.value)
+                    }
+                    className="min-h-[100px] resize-none"
+                  />
+                </div>
 
-            <ModeSelector
-              selectedMode={selectedMode}
-              handleSelectMode={(mode: string) => setSelectedMode(mode)}
-              disabled={appState !== "initialConfig"}
-            />
+                <ModeSelector
+                  selectedMode={selectedMode}
+                  handleSelectMode={(mode: string) => setSelectedMode(mode)}
+                />
+              </>
+            )}
 
             {appState == "initialConfig" && (
               <div className="flex gap-3">
@@ -170,6 +182,10 @@ export default function AIExplainerPage() {
                   handleFollowUp={(input: string) => setFollowUpQuestion(input)}
                   isPending={isPending}
                   submitFollowUpQuestion={handleFollowUp}
+                />
+                <ModeSelector
+                  selectedMode={selectedMode}
+                  handleSelectMode={(mode: string) => setSelectedMode(mode)}
                 />
               </>
             )}
