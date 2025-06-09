@@ -3,7 +3,9 @@
 import { MessageCircle, Send } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
-import RenderAiResponses from "~/app/dashboard/ai-wyjasnia/RenderAiResponses";
+import RenderAiResponses, {
+  UserPrompt,
+} from "~/app/dashboard/ai-wyjasnia/RenderAiResponses";
 import ResponseLoader from "~/components/ai-wyjasnia/ResponseLoader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -45,7 +47,6 @@ export default function AIExplainerPage() {
       requestAIExplanation({
         mode: selectedMode,
         userPrompt: userPrompt,
-        reroll: false,
       }),
     );
 
@@ -86,7 +87,6 @@ export default function AIExplainerPage() {
       requestAIExplanation({
         mode: selectedMode,
         userPrompt: userPrompt,
-        reroll: false,
         previousExplanationWithFollowUpQuestions: aiResponses,
         followUpQuestion: followUpQuestion,
         explanationId: explanationId.current,
@@ -125,7 +125,7 @@ export default function AIExplainerPage() {
               <MessageCircle className="h-5 w-5" />
               {appState === "initialConfig"
                 ? "Customize your experience"
-                : "Now can ask follow up questions too"}
+                : "Feel free ask follow up questions"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -151,20 +151,17 @@ export default function AIExplainerPage() {
                   selectedMode={selectedMode}
                   handleSelectMode={(mode: string) => setSelectedMode(mode)}
                 />
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!userPrompt.trim() || !selectedMode || isPending}
+                    className="flex-1"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    {"Submit"}
+                  </Button>
+                </div>
               </>
-            )}
-
-            {appState == "initialConfig" && (
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleSubmit}
-                  disabled={!userPrompt.trim() || !selectedMode || isPending}
-                  className="flex-1"
-                >
-                  <Send className="h-4 w-4 mr-2" />
-                  {isPending ? "Generating..." : "Submit"}
-                </Button>
-              </div>
             )}
 
             {appState === "requestPending" && (
@@ -176,6 +173,7 @@ export default function AIExplainerPage() {
 
             {appState === "followUpPart" && (
               <>
+                <UserPrompt userPrompt={userPrompt} />
                 <RenderAiResponses aiResponses={aiResponses} />
                 <FollowUpQuestion
                   followUpQuestion={followUpQuestion}

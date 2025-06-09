@@ -17,7 +17,6 @@ export const aiWyjasniaRouter = createTRPCRouter({
       z.object({
         mode: z.string(),
         userPrompt: z.string(),
-        reroll: z.boolean(),
         previousExplanationWithFollowUpQuestions: z
           .array(AiResponseWithFollowUpQuesionSchma)
           .optional(),
@@ -29,7 +28,6 @@ export const aiWyjasniaRouter = createTRPCRouter({
       async ({
         input: {
           mode,
-          reroll,
           userPrompt,
           previousExplanationWithFollowUpQuestions,
           followUpQuestion,

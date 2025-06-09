@@ -14,21 +14,13 @@ export default function RenderAiResponses({
         return (
           <div key={randomId} className="flex flex-col gap-6">
             {aiResponse.followUpQuestion && (
-              <Card className="bg-teal-50">
-                <CardContent className="">
-                  <div className="flex items-center justify-center">
-                    <span className="ml-3 text-slate-600">
-                      {aiResponse.followUpQuestion}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
+              <UserPrompt userPrompt={aiResponse.followUpQuestion} />
             )}
             <Card className="bg-slate-50">
               <CardContent className="">
                 <div className="flex items-start justify-start  flex-col  gap-2">
                   <div className="ml-3">
-                    <Badge asChild>
+                    <Badge>
                       <p>{aiResponse.mode}</p>
                     </Badge>
                   </div>
@@ -42,5 +34,21 @@ export default function RenderAiResponses({
         );
       })}
     </>
+  );
+}
+export function UserPrompt({ userPrompt }: { userPrompt: string }) {
+  return (
+    <Card>
+      <CardContent>
+        <div className="flex items-start justify-start  flex-col  gap-2">
+          <div className="ml-3">
+            <Badge>
+              <p>You</p>
+            </Badge>
+          </div>
+          <span className="ml-3 text-slate-600">{userPrompt}</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
