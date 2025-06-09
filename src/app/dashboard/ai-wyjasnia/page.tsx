@@ -1,9 +1,10 @@
 "use client";
 
-import { MessageCircle, Send } from "lucide-react";
+import { History, MessageCircle, Send } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
-import RenderAiResponses from "~/components/ai-wyjasnia/RenderAiResponses";
+import RenderAiResponses from "~/app/dashboard/ai-wyjasnia/RenderAiResponses";
 import ResponseLoader from "~/components/ai-wyjasnia/ResponseLoader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -21,6 +22,7 @@ import ModeSelector from "./ModeSelector";
 type AppState = "initialConfig" | "followUpPart" | "requestPending";
 
 export default function AIExplainerPage() {
+  const utils = api.useUtils();
   const [appState, setAppState] = useState<AppState>("initialConfig");
   const [userPrompt, setUserPrompt] = useState<string>("Co to grawitacja?");
   const [selectedMode, setSelectedMode] = useState<string>("");
@@ -41,15 +43,16 @@ export default function AIExplainerPage() {
 
     setAppState("requestPending");
 
+    console.log("submitting with: ", selectedMode, userPrompt);
+
     const [data, error] = await tryCatch(
       requestAIExplanation({
-        mode: selectedMode,
-        userPrompt: userPrompt,
-        reroll: false,
+        currentMode: selectedMode,
+        currentUserPrompt: userPrompt,
       }),
     );
 
-    if (error || !data?.reponse) {
+    if (error || !data?.response) {
       console.log("[AI WYJASNIA] error while getting explanation", error);
       toast.error(
         "Wystąpił błąd podczas wykonywania zapytania, spróbuj ponownie",
@@ -57,14 +60,19 @@ export default function AIExplainerPage() {
       setAppState("initialConfig");
       return;
     }
-
+    console.log("data from submit", data);
     setAiResponses((prev) => [
       ...prev,
-      { aiResponse: data.reponse, followUpQuestion: followUpQuestion },
+      {
+        aiResponse: data.response,
+        userPrompt: userPrompt,
+        mode: selectedMode,
+      },
     ]);
     explanationId.current = data.explanationId;
 
     setAppState("followUpPart");
+    void utils.aiWyjasnia.getAiResponsesHistory.reset();
   }
 
   async function handleFollowUp() {
@@ -80,32 +88,36 @@ export default function AIExplainerPage() {
     );
     const [data, error] = await tryCatch(
       requestAIExplanation({
-        mode: selectedMode,
-        userPrompt: userPrompt,
-        reroll: false,
+        currentMode: selectedMode,
+        currentUserPrompt: followUpQuestion,
         previousExplanationWithFollowUpQuestions: aiResponses,
-        followUpQuestion: followUpQuestion,
         explanationId: explanationId.current,
       }),
     );
-    if (error || !data?.reponse) {
+    if (error || !data?.response) {
       console.log("[AI WYJASNIA] error while getting explanation", error);
       toast.error(
         "Wystąpił błąd podczas wykonywania zapytania, spróbuj ponownie",
       );
-      setAppState("initialConfig");
+      setAppState("followUpPart");
       return;
     }
     console.log(aiResponses);
-    console.log(data.reponse);
+    console.log(data.response);
     setAiResponses((prev) => [
       ...prev,
-      { aiResponse: data.reponse, followUpQuestion: followUpQuestion },
+      {
+        userPrompt: followUpQuestion,
+        aiResponse: data.response,
+        mode: selectedMode,
+      },
     ]);
 
     console.log(aiResponses);
     setAppState("followUpPart");
     setFollowUpQuestion("");
+
+    void utils.aiWyjasnia.getAiResponsesHistory.reset();
   }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
@@ -113,46 +125,58 @@ export default function AIExplainerPage() {
         <UserManual />
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
-              Customize your experience
+            <CardTitle className="flex items-center justify-between ">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                <p>
+                  {appState === "initialConfig"
+                    ? "Customize your experience"
+                    : "Feel free ask follow up questions"}
+                </p>
+              </div>
+              <div>
+                <Button variant={"outline"} asChild>
+                  <Link href={"/dashboard/ai-wyjasnia/history"}>
+                    <History /> History
+                  </Link>
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2 flex flex-col">
-              <Label className="text-sm font-medium text-slate-700">
-                What would you like me to explain?
-              </Label>
-              <Textarea
-                disabled={appState !== "initialConfig"}
-                placeholder={
-                  "Enter your topic, question, or concept here... (e.g., 'How does machine learning work?' or 'Explain quantum computing"
-                }
-                value={userPrompt}
-                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                  setUserPrompt(e.target.value)
-                }
-                className="min-h-[100px] resize-none"
-              />
-            </div>
+            {appState === "initialConfig" && (
+              <>
+                <div className="space-y-2 flex flex-col">
+                  <Label className="text-sm font-medium text-slate-700">
+                    What would you like me to explain?
+                  </Label>
+                  <Textarea
+                    placeholder={
+                      "Enter your topic, question, or concept here... (e.g., 'How does machine learning work?' or 'Explain quantum computing"
+                    }
+                    value={userPrompt}
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                      setUserPrompt(e.target.value)
+                    }
+                    className="min-h-[100px] resize-none"
+                  />
+                </div>
 
-            <ModeSelector
-              selectedMode={selectedMode}
-              handleSelectMode={(mode: string) => setSelectedMode(mode)}
-              disabled={appState !== "initialConfig"}
-            />
-
-            {appState == "initialConfig" && (
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleSubmit}
-                  disabled={!userPrompt.trim() || !selectedMode || isPending}
-                  className="flex-1"
-                >
-                  <Send className="h-4 w-4 mr-2" />
-                  {isPending ? "Generating..." : "Submit"}
-                </Button>
-              </div>
+                <ModeSelector
+                  selectedMode={selectedMode}
+                  handleSelectMode={(mode: string) => setSelectedMode(mode)}
+                />
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!userPrompt.trim() || !selectedMode || isPending}
+                    className="flex-1"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    {"Submit"}
+                  </Button>
+                </div>
+              </>
             )}
 
             {appState === "requestPending" && (
@@ -164,12 +188,17 @@ export default function AIExplainerPage() {
 
             {appState === "followUpPart" && (
               <>
+                {/* <UserPrompt userPrompt={userPrompt} /> */}
                 <RenderAiResponses aiResponses={aiResponses} />
                 <FollowUpQuestion
                   followUpQuestion={followUpQuestion}
                   handleFollowUp={(input: string) => setFollowUpQuestion(input)}
                   isPending={isPending}
                   submitFollowUpQuestion={handleFollowUp}
+                />
+                <ModeSelector
+                  selectedMode={selectedMode}
+                  handleSelectMode={(mode: string) => setSelectedMode(mode)}
                 />
               </>
             )}

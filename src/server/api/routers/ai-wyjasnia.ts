@@ -1,12 +1,12 @@
 import { groq } from "@ai-sdk/groq";
 import { TRPCError } from "@trpc/server";
 import { generateText } from "ai";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import {
-  AiResponseWithFollowUpQuesionSchma,
+  AiResponseWithFollowUpQuesionSchema,
   explanations,
 } from "~/server/db/schema/ai-wyjasnia";
 import { tryCatch } from "~/utils/tryCatch";
@@ -15,24 +15,22 @@ export const aiWyjasniaRouter = createTRPCRouter({
   requestAiExplanation: protectedProcedure
     .input(
       z.object({
-        mode: z.string(),
-        userPrompt: z.string(),
-        reroll: z.boolean(),
+        currentMode: z.string(),
+        currentUserPrompt: z.string(),
         previousExplanationWithFollowUpQuestions: z
-          .array(AiResponseWithFollowUpQuesionSchma)
+          .array(AiResponseWithFollowUpQuesionSchema)
           .optional(),
-        followUpQuestion: z.string().optional(),
+        // followUpQuestion: z.string().optional(),
         explanationId: z.string().optional(),
       }),
     )
     .mutation(
       async ({
         input: {
-          mode,
-          reroll,
-          userPrompt,
+          currentMode,
+          currentUserPrompt,
           previousExplanationWithFollowUpQuestions,
-          followUpQuestion,
+          // followUpQuestion,
           explanationId,
         },
         ctx: { auth },
@@ -76,9 +74,9 @@ Your task is to provide a comprehensive and in-depth explanation of the term. In
 ### Mode: ELI5  ###
 Your task is to explain the term as if you are talking to a five-year-old child. Use very simple words, short sentences, and relatable analogies from everyday life (like toys, games, animals, or food). Focus on the core idea, not technical details. Make it fun and easy to grasp.
 
-MODE: ${mode}
+MODE: ${currentMode}
 ${previousExplanationWithFollowUpQuestions && `PREVIOUS_EXPLANATION: ${previousExplanationWithFollowUpQuestions.map((x) => x.aiResponse).join("\n")}`}
-${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
+${currentMode && `FOLLOW_UP_QUESTION: ${currentUserPrompt}`}
 
 `;
 
@@ -87,7 +85,7 @@ ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
             model: groq("llama-3.3-70b-versatile"),
             system: systemPrompt,
             maxTokens: 500,
-            prompt: followUpQuestion ? "" : userPrompt,
+            prompt: currentUserPrompt,
           }),
         );
 
@@ -100,20 +98,27 @@ ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
         console.log("current chat history ----------->");
         if (previousExplanationWithFollowUpQuestions) {
           previousExplanationWithFollowUpQuestions.map((x) => {
-            console.log(`reponse: ${x.aiResponse}`);
-            console.log(`follow up question: ${x.followUpQuestion}`);
+            console.log(`reponse: ${x.userPrompt}`);
+            console.log(`follow up question: ${x.aiResponse}`);
           });
         }
         if (previousExplanationWithFollowUpQuestions && explanationId) {
-          console.log(`user qusetion : ${userPrompt}`);
+          console.log(`user qusetion : ${currentUserPrompt}`);
           console.log(`answer to follorUP : ${result.text}`);
           console.log("SHOULD UPDATE EXISTING ENTRY HERRE WITH NEW FOLLOWUPS");
+
           const [dbResult, error] = await tryCatch(
             db
               .update(explanations)
               .set({
-                aiResponsesWithQuestions:
-                  previousExplanationWithFollowUpQuestions,
+                aiResponsesWithQuestions: [
+                  ...previousExplanationWithFollowUpQuestions,
+                  {
+                    aiResponse: result.text,
+                    userPrompt: currentUserPrompt,
+                    mode: currentMode,
+                  },
+                ],
               })
               .where(eq(explanations.id, explanationId))
               .returning(),
@@ -125,17 +130,27 @@ ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
             });
           }
           return {
-            reponse: result.text,
+            response: result.text,
             explanationId: dbResult[0].id,
           };
         } else {
           console.log("SHOULD CREATE NEW ENTRY HERRE");
-          console.log(`user prompt: ${userPrompt}`);
+          console.log(`user prompt: ${currentUserPrompt}`);
           console.log(`ai response: ${result.text}`);
           const [dbResult, error] = await tryCatch(
             db
               .insert(explanations)
-              .values({ user_id: user.id, userPrompt: userPrompt, mode: mode })
+              .values({
+                user_id: user.id,
+
+                aiResponsesWithQuestions: [
+                  {
+                    userPrompt: currentUserPrompt,
+                    mode: currentMode,
+                    aiResponse: result.text,
+                  },
+                ],
+              })
               .returning(),
           );
           if (error || !dbResult[0]) {
@@ -145,7 +160,7 @@ ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
             });
           }
           return {
-            reponse: result.text,
+            response: result.text,
             explanationId: dbResult[0].id,
           };
         }
@@ -153,4 +168,32 @@ ${followUpQuestion && `FOLLOW_UP_QUESTION: ${followUpQuestion}`}
         // success ai interaction -> put in db, charge credits
       },
     ),
+
+  getAiResponsesHistory: protectedProcedure.query(async ({ ctx }) => {
+    const user = ctx.auth?.user;
+    if (!user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Failed to get user requesting explanation",
+      });
+    }
+
+    const [history, error] = await tryCatch(
+      db
+        .select()
+        .from(explanations)
+        .where(eq(explanations.user_id, user.id))
+        .orderBy(desc(explanations.created_at)),
+    );
+
+    if (error || !history) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Wystąpił błąd podczas pobierania historii wyjaśnień",
+        cause: error.message,
+      });
+    }
+
+    return history;
+  }),
 });
