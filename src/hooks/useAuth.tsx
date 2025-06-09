@@ -5,6 +5,8 @@ export default function useAuth() {
   const error = auth.error;
   const user = auth.data?.user;
   const session = auth.data?.session;
+  // const email = user?.email 
+
 
   return { auth, error, user, session };
 }

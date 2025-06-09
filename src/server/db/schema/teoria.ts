@@ -44,6 +44,7 @@ export const questions = pgTable(
     year: integer("year").notNull(),
     image_url: text("image_url"),
     created_at: timestamp("created_at").defaultNow(),
+    explanation: text("explanation"),
   },
   (table) => [
     index("question_id_idx").on(table.id),

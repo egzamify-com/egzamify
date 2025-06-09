@@ -1,5 +1,5 @@
 {
-  "id": "4647d9ae-1b02-4fb4-a15e-4d9833a49dc8",
+  "id": "0f7ab25e-3b71-42c4-b529-f7dddeca5afe",
   "prevId": "7e1360f2-41b1-4756-bf18-e891d58a2293",
   "version": "7",
   "dialect": "postgresql",
@@ -21,18 +21,23 @@
           "primaryKey": false,
           "notNull": true
         },
+
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
+
           "notNull": true,
+
           "default": "now()"
         },
         "aiResponsesWithQuestions": {
           "name": "aiResponsesWithQuestions",
           "type": "json",
           "primaryKey": false,
+
           "notNull": true
+
         }
       },
       "indexes": {},
