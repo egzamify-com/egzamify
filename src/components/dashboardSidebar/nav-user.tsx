@@ -1,8 +1,9 @@
 "use client";
 
 import { IconDotsVertical } from "@tabler/icons-react";
-import { LogOut, Moon, Sun } from "lucide-react";
+import { LogOut, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -73,6 +74,12 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
+            <Link href={"/dashboard/konto"}>
+              <DropdownMenuItem className="cursor-pointer">
+                <User />
+                Konto
+              </DropdownMenuItem>
+            </Link>
             {theme === "dark" ? (
               <DropdownMenuItem
                 onClick={() => setTheme("light")}

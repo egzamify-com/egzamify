@@ -4,7 +4,9 @@ import {
   IconDashboard,
   IconInnerShadowTop,
   IconListDetails,
+  IconUser,
 } from "@tabler/icons-react";
+
 import Link from "next/link";
 import * as React from "react";
 import {
@@ -35,6 +37,12 @@ const data = {
       title: "AI Wyjaśnia",
       url: "/dashboard/ai-wyjasnia",
       icon: IconListDetails,
+    },
+
+    {
+      title: "Konto",
+      url: "/dashboard/konto",
+      icon: IconUser,
     },
   ],
 };
