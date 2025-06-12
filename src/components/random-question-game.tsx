@@ -28,7 +28,6 @@ export default function RandomQuestionGame({
 
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
-  const [explanationId, setExplanationId] = useState<string | null>(null);
 
   const {
     data: questionData,
@@ -41,18 +40,26 @@ export default function RandomQuestionGame({
 
   const currentQuestion = questionData?.question;
 
-  const aiExplanationMutation = api.aiWyjasnia.requestAiExplanation.useMutation(
-    {
+  const generateExplanationMutation =
+    api.questions.generateExplanation.useMutation({
       onSuccess: (data) => {
-        setAiExplanation(data.response);
-        setExplanationId(data.explanationId);
+        setAiExplanation(data.explanation);
         setIsLoadingExplanation(false);
       },
       onError: () => {
         setIsLoadingExplanation(false);
       },
-    },
-  );
+    });
+
+  const saveExplanationMutation = api.questions.saveExplanation.useMutation();
+
+  useEffect(() => {
+    if (currentQuestion?.explanation) {
+      setAiExplanation(currentQuestion.explanation);
+    } else {
+      setAiExplanation(null);
+    }
+  }, [currentQuestion]);
 
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
@@ -89,7 +96,6 @@ export default function RandomQuestionGame({
     setIsCorrect(null);
     setTimeLeft(120);
     setAiExplanation(null);
-    setExplanationId(null);
     await refetch();
   };
 
@@ -97,12 +103,24 @@ export default function RandomQuestionGame({
     if (!currentQuestion) return;
 
     setIsLoadingExplanation(true);
-    aiExplanationMutation.mutate({
-      currentMode: "detailed explanation",
-      currentUserPrompt: currentQuestion.question,
-      previousExplanationWithFollowUpQuestions: undefined,
+
+    generateExplanationMutation.mutate({
+      questionId: currentQuestion.id,
+      questionContent: currentQuestion.question,
+      answers: currentQuestion.answers,
+      correctAnswerIndex: currentQuestion.correctAnswer,
+      answerLabels: currentQuestion.answerLabels || [],
     });
   };
+
+  useEffect(() => {
+    if (aiExplanation && currentQuestion && !currentQuestion.explanation) {
+      saveExplanationMutation.mutate({
+        questionId: currentQuestion.id,
+        explanation: aiExplanation,
+      });
+    }
+  }, [aiExplanation, currentQuestion]);
 
   if (isLoading) {
     return (
@@ -294,7 +312,7 @@ export default function RandomQuestionGame({
               <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <h3 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
                   <Lightbulb className="h-5 w-5" />
-                  Wyjaśnienie AI:
+                  Wyjaśnienie:
                 </h3>
                 <p className="text-gray-700">{aiExplanation}</p>
               </div>
@@ -311,24 +329,26 @@ export default function RandomQuestionGame({
         <div className="flex gap-2">
           {showResult && (
             <>
-              <Button
-                onClick={handleGenerateExplanation}
-                variant="outline"
-                className="flex items-center gap-2"
-                disabled={isLoadingExplanation || !!aiExplanation}
-              >
-                {isLoadingExplanation ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Generowanie...
-                  </>
-                ) : (
-                  <>
-                    <Lightbulb className="h-4 w-4" />
-                    Objaśnij z AI
-                  </>
-                )}
-              </Button>
+              {!aiExplanation && (
+                <Button
+                  onClick={handleGenerateExplanation}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  disabled={isLoadingExplanation}
+                >
+                  {isLoadingExplanation ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generowanie...
+                    </>
+                  ) : (
+                    <>
+                      <Lightbulb className="h-4 w-4" />
+                      Objaśnij z AI
+                    </>
+                  )}
+                </Button>
+              )}
               <Button
                 onClick={handleNewQuestion}
                 className="bg-blue-600 hover:bg-blue-700"

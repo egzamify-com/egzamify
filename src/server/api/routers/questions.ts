@@ -1,7 +1,14 @@
+import { groq } from "@ai-sdk/groq";
+import { TRPCError } from "@trpc/server";
+import { generateText } from "ai";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { db } from "~/server/db";
-import { eq, sql } from "drizzle-orm";
 import { questions } from "~/server/db/schema/teoria";
 
 export const questionsRouter = createTRPCRouter({
@@ -26,7 +33,7 @@ export const questionsRouter = createTRPCRouter({
           correctAnswer: question.answers.findIndex(
             (answer) => answer.is_correct,
           ),
-          explanation: `Wyjaśnienie dla pytania: ${question.content}`,
+          explanation: question.explanation,
           year: question.year,
           imageUrl: question.image_url,
           answerLabels: question.answers.map((answer) => answer.label),
@@ -34,7 +41,6 @@ export const questionsRouter = createTRPCRouter({
       };
     }),
 
-  // Pobierz losowe pytanie dla kwalifikacji
   getRandomQuestion: publicProcedure
     .input(z.object({ qualificationId: z.string().uuid() }))
     .query(async ({ input }) => {
@@ -60,7 +66,7 @@ export const questionsRouter = createTRPCRouter({
           correctAnswer: randomQuestion.answers.findIndex(
             (answer) => answer.is_correct,
           ),
-          explanation: `Wyjaśnienie dla pytania: ${randomQuestion.content}`,
+          explanation: randomQuestion.explanation,
           year: randomQuestion.year,
           imageUrl: randomQuestion.image_url,
           answerLabels: randomQuestion.answers.map((answer) => answer.label),
@@ -68,7 +74,6 @@ export const questionsRouter = createTRPCRouter({
       };
     }),
 
-  // Pobierz pytania z filtrowaniem i wyszukiwaniem
   getBrowseQuestions: publicProcedure
     .input(
       z.object({
@@ -80,18 +85,16 @@ export const questionsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      let whereCondition = eq(
-        questions.qualification_id,
-        input.qualificationId,
-      );
+      const whereConditions = [
+        eq(questions.qualification_id, input.qualificationId),
+      ];
 
-      // Dodaj więcej warunków filtrowania jeśli potrzebujesz
       if (input.year) {
-        whereCondition = sql`${whereCondition} AND ${questions.year} = ${input.year}`;
+        whereConditions.push(eq(questions.year, input.year));
       }
 
       const questionsData = await db.query.questions.findMany({
-        where: whereCondition,
+        where: and(...whereConditions),
         with: {
           answers: {
             orderBy: (answers, { asc }) => [asc(answers.label)],
@@ -102,11 +105,11 @@ export const questionsRouter = createTRPCRouter({
         orderBy: (questions, { desc }) => [desc(questions.created_at)],
       });
 
-      // Filtrowanie po tekście (można to przenieść do SQL jeśli potrzebujesz)
       let filteredQuestions = questionsData;
-      if (input.search) {
+      if (input.search && input.search.trim() !== "") {
+        const searchLower = input.search.toLowerCase();
         filteredQuestions = questionsData.filter((q) =>
-          q.content.toLowerCase().includes(input.search!.toLowerCase()),
+          q.content.toLowerCase().includes(searchLower),
         );
       }
 
@@ -118,7 +121,7 @@ export const questionsRouter = createTRPCRouter({
           correctAnswer: question.answers.findIndex(
             (answer) => answer.is_correct,
           ),
-          explanation: `Wyjaśnienie dla pytania: ${question.content}`,
+          explanation: question.explanation,
           year: question.year,
           imageUrl: question.image_url,
           answerLabels: question.answers.map((answer) => answer.label),
@@ -129,7 +132,6 @@ export const questionsRouter = createTRPCRouter({
       };
     }),
 
-  // Pobierz statystyki pytań dla kwalifikacji
   getQuestionsStats: publicProcedure
     .input(z.object({ qualificationId: z.string().uuid() }))
     .query(async ({ input }) => {
@@ -145,5 +147,112 @@ export const questionsRouter = createTRPCRouter({
         total: stats[0]?.total || 0,
         years: stats[0]?.years || [],
       };
+    }),
+
+  //mutacja xpp
+  generateExplanation: protectedProcedure
+    .input(
+      z.object({
+        questionId: z.string().uuid(),
+        questionContent: z.string(),
+        answers: z.array(z.string()),
+        correctAnswerIndex: z.number(),
+        answerLabels: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const user = ctx.auth?.user;
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Musisz być zalogowany aby generować wyjaśnienia",
+        });
+      }
+
+      const correctAnswer = input.answers[input.correctAnswerIndex];
+      const correctLabel =
+        input.answerLabels?.[input.correctAnswerIndex] ||
+        String.fromCharCode(65 + input.correctAnswerIndex);
+
+      const allAnswers = input.answers
+        .map((answer, index) => {
+          const label =
+            input.answerLabels?.[index] || String.fromCharCode(65 + index);
+          return `${label}. ${answer}`;
+        })
+        .join("\n");
+
+      const systemPrompt = `Jesteś ekspertem edukacyjnym specjalizującym się w wyjaśnianiu pytań egzaminacyjnych. 
+
+Twoim zadaniem jest wygenerowanie jasnego, zwięzłego wyjaśnienia dla podanego pytania egzaminacyjnego.
+
+Wyjaśnienie powinno:
+1. Wyjaśnić dlaczego poprawna odpowiedź jest poprawna
+2. Krótko wyjaśnić dlaczego inne odpowiedzi są niepoprawne (jeśli to pomocne)
+3. Podać dodatkowy kontekst lub informacje pomocne w zrozumieniu tematu
+4. Być napisane w języku polskim
+5. Być zwięzłe (maksymalnie 200 słów)
+
+Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia.`;
+
+      const prompt = `Pytanie: ${input.questionContent}
+
+Odpowiedzi:
+${allAnswers}
+
+Poprawna odpowiedź: ${correctLabel}. ${correctAnswer}
+
+Wygeneruj wyjaśnienie dla tego pytania.`;
+
+      try {
+        const result = await generateText({
+          model: groq("llama-3.3-70b-versatile"),
+          system: systemPrompt,
+          maxTokens: 400,
+          prompt: prompt,
+        });
+
+        return {
+          explanation: result.text,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Wystąpił błąd podczas generowania wyjaśnienia",
+          cause: error,
+        });
+      }
+    }),
+
+  saveExplanation: protectedProcedure
+    .input(
+      z.object({
+        questionId: z.string().uuid(),
+        explanation: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const user = ctx.auth?.user;
+      if (!user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Musisz być zalogowany aby zapisywać wyjaśnienia",
+        });
+      }
+
+      try {
+        await db
+          .update(questions)
+          .set({
+            explanation: input.explanation,
+          })
+          .where(eq(questions.id, input.questionId));
+
+        return { success: true };
+      } catch (error) {
+        console.error("Błąd podczas zapisywania wyjaśnienia:", error);
+
+        return { success: false };
+      }
     }),
 });
