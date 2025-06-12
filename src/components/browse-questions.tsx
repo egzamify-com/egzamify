@@ -1,18 +1,11 @@
 "use client";
 
+import { ChevronDown, ChevronUp, Filter, Loader2, Search } from "lucide-react";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Badge } from "~/components/ui/badge";
-import {
-  Search,
-  ChevronDown,
-  ChevronUp,
-  BookOpen,
-  Filter,
-  Loader2,
-} from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
 import { api } from "~/trpc/react";
 
 interface BrowseQuestionsProps {
@@ -28,7 +21,6 @@ export default function BrowseQuestions({
   );
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
 
-  // Pobieranie pytań z tRPC
   const {
     data: questionsData,
     isLoading,
@@ -40,7 +32,6 @@ export default function BrowseQuestions({
     limit: 100,
   });
 
-  // Pobieranie statystyk
   const { data: statsData } = api.questions.getQuestionsStats.useQuery({
     qualificationId,
   });
@@ -52,27 +43,26 @@ export default function BrowseQuestions({
     setExpandedQuestion(expandedQuestion === questionId ? null : questionId);
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Łatwy":
-        return "bg-green-100 text-green-800";
-      case "Średni":
-        return "bg-yellow-100 text-yellow-800";
-      case "Trudny":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+  // const getDifficultyColor = (difficulty: string) => {
+  //   switch (difficulty) {
+  //     case "Łatwy":
+  //       return "bg-green-100 text-green-800";
+  //     case "Średni":
+  //       return "bg-yellow-100 text-yellow-800";
+  //     case "Trudny":
+  //       return "bg-red-100 text-red-800";
+  //     default:
+  //       return "bg-gray-100 text-gray-800";
+  //   }
+  // };
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
+        <Card className="max-w-2xl mx-auto">
           <CardContent className="py-12 text-center">
-            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
-            <h1 className="mb-4 text-2xl font-bold">Ładowanie pytań...</h1>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-4">Ładowanie pytań...</h1>
             <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
           </CardContent>
         </Card>
@@ -80,16 +70,15 @@ export default function BrowseQuestions({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
+        <Card className="max-w-2xl mx-auto">
           <CardContent className="py-12 text-center">
-            <h1 className="mb-4 text-2xl font-bold text-red-600">
+            <h1 className="text-2xl font-bold mb-4 text-red-600">
               Błąd ładowania
             </h1>
-            <p className="mb-4 text-gray-500">{error.message}</p>
+            <p className="text-gray-500 mb-4">{error.message}</p>
             <Button onClick={() => window.history.back()} variant="outline">
               Powrót do trybów
             </Button>
@@ -101,25 +90,23 @@ export default function BrowseQuestions({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
       <div className="mb-6">
-        <h1 className="mb-2 text-2xl font-bold">Baza pytań</h1>
+        <h1 className="text-2xl font-bold mb-2">Baza pytań</h1>
         <p className="text-gray-600">
           Przeglądaj wszystkie dostępne pytania i odpowiedzi
         </p>
       </div>
 
-      {/* Filtry */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
+          <CardTitle className="text-lg flex items-center gap-2">
             <Filter className="h-5 w-5" />
             Filtry i wyszukiwanie
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Szukaj pytań..."
               value={searchTerm}
@@ -130,7 +117,7 @@ export default function BrowseQuestions({
 
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="mb-2 block text-sm font-medium">Rok</label>
+              <label className="block text-sm font-medium mb-2">Rok</label>
               <select
                 value={selectedYear || ""}
                 onChange={(e) =>
@@ -140,7 +127,7 @@ export default function BrowseQuestions({
                       : undefined,
                   )
                 }
-                className="w-full rounded-md border border-gray-300 p-2"
+                className="w-full p-2 border border-gray-300 rounded-md"
               >
                 <option value="">Wszystkie lata</option>
                 {stats.years
@@ -156,7 +143,6 @@ export default function BrowseQuestions({
         </CardContent>
       </Card>
 
-      {/* Statystyki */}
       <div className="mb-6">
         <div className="flex items-center gap-4 text-sm text-gray-600">
           <span>
@@ -180,22 +166,17 @@ export default function BrowseQuestions({
         </div>
       </div>
 
-      {/* Lista pytań */}
       <div className="space-y-4">
         {questions.map((question) => (
           <Card key={question.id} className="overflow-hidden">
             <CardHeader
-              className="cursor-pointer transition-colors hover:bg-gray-50"
+              className="cursor-pointer hover:bg-gray-50 transition-colors"
               onClick={() => toggleQuestion(question.id)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className="mb-2 flex items-center gap-3">
+                  <div className="flex items-center gap-3 mb-2">
                     <Badge variant="outline">#{question.id.slice(-8)}</Badge>
-                    <Badge className={getDifficultyColor(question.difficulty)}>
-                      {question.difficulty}
-                    </Badge>
-                    <Badge variant="secondary">{question.category}</Badge>
                     {question.year && (
                       <Badge variant="outline">Rok {question.year}</Badge>
                     )}
@@ -222,18 +203,18 @@ export default function BrowseQuestions({
                       <img
                         src={question.imageUrl || "/placeholder.svg"}
                         alt="Obrazek do pytania"
-                        className="h-auto max-w-full rounded-lg border"
+                        className="max-w-full h-auto rounded-lg border"
                       />
                     </div>
                   )}
 
                   <div>
-                    <h4 className="mb-3 font-medium">Odpowiedzi:</h4>
+                    <h4 className="font-medium mb-3">Odpowiedzi:</h4>
                     <div className="space-y-2">
                       {question.answers.map((answer, index) => (
                         <div
                           key={index}
-                          className={`rounded-lg border p-3 ${
+                          className={`p-3 rounded-lg border ${
                             index === question.correctAnswer
                               ? "border-green-500 bg-green-50 text-green-800"
                               : "border-gray-200 bg-gray-50"
@@ -254,16 +235,6 @@ export default function BrowseQuestions({
                       ))}
                     </div>
                   </div>
-
-                  {question.explanation && (
-                    <div className="rounded-lg bg-blue-50 p-4">
-                      <h4 className="mb-2 flex items-center gap-2 font-medium">
-                        <BookOpen className="h-4 w-4" />
-                        Wyjaśnienie:
-                      </h4>
-                      <p className="text-gray-700">{question.explanation}</p>
-                    </div>
-                  )}
                 </div>
               </CardContent>
             )}
@@ -271,7 +242,6 @@ export default function BrowseQuestions({
         ))}
       </div>
 
-      {/* Brak danych */}
       {questions.length === 0 && !isLoading && (
         <Card>
           <CardContent className="py-12 text-center">
@@ -296,7 +266,6 @@ export default function BrowseQuestions({
         </Card>
       )}
 
-      {/* Powrót */}
       <div className="mt-8 text-center">
         <Button onClick={() => window.history.back()} variant="outline">
           Powrót do trybów gry

@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
+import {
+  CheckCircle,
+  Clock,
+  Lightbulb,
+  Loader2,
+  RotateCcw,
+  XCircle,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import { Badge } from "~/components/ui/badge";
-import { Clock, CheckCircle, XCircle, RotateCcw, Loader2 } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { api } from "~/trpc/react";
 
 interface RandomQuestionGameProps {
@@ -19,7 +26,10 @@ export default function RandomQuestionGame({
   const [timeLeft, setTimeLeft] = useState(120); // 2 minuty
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  // Pobieranie losowego pytania z tRPC
+  const [aiExplanation, setAiExplanation] = useState<string | null>(null);
+  const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
+  const [explanationId, setExplanationId] = useState<string | null>(null);
+
   const {
     data: questionData,
     isLoading,
@@ -31,7 +41,19 @@ export default function RandomQuestionGame({
 
   const currentQuestion = questionData?.question;
 
-  // Timer
+  const aiExplanationMutation = api.aiWyjasnia.requestAiExplanation.useMutation(
+    {
+      onSuccess: (data) => {
+        setAiExplanation(data.response);
+        setExplanationId(data.explanationId);
+        setIsLoadingExplanation(false);
+      },
+      onError: () => {
+        setIsLoadingExplanation(false);
+      },
+    },
+  );
+
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -66,17 +88,29 @@ export default function RandomQuestionGame({
     setShowResult(false);
     setIsCorrect(null);
     setTimeLeft(120);
+    setAiExplanation(null);
+    setExplanationId(null);
     await refetch();
   };
 
-  // Loading state
+  const handleGenerateExplanation = () => {
+    if (!currentQuestion) return;
+
+    setIsLoadingExplanation(true);
+    aiExplanationMutation.mutate({
+      currentMode: "detailed explanation",
+      currentUserPrompt: currentQuestion.question,
+      previousExplanationWithFollowUpQuestions: undefined,
+    });
+  };
+
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card className="max-w-2xl mx-auto">
           <CardContent className="py-12 text-center">
-            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
-            <h1 className="mb-4 text-2xl font-bold">Ładowanie pytania...</h1>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-4">Ładowanie pytania...</h1>
             <p className="text-gray-500">Losowanie pytania z bazy danych</p>
           </CardContent>
         </Card>
@@ -84,17 +118,16 @@ export default function RandomQuestionGame({
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card className="max-w-2xl mx-auto">
           <CardContent className="py-12 text-center">
-            <h1 className="mb-4 text-2xl font-bold text-red-600">
+            <h1 className="text-2xl font-bold mb-4 text-red-600">
               Błąd ładowania
             </h1>
-            <p className="mb-4 text-gray-500">{error.message}</p>
-            <div className="flex justify-center gap-4">
+            <p className="text-gray-500 mb-4">{error.message}</p>
+            <div className="flex gap-4 justify-center">
               <Button onClick={() => window.history.back()} variant="outline">
                 Powrót do trybów
               </Button>
@@ -106,13 +139,12 @@ export default function RandomQuestionGame({
     );
   }
 
-  // Brak pytania
   if (!currentQuestion) {
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card className="max-w-2xl mx-auto">
           <CardContent className="py-12 text-center">
-            <h1 className="mb-4 text-2xl font-bold">Losowe pytanie</h1>
+            <h1 className="text-2xl font-bold mb-4">Losowe pytanie</h1>
             <p className="text-lg text-gray-500">
               Brak pytań dla tej kwalifikacji.
             </p>
@@ -130,10 +162,9 @@ export default function RandomQuestionGame({
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      {/* Header */}
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-6">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Losowe pytanie</h1>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-lg font-semibold">
@@ -150,20 +181,19 @@ export default function RandomQuestionGame({
         </div>
       </div>
 
-      {/* Pytanie */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Pytanie</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-6 text-lg">{currentQuestion.question}</p>
+          <p className="text-lg mb-6">{currentQuestion.question}</p>
 
           {currentQuestion.imageUrl && (
             <div className="mb-6">
               <img
                 src={currentQuestion.imageUrl || "/placeholder.svg"}
                 alt="Obrazek do pytania"
-                className="h-auto max-w-full rounded-lg border"
+                className="max-w-full h-auto rounded-lg border"
               />
             </div>
           )}
@@ -201,7 +231,7 @@ export default function RandomQuestionGame({
                   className={buttonClass}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-6 w-6 items-center justify-center">
+                    <div className="flex items-center justify-center w-6 h-6">
                       {showResult &&
                         index === currentQuestion.correctAnswer && (
                           <CheckCircle className="h-5 w-5 text-green-600" />
@@ -213,19 +243,19 @@ export default function RandomQuestionGame({
                         )}
                       {!showResult && (
                         <div
-                          className={`h-4 w-4 rounded-full border-2 ${
+                          className={`w-4 h-4 rounded-full border-2 ${
                             selectedAnswer === index
                               ? "border-blue-500 bg-blue-500"
                               : "border-gray-300"
                           }`}
                         >
                           {selectedAnswer === index && (
-                            <div className="h-full w-full scale-50 rounded-full bg-white"></div>
+                            <div className="w-full h-full rounded-full bg-white scale-50"></div>
                           )}
                         </div>
                       )}
                     </div>
-                    <span className="mr-2 font-semibold">
+                    <span className="font-semibold mr-2">
                       {currentQuestion.answerLabels?.[index] ||
                         String.fromCharCode(65 + index)}
                       .
@@ -239,11 +269,10 @@ export default function RandomQuestionGame({
         </CardContent>
       </Card>
 
-      {/* Wynik */}
       {showResult && (
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <div className="mb-4 text-center">
+            <div className="text-center mb-4">
               {isCorrect ? (
                 <div className="flex items-center justify-center gap-2 text-green-600">
                   <CheckCircle className="h-8 w-8" />
@@ -261,17 +290,19 @@ export default function RandomQuestionGame({
               )}
             </div>
 
-            {currentQuestion.explanation && (
-              <div className="rounded-lg bg-blue-50 p-4">
-                <h4 className="mb-2 font-semibold">Wyjaśnienie:</h4>
-                <p className="text-gray-700">{currentQuestion.explanation}</p>
+            {aiExplanation && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5" />
+                  Wyjaśnienie AI:
+                </h3>
+                <p className="text-gray-700">{aiExplanation}</p>
               </div>
             )}
           </CardContent>
         </Card>
       )}
 
-      {/* Akcje */}
       <div className="flex items-center justify-between">
         <Button onClick={() => window.history.back()} variant="outline">
           Powrót do trybów
@@ -279,13 +310,33 @@ export default function RandomQuestionGame({
 
         <div className="flex gap-2">
           {showResult && (
-            <Button
-              onClick={handleNewQuestion}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              <RotateCcw className="mr-2 h-4 w-4" />
-              Nowe pytanie
-            </Button>
+            <>
+              <Button
+                onClick={handleGenerateExplanation}
+                variant="outline"
+                className="flex items-center gap-2"
+                disabled={isLoadingExplanation || !!aiExplanation}
+              >
+                {isLoadingExplanation ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generowanie...
+                  </>
+                ) : (
+                  <>
+                    <Lightbulb className="h-4 w-4" />
+                    Objaśnij z AI
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={handleNewQuestion}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Nowe pytanie
+              </Button>
+            </>
           )}
         </div>
       </div>
