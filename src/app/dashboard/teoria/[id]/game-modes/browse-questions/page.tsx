@@ -1,13 +1,16 @@
 import BrowseQuestions from "~/components/browse-questions";
 
-interface BrowseQuestionsPageProps {
-  params: {
-    id: string;
-  };
-}
+// interface BrowseQuestionsPageProps {
+//   params: {
+//     id: string;
+//   };
+// }
 
-export default function BrowseQuestionsPage({
+export default async function BrowseQuestionsPage({
   params,
-}: BrowseQuestionsPageProps) {
-  return <BrowseQuestions qualificationId={params.id} />;
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const p = await params;
+  return <BrowseQuestions qualificationId={p.id} />;
 }

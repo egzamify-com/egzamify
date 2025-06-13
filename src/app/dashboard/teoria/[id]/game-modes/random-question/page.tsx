@@ -1,13 +1,17 @@
 import RandomQuestionGame from "~/components/random-question-game";
 
-interface RandomQuestionPageProps {
-  params: {
-    id: string;
-  };
-}
+// interface RandomQuestionPageProps {
+//   params: {
+//     id: string;
+//   };
+// }
 
-export default function RandomQuestionPage({
+export default async function RandomQuestionPage({
   params,
-}: RandomQuestionPageProps) {
-  return <RandomQuestionGame qualificationId={params.id} />;
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const p = await params;
+
+  return <RandomQuestionGame qualificationId={p.id} />;
 }
