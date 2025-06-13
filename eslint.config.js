@@ -23,13 +23,6 @@ export default tseslint.config(
       ...tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
-      // temp wanr, later shoould error
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/restrict-template-expressions": "warn",
-      "@typescript-eslint/no-unsafe-argument": "warn",
-      "@typescript-eslint/consistent-indexed-object-style": "warn",
-      "@typescript-eslint/no-unnecessary-type-assertion": "warn",
-      "@typescript-eslint/prefer-nullish-coalescing": "warn",
       "@typescript-eslint/no-unsafe-call": "warn",
       "@typescript-eslint/no-unsafe-member-access": "warn",
       "@typescript-eslint/no-unsafe-assignment": "warn",
@@ -45,15 +38,15 @@ export default tseslint.config(
       ],
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/no-misused-promises": [
-        "warn",
+        "error",
         { checksVoidReturn: { attributes: false } },
       ],
       "drizzle/enforce-delete-with-where": [
-        "warn",
+        "error",
         { drizzleObjectName: ["db", "ctx.db"] },
       ],
       "drizzle/enforce-update-with-where": [
-        "warn",
+        "error",
         { drizzleObjectName: ["db", "ctx.db"] },
       ],
     },
