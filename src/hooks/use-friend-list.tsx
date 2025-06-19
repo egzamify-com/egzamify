@@ -19,7 +19,7 @@ export default function useFriendList({
       initialCursor: 0,
     },
   );
-  const { data, isLoading, isError, error } = queryInfo;
+  const { data } = queryInfo;
   // Combine all pages into a single flat array for rendering
   const allFriends = useMemo(() => {
     return data?.pages.flatMap((page) => page.items) ?? [];
