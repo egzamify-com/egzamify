@@ -35,7 +35,7 @@ export const friendsRouter = createTRPCRouter({
       if (friends.length === 0) {
         throw new TRPCError({ code: "NOT_FOUND", message: "No friends found" });
       }
-      //  get id of current user, return only actual friends
+      //  get rid of current user, return only actual friends
       const people = friends?.map((friend) => {
         return {
           user:

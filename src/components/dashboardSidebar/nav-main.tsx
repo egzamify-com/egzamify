@@ -36,12 +36,12 @@ export function NavMain({
 
     {
       title: "Add Friends",
-      url: "/dashboard/add",
+      url: "/dashboard/friends/add",
       icon: <UserPlus />,
     },
     {
       title: "Invites",
-      url: "/dashboard/friends",
+      url: "/dashboard/friends/intvites",
       icon: <Mail />,
     },
   ];
