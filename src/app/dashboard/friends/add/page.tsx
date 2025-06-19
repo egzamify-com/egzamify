@@ -1,75 +1,64 @@
 "use client";
 
-import { useQueryErrorResetBoundary } from "@tanstack/react-query";
-import { Suspense, useEffect, useState } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { useDebounce } from "~/hooks/useDebounce";
-import { api } from "~/trpc/react";
+import useDebouncedSearch from "~/hooks/use-debounced-search";
+import useFriendList from "~/hooks/use-friend-list";
 import Friend from "../friend";
 
 export default function Page() {
-  const [search, setSearch] = useState("");
-  const [isSearchPending, setIsSearchPending] = useState(false);
-  const debouncedSearch = useDebounce(search, 1000);
-
-  const { reset } = useQueryErrorResetBoundary();
-
-  useEffect(() => {
-    if (search !== debouncedSearch) {
-      setIsSearchPending(true);
-    } else {
-      setIsSearchPending(false);
-    }
-  }, [search, debouncedSearch]);
+  const { isPending, debouncedSearch, inputOnChange, search } =
+    useDebouncedSearch({ time: 250 });
 
   return (
     <>
-      <Input
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-      />
-      {isSearchPending && search.length > 0 && <LoadingComponent />}
-      {!isSearchPending && (
-        <ErrorBoundary
-          onError={(error) => {
-            console.log(error);
-          }}
-          onReset={reset}
-          fallbackRender={({ resetErrorBoundary }) => (
-            <div>
-              There was an error!
-              <Button onClick={() => resetErrorBoundary()}>Try again</Button>
-            </div>
-          )}
-        >
-          <Suspense fallback={<LoadingComponent />}>
-            <FindFriends search={debouncedSearch} />
-          </Suspense>
-        </ErrorBoundary>
-      )}
+      <Input value={search} onChange={inputOnChange}></Input>
+      {isPending && <LoadingComponent />}
+      {!isPending && <FindFriends search={debouncedSearch} />}
     </>
   );
 }
 function FindFriends({ search }: { search: string }) {
   const {
-    "1": { data },
-  } = api.users.getUsersFromSearch.useSuspenseQuery({
-    search,
-  });
+    friendList,
+    queryInfo: {
+      isLoading,
+      isError,
+      error,
+      hasNextPage,
+      isFetchingNextPage,
+      fetchNextPage,
+    },
+  } = useFriendList({ search });
 
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
+  if (isError) {
+    return <div>Error loading friends: {error?.message}</div>;
+  }
+
+  if (friendList.length === 0 && search) {
+    return (
+      <p className="text-gray-500 mt-2">No friends found matching {search}.</p>
+    );
+  }
   return (
     <div>
-      {search &&
-        data.map((potentialFriend) => (
-          <Friend
-            key={`potentialFriend-${potentialFriend.id}`}
-            friend={{ user: potentialFriend }}
-          />
-        ))}
+      {friendList.map((potentialFriend) => (
+        <Friend
+          key={`potentialFriend-${potentialFriend.id}`}
+          friend={{
+            user: potentialFriend,
+            isFriendWithCurrentUser: potentialFriend.isFriendWithCurrentUser,
+          }}
+        />
+      ))}
+      {hasNextPage && !isFetchingNextPage && (
+        <Button onClick={() => fetchNextPage()}>Load more</Button>
+      )}
+      {isFetchingNextPage && <LoadingComponent />}
     </div>
   );
 }
