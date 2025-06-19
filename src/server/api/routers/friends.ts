@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, or } from "drizzle-orm";
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { friend } from "~/server/db/schema/friends";
 import { tryCatch } from "~/utils/tryCatch";
@@ -50,4 +51,76 @@ export const friendsRouter = createTRPCRouter({
       return people;
     },
   ),
+  deleteFriend: protectedProcedure
+    .input(z.object({ friendId: z.string() }))
+    .mutation(
+      async ({
+        ctx: {
+          auth: {
+            user: { id: currentUserId },
+          },
+          db,
+        },
+        input: { friendId },
+      }) => {
+        const [result, error] = await tryCatch(
+          db
+            .delete(friend)
+            .where(
+              or(
+                and(
+                  eq(friend.requesting_user_id, currentUserId),
+                  eq(friend.receiving_user_id, friendId),
+                ),
+                and(
+                  eq(friend.requesting_user_id, friendId),
+                  eq(friend.receiving_user_id, currentUserId),
+                ),
+              ),
+            ),
+        );
+        if (error || !result) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            cause: error?.message,
+            message: error?.message,
+          });
+        }
+        return {
+          message: "Friend deleted successfully",
+        };
+      },
+    ),
+
+  addFriend: protectedProcedure
+    .input(z.object({ friendId: z.string() }))
+    .mutation(
+      async ({
+        ctx: {
+          auth: {
+            user: { id: currentUserId },
+          },
+          db,
+        },
+        input: { friendId },
+      }) => {
+        const [result, error] = await tryCatch(
+          db.insert(friend).values({
+            requesting_user_id: currentUserId,
+            receiving_user_id: friendId,
+            status: "request_sent",
+          }),
+        );
+        if (error || !result) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            cause: error?.message,
+            message: error?.message,
+          });
+        }
+        return {
+          message: "Friend added successfully",
+        };
+      },
+    ),
 });

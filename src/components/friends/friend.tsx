@@ -1,6 +1,8 @@
 import { Card } from "~/components/ui/card";
 import type { UserType } from "~/server/db/schema/auth.relations";
 import { formatToYYYYMMDD } from "~/utils/dateUtils";
+import AddFriend from "./add-friend";
+import DeleteFriend from "./delete-friend";
 
 type FriendProps = {
   user: UserType;
@@ -20,7 +22,11 @@ export default function Friend({ friend }: { friend: FriendProps }) {
       <p>status: {status}</p>
       {updated_at && <p>updated at {formatToYYYYMMDD(updated_at)}</p>}
       {created_at && <p>created at {formatToYYYYMMDD(created_at)}</p>}
-      <p> is friend? {isFriendWithCurrentUser ? "Yes" : "No"} </p>
+      {isFriendWithCurrentUser ? (
+        <DeleteFriend friendId={user.id} />
+      ) : (
+        <AddFriend friendId={user.id} />
+      )}
     </Card>
   );
 }
