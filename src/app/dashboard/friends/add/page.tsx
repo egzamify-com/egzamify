@@ -4,7 +4,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import useDebouncedSearch from "~/hooks/use-debounced-search";
 import useFriendList from "~/hooks/use-friend-list";
-import Friend from "../friend";
+import Friend from "../../../../components/friends/friend";
 
 export default function Page() {
   const { isPending, debouncedSearch, inputOnChange, search } =
@@ -29,7 +29,7 @@ function FindFriends({ search }: { search: string }) {
       isFetchingNextPage,
       fetchNextPage,
     },
-  } = useFriendList({ search });
+  } = useFriendList({ search, friendsOnly: false });
 
   if (isLoading) {
     return <LoadingComponent />;

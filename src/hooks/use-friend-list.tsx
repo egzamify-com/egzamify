@@ -1,11 +1,18 @@
 import { useMemo } from "react";
 import { api } from "~/trpc/react";
 
-export default function useFriendList({ search }: { search: string }) {
+export default function useFriendList({
+  search,
+  friendsOnly,
+}: {
+  search: string;
+  friendsOnly: boolean;
+}) {
   const queryInfo = api.users.getUsersFromSearch.useInfiniteQuery(
     {
       search: search,
       limit: 1,
+      friendsOnly: friendsOnly,
     },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

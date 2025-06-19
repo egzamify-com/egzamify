@@ -20,6 +20,7 @@ export const usersRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string(),
+        friendsOnly: z.boolean(),
         cursor: z.number().nullish(),
         limit: z.number().min(1).max(100).nullish(),
       }),
@@ -103,8 +104,12 @@ export const usersRouter = createTRPCRouter({
             isFriendWithCurrentUser: currentUsersFriendsIds.includes(user.id),
           })) ?? [];
 
+        const onlyUsersFriends = usersWithFriendStatus.filter(
+          (user) => user.isFriendWithCurrentUser,
+        );
+
         return {
-          items: usersWithFriendStatus,
+          items: input.friendsOnly ? onlyUsersFriends : usersWithFriendStatus,
           nextCursor: nextCursor, // This is the single nextCursor for the entire page
         };
       },
