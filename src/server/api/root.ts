@@ -1,6 +1,7 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { aiWyjasniaRouter } from "./routers/ai-wyjasnia";
 import { currentUserRouter } from "./routers/currentUser";
+import { friendsRouter } from "./routers/friends";
 import { qualificationsRouter } from "./routers/qualifications";
 import { questionsRouter } from "./routers/questions";
 import { usersRouter } from "./routers/users";
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   qualifications: qualificationsRouter,
   questions: questionsRouter,
   aiWyjasnia: aiWyjasniaRouter,
+  friends: friendsRouter,
 });
 
 // export type definition of API
