@@ -5,7 +5,7 @@ import { friend } from "./friends";
 
 export const userRelations = relations(user, ({ many }) => ({
   explanation: many(explanations),
-  requestingFriend: many(friend),
-  receivingFriend: many(friend),
+  requestingFriend: many(friend, { relationName: "requestingUser" }),
+  receivingFriend: many(friend, { relationName: "receivingUser" }),
 }));
 export type UserType = typeof user.$inferSelect;

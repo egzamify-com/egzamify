@@ -31,11 +31,13 @@ export const friend = pgTable(
 
 export const friendsRelations = relations(friend, ({ one }) => ({
   requestingUser: one(user, {
+    relationName: "requestingUser",
     fields: [friend.requesting_user_id],
     references: [user.id],
   }),
 
   receivingUser: one(user, {
+    relationName: "receivingUser",
     fields: [friend.receiving_user_id],
     references: [user.id],
   }),
