@@ -41,7 +41,8 @@ export function NavMain({
     },
     {
       title: "Invites",
-      url: "/dashboard/friends/intvites",
+      url: "/dashboard/friends/invites",
+
       icon: <Mail />,
     },
   ];

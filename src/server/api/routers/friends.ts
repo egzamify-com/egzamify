@@ -123,4 +123,34 @@ export const friendsRouter = createTRPCRouter({
         };
       },
     ),
+  acceptRequest: protectedProcedure
+    .input(z.object({ friendId: z.string() }))
+    .mutation(
+      async ({
+        ctx: {
+          auth: {
+            user: { id: currentUserId },
+          },
+          db,
+        },
+        input: { friendId },
+      }) => {
+        const [result, error] = await tryCatch(
+          db
+            .update(friend)
+            .set({ status: "accepted" })
+            .where(eq(friend.requesting_user_id, friendId)),
+        );
+        if (error || !result) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            cause: error?.message,
+            message: error?.message,
+          });
+        }
+        return {
+          message: "Friend accepted successfully",
+        };
+      },
+    ),
 });

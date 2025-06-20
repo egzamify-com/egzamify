@@ -29,7 +29,7 @@ function FindFriends({ search }: { search: string }) {
       isFetchingNextPage,
       fetchNextPage,
     },
-  } = useFriendList({ search, friendsOnly: false });
+  } = useFriendList({ search, filter: "not_friends" });
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -48,10 +48,10 @@ function FindFriends({ search }: { search: string }) {
     <div>
       {friendList.map((potentialFriend) => (
         <Friend
-          key={`potentialFriend-${potentialFriend.id}`}
+          key={`potentialFriend-${potentialFriend.user.id}`}
           friend={{
-            user: potentialFriend,
-            isFriendWithCurrentUser: potentialFriend.isFriendWithCurrentUser,
+            user: potentialFriend.user,
+            isFriendWithCurrentUser: false,
           }}
         />
       ))}

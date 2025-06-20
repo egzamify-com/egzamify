@@ -1,0 +1,36 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
+import { toast } from "sonner";
+import { api } from "~/trpc/react";
+import SpinnerLoading from "../SpinnerLoading";
+import { Button } from "../ui/button";
+
+export default function AcceptRequest({ friendId }: { friendId: string }) {
+  const queryClient = useQueryClient();
+  const { mutate: addFriend, isPending } =
+    api.friends.acceptRequest.useMutation({
+      onError: (error) => {
+        toast.error(error.message);
+      },
+      onSuccess: async () => {
+        void (await queryClient.invalidateQueries({
+          queryKey: getQueryKey(
+            api.users.getUsersFromSearch,
+            { filter: "not_friends" },
+            "infinite",
+          ),
+        }));
+      },
+    });
+
+  return (
+    <Button
+      type="submit"
+      onClick={() => {
+        addFriend({ friendId });
+      }}
+    >
+      {isPending ? <SpinnerLoading /> : <p>accept friend request</p>}
+    </Button>
+  );
+}
