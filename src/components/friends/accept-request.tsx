@@ -16,7 +16,7 @@ export default function AcceptRequest({ friendId }: { friendId: string }) {
         void (await queryClient.invalidateQueries({
           queryKey: getQueryKey(
             api.users.getUsersFromSearch,
-            { filter: "not_friends" },
+            undefined,
             "infinite",
           ),
         }));

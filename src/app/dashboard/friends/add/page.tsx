@@ -4,6 +4,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import useDebouncedSearch from "~/hooks/use-debounced-search";
 import useFriendList from "~/hooks/use-friend-list";
+import type { FriendsFilter } from "~/server/api/routers/users";
 import Friend from "../../../../components/friends/friend";
 
 export default function Page() {
@@ -19,6 +20,7 @@ export default function Page() {
   );
 }
 function FindFriends({ search }: { search: string }) {
+  const filter: FriendsFilter = "not_friends";
   const {
     friendList,
     queryInfo: {
@@ -29,7 +31,7 @@ function FindFriends({ search }: { search: string }) {
       isFetchingNextPage,
       fetchNextPage,
     },
-  } = useFriendList({ search, filter: "not_friends" });
+  } = useFriendList({ search, filter });
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -51,7 +53,7 @@ function FindFriends({ search }: { search: string }) {
           key={`potentialFriend-${potentialFriend.user.id}`}
           friend={{
             user: potentialFriend.user,
-            isFriendWithCurrentUser: false,
+            status: filter,
           }}
         />
       ))}

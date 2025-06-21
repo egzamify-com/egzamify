@@ -92,7 +92,7 @@ export const friendsRouter = createTRPCRouter({
       },
     ),
 
-  addFriend: protectedProcedure
+  sentFriendRequest: protectedProcedure
     .input(z.object({ friendId: z.string() }))
     .mutation(
       async ({
@@ -150,6 +150,81 @@ export const friendsRouter = createTRPCRouter({
         }
         return {
           message: "Friend accepted successfully",
+        };
+      },
+    ),
+
+  cancelRequest: protectedProcedure
+    .input(z.object({ friendId: z.string() }))
+    .mutation(
+      async ({
+        ctx: {
+          auth: {
+            user: { id: currentUserId },
+          },
+          db,
+        },
+        input: { friendId },
+      }) => {
+        const [result, error] = await tryCatch(
+          db
+            .delete(friend)
+            .where(
+              or(
+                and(
+                  eq(friend.requesting_user_id, currentUserId),
+                  eq(friend.receiving_user_id, friendId),
+                ),
+                and(
+                  eq(friend.requesting_user_id, friendId),
+                  eq(friend.receiving_user_id, currentUserId),
+                ),
+              ),
+            ),
+        );
+        if (error || !result) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            cause: error?.message,
+            message: error?.message,
+          });
+        }
+        return {
+          message: "Friend request cancelled successfully",
+        };
+      },
+    ),
+  rejectRequest: protectedProcedure
+    .input(z.object({ friendId: z.string() }))
+    .mutation(
+      async ({
+        ctx: {
+          auth: {
+            user: { id: currentUserId },
+          },
+          db,
+        },
+        input: { friendId },
+      }) => {
+        const [result, error] = await tryCatch(
+          db
+            .delete(friend)
+            .where(
+              and(
+                eq(friend.requesting_user_id, friendId),
+                eq(friend.receiving_user_id, currentUserId),
+              ),
+            ),
+        );
+        if (error || !result) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            cause: error?.message,
+            message: error?.message,
+          });
+        }
+        return {
+          message: "Friend request rejected successfully",
         };
       },
     ),

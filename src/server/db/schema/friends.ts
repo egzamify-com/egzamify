@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm";
 import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { user } from "./auth.schema";
 
-type FriendRequestStatus = "request_sent" | "accepted" | "rejected";
+type FriendRequestStatus = "request_sent" | "accepted";
 
 export const friend = pgTable(
   "friends",

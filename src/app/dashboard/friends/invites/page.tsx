@@ -3,6 +3,7 @@
 import Friend from "~/components/friends/friend";
 import { Button } from "~/components/ui/button";
 import useFriendList from "~/hooks/use-friend-list";
+import type { FriendsFilter } from "~/server/api/routers/users";
 
 export default function Page() {
   return (
@@ -16,6 +17,7 @@ function LoadingComponent() {
   return <div>ITS LOADING NOW ...</div>;
 }
 function IncomingInvites() {
+  const filter: FriendsFilter = "incoming_requests";
   const search = "";
   const {
     friendList,
@@ -27,7 +29,7 @@ function IncomingInvites() {
       isFetchingNextPage,
       fetchNextPage,
     },
-  } = useFriendList({ search, filter: "incoming_requests" });
+  } = useFriendList({ search, filter });
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -51,8 +53,7 @@ function IncomingInvites() {
           key={`potentialFriend-${potentialFriend?.user.id}`}
           friend={{
             user: potentialFriend.user,
-            isFriendWithCurrentUser: false,
-            showAcceptRequest: true,
+            status: filter,
           }}
         />
       ))}
@@ -64,6 +65,7 @@ function IncomingInvites() {
   );
 }
 function PendingInvites() {
+  const filter: FriendsFilter = "pending_requests";
   const search = "";
   const {
     friendList,
@@ -75,7 +77,7 @@ function PendingInvites() {
       isFetchingNextPage,
       fetchNextPage,
     },
-  } = useFriendList({ search, filter: "pending_requests" });
+  } = useFriendList({ search, filter });
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -99,7 +101,7 @@ function PendingInvites() {
           key={`potentialFriend-${potentialFriend?.user.id}`}
           friend={{
             user: potentialFriend.user,
-            isFriendWithCurrentUser: false,
+            status: filter,
           }}
         />
       ))}

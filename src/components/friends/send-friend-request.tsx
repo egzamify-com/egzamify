@@ -7,20 +7,22 @@ import { Button } from "../ui/button";
 
 export default function AddFriend({ friendId }: { friendId: string }) {
   const queryClient = useQueryClient();
-  const { mutate: addFriend, isPending } = api.friends.addFriend.useMutation({
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onSuccess: async () => {
-      void (await queryClient.invalidateQueries({
-        queryKey: getQueryKey(
-          api.users.getUsersFromSearch,
-          undefined,
-          "infinite",
-        ),
-      }));
-    },
-  });
+  const { mutate: addFriend, isPending } =
+    api.friends.sentFriendRequest.useMutation({
+      onError: (error) => {
+        toast.error(error.message);
+      },
+      onSuccess: async () => {
+        void (await queryClient.invalidateQueries({
+          queryKey: getQueryKey(
+            api.users.getUsersFromSearch,
+            undefined,
+            "infinite",
+          ),
+        }));
+        toast.success("Friend request sent successfully");
+      },
+    });
 
   return (
     <Button

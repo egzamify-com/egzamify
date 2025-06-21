@@ -12,7 +12,6 @@ const FriendsFiltersSchema = z.enum([
   "accepted_friends",
   "incoming_requests",
   "pending_requests",
-  "rejected_requests",
 ]);
 export type FriendsFilter = z.infer<typeof FriendsFiltersSchema>;
 
@@ -276,7 +275,7 @@ async function getNotFriends(
           eq(friend.receiving_user_id, currentUserId), // Ensure this column name matches your schema
         ),
         // Crucially, only consider *accepted* friendships here for the JOIN
-        eq(friend.status, "accepted"),
+        // eq(friend.status, "accepted"),
       ),
     )
     .where(
