@@ -135,7 +135,12 @@ async function getCurrentUsersFriends(
         ),
       ),
     )
-    .where(and(eq(friend.status, "accepted"), ilike(user.email, searchTerm)))
+    .where(
+      and(
+        eq(friend.status, "accepted"),
+        or(ilike(user.name, searchTerm), ilike(user.username, searchTerm)),
+      ),
+    )
     .orderBy(desc(user.email))
     .offset(offset)
     .limit(limit + 1);
@@ -169,7 +174,7 @@ async function getNotFriends(
     )
     .where(
       and(
-        ilike(user.email, searchTerm),
+        or(ilike(user.name, searchTerm), ilike(user.username, searchTerm)),
         and(
           // CONDITION A: The core logic for "NOT friends" - ensures NO matching 'f' record was found
           isNull(friend.id), // If f.id is NULL, it means no friendship record exists between user.id and currentUserId (of status 'accepted')
@@ -202,7 +207,11 @@ async function getCurrentUsersIncomingRequests(
       ),
     )
     .where(
-      and(eq(friend.status, "request_sent"), ilike(user.email, searchTerm)),
+      and(
+        eq(friend.status, "request_sent"),
+
+        or(ilike(user.name, searchTerm), ilike(user.username, searchTerm)),
+      ),
     )
     .orderBy(desc(user.email))
     .offset(offset)
@@ -225,7 +234,10 @@ async function getCurrentUsersPendingRequests(
       ),
     )
     .where(
-      and(eq(friend.status, "request_sent"), ilike(user.email, searchTerm)),
+      and(
+        eq(friend.status, "request_sent"),
+        or(ilike(user.name, searchTerm), ilike(user.username, searchTerm)),
+      ),
     )
     .orderBy(desc(user.email))
     .offset(offset)

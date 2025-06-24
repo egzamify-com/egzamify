@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { Trash } from "lucide-react";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -41,9 +41,13 @@ export default function RejectRequest({ friendId }: { friendId: string }) {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={"destructive"}>
-          <Trash />
-          Reject Friend Request
+        <Button
+          variant="ghost"
+          size="sm"
+          className="border-2 border-destructive "
+        >
+          <X className="h-4 w-4 mr-1" />
+          Decline
         </Button>
       </DialogTrigger>
       <DialogContent>
