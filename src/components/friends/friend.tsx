@@ -16,7 +16,7 @@ type FriendProps = {
   created_at?: Date;
 };
 export default function Friend({ friend }: { friend: FriendProps }) {
-  const { user, created_at, updated_at, status } = friend;
+  const { user, status } = friend;
   function renderAction() {
     switch (status) {
       case "accepted_friends":

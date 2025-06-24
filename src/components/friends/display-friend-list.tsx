@@ -85,7 +85,6 @@ function Render({
     queryInfo: {
       isLoading,
       isError,
-      error,
       hasNextPage,
       isFetchingNextPage,
       fetchNextPage,

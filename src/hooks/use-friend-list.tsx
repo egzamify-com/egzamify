@@ -12,7 +12,7 @@ export default function useFriendList({
   const queryInfo = api.users.getUsersFromSearch.useInfiniteQuery(
     {
       search: search,
-      limit: 1,
+      limit: 50,
       filter: filter,
     },
     {
