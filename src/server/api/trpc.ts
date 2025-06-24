@@ -7,9 +7,9 @@
  * need to use are documented accordingly near the end.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
+import { experimental_nextAppDirCaller } from "@trpc/server/adapters/next-app-dir";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { experimental_nextAppDirCaller } from "@trpc/server/adapters/next-app-dir";
 import { db } from "~/server/db";
 import authServer from "../authServer";
 
@@ -107,25 +107,20 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
 
-const isAuthed = t.middleware(async ({ next, ctx, path }) => {
-  if (!ctx.auth) {
+const isAuthed = t.middleware(async (opts) => {
+  if (!opts.ctx.auth) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  if (!opts.ctx.auth.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  const start = Date.now();
-
-  // if (t._config.isDev) {
-  //   // artificial delay in dev
-  //   const waitMs = Math.floor(Math.random() * 400) + 100;
-  //   await new Promise((resolve) => setTimeout(resolve, waitMs));
-  // }
-
-  const result = await next();
-
-  const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
-
-  return result;
+  return opts.next({
+    ctx: {
+      ...opts.ctx,
+      auth: opts.ctx.auth, // <-- ensures type is non-nullable
+    },
+  });
 });
 
 export const protectedProcedure = t.procedure.use(isAuthed);

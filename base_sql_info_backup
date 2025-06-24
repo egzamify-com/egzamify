@@ -1,0 +1,246 @@
+INSERT INTO qualifications (name, label) VALUES
+    ('Tworzenie aplikacji internetowych i baz danych oraz administrowanie bazami', 'E.14');
+
+INSERT INTO questions (qualification_id, content, year, image_url) VALUES
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Wskaż znacznik HTML pozwalający na zapisanie tekstu nieprawidłowego lub nieodpowiedniego w sposób przekreślony.', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Element <meta charset="utf-8"> jest stosowany do określenia metadanych strony internetowej dotyczących', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'W języku HTML zdefiniowano listę, która', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'W kaskadowych arkuszach stylów selektor klasy należy zdefiniować za pomocą symbolu', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Jaką szerokość strony pozostawiono na jej treść, na podstawie przedstawionej definicji CSS?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Dla którego akapitu zastosowano przedstawioną właściwość stylu CSS?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby za pomocą CSS zdefiniować przedstawione na rysunku opływanie obrazu tekstem należy w stylu obrazu wprowadzić zapis', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Wskaż zapis stylu CSS formatujący punktor list numerowanych na wielkie cyfry rzymskie, a list punktowanych na kwadraty.', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Który zestaw pojęć służy do definicji interfejsu użytkownika strony internetowej?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Na rysunku pokazano schemat rozmieszczenia bloków na stronie WWW, w której jego części umieszcza się zwykle stopkę strony?', 2024, 'https://raw.githubusercontent.com/user/repo/images/e14-2024-czerwiec-egzamin-zawodowy-pisemny_page_4_task_10.png'),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby zweryfikować poprawność składni kodu CSS można użyć', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Wskaż kod HTML5, który zostanie zakwalifikowany przez walidator jako błędny.', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby bezpiecznie przesłać pliki strony internetowej na serwer WWW można użyć protokołu', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Kolor zielony, w notacji szesnastkowej skróconej, można zapisać w CSS sekwencją', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Składowymi modelu barw CMYK są kolory:', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Powstające podczas zapisu pliku graficznego prostokątne zniekształcenia obrazu są charakterystyczne dla formatu', 2024, 'https://raw.githubusercontent.com/user/repo/images/e14-2024-czerwiec-egzamin-zawodowy-pisemny_page_6_task_16.png'),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Kompresja bezstratna pliku graficznego gwarantuje', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Proporcje obrazu 16:9 (przy założeniu, że piksel ma kształt kwadratu) można uzyskać przy rozdzielczości', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Który z wymienionych formatów umożliwia zapis dźwięku i obrazu?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby przekształcić obraz bez utraty jakości z formatu JPEG w format PNG w ten sposób, żeby wszędzie tam, gdzie w pierwotnym obrazie jest kolor biały, w obrazie docelowym była przezroczystość, należy w pierwszej kolejności', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Funkcja COUNT języka SQL realizuje', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'W języku SQL, aby zaktualizować dane w wierszach tabeli, należy zastosować polecenie', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby wyświetlić rekordy z tabeli pracownicy tylko dla pracowników, którzy skończyli 26 lat należy użyć zapytania', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Tabele Osoby i Zainteresowania są połączone relacją jeden do wielu. Które zapytanie SQL należy zapisać, aby korzystając z tej relacji, prawidłowo wyświetlić imiona oraz odpowiadające im hobby?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby zaimportować plik z danymi SQL do bazy danych MySQL można użyć narzędzia', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby w systemie MySQL nadać użytkownikowi prawo do nadawania i zmiany uprawnień innym użytkownikom należy zastosować klauzulę', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Aby wykonać kopię zapasową bazy danych MySQL można posłużyć się', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Którą integralność opisuje cytowana definicja?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Czynnością zalecaną przed wykonaniem kopii bezpieczeństwa danych w bazie MySQL jest', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Zmienna typu integer lub int może przechowywać', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Który typ języka PHP umożliwia przechowywanie wielu wartości z możliwością ich indeksowania?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Które wyrażenie logiczne należy zastosować w języku JavaScript, aby wykonać operacje tylko dla dowolnych liczb ujemnych z przedziału jednostronnie domkniętego <-200, -100)?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Debugger to oprogramowanie, którego zadaniem jest', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Którą wartość będzie przechowywała zmienna a po wykonaniu przedstawionej sekwencji instrukcji języka PHP?', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'W języku PHP w wyniku działania fragmentu kodu w zmiennej o nazwie Nowy_Napis znajdzie się', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Formularz, którego fragment przedstawiono, został obsłużony w skrypcie PHP. Wskaż prawidłowo zapisane pobranie wartości wprowadzonej do pola edycyjnego.', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'W języku PHP, aby połączyć się z bazą danych MySQL przy pomocy biblioteki mysqli, stosując zamieszczony zapis, w miejscu parametru ''c'' należy zapisać', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Wskaż komentarz wieloliniowy w języku PHP.', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'Systemem kontroli wersji dla oprogramowania jest', 2024, NULL),
+    ((SELECT id FROM qualifications WHERE label = 'E.14'), 'CAPTCHA to technika zabezpieczeń na stronach WWW pozwalająca', 2024, NULL);
+
+
+INSERT INTO answers (question_id, content, is_correct, label) VALUES
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż znacznik HTML pozwalający na zapisanie tekstu nieprawidłowego%'), '<s> </s>', TRUE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż znacznik HTML pozwalający na zapisanie tekstu nieprawidłowego%'), '<b> </b>', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż znacznik HTML pozwalający na zapisanie tekstu nieprawidłowego%'), '<em></em>', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż znacznik HTML pozwalający na zapisanie tekstu nieprawidłowego%'), '<sub> </sub>', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Element <meta charset="utf-8"> jest stosowany do określenia metadanych strony internetowej%'), 'opisu strony.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Element <meta charset="utf-8"> jest stosowany do określenia metadanych strony internetowej%'), 'języka strony.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Element <meta charset="utf-8"> jest stosowany do określenia metadanych strony internetowej%'), 'słów kluczowych.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Element <meta charset="utf-8"> jest stosowany do określenia metadanych strony internetowej%'), 'kodowania znaków.', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'W języku HTML zdefiniowano listę, która%'), 'jest punktowana z zagłębioną listą numerowaną.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku HTML zdefiniowano listę, która%'), 'jest numerowana z zagłębioną listą punktowaną.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku HTML zdefiniowano listę, która%'), 'nie ma zagłębień i jest punktowana, wyświetla 5 punktów.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku HTML zdefiniowano listę, która%'), 'nie ma zagłębień i jest numerowana, słowo „niebieski" ma przyporządkowany numer 5.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'W kaskadowych arkuszach stylów selektor klasy należy zdefiniować za pomocą symbolu%'), '*', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'W kaskadowych arkuszach stylów selektor klasy należy zdefiniować za pomocą symbolu%'), '#', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'W kaskadowych arkuszach stylów selektor klasy należy zdefiniować za pomocą symbolu%'), '. (kropka)', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'W kaskadowych arkuszach stylów selektor klasy należy zdefiniować za pomocą symbolu%'), ': (dwukropek)', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Jaką szerokość strony pozostawiono na jej treść, na podstawie przedstawionej definicji CSS?%'), '2 px', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Jaką szerokość strony pozostawiono na jej treść, na podstawie przedstawionej definicji CSS?%'), '560 px', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Jaką szerokość strony pozostawiono na jej treść, na podstawie przedstawionej definicji CSS?%'), '600 px', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Jaką szerokość strony pozostawiono na jej treść, na podstawie przedstawionej definicji CSS?%'), '640 px', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Dla którego akapitu zastosowano przedstawioną właściwość stylu CSS?%'), 'Akapit 1', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Dla którego akapitu zastosowano przedstawioną właściwość stylu CSS?%'), 'Akapit 2', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Dla którego akapitu zastosowano przedstawioną właściwość stylu CSS?%'), 'Akapit 3', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Dla którego akapitu zastosowano przedstawioną właściwość stylu CSS?%'), 'Akapit 4', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby za pomocą CSS zdefiniować przedstawione na rysunku opływanie obrazu tekstem należy w stylu obrazu wprowadzić zapis%'), 'float: left;', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby za pomocą CSS zdefiniować przedstawione na rysunku opływanie obrazu tekstem należy w stylu obrazu wprowadzić zapis%'), 'table: left;', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby za pomocą CSS zdefiniować przedstawione na rysunku opływanie obrazu tekstem należy w stylu obrazu wprowadzić zapis%'), 'clear: both;', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby za pomocą CSS zdefiniować przedstawione na rysunku opływanie obrazu tekstem należy w stylu obrazu wprowadzić zapis%'), 'float: right;', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż zapis stylu CSS formatujący punktor list numerowanych na wielkie cyfry rzymskie%'), 'ol { list-style-type: upper-alpha; } ul { list-style-type: disc; }', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż zapis stylu CSS formatujący punktor list numerowanych na wielkie cyfry rzymskie%'), 'ol { list-style-type: square; } ul { list-style-type: upper-roman; }', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż zapis stylu CSS formatujący punktor list numerowanych na wielkie cyfry rzymskie%'), 'ol { list-style-type: disc; } ul { list-style-type: upper-alpha; }', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż zapis stylu CSS formatujący punktor list numerowanych na wielkie cyfry rzymskie%'), 'ol { list-style-type: upper-roman; } ul { list-style-type: square; }', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Który zestaw pojęć służy do definicji interfejsu użytkownika strony internetowej?%'), 'Wysyłanie kwerend do bazy, skrypty PHP.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który zestaw pojęć służy do definicji interfejsu użytkownika strony internetowej?%'), 'Przyciski, menu, interakcja użytkownika z aplikacją.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który zestaw pojęć służy do definicji interfejsu użytkownika strony internetowej?%'), 'Szkic strony, diagram witryny, diagram przepływu informacji.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który zestaw pojęć służy do definicji interfejsu użytkownika strony internetowej?%'), 'Przetwarzanie informacji, system zarządzania treścią, projektowanie informacji.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Na rysunku pokazano schemat rozmieszczenia bloków na stronie WWW, w której jego części umieszcza się zwykle stopkę strony?%'), '1', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Na rysunku pokazano schemat rozmieszczenia bloków na stronie WWW, w której jego części umieszcza się zwykle stopkę strony?%'), '2', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Na rysunku pokazano schemat rozmieszczenia bloków na stronie WWW, w której jego części umieszcza się zwykle stopkę strony?%'), '4', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Na rysunku pokazano schemat rozmieszczenia bloków na stronie WWW, w której jego części umieszcza się zwykle stopkę strony?%'), '5', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zweryfikować poprawność składni kodu CSS można użyć%'), 'walidatora.', TRUE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zweryfikować poprawność składni kodu CSS można użyć%'), 'debbugera.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zweryfikować poprawność składni kodu CSS można użyć%'), 'konsolidatora.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zweryfikować poprawność składni kodu CSS można użyć%'), 'optymalizatora.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż kod HTML5, który zostanie zakwalifikowany przez walidator jako błędny.%'), '<p class="stl">tekst</p>', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż kod HTML5, który zostanie zakwalifikowany przez walidator jako błędny.%'), '<p class="stl" id= "a">tekst</p>', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż kod HTML5, który zostanie zakwalifikowany przez walidator jako błędny.%'), '<p class="stl" style= "color: #F00">tekst</p>', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż kod HTML5, który zostanie zakwalifikowany przez walidator jako błędny.%'), '<p class="stl"><style>.a{color:#F00}</style>tekst</p>', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby bezpiecznie przesłać pliki strony internetowej na serwer WWW można użyć protokołu%'), 'IMAP', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby bezpiecznie przesłać pliki strony internetowej na serwer WWW można użyć protokołu%'), 'SFTP', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby bezpiecznie przesłać pliki strony internetowej na serwer WWW można użyć protokołu%'), 'POP3', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby bezpiecznie przesłać pliki strony internetowej na serwer WWW można użyć protokołu%'), 'Telnet', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Kolor zielony, w notacji szesnastkowej skróconej, można zapisać w CSS sekwencją%'), '#F00', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Kolor zielony, w notacji szesnastkowej skróconej, można zapisać w CSS sekwencją%'), '#0F0', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Kolor zielony, w notacji szesnastkowej skróconej, można zapisać w CSS sekwencją%'), '#00F', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Kolor zielony, w notacji szesnastkowej skróconej, można zapisać w CSS sekwencją%'), '#FFF', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Składowymi modelu barw CMYK są kolory:%'), 'czerwony, zielony i niebieski.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Składowymi modelu barw CMYK są kolory:%'), 'cyjan, magenta, żółty i czarny.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Składowymi modelu barw CMYK są kolory:%'), 'cyjan, magenta, żółty i karmazyn.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Składowymi modelu barw CMYK są kolory:%'), 'czerwony, zielony, niebieski i kanał alfa.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Powstające podczas zapisu pliku graficznego prostokątne zniekształcenia obrazu są charakterystyczne dla formatu%'), 'BMP bez kompresji.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Powstające podczas zapisu pliku graficznego prostokątne zniekształcenia obrazu są charakterystyczne dla formatu%'), 'GIF z kompresją bezstratną LZW.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Powstające podczas zapisu pliku graficznego prostokątne zniekształcenia obrazu są charakterystyczne dla formatu%'), 'PNG z kompresją bezstratną LZ77.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Powstające podczas zapisu pliku graficznego prostokątne zniekształcenia obrazu są charakterystyczne dla formatu%'), 'JPEG z dużym stopniem kompresji stratnej.', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Kompresja bezstratna pliku graficznego gwarantuje%'), 'mniejszą liczbę warstw.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Kompresja bezstratna pliku graficznego gwarantuje%'), 'pierwotną jakość grafiki.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Kompresja bezstratna pliku graficznego gwarantuje%'), 'lepszą jakość niż grafika oryginalna.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Kompresja bezstratna pliku graficznego gwarantuje%'), 'rozmiar większy niż grafika oryginalna.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Proporcje obrazu 16:9 (przy założeniu, że piksel ma kształt kwadratu) można uzyskać przy rozdzielczości%'), '320 na 240 pikseli.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Proporcje obrazu 16:9 (przy założeniu, że piksel ma kształt kwadratu) można uzyskać przy rozdzielczości%'), '800 na 480 pikseli.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Proporcje obrazu 16:9 (przy założeniu, że piksel ma kształt kwadratu) można uzyskać przy rozdzielczości%'), '1366 na 768 pikseli.', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Proporcje obrazu 16:9 (przy założeniu, że piksel ma kształt kwadratu) można uzyskać przy rozdzielczości%'), '2560 na 2048 pikseli.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Który z wymienionych formatów umożliwia zapis dźwięku i obrazu?%'), 'MP3', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który z wymienionych formatów umożliwia zapis dźwięku i obrazu?%'), 'MP4', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który z wymienionych formatów umożliwia zapis dźwięku i obrazu?%'), 'PNG', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który z wymienionych formatów umożliwia zapis dźwięku i obrazu?%'), 'WAV', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby przekształcić obraz bez utraty jakości z formatu JPEG w format PNG w ten sposób, żeby wszędzie tam,%'), 'dodać kanał alfa.', TRUE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby przekształcić obraz bez utraty jakości z formatu JPEG w format PNG w ten sposób, żeby wszędzie tam,%'), 'zmniejszyć rozdzielczość obrazu.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby przekształcić obraz bez utraty jakości z formatu JPEG w format PNG w ten sposób, żeby wszędzie tam,%'), 'wymazać gumką wszystkie białe plamy.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby przekształcić obraz bez utraty jakości z formatu JPEG w format PNG w ten sposób, żeby wszędzie tam,%'), 'zaimportować obraz do edytora grafiki wektorowej.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Funkcja COUNT języka SQL realizuje%'), 'zliczanie znaków w polu tekstowym.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Funkcja COUNT języka SQL realizuje%'), 'zliczanie rekordów wybranych kwerendą.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Funkcja COUNT języka SQL realizuje%'), 'obliczenie średniej wartości w wybranej kolumnie.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Funkcja COUNT języka SQL realizuje%'), 'obliczenie wartości bezwzględnej w polu liczbowym.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'W języku SQL, aby zaktualizować dane w wierszach tabeli, należy zastosować polecenie%'), 'ALTER TABLE', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku SQL, aby zaktualizować dane w wierszach tabeli, należy zastosować polecenie%'), 'INSERT INTO', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku SQL, aby zaktualizować dane w wierszach tabeli, należy zastosować polecenie%'), 'SELECT', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku SQL, aby zaktualizować dane w wierszach tabeli, należy zastosować polecenie%'), 'UPDATE', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wyświetlić rekordy z tabeli pracownicy tylko dla pracowników, którzy skończyli 26 lat należy użyć zapytania%'), 'SELECT * FROM pracownicy OR wiek>''25'';', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wyświetlić rekordy z tabeli pracownicy tylko dla pracowników, którzy skończyli 26 lat należy użyć zapytania%'), 'SELECT * FROM pracownicy AND wiek>''25'';', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wyświetlić rekordy z tabeli pracownicy tylko dla pracowników, którzy skończyli 26 lat należy użyć zapytania%'), 'SELECT FROM wiek WHERE pracownicy > ''25'';', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wyświetlić rekordy z tabeli pracownicy tylko dla pracowników, którzy skończyli 26 lat należy użyć zapytania%'), 'SELECT * FROM pracownicy WHERE wiek>''25'';', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Tabele Osoby i Zainteresowania są połączone relacją jeden do wielu. Które zapytanie SQL należy zapisać, aby korzystając z tej relacji, prawidłowo wyświetlić imiona oraz odpowiadające im hobby?%'), 'SELECT imie, hobby FROM Osoby, Zainteresowania;', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Tabele Osoby i Zainteresowania są połączone relacją jeden do wielu. Które zapytanie SQL należy zapisać, aby korzystając z tej relacji, prawidłowo wyświetlić imiona oraz odpowiadające im hobby?%'), 'SELECT imie, hobby FROM Osoby, Zainteresowania WHERE Osoby.id Zainteresowania.id;', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Tabele Osoby i Zainteresowania są połączone relacją jeden do wielu. Które zapytanie SQL należy zapisać, aby korzystając z tej relacji, prawidłowo wyświetlić imiona oraz odpowiadające im hobby?%'), 'SELECT imie, hobby FROM Osoby.Zainteresowania id FROM Osoby, Zainteresowania;', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Tabele Osoby i Zainteresowania są połączone relacją jeden do wielu. Które zapytanie SQL należy zapisać, aby korzystając z tej relacji, prawidłowo wyświetlić imiona oraz odpowiadające im hobby?%'), 'SELECT imie, hobby FROM Osoby JOIN Zainteresowania ON Osoby.Zainteresowania id = Zainteresowania.id;', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zaimportować plik z danymi SQL do bazy danych MySQL można użyć narzędzia%'), 'FileZilla.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zaimportować plik z danymi SQL do bazy danych MySQL można użyć narzędzia%'), 'Symfony 3.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zaimportować plik z danymi SQL do bazy danych MySQL można użyć narzędzia%'), 'phpMyAdmin.', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby zaimportować plik z danymi SQL do bazy danych MySQL można użyć narzędzia%'), 'TotalCommander.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby w systemie MySQL nadać użytkownikowi prawo do nadawania i zmiany uprawnień innym użytkownikom należy zastosować klauzulę%'), 'TRGGER', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby w systemie MySQL nadać użytkownikowi prawo do nadawania i zmiany uprawnień innym użytkownikom należy zastosować klauzulę%'), 'GRANT OPTION', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby w systemie MySQL nadać użytkownikowi prawo do nadawania i zmiany uprawnień innym użytkownikom należy zastosować klauzulę%'), 'ALL PRIVILEGES', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby w systemie MySQL nadać użytkownikowi prawo do nadawania i zmiany uprawnień innym użytkownikom należy zastosować klauzulę%'), 'FLUSH PRIVILEGES', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wykonać kopię zapasową bazy danych MySQL można posłużyć się%'), 'importem bazy.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wykonać kopię zapasową bazy danych MySQL można posłużyć się%'), 'eksportem bazy.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wykonać kopię zapasową bazy danych MySQL można posłużyć się%'), 'agregacją danych.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Aby wykonać kopię zapasową bazy danych MySQL można posłużyć się%'), 'modyfikacją danych.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Którą integralność opisuje cytowana definicja?%'), 'Encji.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Którą integralność opisuje cytowana definicja?%'), 'Statyczną.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Którą integralność opisuje cytowana definicja?%'), 'Referencyjną.', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Którą integralność opisuje cytowana definicja?%'), 'Semantyczną.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Czynnością zalecaną przed wykonaniem kopii bezpieczeństwa danych w bazie MySQL jest%'), 'sprawdzenie czy baza jest dostatecznie wydajna.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Czynnością zalecaną przed wykonaniem kopii bezpieczeństwa danych w bazie MySQL jest%'), 'zdefiniowanie systemu kodowania znaków w bazie.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Czynnością zalecaną przed wykonaniem kopii bezpieczeństwa danych w bazie MySQL jest%'), 'nadanie uprawnień do przeglądania bazy dla Administratora.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Czynnością zalecaną przed wykonaniem kopii bezpieczeństwa danych w bazie MySQL jest%'), 'sprawdzenie poprawności tabel w bazie i ewentualne naprawienie błędów.', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Zmienna typu integer lub int może przechowywać%'), 'ciąg znaków.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Zmienna typu integer lub int może przechowywać%'), 'tablicę znaków.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Zmienna typu integer lub int może przechowywać%'), 'liczbę całkowitą.', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Zmienna typu integer lub int może przechowywać%'), 'liczbę rzeczywistą.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Który typ języka PHP umożliwia przechowywanie wielu wartości z możliwością ich indeksowania?%'), 'float', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który typ języka PHP umożliwia przechowywanie wielu wartości z możliwością ich indeksowania?%'), 'array', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który typ języka PHP umożliwia przechowywanie wielu wartości z możliwością ich indeksowania?%'), 'double', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Który typ języka PHP umożliwia przechowywanie wielu wartości z możliwością ich indeksowania?%'), 'boolean', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Które wyrażenie logiczne należy zastosować w języku JavaScript, aby wykonać operacje tylko dla dowolnych liczb ujemnych z przedziału jednostronnie domkniętego <-200, -100)?%'), '(liczba <= -200) || (liczba > -100)', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Które wyrażenie logiczne należy zastosować w języku JavaScript, aby wykonać operacje tylko dla dowolnych liczb ujemnych z przedziału jednostronnie domkniętego <-200, -100)?%'), '(liczba >= -200) || (liczba > -100)', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Które wyrażenie logiczne należy zastosować w języku JavaScript, aby wykonać operacje tylko dla dowolnych liczb ujemnych z przedziału jednostronnie domkniętego <-200, -100)?%'), '(liczba >= -200) && (liczba < -100)', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Które wyrażenie logiczne należy zastosować w języku JavaScript, aby wykonać operacje tylko dla dowolnych liczb ujemnych z przedziału jednostronnie domkniętego <-200, -100)?%'), '(liczba <= -200) && (liczba < -100)', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Debugger to oprogramowanie, którego zadaniem jest%'), 'instalowanie środowiska programistycznego.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Debugger to oprogramowanie, którego zadaniem jest%'), 'wykrywanie błędów składniowych języka programowania w kodzie źródłowym.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Debugger to oprogramowanie, którego zadaniem jest%'), 'łączenie plików bibliotek i wstępnie przetworzonego kodu źródłowego w plik wykonywalny.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Debugger to oprogramowanie, którego zadaniem jest%'), 'dynamiczna analiza uruchomionego programu w celu wykrycia przyczyn nieprawidłowego działania.', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Którą wartość będzie przechowywała zmienna a po wykonaniu przedstawionej sekwencji instrukcji języka PHP?%'), '1', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Którą wartość będzie przechowywała zmienna a po wykonaniu przedstawionej sekwencji instrukcji języka PHP?%'), '10', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Którą wartość będzie przechowywała zmienna a po wykonaniu przedstawionej sekwencji instrukcji języka PHP?%'), '11', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Którą wartość będzie przechowywała zmienna a po wykonaniu przedstawionej sekwencji instrukcji języka PHP?%'), '12', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP w wyniku działania fragmentu kodu w zmiennej o nazwie Nowy_Napis znajdzie się%'), 'Zawsze', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP w wyniku działania fragmentu kodu w zmiennej o nazwie Nowy_Napis znajdzie się%'), 'zawsze sprawdz swoj kod', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP w wyniku działania fragmentu kodu w zmiennej o nazwie Nowy_Napis znajdzie się%'), 'zAwSZe sPrAwDz SWOJ kOd', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP w wyniku działania fragmentu kodu w zmiennej o nazwie Nowy_Napis znajdzie się%'), 'ZAWSZE SPRAWDZ SWOJ KOD', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Formularz, którego fragment przedstawiono, został obsłużony w skrypcie PHP. Wskaż prawidłowo zapisane pobranie wartości wprowadzonej do pola edycyjnego.%'), '$name  GET[''imie''];', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Formularz, którego fragment przedstawiono, został obsłużony w skrypcie PHP. Wskaż prawidłowo zapisane pobranie wartości wprowadzonej do pola edycyjnego.%'), '$name  $ GET [''imie''];', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Formularz, którego fragment przedstawiono, został obsłużony w skrypcie PHP. Wskaż prawidłowo zapisane pobranie wartości wprowadzonej do pola edycyjnego.%'), '$name  $POST[''Imię''];', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Formularz, którego fragment przedstawiono, został obsłużony w skrypcie PHP. Wskaż prawidłowo zapisane pobranie wartości wprowadzonej do pola edycyjnego.%'), '$name  $_POST[''imie''];', TRUE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP, aby połączyć się z bazą danych MySQL przy pomocy biblioteki mysqli, stosując zamieszczony zapis, w miejscu parametru ''c'' należy zapisać%'), 'hasło użytkownika.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP, aby połączyć się z bazą danych MySQL przy pomocy biblioteki mysqli, stosując zamieszczony zapis, w miejscu parametru ''c'' należy zapisać%'), 'nazwę użytkownika.', TRUE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP, aby połączyć się z bazą danych MySQL przy pomocy biblioteki mysqli, stosując zamieszczony zapis, w miejscu parametru ''c'' należy zapisać%'), 'nazwę bazy danych.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'W języku PHP, aby połączyć się z bazą danych MySQL przy pomocy biblioteki mysqli, stosując zamieszczony zapis, w miejscu parametru ''c'' należy zapisać%'), 'lokalizację serwera bazy danych.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż komentarz wieloliniowy w języku PHP.%'), '#', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż komentarz wieloliniowy w języku PHP.%'), '//', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż komentarz wieloliniowy w języku PHP.%'), '/* */', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Wskaż komentarz wieloliniowy w języku PHP.%'), '<! -->', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'Systemem kontroli wersji dla oprogramowania jest%'), 'GIT.', TRUE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'Systemem kontroli wersji dla oprogramowania jest%'), 'Eclipse.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'Systemem kontroli wersji dla oprogramowania jest%'), 'FileZilla.', FALSE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'Systemem kontroli wersji dla oprogramowania jest%'), 'TotalCommander.', FALSE, 'D'),
+
+    ((SELECT id FROM questions WHERE content LIKE 'CAPTCHA to technika zabezpieczeń na stronach WWW pozwalająca%'), 'przyspieszyć proces logowania do aplikacji internetowej.', FALSE, 'A'),
+    ((SELECT id FROM questions WHERE content LIKE 'CAPTCHA to technika zabezpieczeń na stronach WWW pozwalająca%'), 'pominąć proces uwierzytelniania do aplikacji internetowej.', FALSE, 'B'),
+    ((SELECT id FROM questions WHERE content LIKE 'CAPTCHA to technika zabezpieczeń na stronach WWW pozwalająca%'), 'potwierdzić, że dane z formularza są wysyłane przez człowieka.', TRUE, 'C'),
+    ((SELECT id FROM questions WHERE content LIKE 'CAPTCHA to technika zabezpieczeń na stronach WWW pozwalająca%'), 'automatycznie wypełnić formularz logowania danymi użytkownika.', FALSE, 'D');
