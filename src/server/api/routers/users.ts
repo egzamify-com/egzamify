@@ -109,6 +109,20 @@ export const usersRouter = createTRPCRouter({
         };
       },
     ),
+
+  getUserDataFromUsername: protectedProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ input: { username }, ctx: { db } }) => {
+      const [user, error] = await tryCatch(getUserFromUsername(username));
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          cause: error.cause,
+          message: error.message,
+        });
+      }
+      return user;
+    }),
 });
 
 async function getCurrentUsersFriends(
@@ -242,4 +256,9 @@ async function getCurrentUsersPendingRequests(
     .orderBy(desc(user.email))
     .offset(offset)
     .limit(limit + 1);
+}
+async function getUserFromUsername(username: string) {
+  return await db.query.user.findFirst({
+    where: () => eq(user.username, username),
+  });
 }
