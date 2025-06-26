@@ -3,11 +3,7 @@ import Link from "next/link";
 import { Card, CardContent } from "~/components/ui/card";
 import type { FriendsFilter } from "~/server/api/routers/users";
 import type { UserType } from "~/server/db/schema/auth.relations";
-import AcceptRequest from "./accept-request";
-import CancelRequest from "./cancel-request";
-import DeleteFriend from "./delete-friend";
-import RejectRequest from "./reject-request";
-import SendFriendRequest from "./send-friend-request";
+import FriendButton from "./friend-button";
 
 type FriendProps = {
   user: UserType;
@@ -17,23 +13,7 @@ type FriendProps = {
 };
 export default function Friend({ friend }: { friend: FriendProps }) {
   const { user, status } = friend;
-  function renderAction() {
-    switch (status) {
-      case "accepted_friends":
-        return <DeleteFriend friendId={user.id} />;
-      case "not_friends":
-        return <SendFriendRequest friendId={user.id} />;
-      case "incoming_requests":
-        return (
-          <>
-            <AcceptRequest friendId={user.id} />
-            <RejectRequest friendId={user.id} />
-          </>
-        );
-      case "pending_requests":
-        return <CancelRequest friendId={user.id} />;
-    }
-  }
+
   return (
     <Card
       key={`friend-card-for-${user.id}`}
@@ -72,7 +52,11 @@ export default function Friend({ friend }: { friend: FriendProps }) {
               <MessageCircle className="h-4 w-4 mr-2" />
               Message
             </Button> */}
-            {renderAction()}
+            {/* {renderAction()} */}
+            <FriendButton
+              friendId={friend.user.id}
+              alreadyKnownStatus={status}
+            />
             {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm">

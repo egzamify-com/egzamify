@@ -14,13 +14,12 @@ export default function AcceptRequest({ friendId }: { friendId: string }) {
         toast.error(error.message);
       },
       onSuccess: async () => {
-        void (await queryClient.invalidateQueries({
-          queryKey: getQueryKey(
-            api.users.getUsersFromSearch,
-            undefined,
-            "infinite",
-          ),
-        }));
+        void queryClient.invalidateQueries({
+          queryKey: getQueryKey(api.users),
+        });
+        void queryClient.invalidateQueries({
+          queryKey: getQueryKey(api.friends),
+        });
       },
     });
 

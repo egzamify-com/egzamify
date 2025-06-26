@@ -1,11 +1,13 @@
 import { Card, CardHeader } from "~/components/ui/card";
+import FriendButton from "../friends/friend-button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 interface HeaderProps {
   username: string;
   name: string;
+  userId: string;
 }
 export default function ProfileHeader({
-  info: { username, name },
+  info: { username, name, userId },
 }: {
   info: HeaderProps;
 }) {
@@ -24,6 +26,7 @@ export default function ProfileHeader({
           <p className="text-muted-foreground">@{username}</p>
         </div>
 
+        <FriendButton friendId={userId} />
         {/* Action Buttons */}
         {/* <div className="flex justify-center gap-3 pt-2">
           {/* <Button className="flex items-center gap-2">

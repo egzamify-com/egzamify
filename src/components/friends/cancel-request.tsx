@@ -27,11 +27,10 @@ export default function CancelRequest({ friendId }: { friendId: string }) {
       },
       onSuccess: async () => {
         void queryClient.invalidateQueries({
-          queryKey: getQueryKey(
-            api.users.getUsersFromSearch,
-            undefined,
-            "infinite",
-          ),
+          queryKey: getQueryKey(api.users),
+        });
+        void queryClient.invalidateQueries({
+          queryKey: getQueryKey(api.friends),
         });
         setDialogOpen(false);
         toast.success("Friend request cancelled successfully");

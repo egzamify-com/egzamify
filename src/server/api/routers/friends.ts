@@ -2,8 +2,10 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, or } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { db } from "~/server/db";
 import { friend } from "~/server/db/schema/friends";
 import { tryCatch } from "~/utils/tryCatch";
+import type { FriendsFilter } from "./users";
 
 export const friendsRouter = createTRPCRouter({
   getCurrentUsersFriends: protectedProcedure.query(
@@ -218,4 +220,79 @@ export const friendsRouter = createTRPCRouter({
         };
       },
     ),
+  checkFriendshipStatus: protectedProcedure
+    .input(z.object({ friendId: z.string() }))
+    .query(
+      async ({
+        ctx: {
+          auth: {
+            user: { id: currentUserId },
+          },
+        },
+        input: { friendId },
+      }) => {
+        const [result, error] = await tryCatch(
+          checkFriendshipStatus(friendId, currentUserId),
+        );
+        if (error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            cause: error?.message,
+            message: error?.message,
+          });
+        }
+        console.log("fired!!");
+        return result;
+      },
+    ),
 });
+async function checkFriendshipStatus(
+  friendId: string,
+  currentUserId: string,
+): Promise<{ status: FriendsFilter }> {
+  const dbResult = await db.query.friend.findFirst({
+    where: () =>
+      or(
+        and(
+          eq(friend.requesting_user_id, friendId),
+          eq(friend.receiving_user_id, currentUserId),
+        ),
+        and(
+          eq(friend.requesting_user_id, currentUserId),
+          eq(friend.receiving_user_id, friendId),
+        ),
+      ),
+  });
+
+  if (
+    dbResult?.requesting_user_id === currentUserId &&
+    dbResult.status === "request_sent"
+  ) {
+    return {
+      status: "pending_requests",
+    };
+  }
+  if (
+    dbResult?.requesting_user_id === friendId &&
+    dbResult.status === "request_sent"
+  ) {
+    return {
+      status: "incoming_requests",
+    };
+  }
+
+  if (
+    (dbResult?.requesting_user_id === currentUserId &&
+      dbResult.status === "accepted") ||
+    (dbResult?.requesting_user_id === friendId &&
+      dbResult.status === "accepted")
+  ) {
+    return {
+      status: "accepted_friends",
+    };
+  }
+
+  return {
+    status: "not_friends",
+  };
+}
