@@ -12,6 +12,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar";
+import InvitesNavBadge from "../friends/invites-nav-badge";
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,19 +32,19 @@ export function NavMain({
     {
       title: "My Friends",
       url: "/dashboard/friends",
-      icon: <Users />,
+      icon: <Users size={18} />,
     },
 
     {
       title: "Add Friends",
       url: "/dashboard/friends/add",
-      icon: <UserPlus />,
+      icon: <UserPlus size={18} />,
     },
     {
       title: "Invites",
       url: "/dashboard/friends/invites",
-
-      icon: <Mail />,
+      icon: <Mail size={18} />,
+      badgeComponent: <InvitesNavBadge />,
     },
   ];
   return (
@@ -77,9 +78,16 @@ export function NavMain({
                       return (
                         <Link key={item.title} href={`${item.url}`}>
                           <SidebarMenuSubItem>
-                            <SidebarMenuButton>
-                              {item.icon}
-                              {item.title}
+                            <SidebarMenuButton className="flex flex-row justify-between">
+                              <div className="flex flex-row justify-center items-center gap-2 text-sm">
+                                {item.icon}
+                                {item.title}
+                              </div>
+                              <div>
+                                {item.badgeComponent && (
+                                  <>{item.badgeComponent}</>
+                                )}
+                              </div>
                             </SidebarMenuButton>
                           </SidebarMenuSubItem>
                         </Link>

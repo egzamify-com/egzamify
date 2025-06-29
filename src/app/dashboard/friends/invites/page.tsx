@@ -2,9 +2,25 @@
 
 import { Clock, UserPlus } from "lucide-react";
 import DisplayFriendList from "~/components/friends/display-friend-list";
+import { Badge } from "~/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { api } from "~/trpc/react";
 
 export default function Page() {
+  const { data: incoming } = api.users.getUsersFromSearch.useQuery({
+    filter: "incoming_requests",
+    search: "",
+    limit: 15,
+  });
+  const incomingRequestsCount = incoming?.items.length;
+
+  const { data: pending } = api.users.getUsersFromSearch.useQuery({
+    filter: "pending_requests",
+    search: "",
+    limit: 15,
+  });
+  const pendingRequestsCount = pending?.items.length;
+
   return (
     <>
       <div className="container mx-auto p-6 max-w-4xl">
@@ -22,24 +38,35 @@ export default function Page() {
               <div className="flex items-center gap-2">
                 <UserPlus className="h-4 w-4" />
                 <span>Incoming</span>
-                {/* <Badge
-                  variant="secondary"
-                  className="ml-1 bg-blue-100 text-blue-700"
-                >
-                  1
-                </Badge> */}
+                {incomingRequestsCount !== undefined && (
+                  <>
+                    {incomingRequestsCount > 0 ? (
+                      <Badge className="ml-1 ">
+                        {incomingRequestsCount > 10
+                          ? "10+"
+                          : incomingRequestsCount}
+                      </Badge>
+                    ) : null}
+                  </>
+                )}
               </div>
             </TabsTrigger>
             <TabsTrigger value="pending" className="relative">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 <span>Pending</span>
-                {/* <Badge
-                  variant="secondary"
-                  className="ml-1 bg-orange-100 text-orange-700"
-                >
-                  1
-                </Badge> */}
+
+                {pendingRequestsCount !== undefined && (
+                  <>
+                    {pendingRequestsCount > 0 ? (
+                      <Badge className="ml-1 ">
+                        {pendingRequestsCount > 10
+                          ? "10+"
+                          : pendingRequestsCount}
+                      </Badge>
+                    ) : null}
+                  </>
+                )}
               </div>
             </TabsTrigger>
           </TabsList>
