@@ -2,10 +2,9 @@ import { TRPCError } from "@trpc/server";
 import { and, desc, eq, ilike, isNull, not, or } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { db } from "~/server/db";
+import { db, executeQuery } from "~/server/db";
 import { user } from "~/server/db/schema/auth.schema";
 import { friend } from "~/server/db/schema/friends";
-import { tryCatch } from "~/utils/tryCatch";
 
 const FriendsFiltersSchema = z.enum([
   "not_friends",
@@ -48,42 +47,54 @@ export const usersRouter = createTRPCRouter({
 
         switch (input.filter) {
           case "accepted_friends":
-            [queryUsers, queryError] = await tryCatch(
-              getCurrentUsersFriends(currentUserId, limit, offset, searchTerm),
+            const friends = await executeQuery(
+              getCurrentUsersFriendsQuery(
+                currentUserId,
+                limit,
+                offset,
+                searchTerm,
+              ),
             );
+            if (friends.isErr()) queryError = friends.error;
+            if (friends.isOk()) queryUsers = friends.value;
+
             break;
           case "not_friends":
-            [queryUsers, queryError] = await tryCatch(
-              getNotFriends(currentUserId, limit, offset, searchTerm),
+            const noFriends = await executeQuery(
+              getNotFriendsQuery(currentUserId, limit, offset, searchTerm),
             );
+            if (noFriends.isErr()) queryError = noFriends.error;
+            if (noFriends.isOk()) queryUsers = noFriends.value;
             break;
           case "incoming_requests":
-            [queryUsers, queryError] = await tryCatch(
-              getCurrentUsersIncomingRequests(
+            const incomingReq = await executeQuery(
+              getCurrentUsersIncomingRequestsQuery(
                 currentUserId,
                 limit,
                 offset,
                 searchTerm,
               ),
             );
+            if (incomingReq.isErr()) queryError = incomingReq.error;
+            if (incomingReq.isOk()) queryUsers = incomingReq.value;
             break;
           case "pending_requests":
-            [queryUsers, queryError] = await tryCatch(
-              getCurrentUsersPendingRequests(
+            const pendingReq = await executeQuery(
+              getCurrentUsersPendingRequestsQuery(
                 currentUserId,
                 limit,
                 offset,
                 searchTerm,
               ),
             );
+            if (pendingReq.isErr()) queryError = pendingReq.error;
+            if (pendingReq.isOk()) queryUsers = pendingReq.value;
             break;
         }
 
         if (queryError) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
-            cause: queryError.cause,
-            message: queryError.message,
           });
         }
         if (!queryUsers || queryUsers.length === 0) {
@@ -92,7 +103,6 @@ export const usersRouter = createTRPCRouter({
             nextCursor: undefined,
           };
         }
-        console.log("query error:", queryError);
         console.log("query users:", queryUsers);
 
         // Determine if there's a next page
@@ -113,25 +123,35 @@ export const usersRouter = createTRPCRouter({
   getUserDataFromUsername: protectedProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input: { username }, ctx: { db } }) => {
-      const [user, error] = await tryCatch(getUserFromUsername(username));
-      if (error) {
+      const getUserFromUsername = db.query.user.findFirst({
+        where: () => eq(user.username, username),
+      });
+      const result = await executeQuery(getUserFromUsername);
+
+      if (result.isErr()) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          cause: error.cause,
-          message: error.message,
+          cause: result.error,
         });
       }
-      return user;
+
+      if (!result.value) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+      return result.value;
     }),
 });
 
-async function getCurrentUsersFriends(
+const getCurrentUsersFriendsQuery = (
   currentUserId: string,
   limit: number,
   offset: number,
   searchTerm: string,
-) {
-  return await db
+) =>
+  db
     .select()
     .from(friend)
     .innerJoin(
@@ -158,14 +178,14 @@ async function getCurrentUsersFriends(
     .orderBy(desc(user.email))
     .offset(offset)
     .limit(limit + 1);
-}
-async function getNotFriends(
+
+const getNotFriendsQuery = (
   currentUserId: string,
   limit: number,
   offset: number,
   searchTerm: string,
-) {
-  return await db
+) =>
+  db
     .select()
     .from(user)
     .leftJoin(
@@ -201,14 +221,14 @@ async function getNotFriends(
     .orderBy(desc(user.email))
     .offset(offset)
     .limit(limit + 1);
-}
-async function getCurrentUsersIncomingRequests(
+
+const getCurrentUsersIncomingRequestsQuery = (
   currentUserId: string,
   limit: number,
   offset: number,
   searchTerm: string,
-) {
-  return await db
+) =>
+  db
     .select()
     .from(friend)
     .innerJoin(
@@ -230,14 +250,14 @@ async function getCurrentUsersIncomingRequests(
     .orderBy(desc(user.email))
     .offset(offset)
     .limit(limit + 1);
-}
-async function getCurrentUsersPendingRequests(
+
+const getCurrentUsersPendingRequestsQuery = (
   currentUserId: string,
   limit: number,
   offset: number,
   searchTerm: string,
-) {
-  return await db
+) =>
+  db
     .select()
     .from(friend)
     .innerJoin(
@@ -256,9 +276,3 @@ async function getCurrentUsersPendingRequests(
     .orderBy(desc(user.email))
     .offset(offset)
     .limit(limit + 1);
-}
-async function getUserFromUsername(username: string) {
-  return await db.query.user.findFirst({
-    where: () => eq(user.username, username),
-  });
-}

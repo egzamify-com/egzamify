@@ -14,8 +14,8 @@ export default function FriendButton({
   friendId: string;
   alreadyKnownStatus?: FriendsFilter;
 }) {
-  console.log("alreadyKnownStatus", alreadyKnownStatus);
-  console.log("shouw run query", !alreadyKnownStatus);
+  // console.log("alreadyKnownStatus", alreadyKnownStatus);
+  // console.log("shouw run query", !alreadyKnownStatus);
   const { data, isPending, isError, error } =
     api.friends.checkFriendshipStatus.useQuery(
       { friendId },
