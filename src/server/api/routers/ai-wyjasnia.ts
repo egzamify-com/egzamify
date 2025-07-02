@@ -44,15 +44,34 @@ export const aiWyjasniaRouter = createTRPCRouter({
 
         // check for user credits before ai interaction
 
+        const [currentQualifications, qualificationListError] = await tryCatch(
+          db.query.qualifications.findMany({
+            columns: {
+              name: true,
+            },
+          }),
+        );
+        if (qualificationListError) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: qualificationListError.message,
+          });
+        }
+        console.log(JSON.stringify(currentQualifications.map((x) => x.name)));
+
+        const finalPrompt = `${currentUserPrompt}\n\n 
+        MODE: ${currentMode}
+        ${previousExplanationWithFollowUpQuestions && `PREVIOUS_EXPLANATION: ${previousExplanationWithFollowUpQuestions.map((x) => x.aiResponse).join("\n")}`}
+        ${currentMode && `FOLLOW_UP_QUESTION: ${currentUserPrompt}`}  
+        LIST OF QUALIFICATIONS (ALLOWED TOPICS): ${JSON.stringify(currentQualifications.map((x) => x.name))} 
+        `;
+
         const [result, error] = await tryCatch(
           generateText({
             model: APP_CONFIG.ai_wyjasnia.model,
             system: APP_CONFIG.ai_wyjasnia.systemPrompt,
             maxTokens: APP_CONFIG.ai_wyjasnia.maxOutputTokens,
-            prompt: `${currentUserPrompt}\n\n 
-                    MODE: ${currentMode}
-                    ${previousExplanationWithFollowUpQuestions && `PREVIOUS_EXPLANATION: ${previousExplanationWithFollowUpQuestions.map((x) => x.aiResponse).join("\n")}`}
-                    ${currentMode && `FOLLOW_UP_QUESTION: ${currentUserPrompt}`}`,
+            prompt: finalPrompt,
           }),
         );
 
