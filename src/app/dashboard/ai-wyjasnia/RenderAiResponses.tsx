@@ -17,16 +17,14 @@ export default function RenderAiResponses({
               <div key={idx}>
                 {aiResponse.userPrompt && (
                   <div
-                    className={`bg-white rounded-md border border-slate-200 overflow-hidden shadow-sm transition-all duration-300 `}
+                    className={`border-muted-foreground rounded-md border overflow-hidden shadow-sm transition-all duration-300 `}
                   >
-                    <div className="p-3 bg-slate-100 border-b border-slate-200">
-                      <p className="text-sm font-medium text-slate-700">
+                    <div className="p-3  border-b ">
+                      <p className="text-sm font-medium text-muted-foreground ">
                         {aiResponse.userPrompt}
                       </p>
                     </div>
-                    <div className="p-3 text-sm text-slate-600">
-                      {aiResponse.aiResponse}
-                    </div>
+                    <div className="p-3 text-sm ">{aiResponse.aiResponse}</div>
                   </div>
                 )}
               </div>
@@ -47,7 +45,7 @@ export function UserPrompt({ userPrompt }: { userPrompt: string }) {
               <p>You</p>
             </Badge>
           </div>
-          <span className="ml-3 text-slate-600">{userPrompt}</span>
+          <span className="ml-3 ">{userPrompt}</span>
         </div>
       </CardContent>
     </Card>

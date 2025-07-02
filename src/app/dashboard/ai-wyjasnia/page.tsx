@@ -120,7 +120,7 @@ export default function AIExplainerPage() {
     void utils.aiWyjasnia.getAiResponsesHistory.reset();
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br  p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <UserManual />
         <Card>
@@ -147,7 +147,7 @@ export default function AIExplainerPage() {
             {appState === "initialConfig" && (
               <>
                 <div className="space-y-2 flex flex-col">
-                  <Label className="text-sm font-medium text-slate-700">
+                  <Label className="text-sm font-medium ">
                     What would you like me to explain?
                   </Label>
                   <Textarea
@@ -185,7 +185,6 @@ export default function AIExplainerPage() {
                 <ResponseLoader />
               </>
             )}
-
             {appState === "followUpPart" && (
               <>
                 {/* <UserPrompt userPrompt={userPrompt} /> */}

@@ -31,7 +31,7 @@ export default function ModeSelector({
 
   return (
     <div className="space-y-3 flex flex-col ">
-      <label className="text-sm font-medium text-slate-700">
+      <label className="text-sm font-medium">
         Choose Your Explanation Mode
       </label>
       <div className="flex justify-center gap-4">
@@ -39,7 +39,7 @@ export default function ModeSelector({
           return (
             <div
               key={mode.name}
-              className={`${cn(selectedMode === mode.name && "border-black ")} cursor-pointer transition-all duration-200  hover:scale-102 border-2 relative w-1/3 h-48 p-6  rounded-xl `}
+              className={`${cn(selectedMode === mode.name && "border-foreground ")} cursor-pointer transition-all duration-200  hover:scale-102 border-2 relative w-1/3 h-48 p-6  rounded-xl `}
               onClick={() => {
                 handleSelectMode(mode.name);
               }}

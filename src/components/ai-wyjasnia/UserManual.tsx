@@ -21,7 +21,7 @@ export default function UserManual() {
               </CardTitle>
               <Sparkles className="h-8 w-8 text-purple-600" />
             </div>
-            <p className="text-slate-600 text-lg">
+            <p className="text-muted-foreground text-lg">
               Your intelligent companion for understanding complex topics
             </p>
             <div className="flex items-center justify-center mt-4">
@@ -43,10 +43,8 @@ export default function UserManual() {
           <CardContent className="pt-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h3 className="font-semibold text-lg mb-3 text-slate-800">
-                  How to Use
-                </h3>
-                <ul className="space-y-2 text-slate-600">
+                <h3 className="font-semibold text-lg mb-3 ">How to Use</h3>
+                <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-blue-600 font-bold">1.</span>
                     Enter your topic or question in the prompt field
@@ -71,28 +69,25 @@ export default function UserManual() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-lg mb-3 text-slate-800">
+                <h3 className="font-semibold text-lg mb-3 ">
                   Explanation Modes
                 </h3>
                 <div className="space-y-3">
-                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                    <h4 className="font-medium text-green-800">Simple</h4>
-                    <p className="text-sm text-green-700">
-                      Easy-to-understand explanations for beginners
-                    </p>
-                  </div>
-                  <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <h4 className="font-medium text-blue-800">Detailed</h4>
-                    <p className="text-sm text-blue-700">
-                      Comprehensive explanations with examples
-                    </p>
-                  </div>
-                  <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                    <h4 className="font-medium text-purple-800">Technical</h4>
-                    <p className="text-sm text-purple-700">
-                      In-depth technical analysis for experts
-                    </p>
-                  </div>
+                  <ColorfulCard
+                    title="Simple"
+                    description="Easy-to-understand explanations for beginners"
+                    color="green-500"
+                  />
+                  <ColorfulCard
+                    title="Detailed"
+                    description="Comprehensive explanations with examples"
+                    color="blue-400"
+                  />
+                  <ColorfulCard
+                    title="Technical"
+                    description="In-depth technical analysis for experts"
+                    color="purple-400"
+                  />
                 </div>
               </div>
             </div>
@@ -100,5 +95,21 @@ export default function UserManual() {
         </Card>
       </CollapsibleContent>
     </Collapsible>
+  );
+}
+function ColorfulCard({
+  title,
+  description,
+  color,
+}: {
+  title: string;
+  description: string;
+  color: string;
+}) {
+  return (
+    <div className={`p-3 rounded-lg border-2 border-${color}`}>
+      <h4 className={`font-medium text-${color}`}>{title}</h4>
+      <p className={`text-medium text-${color}`}>{description}</p>
+    </div>
   );
 }

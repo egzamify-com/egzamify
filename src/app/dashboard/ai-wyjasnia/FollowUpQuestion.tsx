@@ -14,11 +14,9 @@ export default function FollowUpQuestion({
   submitFollowUpQuestion: () => void;
 }) {
   return (
-    <div className="space-y-2 pt-4 border-t">
-      <label className="text-sm font-medium text-slate-700">
-        Follow-up Question
-      </label>
-      <div className="flex gap-2">
+    <div className="space-y-3 pt-4 border-t ">
+      <label className="text-sm font-medium ">Follow-up Question</label>
+      <div className="flex gap-2 pt-4">
         <Input
           placeholder="Ask a follow-up question about the explanation..."
           value={followUpQuestion}

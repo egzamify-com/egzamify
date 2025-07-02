@@ -97,7 +97,7 @@ export default function HistoryPage() {
     return <div>no history</div>;
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br  p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <Link href="/dashboard/ai-wyjasnia">
@@ -110,9 +110,7 @@ export default function HistoryPage() {
               Back to Explainer
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold text-slate-800">
-            Explanation History
-          </h1>
+          <h1 className="text-2xl font-bold ">Explanation History</h1>
           <div className="w-[100px]"></div> {/* Spacer for centering */}
         </div>
 
@@ -124,7 +122,7 @@ export default function HistoryPage() {
                 Your Learning Journey
               </CardTitle>
               <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 " />
                 <Input
                   placeholder="Search history..."
                   value={searchQuery}
@@ -143,7 +141,7 @@ export default function HistoryPage() {
             )}
             {filteredHistory.length === 0 && !isLoading ? (
               <div className="text-center py-12">
-                <p className="text-slate-500">No history items found</p>
+                <p className="0">No history items found</p>
                 {searchQuery && (
                   <p className="text-sm text-slate-400 mt-2">
                     Try adjusting your search query
@@ -155,7 +153,7 @@ export default function HistoryPage() {
                 {filteredHistory.map((item) => (
                   <Card key={item.id} className="overflow-hidden  pb-0">
                     <div
-                      className=" cursor-pointer hover:bg-slate-50 transition-colors flex items-center justify-between"
+                      className=" cursor-pointer 0 transition-colors flex items-center justify-between"
                       onClick={() => toggleExpand(item.id)}
                     >
                       <div className="flex-1">
@@ -173,7 +171,7 @@ export default function HistoryPage() {
                             }`}
                           ></div>
                           <div>
-                            <h3 className="font-medium text-slate-800">
+                            <h3 className="font-medium 0">
                               {item.aiResponsesWithQuestions[0]?.userPrompt}
                             </h3>
                             <div className="flex items-center gap-2 mt-1">
@@ -188,11 +186,11 @@ export default function HistoryPage() {
                                   item.aiResponsesWithQuestions[0]?.mode,
                                 )}
                               </span>
-                              <span className="text-xs text-slate-500">
+                              <span className="text-xs text-muted-foreground">
                                 {formatRelativeTime(item.created_at)}
                               </span>
                               {item.aiResponsesWithQuestions?.length > 0 && (
-                                <span className="text-xs text-slate-500 flex items-center gap-1">
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
                                   <MessageCircle className="h-3 w-3" />
                                   {item.aiResponsesWithQuestions.length}
                                 </span>
@@ -203,9 +201,9 @@ export default function HistoryPage() {
                       </div>
                       <div className="transition-transform duration-200 mr-4">
                         {expandedItems[item.id] ? (
-                          <ChevronUp className="h-5 w-5 text-slate-400 transform rotate-0" />
+                          <ChevronUp className="h-5 w-5 transform rotate-0" />
                         ) : (
-                          <ChevronDown className="h-5 w-5 text-slate-400 transform rotate-0" />
+                          <ChevronDown className="h-5 w-5  transform rotate-0" />
                         )}
                       </div>
                     </div>
@@ -217,8 +215,8 @@ export default function HistoryPage() {
                           : "max-h-0 opacity-0"
                       }`}
                     >
-                      <div className="border-t border-slate-200">
-                        <div className="p-4 bg-slate-50 transform transition-transform duration-300">
+                      <div className="border-t ">
+                        <div className="p-4  transform transition-transform duration-300">
                           <div
                             className={`transition-all duration-300 delay-100 ${
                               expandedItems[item.id]
@@ -228,7 +226,7 @@ export default function HistoryPage() {
                           >
                             {item.aiResponsesWithQuestions?.length > 0 && (
                               <div>
-                                <h4 className="text-sm font-medium text-slate-700 mb-2">
+                                <h4 className="text-sm font-medium  mb-2">
                                   Follow-up Questions
                                 </h4>
                                 <div className="space-y-3">
@@ -237,7 +235,7 @@ export default function HistoryPage() {
                                       <div key={idx}>
                                         {q.userPrompt && (
                                           <div
-                                            className={`bg-white rounded-md border border-slate-200 overflow-hidden shadow-sm transition-all duration-300 ${
+                                            className={` rounded-md border border-muted-foreground  overflow-hidden shadow-sm transition-all duration-300 ${
                                               expandedItems[item.id]
                                                 ? "translate-x-0 opacity-100"
                                                 : "translate-x-4 opacity-0"
@@ -250,12 +248,12 @@ export default function HistoryPage() {
                                                 : "0ms",
                                             }}
                                           >
-                                            <div className="p-3 bg-slate-100 border-b border-slate-200">
-                                              <p className="text-sm font-medium text-slate-700">
+                                            <div className="p-3 border-b text-muted-foreground ">
+                                              <p className="text-sm font-medium ">
                                                 {q.userPrompt}
                                               </p>
                                             </div>
-                                            <div className="p-3 text-sm text-slate-600">
+                                            <div className="p-3 text-sm ">
                                               {q.aiResponse}
                                             </div>
                                           </div>
