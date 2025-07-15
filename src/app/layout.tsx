@@ -1,10 +1,12 @@
-import "~/styles/globals.css";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
-import { TRPCReactProvider } from "~/trpc/react";
+import Navbar from "~/components/Navbar";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
-import Navbar from "~/components/Navbar";
+import "~/styles/globals.css";
+import { TRPCReactProvider } from "~/trpc/react";
+import { ConvexClientProvider } from "./providers/ConvexClientProvider";
 
 export const metadata: Metadata = {
   title: "Learn with AI",
@@ -21,24 +23,27 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
-      <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-          enableSystem={false}
-        >
-          <TRPCReactProvider>
-            <Navbar />
-            <main>
-              {children}
-
-              <Toaster />
-            </main>
-          </TRPCReactProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ConvexAuthNextjsServerProvider>
+      <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            disableTransitionOnChange
+            enableSystem={false}
+          >
+            <TRPCReactProvider>
+              <ConvexClientProvider>
+                <Navbar />
+                <main>
+                  {children}
+                  <Toaster />
+                </main>
+              </ConvexClientProvider>
+            </TRPCReactProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }

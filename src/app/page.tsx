@@ -1,11 +1,5 @@
 import LandingPage from "./LandingPage";
 
-export default function Page(){
-
-return(
-<LandingPage/>
-
-)
-
-
+export default function Page() {
+  return <LandingPage />;
 }

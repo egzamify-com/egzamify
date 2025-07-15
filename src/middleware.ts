@@ -1,16 +1,23 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import {
+  convexAuthNextjsMiddleware,
+  createRouteMatcher,
+  nextjsMiddlewareRedirect,
+} from "@convex-dev/auth/nextjs/server";
 
-export async function middleware(request: NextRequest) {
-  const sessionCookie = getSessionCookie(request);
+const isSignInPage = createRouteMatcher(["/sign-in"]);
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
 
-  if (!sessionCookie) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
+    return nextjsMiddlewareRedirect(request, "/product");
   }
-
-  return NextResponse.next();
-}
+  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
+    return nextjsMiddlewareRedirect(request, "/sign-in");
+  }
+});
 
 export const config = {
-  matcher: ["/ai-demo", "/test", "/dashboard", "/dashboard/:path*"],
+  // The following matcher runs middleware on all routes
+  // except static assets.
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
