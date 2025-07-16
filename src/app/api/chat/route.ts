@@ -1,23 +1,54 @@
-// app/api/chat/route.ts
-
 import { groq } from "@ai-sdk/groq";
-import { streamText } from "ai";
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
+import { appendResponseMessages, type Message, streamText } from "ai";
+import { api } from "convex/_generated/api";
+import { fetchMutation } from "convex/nextjs";
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages } = await req.json();
-
-  // Call the language model
-
+  const { messages, id } = await req.json();
+  console.log("chat id inside route handler - ", id);
   const result = streamText({
     // system: ""
     model: groq("llama-3.1-8b-instant"),
     messages,
+    async onFinish({ response }) {
+      await saveChat({
+        id,
+        messages: appendResponseMessages({
+          messages,
+          responseMessages: response.messages,
+        }),
+      });
+    },
   });
 
-  // Respond with the stream
   return result.toDataStreamResponse({ sendReasoning: true });
+}
+
+export async function saveChat({
+  id,
+  messages,
+}: {
+  id: string;
+  messages: Message[];
+}): Promise<void> {
+  const content = JSON.stringify(messages, null, 2);
+  console.log("id - ", id);
+  console.log("content - ", content);
+  const token = await convexAuthNextjsToken();
+  try {
+    const a = await fetchMutation(
+      api.ai_wyjasnia.mutate.storeChatMessages,
+      {
+        chatId: id,
+        newContent: content,
+      },
+      {
+        token,
+      },
+    );
+    console.log("result from stroing messages- ", a);
+  } catch (error) {}
 }
