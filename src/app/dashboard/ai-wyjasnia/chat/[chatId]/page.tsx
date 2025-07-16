@@ -7,8 +7,7 @@ import Chat from "../../chat";
 export default async function Page(props: {
   params: Promise<{ chatId: string }>;
 }) {
-  const { chatId } = await props.params; // get the chat ID from the URL
-  // const messages = await loadChat(id); // load the chat messages
+  const { chatId } = await props.params;
   console.log("chat id from page component - ", chatId);
 
   const result = await fetchQuery(
@@ -24,6 +23,10 @@ export default async function Page(props: {
   if (!result[0]) {
     return;
   }
-  const dbMessages: Message[] = JSON.parse(result[0].content);
-  return <Chat id={chatId} initialMessages={dbMessages} />;
+  try {
+    const dbMessages: Message[] = JSON.parse(result[0].content);
+    return <Chat id={chatId} initialMessages={dbMessages} />;
+  } catch (error) {
+    return <Chat id={chatId} initialMessages={[]} />;
+  }
 }

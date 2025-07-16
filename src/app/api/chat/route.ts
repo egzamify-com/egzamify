@@ -1,18 +1,26 @@
-import { groq } from "@ai-sdk/groq";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { appendResponseMessages, type Message, streamText } from "ai";
 import { api } from "convex/_generated/api";
 import { fetchMutation } from "convex/nextjs";
+import { APP_CONFIG } from "~/APP_CONFIG";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, id } = await req.json();
+  const { messages, id, currentSystemPrompt } = await req.json();
+
+  console.log("systme prompt used - ", currentSystemPrompt);
   console.log("chat id inside route handler - ", id);
+
+  const messagesForLLM: Message[] = [
+    { role: "system", content: `${currentSystemPrompt}` },
+    ...messages.filter((m: Message) => m.role !== "system"),
+  ];
+
   const result = streamText({
-    // system: ""
-    model: groq("llama-3.1-8b-instant"),
-    messages,
+    model: APP_CONFIG.ai_wyjasnia.model,
+    maxTokens: APP_CONFIG.ai_wyjasnia.maxOutputTokens,
+    messages: messagesForLLM,
     async onFinish({ response }) {
       await saveChat({
         id,

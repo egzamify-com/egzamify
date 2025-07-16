@@ -1,32 +1,133 @@
 "use client";
 
 import { type Message, useChat } from "@ai-sdk/react";
+import { Bot, Send, User } from "lucide-react";
+import { useState } from "react";
+import { APP_CONFIG } from "~/APP_CONFIG";
 import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Textarea } from "~/components/ui/textarea";
 
+const AI_MODES = [
+  {
+    id: "normal",
+    title: "Normal",
+    description: "Standard, balanced explanation",
+    systemPrompt: APP_CONFIG.ai_wyjasnia.normalSystemPrompt,
+  },
+  {
+    id: "eli5",
+    title: "ELI5",
+    description: "Explain like I'm 5 (simplified, using analogies)",
+    systemPrompt: APP_CONFIG.ai_wyjasnia.eli5SystemPrompt,
+  },
+
+  {
+    id: "detailed",
+    title: "Detailed",
+    description: "Comprehensive explanation with technical details",
+    systemPrompt: APP_CONFIG.ai_wyjasnia.detailedSystemPrompt,
+  },
+];
 export default function Chat({
   id,
   initialMessages,
 }: { id?: string | undefined; initialMessages?: Message[] } = {}) {
+  const [selectedMode, setSelectedMode] = useState("normal");
   const { input, handleInputChange, handleSubmit, messages } = useChat({
-    id, // use the provided chat ID
-    initialMessages, // initial messages if provided
-    sendExtraMessageFields: true, // send id and createdAt for each message
+    id,
+    initialMessages,
+    sendExtraMessageFields: true,
+    body: {
+      currentSystemPrompt: AI_MODES.find((m) => m.id === selectedMode)
+        ?.systemPrompt,
+    },
   });
 
-  // simplified rendering code, extend as needed:
   return (
-    <div>
-      {messages.map((m) => (
-        <div key={m.id}>
-          {m.role === "user" ? "User: " : "AI: "}
-          {m.content}
+    <div className="bg-background mx-auto flex h-full w-[70%] flex-col items-center justify-between">
+      <div className="w-full overflow-y-auto p-4">
+        {messages.length === 0 ? (
+          <div className="text-muted-foreground flex h-full items-center justify-center">
+            <div className="text-center">
+              <Bot className="mx-auto mb-4 h-12 w-12 opacity-50" />
+              <p>No messages yet. Start a conversation!</p>
+            </div>
+          </div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message.id}
+              className={`my-3 flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`flex max-w-[50%] gap-3 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+              >
+                <div
+                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${
+                    message.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground"
+                  }`}
+                >
+                  {message.role === "user" ? (
+                    <User className="h-4 w-4" />
+                  ) : (
+                    <Bot className="h-4 w-4" />
+                  )}
+                </div>
+                <Card
+                  className={`flex items-center justify-center py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card"}`}
+                >
+                  <CardContent>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {message.content}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      <div className="bg-card sticky bottom-0 w-full space-y-4 rounded-t-xl border p-4">
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">AI Response Mode</Label>
+          <RadioGroup
+            value={selectedMode}
+            onValueChange={setSelectedMode}
+            className="flex flex-wrap gap-4"
+          >
+            {AI_MODES.map((mode) => (
+              <div key={mode.id} className="flex items-center space-x-2">
+                <RadioGroupItem value={mode.id} id={mode.id} />
+                <Label htmlFor={mode.id} className="cursor-pointer">
+                  <div className="space-y-1">
+                    <div className="text-sm font-medium">{mode.title}</div>
+                    <div className="text-muted-foreground text-xs">
+                      {mode.description}
+                    </div>
+                  </div>
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
         </div>
-      ))}
 
-      <form onSubmit={handleSubmit}>
-        <input value={input} onChange={handleInputChange} />
-        <Button type="submit">submit</Button>
-      </form>
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <Textarea
+            value={input}
+            onChange={handleInputChange}
+            placeholder={`Type your message (${AI_MODES.find((m) => m.id === selectedMode)?.title} mode)...`}
+            className="min-h-[20px] flex-1 whitespace-pre-wrap"
+          />
+          <Button type="submit" disabled={!input.trim()}>
+            <Send className="h-4 w-4" />
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
