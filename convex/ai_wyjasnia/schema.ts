@@ -3,6 +3,5 @@ import { v } from "convex/values";
 
 export const explanations = defineTable({
   user_id: v.id("users"),
-  // chatId: v.string(),
   content: v.string(),
 }).index("by_user", ["user_id"]);

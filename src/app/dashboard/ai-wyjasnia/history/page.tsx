@@ -15,7 +15,6 @@ type Item = {
   _id: Id<"explanations">;
   _creationTime: number;
   user_id: Id<"users">;
-  chatId: string;
   content: string;
 };
 
@@ -39,10 +38,9 @@ export function HistoryPage() {
     return <LoadingHistory />;
   }
 
-  if (error || !history) {
+  if (error || history.length === 0) {
     return <NoHistory />;
   }
-
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-start gap-5 bg-gradient-to-br p-4">
       {history.map((item) => (
@@ -55,13 +53,21 @@ function ThreadComponent({ item }: { item: Item }) {
   const messages = parseContent(item.content);
 
   return (
-    <Link href={`/dashboard/ai-wyjasnia/chat/${item._id}`} className="w-1/2">
-      <Card className="group hover:shadow-primary/10 hover:border-primary/20 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]">
+    <Link
+      href={`/dashboard/ai-wyjasnia/chat/${item._id}`}
+      className="w-1/2"
+      prefetch={true}
+    >
+      <Card className="group hover:shadow-primary/10 hover:border-primary/200 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]">
         <CardContent className="px-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <h3 className="group-hover:text-primary line-clamp-2 text-base font-semibold transition-colors duration-200">
-                jfkdlsjfdlk
+              <h3 className="group-hover:text-primary line-clamp-2 overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap transition-colors duration-200">
+                {messages[0] ? (
+                  <>{`${messages[0].content}...`}</>
+                ) : (
+                  "No messages yet"
+                )}
               </h3>
 
               <div className="text-muted-foreground mt-2 flex items-center gap-3 text-sm">

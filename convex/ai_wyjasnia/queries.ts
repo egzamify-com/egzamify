@@ -30,6 +30,7 @@ export const getAiResponsesHistory = query({
     const history = await ctx.db
       .query("explanations")
       .withIndex("by_user", (q) => q.eq("user_id", userId))
+      .order("desc")
       .collect();
 
     return history;
