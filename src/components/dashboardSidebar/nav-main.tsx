@@ -1,7 +1,7 @@
 "use client";
 
-import { type Icon } from "@tabler/icons-react";
-import { Mail, UserPlus, Users } from "lucide-react";
+import { IconListDetails, type Icon } from "@tabler/icons-react";
+import { History, Mail, Text, UserPlus, Users } from "lucide-react";
 import Link from "next/link";
 import {
   SidebarGroup,
@@ -46,6 +46,18 @@ export function NavMain({
       // badgeComponent: <InvitesNavBadge />,
     },
   ];
+  const AiWyjasniaTab = [
+    {
+      title: "Start a conversation",
+      url: "/dashboard/ai-wyjasnia",
+      icon: <IconListDetails size={18} />,
+    },
+    {
+      title: "Chat History",
+      url: "/dashboard/ai-wyjasnia/history",
+      icon: <History size={18} />,
+    },
+  ];
   return (
     <>
       <SidebarGroup>
@@ -78,7 +90,7 @@ export function NavMain({
                         <Link key={item.title} href={`${item.url}`}>
                           <SidebarMenuSubItem>
                             <SidebarMenuButton className="flex flex-row justify-between">
-                              <div className="flex flex-row justify-center items-center gap-2 text-sm">
+                              <div className="flex flex-row items-center justify-center gap-2 text-sm">
                                 {item.icon}
                                 {item.title}
                               </div>
@@ -86,6 +98,33 @@ export function NavMain({
                                 {/* {item.badgeComponent && (
                                   <>{item.badgeComponent}</>
                                 )} */}
+                              </div>
+                            </SidebarMenuButton>
+                          </SidebarMenuSubItem>
+                        </Link>
+                      );
+                    })}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+            <Collapsible defaultOpen className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton>
+                    <Text /> Ai Conversation
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    {AiWyjasniaTab.map((item) => {
+                      return (
+                        <Link key={item.title} href={`${item.url}`}>
+                          <SidebarMenuSubItem>
+                            <SidebarMenuButton className="flex flex-row justify-between">
+                              <div className="flex flex-row items-center justify-center gap-2 text-sm">
+                                {item.icon}
+                                {item.title}
                               </div>
                             </SidebarMenuButton>
                           </SidebarMenuSubItem>

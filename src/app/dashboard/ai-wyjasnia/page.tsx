@@ -5,7 +5,19 @@ import { api } from "convex/_generated/api";
 import { useMutation } from "convex/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import SpinnerLoading from "~/components/SpinnerLoading";
 import { tryCatch } from "~/utils/tryCatch";
+
+function Loading() {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center gap-2">
+      <SpinnerLoading />
+      <h1 className="text-2xl font-bold">
+        {"We're creating new chat for you..."}
+      </h1>
+    </div>
+  );
+}
 
 export default function Page() {
   const storeNewThread = useMutation(api.ai_wyjasnia.mutate.storeNewThread);
@@ -21,4 +33,5 @@ export default function Page() {
       redirect(`/dashboard/ai-wyjasnia/chat/${id}`);
     })();
   }, [storeNewThread]);
+  return <Loading />;
 }

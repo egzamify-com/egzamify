@@ -47,7 +47,7 @@ export default function Chat({
   });
 
   return (
-    <div className="bg-background mx-auto flex h-full w-[70%] flex-col items-center justify-between">
+    <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
       <div className="w-full overflow-y-auto p-4">
         {messages.length === 0 ? (
           <div className="text-muted-foreground flex h-full items-center justify-center">
