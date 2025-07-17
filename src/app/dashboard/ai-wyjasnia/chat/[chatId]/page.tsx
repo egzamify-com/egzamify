@@ -8,7 +8,6 @@ export default async function Page(props: {
   params: Promise<{ chatId: string }>;
 }) {
   const { chatId } = await props.params;
-  console.log("chat id from page component - ", chatId);
 
   const result = await fetchQuery(
     api.ai_wyjasnia.queries.getThreadMessages,
@@ -19,9 +18,9 @@ export default async function Page(props: {
       token: await convexAuthNextjsToken(),
     },
   );
-  console.log(result);
+  console.log("result from page ", result);
   if (!result[0]) {
-    return;
+    return <Chat id={chatId} initialMessages={[]} />;
   }
   try {
     const dbMessages: Message[] = JSON.parse(result[0].content);

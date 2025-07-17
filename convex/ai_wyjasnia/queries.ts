@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
+import { type Id } from "../_generated/dataModel";
 import { query } from "../_generated/server";
 
 export const getThreadMessages = query({
@@ -12,7 +13,7 @@ export const getThreadMessages = query({
     }
     const messagesForThatThread = await ctx.db
       .query("explanations")
-      .withIndex("by_chat_id", (q) => q.eq("chatId", chatId))
+      .withIndex("by_id", (q) => q.eq("_id", chatId as Id<"explanations">))
       .collect();
     console.log("messages for that thread - ", messagesForThatThread);
     return messagesForThatThread;

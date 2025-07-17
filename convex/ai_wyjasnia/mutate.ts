@@ -1,22 +1,21 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
+import { type Id } from "../_generated/dataModel";
 import { mutation } from "../_generated/server";
 
 export const storeNewThread = mutation({
-  args: { threadId: v.string() },
-  handler: async (ctx, args) => {
+  args: {},
+  handler: async (ctx) => {
     console.log("store new thread mut hit");
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       throw new Error("Failed to get user");
     }
 
-    const { threadId } = args;
-    void (await ctx.db.insert("explanations", {
-      chatId: threadId,
+    return await ctx.db.insert("explanations", {
       user_id: userId,
       content: "",
-    }));
+    });
   },
 });
 
@@ -30,12 +29,9 @@ export const storeChatMessages = mutation({
     }
     const { chatId, newContent } = args;
     console.log("looking for chatId - ", chatId);
-    const chatArr = await ctx.db
-      .query("explanations")
-      .withIndex("by_chat_id", (q) => q.eq("chatId", chatId))
-      .collect();
-    console.log("found chatarr - ", chatArr);
-    const chat = chatArr[0];
-    void (await ctx.db.patch(chat._id, { content: newContent }));
+
+    void (await ctx.db.patch(chatId as Id<"explanations">, {
+      content: newContent,
+    }));
   },
 });

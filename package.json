@@ -61,6 +61,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.25.2",
+    "convex-helpers": "^0.1.99",
     "drizzle-orm": "^0.41.0",
     "lucide-react": "^0.509.0",
     "neverthrow": "^8.2.0",
