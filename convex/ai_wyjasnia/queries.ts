@@ -1,4 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { query } from "../_generated/server";
@@ -21,7 +22,8 @@ export const getThreadMessages = query({
 });
 
 export const getAiResponsesHistory = query({
-  handler: async (ctx) => {
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       throw new Error("Failed to get user");
@@ -31,7 +33,7 @@ export const getAiResponsesHistory = query({
       .query("explanations")
       .withIndex("by_user", (q) => q.eq("user_id", userId))
       .order("desc")
-      .collect();
+      .paginate(args.paginationOpts);
 
     return history;
   },
