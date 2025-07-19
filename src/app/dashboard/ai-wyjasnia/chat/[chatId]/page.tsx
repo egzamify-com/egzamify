@@ -10,7 +10,7 @@ export default async function Page(props: {
   const { chatId } = await props.params;
 
   const result = await fetchQuery(
-    api.ai_wyjasnia.queries.getThreadMessages,
+    api.ai_wyjasnia.query.getThreadMessages,
     {
       chatId,
     },

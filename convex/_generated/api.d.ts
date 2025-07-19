@@ -14,7 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as ai_wyjasnia_mutate from "../ai_wyjasnia/mutate.js";
-import type * as ai_wyjasnia_queries from "../ai_wyjasnia/queries.js";
+import type * as ai_wyjasnia_query from "../ai_wyjasnia/query.js";
 import type * as auth from "../auth.js";
 import type * as helpers from "../helpers.js";
 import type * as http from "../http.js";
@@ -29,7 +29,7 @@ import type * as http from "../http.js";
  */
 declare const fullApi: ApiFromModules<{
   "ai_wyjasnia/mutate": typeof ai_wyjasnia_mutate;
-  "ai_wyjasnia/queries": typeof ai_wyjasnia_queries;
+  "ai_wyjasnia/query": typeof ai_wyjasnia_query;
   auth: typeof auth;
   helpers: typeof helpers;
   http: typeof http;

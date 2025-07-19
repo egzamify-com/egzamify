@@ -1,8 +1,9 @@
 "use client";
+
 import type { Message } from "ai";
 import { usePaginatedQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
+import type { Doc } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Download, MessageCircle, Trash } from "lucide-react";
 import Link from "next/link";
@@ -12,13 +13,6 @@ import SpinnerLoading from "~/components/SpinnerLoading";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-
-type Item = {
-  _id: Id<"explanations">;
-  _creationTime: number;
-  user_id: Id<"users">;
-  content: string;
-};
 
 export default function Page() {
   return (
@@ -36,7 +30,7 @@ export function HistoryPage() {
     results: history,
     status,
   } = usePaginatedQuery(
-    api.ai_wyjasnia.queries.getAiResponsesHistory,
+    api.ai_wyjasnia.query.getAiResponsesHistory,
     {},
     { initialNumItems: 40 },
   );
@@ -64,7 +58,8 @@ export function HistoryPage() {
     </div>
   );
 }
-function ThreadComponent({ item }: { item: Item }) {
+
+function ThreadComponent({ item }: { item: Doc<"explanations"> }) {
   const messages = parseContent(item.content);
   const deleteChat = useMutation(api.ai_wyjasnia.mutate.deleteChat);
 
