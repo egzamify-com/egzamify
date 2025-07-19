@@ -2,6 +2,8 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import type { Message } from "ai";
 import { api } from "convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
+import FullScreenDashboardError from "~/components/full-screen-error-dashboard";
+import { tryCatch } from "~/utils/tryCatch";
 import Chat from "../../chat";
 
 export default async function Page(props: {
@@ -9,15 +11,25 @@ export default async function Page(props: {
 }) {
   const { chatId } = await props.params;
 
-  const result = await fetchQuery(
-    api.ai_wyjasnia.query.getThreadMessages,
-    {
-      chatId,
-    },
-    {
-      token: await convexAuthNextjsToken(),
-    },
+  const [result, error] = await tryCatch(
+    fetchQuery(
+      api.ai_wyjasnia.query.getThreadMessages,
+      {
+        chatId,
+      },
+      {
+        token: await convexAuthNextjsToken(),
+      },
+    ),
   );
+  if (error) {
+    return (
+      <FullScreenDashboardError
+        errorMessage={"Loading chat error"}
+        errorDetail={error.message}
+      />
+    );
+  }
   console.log("result from page ", result);
   if (!result[0]) {
     return <Chat id={chatId} initialMessages={[]} />;
