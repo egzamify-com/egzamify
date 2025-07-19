@@ -35,3 +35,16 @@ export const storeChatMessages = mutation({
     }));
   },
 });
+
+export const deleteChat = mutation({
+  args: { chatId: v.id("explanations") },
+  handler: async (ctx, args) => {
+    console.log("delete chat mut hit");
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Failed to get user");
+    }
+    const { chatId } = args;
+    void (await ctx.db.delete(chatId));
+  },
+});

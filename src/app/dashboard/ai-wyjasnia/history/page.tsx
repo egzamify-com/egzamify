@@ -3,7 +3,8 @@ import type { Message } from "ai";
 import { usePaginatedQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { ChevronRight, Download, MessageCircle } from "lucide-react";
+import { useMutation } from "convex/react";
+import { Download, MessageCircle, Trash } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import SemanticDate from "~/components/semantic-date";
@@ -29,12 +30,6 @@ export default function Page() {
   );
 }
 export function HistoryPage() {
-  // const {
-  //   isPending,
-  //   data: history,
-  //   error,
-  // } = useQueryWithStatus(api.ai_wyjasnia.queries.getAiResponsesHistory);
-
   const {
     isLoading,
     loadMore,
@@ -50,7 +45,7 @@ export function HistoryPage() {
     return <LoadingHistory />;
   }
 
-  if (!history) {
+  if (history.length === 0) {
     return <NoHistory />;
   }
 
@@ -60,15 +55,18 @@ export function HistoryPage() {
         <ThreadComponent key={item._id} item={item} />
       ))}
       {status == "LoadingMore" && <LoadingMoreThreads count={40} />}
-      <Button onClick={() => loadMore(1)} disabled={status !== "CanLoadMore"}>
-        <Download />
-        Load More
-      </Button>
+      {status === "CanLoadMore" && (
+        <Button onClick={() => loadMore(40)}>
+          <Download />
+          Load More
+        </Button>
+      )}
     </div>
   );
 }
 function ThreadComponent({ item }: { item: Item }) {
   const messages = parseContent(item.content);
+  const deleteChat = useMutation(api.ai_wyjasnia.mutate.deleteChat);
 
   return (
     <Link
@@ -76,7 +74,7 @@ function ThreadComponent({ item }: { item: Item }) {
       className="w-1/2"
       prefetch={true}
     >
-      <Card className="group hover:shadow-primary/10 hover:border-primary/200 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]">
+      <Card className="group hover:shadow-primary/10 hover:border-primary/200 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg">
         <CardContent className="px-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
@@ -102,9 +100,16 @@ function ThreadComponent({ item }: { item: Item }) {
               </div>
             </div>
 
-            <div className="flex flex-shrink-0 items-center gap-2">
-              <ChevronRight className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-all duration-200 group-hover:translate-x-1" />
-            </div>
+            <Button
+              variant={"outline"}
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await deleteChat({ chatId: item._id });
+              }}
+            >
+              <Trash className="text-destructive" />
+            </Button>
           </div>
         </CardContent>
       </Card>
