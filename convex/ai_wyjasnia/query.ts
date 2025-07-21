@@ -12,6 +12,7 @@ export const getThreadMessages = query({
     if (!userId) {
       throw new Error("Failed to get user");
     }
+
     const messagesForThatThread = await ctx.db
       .query("explanations")
       .withIndex("by_id", (q) => q.eq("_id", chatId as Id<"explanations">))

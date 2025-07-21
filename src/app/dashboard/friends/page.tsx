@@ -1,13 +1,36 @@
 "use client";
 
-import Link from "next/link";
-import DisplayFriendList from "~/components/friends/display-friend-list";
+import { usePaginatedQuery } from "convex-helpers/react";
+import { api } from "convex/_generated/api";
+import { Download } from "lucide-react";
 import { Button } from "~/components/ui/button";
-
+const filter = "accepted_friends";
 export default function Page() {
+  const { loadMore, results, status } = usePaginatedQuery(
+    api.friends.query.getFriendsWithSearch,
+    { filter },
+    { initialNumItems: 1 },
+  );
+  console.log("result", results);
+  console.log("status", status);
   return (
     <>
-      <DisplayFriendList
+      <div>jfkd</div>
+      <p>current filter: {filter}</p>
+      {results.map((friend) => (
+        <div key={friend._id}>
+          {/* id: {friend._id} */}
+          email: {friend.email}
+        </div>
+      ))}
+
+      {status === "CanLoadMore" && (
+        <Button onClick={() => loadMore(40)}>
+          <Download />
+          Load More
+        </Button>
+      )}
+      {/* <DisplayFriendList
         filter="accepted_friends"
         headerTitle="Friends"
         headerDescription="Manage your connections and stay in touch"
@@ -24,7 +47,7 @@ export default function Page() {
             <p className=" mt-2">Something went wrong.</p>
           </div>
         }
-      />
+      />*/}
     </>
   );
 }
