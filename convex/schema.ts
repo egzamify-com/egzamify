@@ -41,6 +41,6 @@ const schema = defineSchema({
     .index("receiving_user_id", ["receiving_user_id"]),
 });
 
-export default schema;
-
 export const vv = typedV(schema);
+
+export default schema;

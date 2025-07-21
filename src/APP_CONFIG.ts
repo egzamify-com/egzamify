@@ -1,6 +1,9 @@
 import { groq } from "@ai-sdk/groq";
 
 export const APP_CONFIG = {
+  friends: {
+    maxSearchResults: 200,
+  },
   baseCreditPrice: 0,
   ai_wyjasnia: {
     creditPrice: 0,
