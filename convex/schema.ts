@@ -26,17 +26,13 @@ const schema = defineSchema({
     content: v.string(),
   }).index("by_user", ["user_id"]),
 
-  acceptedFriends: defineTable({
-    user_id: v.id("users"),
-    friend_id: v.id("users"),
-  }).index("user_id", ["user_id"]),
-
-  friendRequests: defineTable({
+  friends: defineTable({
     requesting_user_id: v.id("users"),
     receiving_user_id: v.id("users"),
     status: v.union(v.literal("request_sent"), v.literal("accepted")),
     updated_at: v.number(),
   })
+    .index("from_to", ["requesting_user_id", "receiving_user_id"])
     .index("requesting_user_id", ["requesting_user_id"])
     .index("receiving_user_id", ["receiving_user_id"]),
 });

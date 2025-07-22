@@ -1,13 +1,13 @@
+import type { Infer } from "convex/values";
 import Image from "next/image";
 import Link from "next/link";
+import { type Doc } from "~/../convex/_generated/dataModel";
 import { Card, CardContent } from "~/components/ui/card";
-import type { FriendsFilter } from "~/server/api/routers/users";
-import type { UserType } from "~/server/db/schema/auth.relations";
+import { friendFilterValidator } from "../../../convex/friends/query";
 import FriendButton from "./friend-button";
-
 type FriendProps = {
-  user: UserType;
-  status?: FriendsFilter;
+  user: Doc<"users">;
+  status?: Infer<typeof friendFilterValidator>;
   updated_at?: Date;
   created_at?: Date;
 };
@@ -16,8 +16,8 @@ export default function Friend({ friend }: { friend: FriendProps }) {
 
   return (
     <Card
-      key={`friend-card-for-${user.id}`}
-      className="hover:shadow-md transition-shadow"
+      key={`friend-card-for-${user._id}`}
+      className="transition-shadow hover:shadow-md"
     >
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
@@ -26,21 +26,21 @@ export default function Friend({ friend }: { friend: FriendProps }) {
             <div className="relative">
               <Image
                 src={"/placeholder.svg"}
-                alt={user.name}
+                alt={`Profile picture for user: ${user.username ?? "username not found"}`}
                 width={40}
                 height={40}
                 className="rounded-full"
               />
               <div
-                className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${
+                className={`border-background absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 ${
                   true ? "bg-green-500" : "bg-gray-400"
                 }`}
               />
             </div>
             <Link href={`/user/${user.username}`}>
               <div>
-                <h3 className="font-medium text-foreground">{user.name}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-foreground font-medium">{user.email}</h3>
+                <p className="text-muted-foreground text-sm">
                   @{user.username}
                 </p>
               </div>
@@ -54,7 +54,7 @@ export default function Friend({ friend }: { friend: FriendProps }) {
             </Button> */}
             {/* {renderAction()} */}
             <FriendButton
-              friendId={friend.user.id}
+              friendId={friend.user._id}
               alreadyKnownStatus={status}
             />
             {/* <DropdownMenu>

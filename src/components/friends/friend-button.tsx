@@ -1,5 +1,8 @@
-import type { FriendsFilter } from "~/server/api/routers/users";
-import { api } from "~/trpc/react";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import type { friendFilterValidator } from "convex/friends/query";
+import { useQueryWithStatus } from "convex/helpers";
+import type { Infer } from "convex/values";
 import SpinnerLoading from "../SpinnerLoading";
 import AcceptRequest from "./accept-request";
 import CancelRequest from "./cancel-request";
@@ -11,32 +14,29 @@ export default function FriendButton({
   friendId,
   alreadyKnownStatus,
 }: {
-  friendId: string;
-  alreadyKnownStatus?: FriendsFilter;
+  friendId: Id<"users">;
+  alreadyKnownStatus?: Infer<typeof friendFilterValidator>;
 }) {
-  // console.log("alreadyKnownStatus", alreadyKnownStatus);
-  // console.log("shouw run query", !alreadyKnownStatus);
-  const { data, isPending, isError, error } =
-    api.friends.checkFriendshipStatus.useQuery(
-      { friendId },
-      {
-        enabled: !alreadyKnownStatus,
-      },
-    );
-
-  if (isPending && !alreadyKnownStatus) {
+  const { data, error, isPending } = useQueryWithStatus(
+    api.friends.query.checkUserFriendStatus,
+    {
+      friendId,
+    },
+  );
+  if (isPending)
     return (
-      <div className="flex items-center justify-center">
+      <div>
         <SpinnerLoading />
       </div>
     );
-  }
-  if (isError && !alreadyKnownStatus) {
-    return <div>Error: {error.message}</div>;
+
+  if (error) {
+    return <div className="text-destructive">Error</div>;
   }
 
-  const friendshipStatus = alreadyKnownStatus ?? data?.status;
+  const friendshipStatus = alreadyKnownStatus ?? data.status;
 
+  console.log("friend id in friend button - ", friendId);
   function renderAction() {
     switch (friendshipStatus) {
       case "accepted_friends":
@@ -50,7 +50,7 @@ export default function FriendButton({
             <RejectRequest friendId={friendId} />
           </>
         );
-      case "pending_requests":
+      case "outcoming_requests":
         return <CancelRequest friendId={friendId} />;
     }
   }

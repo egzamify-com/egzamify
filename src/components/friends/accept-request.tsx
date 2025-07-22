@@ -1,27 +1,15 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import { useMutation } from "convex/react";
 import { Check } from "lucide-react";
-import { toast } from "sonner";
-import { api } from "~/trpc/react";
+import { useState } from "react";
 import SpinnerLoading from "../SpinnerLoading";
 import { Button } from "../ui/button";
 
-export default function AcceptRequest({ friendId }: { friendId: string }) {
-  const queryClient = useQueryClient();
-  const { mutate: addFriend, isPending } =
-    api.friends.acceptRequest.useMutation({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: async () => {
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.users),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.friends),
-        });
-      },
-    });
+export default function AcceptRequest({ friendId }: { friendId: Id<"users"> }) {
+  const [isPending, setIsPending] = useState(false);
+
+  const acceptRequest = useMutation(api.friends.mutate.acceptFriendRequest);
 
   return (
     <Button
@@ -29,15 +17,17 @@ export default function AcceptRequest({ friendId }: { friendId: string }) {
       variant={"ghost"}
       className="border-2 border-green-600"
       type="submit"
-      onClick={() => {
-        addFriend({ friendId });
+      onClick={async () => {
+        setIsPending(true);
+        await acceptRequest({ friendId });
+        setIsPending(false);
       }}
     >
       {isPending ? (
         <SpinnerLoading />
       ) : (
         <>
-          <Check className="h-4 w-4 mr-1" />
+          <Check className="mr-1 h-4 w-4" />
           Accept
         </>
       )}

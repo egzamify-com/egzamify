@@ -23,9 +23,9 @@ export default function Page() {
 
   return (
     <>
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto max-w-4xl p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-foreground mb-2 text-2xl font-bold">
             Friend Invites
           </h1>
           <p className="text-muted-foreground">
@@ -33,7 +33,7 @@ export default function Page() {
           </p>
         </div>
         <Tabs defaultValue="incoming" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="mb-6 grid w-full grid-cols-2">
             <TabsTrigger value="incoming" className="relative">
               <div className="flex items-center gap-2">
                 <UserPlus className="h-4 w-4" />
@@ -41,7 +41,7 @@ export default function Page() {
                 {incomingRequestsCount !== undefined && (
                   <>
                     {incomingRequestsCount > 0 ? (
-                      <Badge className="ml-1 ">
+                      <Badge className="ml-1">
                         {incomingRequestsCount > 10
                           ? "10+"
                           : incomingRequestsCount}
@@ -59,7 +59,7 @@ export default function Page() {
                 {pendingRequestsCount !== undefined && (
                   <>
                     {pendingRequestsCount > 0 ? (
-                      <Badge className="ml-1 ">
+                      <Badge className="ml-1">
                         {pendingRequestsCount > 10
                           ? "10+"
                           : pendingRequestsCount}
@@ -76,13 +76,13 @@ export default function Page() {
               headerTitle=""
               headerDescription=""
               notFoundComponent={
-                <div className="flex gap-2 items-start flex-col">
-                  <p className="text-gray-500 mt-2">No users found.</p>
+                <div className="flex flex-col items-start gap-2">
+                  <p className="mt-2 text-gray-500">No users found.</p>
                 </div>
               }
               errorComponent={
-                <div className="flex gap-2 items-start flex-col">
-                  <p className="text-gray-500 mt-2">Something went wrong.</p>
+                <div className="flex flex-col items-start gap-2">
+                  <p className="mt-2 text-gray-500">Something went wrong.</p>
                 </div>
               }
               disableTopPadding={true}
@@ -91,17 +91,17 @@ export default function Page() {
 
           <TabsContent value="pending" className="space-y-3">
             <DisplayFriendList
-              filter="pending_requests"
+              filter="outcoming_requests"
               headerTitle=""
               headerDescription=""
               notFoundComponent={
-                <div className="flex gap-2 items-start flex-col">
-                  <p className="text-gray-500 mt-2">No users found.</p>
+                <div className="flex flex-col items-start gap-2">
+                  <p className="mt-2 text-gray-500">No users found.</p>
                 </div>
               }
               errorComponent={
-                <div className="flex gap-2 items-start flex-col">
-                  <p className="text-gray-500 mt-2">Something went wrong.</p>
+                <div className="flex flex-col items-start gap-2">
+                  <p className="mt-2 text-gray-500">Something went wrong.</p>
                 </div>
               }
               disableTopPadding={true}

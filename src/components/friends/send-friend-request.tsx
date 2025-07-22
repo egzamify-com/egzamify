@@ -1,33 +1,20 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
-import { toast } from "sonner";
-import { api } from "~/trpc/react";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { useState } from "react";
 import SpinnerLoading from "../SpinnerLoading";
 import { Button } from "../ui/button";
 
-export default function AddFriend({ friendId }: { friendId: string }) {
-  const queryClient = useQueryClient();
-  const { mutate: addFriend, isPending } =
-    api.friends.sentFriendRequest.useMutation({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: async () => {
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.users),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.friends),
-        });
-        toast.success("Friend request sent successfully");
-      },
-    });
-
+export default function AddFriend({ friendId }: { friendId: Id<"users"> }) {
+  const [isPending, setIsPending] = useState(false);
+  const sendFriendRequest = useMutation(api.friends.mutate.sendFriendRequest);
   return (
     <Button
       type="submit"
       onClick={() => {
-        addFriend({ friendId });
+        setIsPending(true);
+        sendFriendRequest({ friendId });
+        setIsPending(false);
       }}
     >
       {isPending ? <SpinnerLoading /> : <p>Send friend request</p>}

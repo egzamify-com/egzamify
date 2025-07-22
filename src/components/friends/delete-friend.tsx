@@ -1,8 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import { useMutation } from "convex/react";
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -12,29 +12,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { api } from "~/trpc/react";
 import SpinnerLoading from "../SpinnerLoading";
 import { Button } from "../ui/button";
 
-export default function DeleteFriend({ friendId }: { friendId: string }) {
+export default function DeleteFriend({ friendId }: { friendId: Id<"users"> }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const queryClient = useQueryClient();
-
-  const { mutate: deleteFriend, isPending } =
-    api.friends.deleteFriend.useMutation({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: async () => {
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.users),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.friends),
-        });
-        setDialogOpen(false);
-      },
-    });
+  const [isPending, setIsPending] = useState(false);
+  const deleteFriend = useMutation(api.friends.mutate.deleteFriend);
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -55,8 +39,10 @@ export default function DeleteFriend({ friendId }: { friendId: string }) {
         <DialogFooter>
           <Button
             variant={"destructive"}
-            onClick={() => {
-              deleteFriend({ friendId });
+            onClick={async () => {
+              setIsPending(true);
+              await deleteFriend({ friendId });
+              setIsPending(false);
             }}
           >
             {isPending ? <SpinnerLoading /> : <p>Yes, delete</p>}

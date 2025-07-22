@@ -9,6 +9,7 @@ import { friendFilterValidator } from "../../../convex/friends/query";
 import { Card, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Skeleton } from "../ui/skeleton";
+import Friend from "./friend";
 
 export default function DisplayFriendList({
   filter,
@@ -95,13 +96,13 @@ function Render({
     return <div>not found...</div>;
   }
 
-  // if (isLoading) {
-  //   return <FriendsSkeleton countOfSkeletons={10} />;
-  // }
+  if (isPending) {
+    return <FriendsSkeleton countOfSkeletons={10} />;
+  }
 
-  // if (!friendList) {
-  //   return <>{errorComponent}</>;
-  // }
+  if (!friendList) {
+    return <>{errorComponent}</>;
+  }
 
   // if (friendList.length === 0 && search) {
   //   return (
@@ -115,14 +116,16 @@ function Render({
   return (
     <div className="space-y-3">
       {friendList.map((friend) => (
-        <>email: {friend.email}</>
-        // <Friend
-        //   key={`friend-${friend?.user.id}`}
-        //   friend={{
-        //     user: friend.user,
-        //     status: filter,
-        //   }}
-        // />
+        // <div key={friend._id}>email: {friend.email}</div>
+        <>
+          <Friend
+            key={`friend-${friend?._id}`}
+            friend={{
+              user: friend!,
+              status: filter,
+            }}
+          />
+        </>
       ))}
     </div>
   );

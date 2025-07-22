@@ -1,8 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import { useMutation } from "convex/react";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -12,30 +12,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { api } from "~/trpc/react";
 import SpinnerLoading from "../SpinnerLoading";
 import { Button } from "../ui/button";
 
-export default function CancelRequest({ friendId }: { friendId: string }) {
+export default function CancelRequest({ friendId }: { friendId: Id<"users"> }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const queryClient = useQueryClient();
-
-  const { mutate: cancelRequest, isPending } =
-    api.friends.cancelRequest.useMutation({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: async () => {
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.users),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: getQueryKey(api.friends),
-        });
-        setDialogOpen(false);
-        toast.success("Friend request cancelled successfully");
-      },
-    });
+  const [isPending, setIsPending] = useState(false);
+  const cancelRequest = useMutation(api.friends.mutate.cancelFriendRequest);
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -43,9 +26,9 @@ export default function CancelRequest({ friendId }: { friendId: string }) {
         <Button
           variant="ghost"
           size="sm"
-          className="border-2 border-destructive "
+          className="border-destructive border-2"
         >
-          <X className="h-4 w-4 mr-1" />
+          <X className="mr-1 h-4 w-4" />
           Cancel
         </Button>
       </DialogTrigger>
@@ -60,8 +43,10 @@ export default function CancelRequest({ friendId }: { friendId: string }) {
         <DialogFooter>
           <Button
             variant={"destructive"}
-            onClick={() => {
-              cancelRequest({ friendId });
+            onClick={async () => {
+              setIsPending(true);
+              await cancelRequest({ friendId });
+              setIsPending(false);
             }}
           >
             {isPending ? <SpinnerLoading /> : <p>Yes, cancel</p>}
