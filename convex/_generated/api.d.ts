@@ -20,6 +20,7 @@ import type * as friends_mutate from "../friends/mutate.js";
 import type * as friends_query from "../friends/query.js";
 import type * as helpers from "../helpers.js";
 import type * as http from "../http.js";
+import type * as users_query from "../users/query.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   "friends/query": typeof friends_query;
   helpers: typeof helpers;
   http: typeof http;
+  "users/query": typeof users_query;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

@@ -1,6 +1,9 @@
 "use client";
 
 import { IconDotsVertical } from "@tabler/icons-react";
+import { api } from "convex/_generated/api";
+import { useQueryWithStatus } from "convex/helpers";
+import { useConvexAuth } from "convex/react";
 import { LogOut, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -21,15 +24,22 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
-import useAuth from "~/hooks/useAuth";
 import { authClient } from "~/lib/auth-client";
+import SpinnerLoading from "../SpinnerLoading";
 
 export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
-  const { user } = useAuth();
+  const { isAuthenticated } = useConvexAuth();
+  const {
+    data: user,
+    error,
+    isPending,
+  } = useQueryWithStatus(api.users.query.getCurrentUser);
+
   const { setTheme, theme } = useTheme();
-  if (!user) return null;
+  if (!isAuthenticated || !user) return null;
+  if (isPending) return <SpinnerLoading />;
   return (
     <SidebarMenu>
       <SidebarMenuItem>
