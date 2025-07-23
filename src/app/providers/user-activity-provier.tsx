@@ -19,12 +19,9 @@ export default function UserActivity({
     })();
 
     window.addEventListener("beforeunload", () => {
-      console.log("ON BEFORE UN LOAD RUN");
-      (async () => {
-        await toggleUserActivityStatus({ newStatus: false });
-      })();
+      navigator.sendBeacon("/api/end-user-activity");
     });
-  }, []);
+  }, [children, toggleUserActivityStatus]);
 
   return <div>{children}</div>;
 }
