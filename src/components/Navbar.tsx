@@ -1,7 +1,9 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { Authenticated, Unauthenticated } from "convex/react";
+import { api } from "convex/_generated/api";
+import { useQueryWithStatus } from "convex/helpers";
+import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,6 +16,7 @@ import {
 import { ModeToggle } from "./theme/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,6 +29,9 @@ export default function Navbar() {
       className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-end gap-4 border-b px-4`}
     >
       <div className="flex gap-4">
+        <AuthLoading>
+          <AuthSkeleton />
+        </AuthLoading>
         <Authenticated>
           <NavSignedIn />
         </Authenticated>
@@ -50,6 +56,13 @@ function SignedOut() {
 
 export function NavSignedIn() {
   const { signOut } = useAuthActions();
+  const { data: user, isPending } = useQueryWithStatus(
+    api.users.query.getCurrentUser,
+  );
+  if (isPending) {
+    return <AuthSkeleton />;
+  }
+  if (!user) return null;
   return (
     <div className="flex gap-4">
       <Link href={"/dashboard"}>
@@ -58,7 +71,7 @@ export function NavSignedIn() {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src={user.image} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -74,5 +87,13 @@ export function NavSignedIn() {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+}
+function AuthSkeleton() {
+  return (
+    <>
+      <Skeleton className="h-10 w-26" />
+      <Skeleton className="h-10 w-10 rounded-full" />
+    </>
   );
 }
