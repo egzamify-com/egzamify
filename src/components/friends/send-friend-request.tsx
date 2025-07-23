@@ -2,6 +2,7 @@ import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { useState } from "react";
+import { toast } from "sonner";
 import SpinnerLoading from "../SpinnerLoading";
 import { Button } from "../ui/button";
 
@@ -15,6 +16,7 @@ export default function AddFriend({ friendId }: { friendId: Id<"users"> }) {
         setIsPending(true);
         sendFriendRequest({ friendId });
         setIsPending(false);
+        toast.success("Friend request sent!");
       }}
     >
       {isPending ? <SpinnerLoading /> : <p>Send friend request</p>}

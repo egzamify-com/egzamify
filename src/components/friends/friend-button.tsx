@@ -44,10 +44,10 @@ export default function FriendButton({
         return <SendFriendRequest friendId={friendId} />;
       case "incoming_requests":
         return (
-          <>
+          <div className="flex gap-2">
             <AcceptRequest friendId={friendId} />
             <RejectRequest friendId={friendId} />
-          </>
+          </div>
         );
       case "outcoming_requests":
         return <CancelRequest friendId={friendId} />;

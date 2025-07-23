@@ -1,7 +1,6 @@
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
-import { X } from "lucide-react";
 import { useState } from "react";
 import {
   Dialog,
@@ -23,14 +22,7 @@ export default function CancelRequest({ friendId }: { friendId: Id<"users"> }) {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="border-destructive border-2"
-        >
-          <X className="mr-1 h-4 w-4" />
-          Cancel
-        </Button>
+        <Button variant={"destructive"}>Cancel request</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

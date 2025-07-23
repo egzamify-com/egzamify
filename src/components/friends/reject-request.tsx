@@ -23,13 +23,8 @@ export default function RejectRequest({ friendId }: { friendId: Id<"users"> }) {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="border-destructive border-2"
-        >
-          <X className="mr-1 h-4 w-4" />
-          Decline
+        <Button variant="destructive" size="sm">
+          <X /> Decline
         </Button>
       </DialogTrigger>
       <DialogContent>

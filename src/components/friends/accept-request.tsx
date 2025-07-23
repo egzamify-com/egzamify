@@ -14,9 +14,7 @@ export default function AcceptRequest({ friendId }: { friendId: Id<"users"> }) {
   return (
     <Button
       size="sm"
-      variant={"ghost"}
-      className="border-2 border-green-600"
-      type="submit"
+      variant={"outline"}
       onClick={async () => {
         setIsPending(true);
         await acceptRequest({ friendId });
