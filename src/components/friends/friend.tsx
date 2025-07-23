@@ -1,9 +1,9 @@
 import type { Infer } from "convex/values";
-import Image from "next/image";
 import Link from "next/link";
 import { type Doc } from "~/../convex/_generated/dataModel";
 import { Card, CardContent } from "~/components/ui/card";
 import { friendFilterValidator } from "../../../convex/friends/query";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import FriendButton from "./friend-button";
 type FriendProps = {
   user: Doc<"users">;
@@ -24,13 +24,10 @@ export default function Friend({ friend }: { friend: FriendProps }) {
           <div className="flex items-center space-x-4">
             {/* Profile Picture with Online Status */}
             <div className="relative">
-              <Image
-                src={"/placeholder.svg"}
-                alt={`Profile picture for user: ${user.username ?? "username not found"}`}
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
+              <Avatar className="h-8 w-8 rounded-full">
+                <AvatarImage src={user.image} alt={user.name} />
+                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              </Avatar>
               <div
                 className={`border-background absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 ${
                   true ? "bg-green-500" : "bg-gray-400"
@@ -39,7 +36,7 @@ export default function Friend({ friend }: { friend: FriendProps }) {
             </div>
             <Link href={`/user/${user.username}`}>
               <div>
-                <h3 className="text-foreground font-medium">{user.email}</h3>
+                <h3 className="text-foreground font-medium">{user.name}</h3>
                 <p className="text-muted-foreground text-sm">
                   @{user.username}
                 </p>

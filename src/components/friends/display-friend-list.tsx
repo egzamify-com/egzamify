@@ -104,28 +104,16 @@ function Render({
     return <>{errorComponent}</>;
   }
 
-  // if (friendList.length === 0 && search) {
-  //   return (
-  //     <p className="mt-2 text-gray-500">No users found matching {search}.</p>
-  //   );
-  // }
-  // if (friendList.length === 0) {
-  //   return <>{notFoundComponent}</>;
-  // }
-
   return (
     <div className="space-y-3">
       {friendList.map((friend) => (
-        // <div key={friend._id}>email: {friend.email}</div>
-        <>
-          <Friend
-            key={`friend-${friend?._id}`}
-            friend={{
-              user: friend!,
-              status: filter,
-            }}
-          />
-        </>
+        <Friend
+          key={`friend-${friend?._id}`}
+          friend={{
+            user: friend!,
+            status: filter,
+          }}
+        />
       ))}
     </div>
   );

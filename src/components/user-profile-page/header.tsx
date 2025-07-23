@@ -14,10 +14,7 @@ export default function ProfileHeader({
     <Card>
       <CardHeader className="space-y-4 text-center">
         <Avatar className="mx-auto h-24 w-24">
-          <AvatarImage
-            src="/placeholder.svg?height=96&width=96"
-            alt="Profile picture"
-          />
+          <AvatarImage src={user.image} alt="Profile picture" />
           <AvatarFallback className="text-2xl">JD</AvatarFallback>
         </Avatar>
         <div>
