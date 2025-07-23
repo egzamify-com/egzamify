@@ -1,9 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { stream } from "convex-helpers/server/stream";
-import { Infer, v } from "convex/values";
+import { type Infer, v } from "convex/values";
 import { APP_CONFIG } from "../../src/APP_CONFIG";
-import { Doc, Id } from "../_generated/dataModel";
-import { query, QueryCtx } from "../_generated/server";
+import { type Doc, type Id } from "../_generated/dataModel";
+import { query, type QueryCtx } from "../_generated/server";
 import schema from "../schema";
 
 type FriendsQueryInfo = {

@@ -7,6 +7,9 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: false,
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
 };
 
 export default config;

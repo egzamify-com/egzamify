@@ -91,7 +91,6 @@ function Render({
   });
 
   if (error) {
-    showInput(false);
     return <>{errorComponent}</>;
   }
 
@@ -100,11 +99,8 @@ function Render({
   }
 
   if (friendList.length === 0) {
-    showInput(false);
     return <>{notFoundComponent}</>;
   }
-
-  if (friendList) showInput(true);
 
   return (
     <div className="space-y-3">
