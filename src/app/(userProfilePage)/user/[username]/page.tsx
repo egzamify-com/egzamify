@@ -1,54 +1,49 @@
 "use client";
 
+import { api } from "convex/_generated/api";
+import { useQueryWithStatus } from "convex/helpers";
 import { useParams } from "next/navigation";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import SpinnerLoading from "~/components/SpinnerLoading";
 import Achievements from "~/components/user-profile-page/achievements";
 import UserCharts from "~/components/user-profile-page/charts";
 import ProfileHeader from "~/components/user-profile-page/header";
-import UserProfileSkeleton from "~/components/user-profile-page/skeleton";
-import { api } from "~/trpc/react";
 
 export default function Page() {
-  return (
-    <>
-      <ErrorBoundary
-        onError={(error) => {
-          console.log(`[USER PAGE] Error: ${error}`);
-        }}
-        fallback={
-          <div className="max-w-4xl mx-auto p-6 space-y-6">
-            Something went wrong.
-          </div>
-        }
-      >
-        <Suspense fallback={<UserProfileSkeleton />}>
-          <UserProfile />
-        </Suspense>
-      </ErrorBoundary>
-    </>
-  );
-}
-function UserProfile() {
   const { username } = useParams();
   if (!username) {
     return <div>User not found</div>;
   }
-  const {
-    "1": { data },
-  } = api.users.getUserDataFromUsername.useSuspenseQuery({
-    username: username.toString(),
-  });
-  if (!data) {
-    return <div>now found</div>;
+  const { data, error, isPending } = useQueryWithStatus(
+    api.users.query.getUserFromUsername,
+    {
+      username: username as string,
+    },
+  );
+
+  if (isPending) {
+    return (
+      <div className="flex w-full items-center justify-center pt-100">
+        <SpinnerLoading />
+      </div>
+    );
   }
-  console.log(data);
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!data) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold">User not found.</h1>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <ProfileHeader
-        info={{ username: data.username!, name: data.name, userId: data.id }}
-      />
-      <Achievements userId={data.id} />
+    <div className="mx-auto max-w-4xl space-y-6 p-6">
+      <ProfileHeader info={{ user: data }} />
+      <Achievements userId={data._id} />
       <UserCharts />
     </div>
   );

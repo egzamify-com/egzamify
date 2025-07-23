@@ -36,7 +36,6 @@ export default function FriendButton({
 
   const friendshipStatus = alreadyKnownStatus ?? data.status;
 
-  console.log("friend id in friend button - ", friendId);
   function renderAction() {
     switch (friendshipStatus) {
       case "accepted_friends":

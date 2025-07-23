@@ -197,6 +197,34 @@ async function getUsersIncomingRequests({
   return users.collect();
 }
 
+async function getNotFriends({
+  ctx,
+  userId,
+  searchedUsers,
+  searchRan,
+}: FriendsQueryInfo) {
+  const sent = await ctx.db
+    .query("friends")
+    .withIndex("requesting_user_id", (q) => q.eq("requesting_user_id", userId))
+    .collect();
+  const received = await ctx.db
+    .query("friends")
+    .withIndex("receiving_user_id", (q) => q.eq("receiving_user_id", userId))
+    .collect();
+
+  // 2. Collect all friend user IDs
+  const friendIds = new Set([
+    ...sent.map((f) => f.receiving_user_id),
+    ...received.map((f) => f.requesting_user_id),
+    userId,
+  ]);
+
+  if (searchRan) {
+    return searchedUsers.filter((u) => u._id && !friendIds.has(u._id));
+  }
+  const allUsers = await ctx.db.query("users").collect();
+  return allUsers.filter((u) => u._id && !friendIds.has(u._id));
+}
 export const checkUserFriendStatus = query({
   args: { friendId: v.id("users") },
   handler: async (
@@ -237,31 +265,3 @@ export const checkUserFriendStatus = query({
     return { status: "not_friends" };
   },
 });
-async function getNotFriends({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const sent = await ctx.db
-    .query("friends")
-    .withIndex("requesting_user_id", (q) => q.eq("requesting_user_id", userId))
-    .collect();
-  const received = await ctx.db
-    .query("friends")
-    .withIndex("receiving_user_id", (q) => q.eq("receiving_user_id", userId))
-    .collect();
-
-  // 2. Collect all friend user IDs
-  const friendIds = new Set([
-    ...sent.map((f) => f.receiving_user_id),
-    ...received.map((f) => f.requesting_user_id),
-    userId,
-  ]);
-
-  if (searchRan) {
-    return searchedUsers.filter((u) => u._id && !friendIds.has(u._id));
-  }
-  const allUsers = await ctx.db.query("users").collect();
-  return allUsers.filter((u) => u._id && !friendIds.has(u._id));
-}

@@ -15,6 +15,7 @@ const schema = defineSchema({
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
   })
+    .index("username", ["username"])
     .index("email", ["email"])
     .searchIndex("search_username", {
       searchField: "username",
