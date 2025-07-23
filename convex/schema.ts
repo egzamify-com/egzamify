@@ -6,6 +6,8 @@ import { v } from "convex/values";
 const schema = defineSchema({
   ...authTables,
   users: defineTable({
+    githubId: v.optional(v.number()),
+    githubAccessToken: v.optional(v.string()),
     username: v.optional(v.string()),
     name: v.optional(v.string()),
     image: v.optional(v.string()),
