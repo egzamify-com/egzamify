@@ -3,6 +3,7 @@ import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Trash } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +44,7 @@ export default function DeleteFriend({ friendId }: { friendId: Id<"users"> }) {
               setIsPending(true);
               await deleteFriend({ friendId });
               setIsPending(false);
+              toast.error("Friend deleted!");
             }}
           >
             {isPending ? <SpinnerLoading /> : <p>Yes, delete</p>}

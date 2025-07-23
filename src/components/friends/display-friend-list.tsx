@@ -89,31 +89,36 @@ function Render({
     filter,
     search,
   });
+
   if (error) {
-    return <div>error: {error.message}</div>;
-  }
-  if (!friendList) {
-    return <div>not found...</div>;
+    showInput(false);
+    return <>{errorComponent}</>;
   }
 
   if (isPending) {
-    return <FriendsSkeleton countOfSkeletons={10} />;
+    return <FriendsSkeleton countOfSkeletons={5} />;
   }
 
-  if (!friendList) {
-    return <>{errorComponent}</>;
+  if (friendList.length === 0) {
+    showInput(false);
+    return <>{notFoundComponent}</>;
   }
+
+  if (friendList) showInput(true);
 
   return (
     <div className="space-y-3">
       {friendList.map((friend) => (
-        <Friend
-          key={`friend-${friend?._id}`}
-          friend={{
-            user: friend!,
-            status: filter,
-          }}
-        />
+        <div key={`friend-${friend?._id}`}>
+          {friend && (
+            <Friend
+              friend={{
+                user: friend!,
+                status: filter,
+              }}
+            />
+          )}
+        </div>
       ))}
     </div>
   );

@@ -16,6 +16,7 @@ const schema = defineSchema({
     phone: v.optional(v.string()),
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
+    isActive: v.optional(v.boolean()),
   })
     .index("username", ["username"])
     .index("email", ["email"])

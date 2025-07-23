@@ -7,6 +7,7 @@ import { Toaster } from "~/components/ui/sonner";
 import "~/styles/globals.css";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ConvexClientProvider } from "./providers/ConvexClientProvider";
+import UserActivity from "./providers/user-activity-provier";
 
 export const metadata: Metadata = {
   title: "Learn with AI",
@@ -34,11 +35,13 @@ export default function RootLayout({
           >
             <TRPCReactProvider>
               <ConvexClientProvider>
-                <Navbar />
-                <main>
-                  {children}
-                  <Toaster />
-                </main>
+                <UserActivity>
+                  <Navbar />
+                  <main>
+                    {children}
+                    <Toaster />
+                  </main>
+                </UserActivity>
               </ConvexClientProvider>
             </TRPCReactProvider>
           </ThemeProvider>

@@ -26,6 +26,7 @@ import {
 } from "~/components/ui/sidebar";
 import { authClient } from "~/lib/auth-client";
 import SpinnerLoading from "../SpinnerLoading";
+import ActivityStatusAvatar from "../users/activity-status-avatar";
 
 export function NavUser() {
   const router = useRouter();
@@ -49,10 +50,7 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-full">
-                <AvatarImage src={user.image} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
+              <ActivityStatusAvatar userToShow={user} />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.username}</span>
                 <span className="text-muted-foreground truncate text-xs">

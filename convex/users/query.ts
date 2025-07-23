@@ -6,6 +6,7 @@ export const getCurrentUser = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("User not authenticated");
+    console.log("current user fetched");
     return await ctx.db.get(userId);
   },
 });

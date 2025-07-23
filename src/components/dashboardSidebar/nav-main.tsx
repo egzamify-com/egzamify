@@ -12,6 +12,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar";
+import InvitesNavBadge from "../friends/invites-nav-badge";
 import {
   Collapsible,
   CollapsibleContent,
@@ -43,7 +44,7 @@ export function NavMain({
       title: "Invites",
       url: "/dashboard/friends/invites",
       icon: <Mail size={18} />,
-      // badgeComponent: <InvitesNavBadge />,
+      badgeComponent: <InvitesNavBadge />,
     },
   ];
   const AiWyjasniaTab = [
@@ -95,9 +96,9 @@ export function NavMain({
                                 {item.title}
                               </div>
                               <div>
-                                {/* {item.badgeComponent && (
+                                {item.badgeComponent && (
                                   <>{item.badgeComponent}</>
-                                )} */}
+                                )}
                               </div>
                             </SidebarMenuButton>
                           </SidebarMenuSubItem>

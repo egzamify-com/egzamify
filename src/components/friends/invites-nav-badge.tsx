@@ -1,39 +1,45 @@
-import { api } from "~/trpc/react";
+import { api } from "convex/_generated/api";
+import { useQueryWithStatus } from "convex/helpers";
 import { Badge } from "../ui/badge";
 
 export default function InvitesNavBadge() {
-  const { data: incoming } = api.users.getUsersFromSearch.useQuery({
-    filter: "incoming_requests",
-    search: "",
-    limit: 15,
-  });
-  const incomingRequestsCount = incoming?.items.length;
+  const { data: incomingRequests } = useQueryWithStatus(
+    api.friends.query.getFriendsWithSearch,
+    {
+      filter: "incoming_requests",
+      search: "",
+    },
+  );
+  const incomingRequestsCount = incomingRequests?.length || 0;
 
-  const { data: pending } = api.users.getUsersFromSearch.useQuery({
-    filter: "pending_requests",
-    search: "",
-    limit: 15,
-  });
-  const pendingRequestsCount = pending?.items.length;
+  const { data: outcomingRequests } = useQueryWithStatus(
+    api.friends.query.getFriendsWithSearch,
+    {
+      filter: "outcoming_requests",
+      search: "",
+    },
+  );
+
+  const outcomingRequestsCount = outcomingRequests?.length || 0;
 
   function render() {
     if (
       incomingRequestsCount === undefined ||
-      pendingRequestsCount === undefined
+      outcomingRequestsCount === undefined
     ) {
       return null;
     }
 
-    if (incomingRequestsCount + pendingRequestsCount === 0) {
+    if (incomingRequestsCount + outcomingRequestsCount === 0) {
       return null;
     }
 
-    if (incomingRequestsCount + pendingRequestsCount > 20) {
-      return <Badge className="ml-1 ">20+</Badge>;
+    if (incomingRequestsCount + outcomingRequestsCount > 20) {
+      return <Badge className="ml-1">20+</Badge>;
     } else {
       return (
-        <Badge className="ml-1 ">
-          {incomingRequestsCount + pendingRequestsCount}
+        <Badge className="ml-1">
+          {incomingRequestsCount + outcomingRequestsCount}
         </Badge>
       );
     }

@@ -3,6 +3,7 @@ import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -38,8 +39,8 @@ export default function RejectRequest({ friendId }: { friendId: Id<"users"> }) {
             onClick={async () => {
               setIsPending(true);
               await rejectRequest({ friendId });
-
               setIsPending(false);
+              toast.error("Friend request rejected!");
             }}
           >
             {isPending ? <SpinnerLoading /> : <p>Yes, reject</p>}

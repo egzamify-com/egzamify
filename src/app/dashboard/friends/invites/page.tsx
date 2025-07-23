@@ -1,26 +1,31 @@
 "use client";
 
+import { api } from "convex/_generated/api";
+import { useQueryWithStatus } from "convex/helpers";
 import { Clock, UserPlus } from "lucide-react";
 import DisplayFriendList from "~/components/friends/display-friend-list";
 import { Badge } from "~/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/trpc/react";
 
 export default function Page() {
-  const { data: incoming } = api.users.getUsersFromSearch.useQuery({
-    filter: "incoming_requests",
-    search: "",
-    limit: 15,
-  });
-  const incomingRequestsCount = incoming?.items.length;
+  const { data: incomingRequests } = useQueryWithStatus(
+    api.friends.query.getFriendsWithSearch,
+    {
+      filter: "incoming_requests",
+      search: "",
+    },
+  );
+  const incomingRequestsCount = incomingRequests?.length || 0;
 
-  const { data: pending } = api.users.getUsersFromSearch.useQuery({
-    filter: "pending_requests",
-    search: "",
-    limit: 15,
-  });
-  const pendingRequestsCount = pending?.items.length;
+  const { data: outcomingRequests } = useQueryWithStatus(
+    api.friends.query.getFriendsWithSearch,
+    {
+      filter: "outcoming_requests",
+      search: "",
+    },
+  );
 
+  const outcomingRequestsCount = outcomingRequests?.length || 0;
   return (
     <>
       <div className="container mx-auto max-w-4xl p-6">
@@ -56,13 +61,13 @@ export default function Page() {
                 <Clock className="h-4 w-4" />
                 <span>Pending</span>
 
-                {pendingRequestsCount !== undefined && (
+                {outcomingRequests !== undefined && (
                   <>
-                    {pendingRequestsCount > 0 ? (
+                    {outcomingRequestsCount > 0 ? (
                       <Badge className="ml-1">
-                        {pendingRequestsCount > 10
+                        {outcomingRequestsCount > 10
                           ? "10+"
-                          : pendingRequestsCount}
+                          : outcomingRequestsCount}
                       </Badge>
                     ) : null}
                   </>

@@ -3,6 +3,7 @@ import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Check } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import SpinnerLoading from "../SpinnerLoading";
 import { Button } from "../ui/button";
 
@@ -19,6 +20,7 @@ export default function AcceptRequest({ friendId }: { friendId: Id<"users"> }) {
         setIsPending(true);
         await acceptRequest({ friendId });
         setIsPending(false);
+        toast.success("Friend request accepted!");
       }}
     >
       {isPending ? (

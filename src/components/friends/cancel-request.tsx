@@ -2,6 +2,7 @@ import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -39,6 +40,7 @@ export default function CancelRequest({ friendId }: { friendId: Id<"users"> }) {
               setIsPending(true);
               await cancelRequest({ friendId });
               setIsPending(false);
+              toast.error("Friend request cancelled");
             }}
           >
             {isPending ? <SpinnerLoading /> : <p>Yes, cancel</p>}

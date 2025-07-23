@@ -3,7 +3,7 @@ import Link from "next/link";
 import { type Doc } from "~/../convex/_generated/dataModel";
 import { Card, CardContent } from "~/components/ui/card";
 import { friendFilterValidator } from "../../../convex/friends/query";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import ActivityStatusAvatar from "../users/activity-status-avatar";
 import FriendButton from "./friend-button";
 type FriendProps = {
   user: Doc<"users">;
@@ -22,18 +22,8 @@ export default function Friend({ friend }: { friend: FriendProps }) {
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            {/* Profile Picture with Online Status */}
-            <div className="relative">
-              <Avatar className="h-8 w-8 rounded-full">
-                <AvatarImage src={user.image} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div
-                className={`border-background absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 ${
-                  true ? "bg-green-500" : "bg-gray-400"
-                }`}
-              />
-            </div>
+            <ActivityStatusAvatar userToShow={user} />
+
             <Link href={`/user/${user.username}`}>
               <div>
                 <h3 className="text-foreground font-medium">{user.name}</h3>
@@ -45,11 +35,6 @@ export default function Friend({ friend }: { friend: FriendProps }) {
           </div>
 
           <div className="flex items-center space-x-2">
-            {/* <Button variant="outline" size="sm">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Message
-            </Button> */}
-            {/* {renderAction()} */}
             <FriendButton
               friendId={friend.user._id}
               alreadyKnownStatus={status}
