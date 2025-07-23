@@ -1,8 +1,11 @@
 "use client";
 
 import { type Message, useChat } from "@ai-sdk/react";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import { useMutation } from "convex/react";
 import { Bot, Send, User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { APP_CONFIG } from "~/APP_CONFIG";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -35,6 +38,8 @@ export default function Chat({
   id,
   initialMessages,
 }: { id?: string | undefined; initialMessages?: Message[] } = {}) {
+  const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat);
+
   const [selectedMode, setSelectedMode] = useState("normal");
   const { input, handleInputChange, handleSubmit, messages } = useChat({
     id,
@@ -45,6 +50,25 @@ export default function Chat({
         ?.systemPrompt,
     },
   });
+
+  // store messages in ref to keep track for empty chat
+  const latestMessagesRef = useRef(messages);
+
+  useEffect(() => {
+    latestMessagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    return () => {
+      const currentMessages = latestMessagesRef.current;
+
+      if (currentMessages.length === 0) {
+        (async () => {
+          await deleteThread({ chatId: id as Id<"explanations"> });
+        })();
+      }
+    };
+  }, [id, deleteThread]);
 
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
