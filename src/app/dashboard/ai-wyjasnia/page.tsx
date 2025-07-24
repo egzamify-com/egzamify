@@ -4,17 +4,14 @@ import { api } from "convex/_generated/api";
 import { useMutation } from "convex/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
-import SpinnerLoading from "~/components/SpinnerLoading";
+import FullScreenDashboardLoading from "~/components/full-screen-loading-dashboard";
 import { tryCatch } from "~/utils/tryCatch";
 
 function Loading() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-2">
-      <SpinnerLoading />
-      <h1 className="text-2xl font-bold">
-        {"We're creating new chat for you..."}
-      </h1>
-    </div>
+    <FullScreenDashboardLoading
+      loadingMessage={"We're creating new chat for you..."}
+    />
   );
 }
 

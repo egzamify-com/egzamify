@@ -1,9 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import type { Message } from "ai";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { query } from "../_generated/server";
+import { parseThreadMessages } from "./helpers";
 
 export const getThreadMessages = query({
   args: { chatId: v.string() },
@@ -12,16 +12,16 @@ export const getThreadMessages = query({
     const userId = await getAuthUserId(ctx);
     if (!userId) throw new Error("Failed to get user");
 
-    const messagesForThatThread = await ctx.db
+    const thread = await ctx.db
       .query("explanations")
       .withIndex("by_id", (q) => q.eq("_id", chatId as Id<"explanations">))
       .first();
-    console.log("db record - ", messagesForThatThread);
-    if (!messagesForThatThread) return [];
-    if (!messagesForThatThread.content) return [];
+    console.log("db record read - ", thread);
+    if (!thread) return [];
+    if (!thread.content) return [];
 
-    const dbMessages: Message[] = JSON.parse(messagesForThatThread.content);
-
+    const dbMessages = parseThreadMessages(thread);
+    // console.log("parsed messages - ", dbMessages);
     return dbMessages;
   },
 });

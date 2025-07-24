@@ -4,6 +4,7 @@ import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import { use } from "react";
 import FullScreenDashboardError from "~/components/full-screen-error-dashboard";
+import FullScreenDashboardLoading from "~/components/full-screen-loading-dashboard";
 import Chat from "../../chat";
 
 export default function Page({
@@ -13,10 +14,17 @@ export default function Page({
 }) {
   const { chatId } = use(params);
 
-  const { data, error } = useQuery(api.ai_wyjasnia.query.getThreadMessages, {
-    chatId,
-  });
-  console.log("new msgs in client - ", data);
+  const { data, isPending, error } = useQuery(
+    api.ai_wyjasnia.query.getThreadMessages,
+    {
+      chatId,
+    },
+  );
+
+  if (isPending) {
+    return <FullScreenDashboardLoading />;
+  }
+
   if (error) {
     return (
       <FullScreenDashboardError

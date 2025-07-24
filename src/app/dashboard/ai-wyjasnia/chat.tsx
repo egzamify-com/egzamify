@@ -1,12 +1,14 @@
 "use client";
 
 import { type Message, useChat } from "@ai-sdk/react";
+import type { JSONValue } from "ai";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Bot, Send, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
@@ -18,6 +20,9 @@ export default function Chat({
   id,
   initialMessages,
 }: { id?: string | undefined; initialMessages?: Message[] } = {}) {
+  const updateThread = useMutation(
+    api.ai_wyjasnia.mutate.updateAssistantAnnotations,
+  );
   const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat);
 
   const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal");
@@ -27,11 +32,20 @@ export default function Chat({
     initialMessages,
     sendExtraMessageFields: true,
     body: {
+      selectedMode,
       currentSystemPrompt: AI_MODES.find((m) => m.id === selectedMode)
         ?.systemPrompt,
     },
+
+    async onFinish(message, options) {
+      console.log("messages from client - ", message.annotations);
+      await updateThread({
+        chatId: id as Id<"explanations">,
+        newAnnotation: JSON.stringify(message.annotations),
+      });
+    },
   });
-  // handle empty chats, delete if user left with no messages
+  // handle empty chats, delete if user left with no messages (useEffect and ref)
   const latestMessagesRef = useRef(messages);
   useEffect(() => {
     latestMessagesRef.current = messages;
@@ -48,7 +62,7 @@ export default function Chat({
       }
     };
   }, [id, deleteThread]);
-
+  console.log("mess", initialMessages);
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
       <div className="w-full overflow-y-auto p-4">
@@ -60,7 +74,7 @@ export default function Chat({
             </div>
           </div>
         ) : (
-          initialMessages?.map((message) => (
+          initialMessages?.map((message: Message) => (
             <div
               key={message.id}
               className={`my-3 flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
@@ -82,8 +96,16 @@ export default function Chat({
                   )}
                 </div>
                 <Card
-                  className={`flex items-center justify-center py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card"}`}
+                  className={`relative flex items-center justify-center py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card"}`}
                 >
+                  <div className="absolute top-[-35px] left-[5px]">
+                    {message.role === "assistant" &&
+                      parseAnnotations(message.annotations) && (
+                        <Badge variant="outline">
+                          {parseAnnotations(message.annotations)}
+                        </Badge>
+                      )}
+                  </div>
                   <CardContent>
                     <p className="text-sm whitespace-pre-wrap">
                       {message.content}
@@ -133,4 +155,16 @@ export default function Chat({
       </div>
     </div>
   );
+}
+function parseAnnotations(annotations: JSONValue[] | undefined) {
+  if (!annotations) return null;
+  // const stringg = JSON.stringify(annotations);
+  // // console.log("stringg", stringg);
+  // // console.log("annotation", annotations);
+  // const parsed: string = JSON.parse(stringg);
+  // // console.log("parsed", parsed);
+  // const anotherParse: { id: string; mode: string }[] = JSON.parse(parsed);
+  // console.log("anotherParse", anotherParse);
+  // return anotherParse[0]?.mode ?? null;
+  return "HALO";
 }

@@ -2,6 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { mutation } from "../_generated/server";
+import { parseThreadMessages } from "./helpers";
 
 export const storeNewThread = mutation({
   args: {},
@@ -41,10 +42,36 @@ export const deleteChat = mutation({
   handler: async (ctx, args) => {
     console.log("delete chat mut hit");
     const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Failed to get user");
-    }
+    if (!userId) throw new Error("Failed to get user");
     const { chatId } = args;
     void (await ctx.db.delete(chatId));
+  },
+});
+export const updateAssistantAnnotations = mutation({
+  args: { chatId: v.id("explanations"), newAnnotation: v.string() },
+  handler: async (ctx, args) => {
+    console.log("update chat with annotation");
+    const { chatId, newAnnotation } = args;
+
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Failed to get user");
+
+    const thread = await ctx.db.get(chatId);
+    if (!thread) throw new Error("Chat not found");
+
+    const threadContent = parseThreadMessages(thread);
+
+    const lastMess = threadContent[threadContent.length - 1];
+
+    const strigified = JSON.stringify(newAnnotation);
+    const parsed: { id: string; mode: string }[] = JSON.parse(strigified);
+    console.log("parsed - ", parsed);
+
+    lastMess.annotations = parsed;
+    console.log("current thread content - ", threadContent);
+    threadContent.pop();
+    threadContent.push(lastMess);
+    console.log("newContent", threadContent);
+    await ctx.db.patch(chatId, { content: JSON.stringify(threadContent) });
   },
 });

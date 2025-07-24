@@ -30,9 +30,9 @@ export const getFriendsWithSearch = query({
     if (!userId) throw new Error("Failed to get user");
 
     const { search, filter } = args;
-    console.log("filter - ", filter);
-    console.log("search - ", search);
-    console.log("searchRan - ", search != "");
+    // console.log("filter - ", filter);
+    // console.log("search - ", search);
+    // console.log("searchRan - ", search != "");
 
     const searchedUsers = await ctx.db
       .query("users")
