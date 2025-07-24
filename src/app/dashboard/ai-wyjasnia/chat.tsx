@@ -1,7 +1,6 @@
 "use client";
 
 import { type Message, useChat } from "@ai-sdk/react";
-import type { JSONValue } from "ai";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
@@ -37,8 +36,7 @@ export default function Chat({
         ?.systemPrompt,
     },
 
-    async onFinish(message, options) {
-      console.log("messages from client - ", message.annotations);
+    async onFinish(message) {
       await updateThread({
         chatId: id as Id<"explanations">,
         newAnnotation: JSON.stringify(message.annotations),
@@ -62,7 +60,6 @@ export default function Chat({
       }
     };
   }, [id, deleteThread]);
-  console.log("mess", initialMessages);
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
       <div className="w-full overflow-y-auto p-4">
@@ -156,15 +153,8 @@ export default function Chat({
     </div>
   );
 }
-function parseAnnotations(annotations: JSONValue[] | undefined) {
+function parseAnnotations(annotations: any) {
   if (!annotations) return null;
-  // const stringg = JSON.stringify(annotations);
-  // // console.log("stringg", stringg);
-  // // console.log("annotation", annotations);
-  // const parsed: string = JSON.parse(stringg);
-  // // console.log("parsed", parsed);
-  // const anotherParse: { id: string; mode: string }[] = JSON.parse(parsed);
-  // console.log("anotherParse", anotherParse);
-  // return anotherParse[0]?.mode ?? null;
-  return "HALO";
+  // console.log("annotations", annotations[0].mode);
+  return annotations[0].mode;
 }

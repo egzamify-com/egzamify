@@ -1,8 +1,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { Message } from "ai";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { mutation } from "../_generated/server";
-import { parseThreadMessages } from "./helpers";
 
 export const storeNewThread = mutation({
   args: {},
@@ -58,20 +58,59 @@ export const updateAssistantAnnotations = mutation({
 
     const thread = await ctx.db.get(chatId);
     if (!thread) throw new Error("Chat not found");
+    // 1. Parse the stringified content of the thread into an array of messages
+    let threadContent: Message[];
+    try {
+      threadContent = JSON.parse(thread.content);
+      if (!Array.isArray(threadContent)) {
+        throw new Error("Parsed content is not an array.");
+      }
+    } catch (parseError) {
+      console.error(
+        "Error parsing thread content for chatId:",
+        chatId,
+        parseError,
+      );
+      throw new Error("Invalid thread content format.");
+    }
 
-    const threadContent = parseThreadMessages(thread);
+    // Check if there are any messages in the thread
+    if (threadContent.length === 0) {
+      console.warn("No messages in thread to add annotation to:", chatId);
+      // Depending on your logic, you might want to throw an error or just return
+      return;
+    }
 
-    const lastMess = threadContent[threadContent.length - 1];
+    // 2. Get the last message in the array
+    const lastMessage = threadContent[threadContent.length - 1];
 
-    const strigified = JSON.stringify(newAnnotation);
-    const parsed: { id: string; mode: string }[] = JSON.parse(strigified);
-    console.log("parsed - ", parsed);
+    // 3. Parse the newAnnotation string into an array of annotation objects
+    let parsedAnnotations: { id: string; mode: string }[];
+    try {
+      parsedAnnotations = JSON.parse(newAnnotation);
+      if (!Array.isArray(parsedAnnotations)) {
+        throw new Error("newAnnotation is not a valid JSON array.");
+      }
+    } catch (parseError) {
+      console.error("Error parsing newAnnotation string:", parseError);
+      throw new Error("Invalid newAnnotation format.");
+    }
 
-    lastMess.annotations = parsed;
-    console.log("current thread content - ", threadContent);
-    threadContent.pop();
-    threadContent.push(lastMess);
-    console.log("newContent", threadContent);
-    await ctx.db.patch(chatId, { content: JSON.stringify(threadContent) });
+    // 4. Append the new annotations to the last message's annotations array
+    // Initialize annotations if they don't exist
+    if (!lastMessage.annotations) {
+      lastMessage.annotations = [];
+    }
+    // Append the new parsed annotations
+    lastMessage.annotations.push(...parsedAnnotations);
+
+    console.log("Updated last message:", lastMessage);
+
+    // 5. Stringify the entire updated thread content array back to a string
+    const newContentString = JSON.stringify(threadContent);
+
+    // 6. Patch the Convex document with the new stringified content
+    await ctx.db.patch(chatId, { content: newContentString });
+    console.log("Chat updated successfully with new annotation.");
   },
 });

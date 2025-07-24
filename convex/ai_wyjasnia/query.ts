@@ -16,7 +16,7 @@ export const getThreadMessages = query({
       .query("explanations")
       .withIndex("by_id", (q) => q.eq("_id", chatId as Id<"explanations">))
       .first();
-    console.log("db record read - ", thread);
+    // console.log("db record read - ", thread);
     if (!thread) return [];
     if (!thread.content) return [];
 
