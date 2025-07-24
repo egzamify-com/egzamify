@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { useQueryWithStatus } from "convex/helpers";
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
@@ -56,9 +56,7 @@ function SignedOut() {
 
 export function NavSignedIn() {
   const { signOut } = useAuthActions();
-  const { data: user, isPending } = useQueryWithStatus(
-    api.users.query.getCurrentUser,
-  );
+  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser);
   if (isPending) {
     return <AuthSkeleton />;
   }

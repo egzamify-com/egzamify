@@ -1,18 +1,18 @@
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { useQueryWithStatus } from "convex/helpers";
 import { Badge } from "../ui/badge";
 
 export default function InvitesNavBadge() {
-  const { data: incomingRequests } = useQueryWithStatus(
+  const { data: incomingRequests } = useQuery(
     api.friends.query.getFriendsWithSearch,
     {
       filter: "incoming_requests",
       search: "",
     },
   );
-  const incomingRequestsCount = incomingRequests?.length || 0;
+  const incomingRequestsCount = incomingRequests?.length ?? 0;
 
-  const { data: outcomingRequests } = useQueryWithStatus(
+  const { data: outcomingRequests } = useQuery(
     api.friends.query.getFriendsWithSearch,
     {
       filter: "outcoming_requests",
@@ -20,7 +20,7 @@ export default function InvitesNavBadge() {
     },
   );
 
-  const outcomingRequestsCount = outcomingRequests?.length || 0;
+  const outcomingRequestsCount = outcomingRequests?.length ?? 0;
 
   function render() {
     if (

@@ -4,6 +4,7 @@ import {
   IconDashboard,
   IconInnerShadowTop,
   IconListDetails,
+  IconSettings,
   IconUser,
 } from "@tabler/icons-react";
 
@@ -35,9 +36,14 @@ const data = {
     },
 
     {
-      title: "Konto",
+      title: "Account",
       url: "/dashboard/konto",
       icon: IconUser,
+    },
+    {
+      title: "Settings",
+      url: "/dashboard/settings",
+      icon: IconSettings,
     },
   ],
 };

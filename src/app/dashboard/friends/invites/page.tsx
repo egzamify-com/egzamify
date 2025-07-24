@@ -1,23 +1,23 @@
 "use client";
 
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { useQueryWithStatus } from "convex/helpers";
 import { Clock, UserPlus } from "lucide-react";
 import DisplayFriendList from "~/components/friends/display-friend-list";
 import { Badge } from "~/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 export default function Page() {
-  const { data: incomingRequests } = useQueryWithStatus(
+  const { data: incomingRequests } = useQuery(
     api.friends.query.getFriendsWithSearch,
     {
       filter: "incoming_requests",
       search: "",
     },
   );
-  const incomingRequestsCount = incomingRequests?.length || 0;
+  const incomingRequestsCount = incomingRequests?.length ?? 0;
 
-  const { data: outcomingRequests } = useQueryWithStatus(
+  const { data: outcomingRequests } = useQuery(
     api.friends.query.getFriendsWithSearch,
     {
       filter: "outcoming_requests",
@@ -25,7 +25,7 @@ export default function Page() {
     },
   );
 
-  const outcomingRequestsCount = outcomingRequests?.length || 0;
+  const outcomingRequestsCount = outcomingRequests?.length ?? 0;
   return (
     <>
       <div className="container mx-auto max-w-4xl p-6">

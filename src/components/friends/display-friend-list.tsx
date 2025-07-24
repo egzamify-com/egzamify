@@ -1,5 +1,5 @@
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { useQueryWithStatus } from "convex/helpers";
 import type { Infer } from "convex/values";
 import { Search } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -32,15 +32,13 @@ export default function DisplayFriendList({
   return (
     <div
       className={cn(
-        !disableTopPadding && "py-6",
-        `container mx-auto max-w-4xl`,
+        !disableTopPadding && "py-8",
+        `container mx-auto max-w-4xl px-4`,
       )}
     >
       {headerTitle && headerDescription && (
         <div className="mb-6">
-          <h1 className="text-foreground mb-2 text-2xl font-bold">
-            {headerTitle}
-          </h1>
+          <h1 className="text-foreground text-3xl font-bold">{headerTitle}</h1>
           <p className="text-muted-foreground">{headerDescription}</p>
         </div>
       )}
@@ -85,7 +83,7 @@ function Render({
     data: friendList,
     error,
     isPending,
-  } = useQueryWithStatus(api.friends.query.getFriendsWithSearch, {
+  } = useQuery(api.friends.query.getFriendsWithSearch, {
     filter,
     search,
   });

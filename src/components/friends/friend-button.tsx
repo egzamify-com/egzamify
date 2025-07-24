@@ -1,7 +1,7 @@
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import type { friendFilterValidator } from "convex/friends/query";
-import { useQueryWithStatus } from "convex/helpers";
 import type { Infer } from "convex/values";
 import SpinnerLoading from "../SpinnerLoading";
 import AcceptRequest from "./accept-request";
@@ -17,7 +17,7 @@ export default function FriendButton({
   friendId: Id<"users">;
   alreadyKnownStatus?: Infer<typeof friendFilterValidator>;
 }) {
-  const { data, error, isPending } = useQueryWithStatus(
+  const { data, error, isPending } = useQuery(
     api.friends.query.checkUserFriendStatus,
     {
       friendId,

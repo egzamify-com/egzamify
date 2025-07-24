@@ -1,19 +1,21 @@
 "use client";
 
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { useQueryWithStatus } from "convex/helpers";
+import { Settings, User } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import SpinnerLoading from "~/components/SpinnerLoading";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import UpdateProfileDialog from "./UpdateProfile";
+import ActivityStatusAvatar from "~/components/users/activity-status-avatar";
 
 export default function Page() {
   const {
     data: user,
     error,
     isPending,
-  } = useQueryWithStatus(api.users.query.getCurrentUser);
+  } = useQuery(api.users.query.getCurrentUser);
 
   if (isPending) {
     return (
@@ -29,17 +31,22 @@ export default function Page() {
       <Card className="w-full">
         <CardContent className="p-6">
           <div className="flex items-center space-x-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={user.image} alt="Profile picture" />
-              <AvatarFallback className="text-lg font-semibold">
-                AS
-              </AvatarFallback>
-            </Avatar>
+            <ActivityStatusAvatar userToShow={user} size={50} />
             <div className="flex-1">
               <h1 className="text-2xl font-bold">{user?.username}</h1>
               <p className="text-muted-foreground mt-1">{user?.email}</p>
             </div>
-            <UpdateProfileDialog />
+
+            <Link href={`/user/${user.username}`}>
+              <Button variant={"outline"}>
+                <User /> Public profile
+              </Button>
+            </Link>
+            <Link href={"/dashboard/settings"}>
+              <Button variant={"outline"}>
+                <Settings /> Settings
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

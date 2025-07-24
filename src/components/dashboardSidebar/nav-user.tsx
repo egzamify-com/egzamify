@@ -1,10 +1,10 @@
 "use client";
 
 import { IconDotsVertical } from "@tabler/icons-react";
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { useQueryWithStatus } from "convex/helpers";
 import { useConvexAuth } from "convex/react";
-import { LogOut, Moon, Sun, User } from "lucide-react";
+import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,7 @@ export function NavUser() {
     data: user,
     error,
     isPending,
-  } = useQueryWithStatus(api.users.query.getCurrentUser);
+  } = useQuery(api.users.query.getCurrentUser);
 
   const { setTheme, theme } = useTheme();
   if (!isAuthenticated || !user) return null;
@@ -82,6 +82,12 @@ export function NavUser() {
               <DropdownMenuItem className="cursor-pointer">
                 <User />
                 Konto
+              </DropdownMenuItem>
+            </Link>
+            <Link href={"/dashboard/settings"}>
+              <DropdownMenuItem className="cursor-pointer">
+                <Settings />
+                Settings
               </DropdownMenuItem>
             </Link>
             {theme === "dark" ? (
