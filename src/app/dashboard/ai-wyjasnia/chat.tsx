@@ -63,7 +63,7 @@ export default function Chat({
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
       <div className="w-full overflow-y-auto p-4">
-        {initialMessages?.length === 0 ? (
+        {messages?.length === 0 ? (
           <div className="text-muted-foreground flex h-full items-center justify-center">
             <div className="text-center">
               <Bot className="mx-auto mb-4 h-12 w-12 opacity-50" />
@@ -71,7 +71,7 @@ export default function Chat({
             </div>
           </div>
         ) : (
-          initialMessages?.map((message: Message) => (
+          messages?.map((message: Message) => (
             <div
               key={message.id}
               className={`my-3 flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
