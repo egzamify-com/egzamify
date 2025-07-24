@@ -5,11 +5,11 @@ import { Button } from "./ui/button";
 
 export default function FullScreenDashboardError({
   errorMessage = "Unexpected error occurred",
-  errorDetail,
+  errorDetail = "",
   actionButton,
 }: {
   errorMessage?: string;
-  errorDetail: string;
+  errorDetail?: string;
   actionButton?: React.ReactNode;
 }) {
   return (

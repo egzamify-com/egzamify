@@ -3,7 +3,7 @@
 import SpinnerLoading from "./SpinnerLoading";
 
 export default function FullScreenDashboardLoading({
-  loadingMessage = "Loading chat...",
+  loadingMessage = "",
   loadingDetail = "",
 }: {
   loadingMessage?: string;
