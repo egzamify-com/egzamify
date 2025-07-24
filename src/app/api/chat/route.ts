@@ -7,10 +7,9 @@ import { APP_CONFIG } from "~/APP_CONFIG";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, id, currentSystemPrompt } = await req.json();
-
-  console.log("systme prompt used - ", currentSystemPrompt);
-  console.log("chat id inside route handler - ", id);
+  const body = await req.json();
+  console.log("body", body);
+  const { messages, id, currentSystemPrompt } = body;
 
   const messagesForLLM: Message[] = [
     { role: "system", content: `${currentSystemPrompt}` },
@@ -43,8 +42,8 @@ export async function saveChat({
   messages: Message[];
 }): Promise<void> {
   const content = JSON.stringify(messages, null, 2);
-  console.log("id - ", id);
-  console.log("content - ", content);
+  // console.log("id - ", id);
+  // console.log("content - ", content);
   const token = await convexAuthNextjsToken();
   try {
     const a = await fetchMutation(

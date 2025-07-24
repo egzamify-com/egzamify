@@ -6,41 +6,22 @@ import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Bot, Send, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { APP_CONFIG } from "~/APP_CONFIG";
+import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Textarea } from "~/components/ui/textarea";
 
-const AI_MODES = [
-  {
-    id: "normal",
-    title: "Normal",
-    description: "Standard, balanced explanation",
-    systemPrompt: APP_CONFIG.ai_wyjasnia.normalSystemPrompt,
-  },
-  {
-    id: "eli5",
-    title: "ELI5",
-    description: "Explain like I'm 5 (simplified, using analogies)",
-    systemPrompt: APP_CONFIG.ai_wyjasnia.eli5SystemPrompt,
-  },
-
-  {
-    id: "detailed",
-    title: "Detailed",
-    description: "Comprehensive explanation with technical details",
-    systemPrompt: APP_CONFIG.ai_wyjasnia.detailedSystemPrompt,
-  },
-];
+const AI_MODES = APP_CONFIG.ai_wyjasnia.modes;
 export default function Chat({
   id,
   initialMessages,
 }: { id?: string | undefined; initialMessages?: Message[] } = {}) {
   const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat);
 
-  const [selectedMode, setSelectedMode] = useState("normal");
+  const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal");
+
   const { input, handleInputChange, handleSubmit, messages } = useChat({
     id,
     initialMessages,
@@ -50,10 +31,8 @@ export default function Chat({
         ?.systemPrompt,
     },
   });
-
-  // store messages in ref to keep track for empty chat
+  // handle empty chats, delete if user left with no messages
   const latestMessagesRef = useRef(messages);
-
   useEffect(() => {
     latestMessagesRef.current = messages;
   }, [messages]);
@@ -73,7 +52,7 @@ export default function Chat({
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
       <div className="w-full overflow-y-auto p-4">
-        {messages.length === 0 ? (
+        {initialMessages?.length === 0 ? (
           <div className="text-muted-foreground flex h-full items-center justify-center">
             <div className="text-center">
               <Bot className="mx-auto mb-4 h-12 w-12 opacity-50" />
@@ -81,7 +60,7 @@ export default function Chat({
             </div>
           </div>
         ) : (
-          messages.map((message) => (
+          initialMessages?.map((message) => (
             <div
               key={message.id}
               className={`my-3 flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
@@ -121,12 +100,12 @@ export default function Chat({
           <Label className="text-sm font-medium">AI Response Mode</Label>
           <RadioGroup
             value={selectedMode}
-            onValueChange={setSelectedMode}
+            onValueChange={(value) => setSelectedMode(value as AiWyjasniaMode)}
             className="flex flex-wrap gap-4"
           >
             {AI_MODES.map((mode) => (
               <div key={mode.id} className="flex items-center space-x-2">
-                <RadioGroupItem value={mode.id} id={mode.id} />
+                <RadioGroupItem value={mode.title} id={mode.id} />
                 <Label htmlFor={mode.id} className="cursor-pointer">
                   <div className="space-y-1">
                     <div className="text-sm font-medium">{mode.title}</div>

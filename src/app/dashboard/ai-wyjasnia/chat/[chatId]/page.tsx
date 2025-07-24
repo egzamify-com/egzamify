@@ -1,27 +1,22 @@
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import type { Message } from "ai";
+"use client";
+
+import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
-import { fetchQuery } from "convex/nextjs";
+import { use } from "react";
 import FullScreenDashboardError from "~/components/full-screen-error-dashboard";
-import { tryCatch } from "~/utils/tryCatch";
 import Chat from "../../chat";
 
-export default async function Page(props: {
+export default function Page({
+  params,
+}: {
   params: Promise<{ chatId: string }>;
 }) {
-  const { chatId } = await props.params;
+  const { chatId } = use(params);
 
-  const [result, error] = await tryCatch(
-    fetchQuery(
-      api.ai_wyjasnia.query.getThreadMessages,
-      {
-        chatId,
-      },
-      {
-        token: await convexAuthNextjsToken(),
-      },
-    ),
-  );
+  const { data, error } = useQuery(api.ai_wyjasnia.query.getThreadMessages, {
+    chatId,
+  });
+  console.log("new msgs in client - ", data);
   if (error) {
     return (
       <FullScreenDashboardError
@@ -30,14 +25,6 @@ export default async function Page(props: {
       />
     );
   }
-  console.log("result from page ", result);
-  if (!result[0]) {
-    return <Chat id={chatId} initialMessages={[]} />;
-  }
-  try {
-    const dbMessages: Message[] = JSON.parse(result[0].content);
-    return <Chat id={chatId} initialMessages={dbMessages} />;
-  } catch (error) {
-    return <Chat id={chatId} initialMessages={[]} />;
-  }
+
+  return <Chat id={chatId} initialMessages={data} />;
 }
