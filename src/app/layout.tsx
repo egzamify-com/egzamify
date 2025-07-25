@@ -36,11 +36,13 @@ export default function RootLayout({
             <TRPCReactProvider>
               <ConvexClientProvider>
                 <UserActivity>
-                  <Navbar />
-                  <main>
-                    {children}
-                    <Toaster />
-                  </main>
+                  <div className="flex min-h-screen flex-col">
+                    <Navbar />
+                    <main className="flex flex-1 flex-col">
+                      {children}
+                      <Toaster />
+                    </main>
+                  </div>
                 </UserActivity>
               </ConvexClientProvider>
             </TRPCReactProvider>

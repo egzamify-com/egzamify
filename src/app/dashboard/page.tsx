@@ -1,7 +1,7 @@
 "use client";
 
-import FullScreenDashboardError from "~/components/full-screen-error-dashboard";
+import FullScreenError from "~/components/full-screen-error";
 
 export default function Page() {
-  return <FullScreenDashboardError errorMessage="Under construction" />;
+  return <FullScreenError errorMessage="Under construction" />;
 }

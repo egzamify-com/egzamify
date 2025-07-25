@@ -1,9 +1,9 @@
-import FullScreenDashboardError from "~/components/full-screen-error-dashboard";
+import FullScreenError from "~/components/full-screen-error";
 import { api } from "~/trpc/server";
 import QualificationsPage from "./QualificationsPage";
 
 export default async function Page() {
-  return <FullScreenDashboardError errorMessage="Under construction" />;
+  return <FullScreenError errorMessage="Under construction" />;
   const qualifications = await api.qualifications.getQualificationsList();
   console.log(qualifications);
   return (

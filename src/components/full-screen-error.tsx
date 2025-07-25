@@ -3,7 +3,7 @@
 import { OctagonX, RotateCcw } from "lucide-react";
 import { Button } from "./ui/button";
 
-export default function FullScreenDashboardError({
+export default function FullScreenError({
   errorMessage = "Unexpected error occurred",
   errorDetail = "",
   actionButton,
@@ -13,9 +13,9 @@ export default function FullScreenDashboardError({
   actionButton?: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+    <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
       <OctagonX className="text-destructive" size={50} />
-      <h1 className="text-2xl font-bold">{errorMessage}</h1>
+      <h1 className="text-3xl font-bold">{errorMessage}</h1>
       <p className="max-w-[50%] text-center text-sm">{errorDetail}</p>
       <div className="flex flex-col items-center justify-center gap-3">
         <Button

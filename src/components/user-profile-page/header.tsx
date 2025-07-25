@@ -1,7 +1,7 @@
 import type { Doc } from "convex/_generated/dataModel";
 import { Card, CardHeader } from "~/components/ui/card";
 import FriendButton from "../friends/friend-button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import ActivityStatusAvatar from "../users/activity-status-avatar";
 interface HeaderProps {
   user: Doc<"users">;
 }
@@ -12,12 +12,9 @@ export default function ProfileHeader({
 }) {
   return (
     <Card>
-      <CardHeader className="space-y-4 text-center">
-        <Avatar className="mx-auto h-24 w-24">
-          <AvatarImage src={user.image} alt="Profile picture" />
-          <AvatarFallback className="text-2xl">JD</AvatarFallback>
-        </Avatar>
-        <div>
+      <CardHeader className="flex flex-col items-center justify-center gap-4">
+        <ActivityStatusAvatar userToShow={user} size={90} />
+        <div className="text-center">
           <h1 className="text-2xl font-bold">{user.name!}</h1>
           <p className="text-muted-foreground">@{user.username!}</p>
         </div>

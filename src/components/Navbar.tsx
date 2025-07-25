@@ -14,9 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { ModeToggle } from "./theme/theme-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import ActivityStatusAvatar from "./users/activity-status-avatar";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -68,10 +68,7 @@ export function NavSignedIn() {
       </Link>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Avatar>
-            <AvatarImage src={user.image} />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <ActivityStatusAvatar userToShow={user} />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem

@@ -4,7 +4,7 @@ import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import { Camera, Github, Mail, Upload, User } from "lucide-react";
 import { useTheme } from "next-themes";
-import FullScreenDashboardLoading from "~/components/full-screen-loading-dashboard";
+import FullScreenLoading from "~/components/full-screen-loading";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -23,7 +23,7 @@ import ActivityStatusAvatar from "~/components/users/activity-status-avatar";
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { data: user, isPending } = useQuery(api.users.query.getCurrentUser);
-  if (isPending) return <FullScreenDashboardLoading />;
+  if (isPending) return <FullScreenLoading />;
   if (!user) return null;
 
   const connectedAccounts = [

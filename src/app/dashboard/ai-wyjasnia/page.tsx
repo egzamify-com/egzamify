@@ -4,16 +4,8 @@ import { api } from "convex/_generated/api";
 import { useMutation } from "convex/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
-import FullScreenDashboardLoading from "~/components/full-screen-loading-dashboard";
+import FullScreenLoading from "~/components/full-screen-loading";
 import { tryCatch } from "~/utils/tryCatch";
-
-function Loading() {
-  return (
-    <FullScreenDashboardLoading
-      loadingMessage={"We're creating new chat for you..."}
-    />
-  );
-}
 
 export default function Page() {
   const storeNewThread = useMutation(api.ai_wyjasnia.mutate.storeNewThread);
@@ -27,5 +19,7 @@ export default function Page() {
       redirect(`/dashboard/ai-wyjasnia/chat/${createdDbId}`);
     })();
   }, [storeNewThread]);
-  return <Loading />;
+  return (
+    <FullScreenLoading loadingMessage={"We're creating new chat for you..."} />
+  );
 }

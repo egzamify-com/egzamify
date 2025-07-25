@@ -3,7 +3,8 @@
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import { useParams } from "next/navigation";
-import SpinnerLoading from "~/components/SpinnerLoading";
+import FullScreenError from "~/components/full-screen-error";
+import FullScreenLoading from "~/components/full-screen-loading";
 import Achievements from "~/components/user-profile-page/achievements";
 import UserCharts from "~/components/user-profile-page/charts";
 import ProfileHeader from "~/components/user-profile-page/header";
@@ -17,27 +18,22 @@ export default function Page() {
       username: username as string,
     },
   );
-  if (!username) {
-    return <div>User not found</div>;
-  }
+
   if (isPending) {
-    return (
-      <div className="flex w-full items-center justify-center pt-100">
-        <SpinnerLoading />
-      </div>
-    );
+    return <FullScreenLoading loadingMessage="Loading user profile..." />;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <FullScreenError
+        errorMessage={"Failed to load user profile"}
+        errorDetail={error.message}
+      />
+    );
   }
 
   if (!data) {
-    return (
-      <div>
-        <h1 className="text-2xl font-bold">User not found.</h1>
-      </div>
-    );
+    return <FullScreenError errorMessage={"User not found"} />;
   }
 
   return (

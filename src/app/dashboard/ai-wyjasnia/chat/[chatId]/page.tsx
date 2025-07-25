@@ -3,8 +3,8 @@
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import { use } from "react";
-import FullScreenDashboardError from "~/components/full-screen-error-dashboard";
-import FullScreenDashboardLoading from "~/components/full-screen-loading-dashboard";
+import FullScreenError from "~/components/full-screen-error";
+import FullScreenLoading from "~/components/full-screen-loading";
 import Chat from "../../chat";
 
 export default function Page({
@@ -22,12 +22,12 @@ export default function Page({
   );
 
   if (isPending) {
-    return <FullScreenDashboardLoading />;
+    return <FullScreenLoading />;
   }
 
   if (error) {
     return (
-      <FullScreenDashboardError
+      <FullScreenError
         errorMessage={"Loading chat error"}
         errorDetail={error.message}
       />
