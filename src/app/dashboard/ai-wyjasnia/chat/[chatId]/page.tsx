@@ -5,7 +5,7 @@ import { api } from "convex/_generated/api";
 import { use } from "react";
 import FullScreenError from "~/components/full-screen-error";
 import FullScreenLoading from "~/components/full-screen-loading";
-import Chat from "../../chat";
+import Chat from "./chat";
 
 export default function Page({
   params,
