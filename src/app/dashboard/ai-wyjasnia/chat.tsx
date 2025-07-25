@@ -46,6 +46,7 @@ export default function Chat({
   // handle empty chats, delete if user left with no messages (useEffect and ref)
   const latestMessagesRef = useRef(messages);
   useEffect(() => {
+    scrollToPageBottom();
     latestMessagesRef.current = messages;
   }, [messages]);
 
@@ -60,6 +61,7 @@ export default function Chat({
       }
     };
   }, [id, deleteThread]);
+
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
       <div className="w-full overflow-y-auto p-4">
@@ -158,3 +160,11 @@ function parseAnnotations(annotations: any) {
   // console.log("annotations", annotations[0].mode);
   return annotations[0].mode;
 }
+
+const scrollToPageBottom = () => {
+  window.scrollTo({
+    top: document.documentElement.scrollHeight, // Total scrollable height of the document
+    behavior: "smooth",
+  });
+  // Or for older browsers, you might see document.body.scrollHeight, but document.documentElement is more robust.
+};
