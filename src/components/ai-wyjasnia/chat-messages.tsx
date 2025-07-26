@@ -1,12 +1,17 @@
 import type { Message } from "ai";
-import { Bot, User } from "lucide-react";
+import { Bot } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
+import ActivityStatusAvatar from "../users/activity-status-avatar";
 import MessageMode from "./message-mode";
 
 export default function ChatMessages({ messages }: { messages: Message[] }) {
-  return messages?.map((message: Message) => (
-    <ChatMessage key={message.id} {...{ message }} />
-  ));
+  return (
+    <div className="pt-10">
+      {messages?.map((message: Message) => (
+        <ChatMessage key={message.id} {...{ message }} />
+      ))}
+    </div>
+  );
 }
 
 function ChatMessage({ message }: { message: Message }) {
@@ -25,7 +30,8 @@ function ChatMessage({ message }: { message: Message }) {
           }`}
         >
           {message.role === "user" ? (
-            <User className="h-4 w-4" />
+            // <User className="h-4 w-4" />
+            <ActivityStatusAvatar />
           ) : (
             <Bot className="h-4 w-4" />
           )}

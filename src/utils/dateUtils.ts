@@ -1,99 +1,138 @@
-export function formatToYYYYMMDD(input: number | Date): string | null {
+// Define a consistent type for Epoch values
+export type EpochMilliseconds = number;
+export type EpochSeconds = number; // Keep this if you explicitly need seconds sometimes
+
+/**
+ * Converts a JavaScript Date object to an Epoch timestamp in milliseconds.
+ * This is the standard for JavaScript Date objects.
+ */
+export function convertDateToEpoch(date: Date): EpochMilliseconds {
+  // Directly returns milliseconds, as is standard for date.getTime()
+  return date.getTime();
+}
+
+/**
+ * Converts a date string in "YYYY/MM/DD" or "YYYY-MM-DD" format to an Epoch timestamp in milliseconds.
+ */
+export function convertYYYYMMDDToEpoch(
+  dateString: string,
+): EpochMilliseconds | null {
+  // Replace slashes with hyphens for robust parsing by Date constructor
+  const isoDateString = dateString.replace(/\//g, "-");
+  const date = new Date(isoDateString);
+
+  if (isNaN(date.getTime())) {
+    console.warn(`Invalid date string provided for conversion: ${dateString}`);
+    return null; // Return null for invalid input, more robust than NaN
+  }
+
+  return date.getTime(); // Return milliseconds
+}
+
+/**
+ * Formats a Date object or Epoch timestamp (milliseconds) to "YYYY-MM-DD" string (UTC).
+ * Automatically handles whether input is milliseconds or seconds (with a heuristic).
+ */
+export function formatToYYYYMMDD(
+  input: EpochMilliseconds | Date,
+): string | null {
   let date: Date;
 
   if (input instanceof Date) {
-    // If the input is already a Date object, use it directly
     date = input;
   } else if (typeof input === "number") {
-    date = new Date(input > 2_000_000_000 ? input : input * 1000); // Using 2 billion as a rough threshold for milliseconds (approx year 1970 + 63 years)
+    // Heuristic: If number is large (likely milliseconds), use as is. Else, assume seconds and convert.
+    // 2,000,000,000 seconds is approx year 2033. Safe assumption.
+    date = new Date(input > 2_000_000_000_000 ? input : input * 1000); // Adjusted threshold for milliseconds
   } else {
-    // If the input is neither a number nor a Date object, it's invalid
     return null;
   }
 
-  // Check if the date is valid
   if (isNaN(date.getTime())) {
     return null;
   }
 
-  // Use UTC methods to ensure consistency
   const year = date.getUTCFullYear();
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0"); // getUTCMonth() is 0-indexed
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
   const day = date.getUTCDate().toString().padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Converts an Epoch timestamp (milliseconds) to a "YYYY/MM/DD" string in a specified timezone.
+ * Assumes epochMs is in milliseconds.
+ */
 export function convertEpochToYYYYMMDD(
-  epochMs: number,
-  timezone = "UTC",
+  epochMs: EpochMilliseconds, // Clearly indicate it expects milliseconds
+  timezone: string = "UTC", // Default to UTC
 ): string {
-  // Create a Date object from the epoch milliseconds
+  // New Date() constructor expects milliseconds since epoch
   const date = new Date(epochMs);
 
+  if (isNaN(date.getTime())) {
+    console.warn(`Invalid epoch milliseconds provided: ${epochMs}`);
+    return "Invalid Date"; // Handle invalid input
+  }
+
   // Use Intl.DateTimeFormat for robust timezone handling and formatting
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    // 'en-CA' often gives YYYY-MM-DD by default, but we'll specify parts
+  // 'en-CA' is good for YYYY-MM-DD, but specify parts explicitly for YYYY/MM/DD
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    // "en-US" for / separator
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     timeZone: timezone,
   });
 
-  // Get the parts of the date and assemble them
-  const parts = formatter.formatToParts(date);
-
-  let year = "";
-  let month = "";
-  let day = "";
-
-  for (const part of parts) {
-    if (part.type === "year") {
-      year = part.value;
-    } else if (part.type === "month") {
-      month = part.value;
-    } else if (part.type === "day") {
-      day = part.value;
-    }
-  }
-
-  // Ensure all parts are found (should be with 'year', 'month', 'day')
-  if (!year || !month || !day) {
-    // Fallback to a simpler UTC format if Intl.DateTimeFormat fails for some reason
-    // This is a safeguard, as formatToYYYYMMDD already handles UTC conversion well.
-    const d = new Date(epochMs);
-    const y = d.getUTCFullYear();
-    const m = (d.getUTCMonth() + 1).toString().padStart(2, "0");
-    const dt = d.getUTCDate().toString().padStart(2, "0");
-    return `${y}/${m}/${dt}`;
-  }
-
-  return `${year}/${month}/${day}`;
+  // format() returns "MM/DD/YYYY" for "en-US", "YYYY-MM-DD" for "en-CA"
+  // For explicit "YYYY/MM/DD", reorder parts or use replace.
+  const formattedString = formatter.format(date);
+  // Example for "en-US": "07/26/2025" -> "2025/07/26"
+  const [monthPart, dayPart, yearPart] = formattedString.split("/");
+  return `${yearPart}/${monthPart}/${dayPart}`;
 }
 
+/**
+ * Calculates semantic time difference (e.g., "Today", "Yesterday", "X days ago")
+ * based on a YYYY/MM/DD date string.
+ * This function's logic is fine as it uses Date objects internally.
+ */
 export function toSemanticTime(yyyymmdd: string): string {
-  // Validate input format: YYYY/MM/DD
   if (!/^\d{4}\/\d{2}\/\d{2}$/.test(yyyymmdd)) {
     return "Invalid Date Format";
   }
 
   const parts = yyyymmdd.split("/");
   const year = parseInt(parts[0]!, 10);
-  const month = parseInt(parts[1]!, 10) - 1; // Month is 0-indexed in Date object
+  const month = parseInt(parts[1]!, 10) - 1;
   const day = parseInt(parts[2]!, 10);
 
+  // Create UTC date for comparison to avoid timezone issues
   const inputDateUTC = new Date(Date.UTC(year, month, day));
-  const now = new Date(); // Get current full date/time in local timezone
+
+  const now = new Date();
+  // Create a UTC date for "today" at midnight UTC
   const nowUTC = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
   );
 
+  if (isNaN(inputDateUTC.getTime()) || isNaN(nowUTC.getTime())) {
+    return "Invalid Date"; // Handle cases where input date might be unparseable
+  }
+
+  // If the input date is in the future
   if (inputDateUTC.getTime() > nowUTC.getTime()) {
+    // If it's today, but the time is in the future relative to now.getUTCDate
+    // For "Today", we want strictly less than 1 full day difference.
+    // The current date: Fri Jul 26 2024 01:52:48 GMT+0200
+    // Example: inputDateUTC = 2025/07/26 (today)
+    // nowUTC = 2025/07/26 (today)
+    // If inputDateUTC > nowUTC, it implies a date in the future
     return "Future date";
   }
 
-  // Calculate the difference in full days
-  const oneDay = 1000 * 60 * 60 * 24; // Milliseconds in one day
+  const oneDay = 1000 * 60 * 60 * 24;
   const diffTime = nowUTC.getTime() - inputDateUTC.getTime();
   const diffDays = Math.floor(diffTime / oneDay);
 
