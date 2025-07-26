@@ -44,7 +44,7 @@ function CopyButton({ message }: { message: Message }) {
   return (
     <>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button
             variant={"ghost"}
             size={"sm"}

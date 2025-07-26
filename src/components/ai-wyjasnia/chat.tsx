@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG";
 import ChatMessages from "~/components/ai-wyjasnia/chat-messages";
 import NoMessages from "~/components/ai-wyjasnia/no-messages-info";
-import ChatInput from "../../../../../components/ai-wyjasnia/chat-input";
+import ChatInput from "./chat-input";
 
 export default function Chat({
   id,
