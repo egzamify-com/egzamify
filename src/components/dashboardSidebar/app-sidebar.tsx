@@ -27,6 +27,14 @@ import { NavUser } from "./nav-user";
 
 const SIDEBAR_ICON_SIZE = 18;
 
+export type NavbarItem = {
+  title: string;
+  url: string;
+  icon: React.ReactNode;
+  badgeComponent?: React.ReactNode;
+  childrenItems?: NavbarItem[];
+};
+
 const navMain: NavbarItem[] = [
   {
     title: "Dashboard",
@@ -88,6 +96,23 @@ const navMain: NavbarItem[] = [
       },
     ],
   },
+  {
+    title: "Egzamin Praktyczny",
+    icon: <MessageCircle size={SIDEBAR_ICON_SIZE} />,
+    url: "/dashboard/",
+    childrenItems: [
+      {
+        title: "Zacznij egzamin z AI",
+        url: "/dashboard/egzamin-praktyczny",
+        icon: <IconListDetails size={SIDEBAR_ICON_SIZE} />,
+      },
+      {
+        title: "Wykonane egzaminy",
+        url: "/dashboard/egzamin-praktyczny/historia",
+        icon: <History size={SIDEBAR_ICON_SIZE} />,
+      },
+    ],
+  },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -101,7 +126,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={"/"}>
-                {<IconInnerShadowTop size={SIDEBAR_ICON_SIZE} />}
+                {<IconInnerShadowTop />}
                 <span className="text-base font-semibold">Nazwa</span>
               </Link>
             </SidebarMenuButton>
