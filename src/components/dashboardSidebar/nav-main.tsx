@@ -1,7 +1,6 @@
 "use client";
 
-import { IconListDetails, type Icon } from "@tabler/icons-react";
-import { History, Mail, Text, UserPlus, Users } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import {
   SidebarGroup,
@@ -12,133 +11,107 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "~/components/ui/sidebar";
-import InvitesNavBadge from "../friends/invites-nav-badge";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon?: Icon;
-  }[];
-}) {
-  const friendsTab = [
-    {
-      title: "My Friends",
-      url: "/dashboard/friends",
-      icon: <Users size={18} />,
-    },
-
-    {
-      title: "Add Friends",
-      url: "/dashboard/friends/add",
-      icon: <UserPlus size={18} />,
-    },
-    {
-      title: "Invites",
-      url: "/dashboard/friends/invites",
-      icon: <Mail size={18} />,
-      badgeComponent: <InvitesNavBadge />,
-    },
-  ];
-  const AiWyjasniaTab = [
-    {
-      title: "Start a conversation",
-      url: "/dashboard/ai-wyjasnia",
-      icon: <IconListDetails size={18} />,
-    },
-    {
-      title: "Chat History",
-      url: "/dashboard/ai-wyjasnia/history",
-      icon: <History size={18} />,
-    },
-  ];
+export function NavMain({ items }: { items: NavbarItem[] }) {
   return (
     <>
       <SidebarGroup>
         <SidebarGroupContent className="flex flex-col gap-2">
           <SidebarMenu>
             {items.map((item) => (
-              <Link href={item.url} key={item.title}>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    className="cursor-pointer"
-                    tooltip={item.title}
-                  >
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </Link>
+              <NavbarItem key={item.url} item={item} />
             ))}
-            <Collapsible defaultOpen className="group/collapsible">
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton>
-                    <Users /> Friends
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {friendsTab.map((item) => {
-                      return (
-                        <Link key={item.title} href={`${item.url}`}>
-                          <SidebarMenuSubItem>
-                            <SidebarMenuButton className="flex flex-row justify-between">
-                              <div className="flex flex-row items-center justify-center gap-2 text-sm">
-                                {item.icon}
-                                {item.title}
-                              </div>
-                              <div>
-                                {item.badgeComponent && (
-                                  <>{item.badgeComponent}</>
-                                )}
-                              </div>
-                            </SidebarMenuButton>
-                          </SidebarMenuSubItem>
-                        </Link>
-                      );
-                    })}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-            <Collapsible defaultOpen className="group/collapsible">
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton>
-                    <Text /> Ai Conversation
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {AiWyjasniaTab.map((item) => {
-                      return (
-                        <Link key={item.title} href={`${item.url}`}>
-                          <SidebarMenuSubItem>
-                            <SidebarMenuButton className="flex flex-row justify-between">
-                              <div className="flex flex-row items-center justify-center gap-2 text-sm">
-                                {item.icon}
-                                {item.title}
-                              </div>
-                            </SidebarMenuButton>
-                          </SidebarMenuSubItem>
-                        </Link>
-                      );
-                    })}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
     </>
   );
 }
+
+function NavbarItem({ item }: { item: NavbarItem }) {
+  if (item.childrenItems) {
+    return (
+      <CollapsibleNavbarItem
+        items={item.childrenItems}
+        icon={item.icon}
+        title={item.title}
+      />
+    );
+  }
+  return (
+    <SidebarMenuItem>
+      <NavbarItemCore item={item} />
+    </SidebarMenuItem>
+  );
+}
+
+function CollapsibleNavbarItem({
+  items,
+  title,
+  icon,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  items: NavbarItem[];
+}) {
+  return (
+    <Collapsible defaultOpen className="group/collapsible">
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton className="flex flex-row items-center justify-between text-sm">
+            <div className="flex flex-row items-center gap-2">
+              {icon}
+              {title}
+            </div>
+            <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {items.map((item) => {
+              return (
+                <NavbarItemCore
+                  key={`collabsiblesidebar-${item.url}`}
+                  item={item}
+                />
+              );
+            })}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  );
+}
+
+function NavbarItemCore({
+  item: { url, icon, title, badgeComponent },
+}: {
+  item: NavbarItem;
+}) {
+  return (
+    <Link href={url}>
+      <SidebarMenuSubItem>
+        <SidebarMenuButton className="flex flex-row items-center justify-between text-sm">
+          <div className="flex flex-row items-center gap-2">
+            {icon}
+            {title}
+          </div>
+          <div>{badgeComponent && <>{badgeComponent}</>}</div>
+        </SidebarMenuButton>
+      </SidebarMenuSubItem>
+    </Link>
+  );
+}
+
+export type NavbarItem = {
+  title: string;
+  url: string;
+  icon: React.ReactNode;
+  badgeComponent?: React.ReactNode;
+  childrenItems?: NavbarItem[];
+};

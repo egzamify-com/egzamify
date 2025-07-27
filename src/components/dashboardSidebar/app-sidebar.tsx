@@ -1,13 +1,15 @@
 "use client";
 
+import { IconInnerShadowTop, IconListDetails } from "@tabler/icons-react";
 import {
-  IconDashboard,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconSettings,
-  IconUser,
-} from "@tabler/icons-react";
-
+  History,
+  Mail,
+  MessageCircle,
+  Settings,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import {
@@ -19,34 +21,74 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { NavMain } from "./nav-main";
+import InvitesNavBadge from "../friends/invites-nav-badge";
+import { NavMain, type NavbarItem } from "./nav-main";
 import { NavUser } from "./nav-user";
 
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: IconDashboard,
-    },
-    {
-      title: "Egzamin Teoretyczny",
-      url: "/dashboard/teoria",
-      icon: IconListDetails,
-    },
+const SIDEBAR_ICON_SIZE = 18;
 
-    {
-      title: "Account",
-      url: "/dashboard/konto",
-      icon: IconUser,
-    },
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: IconSettings,
-    },
-  ],
-};
+const navMain: NavbarItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: <User size={SIDEBAR_ICON_SIZE} />,
+  },
+  {
+    title: "Egzamin Teoretyczny",
+    url: "/dashboard/teoria",
+    icon: <User size={SIDEBAR_ICON_SIZE} />,
+  },
+  {
+    title: "Account",
+    url: "/dashboard/konto",
+    icon: <User size={SIDEBAR_ICON_SIZE} />,
+  },
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: <Settings size={SIDEBAR_ICON_SIZE} />,
+  },
+  {
+    title: "Friends",
+    icon: <Users size={SIDEBAR_ICON_SIZE} />,
+    url: "/dashboard/friends",
+    childrenItems: [
+      {
+        title: "My Friends",
+        url: "/dashboard/friends",
+        icon: <Users size={SIDEBAR_ICON_SIZE} />,
+      },
+      {
+        title: "Add Friends",
+        url: "/dashboard/friends/add",
+        icon: <UserPlus size={SIDEBAR_ICON_SIZE} />,
+      },
+      {
+        title: "Invites",
+        url: "/dashboard/friends/invites",
+        icon: <Mail size={SIDEBAR_ICON_SIZE} />,
+        badgeComponent: <InvitesNavBadge />,
+      },
+    ],
+  },
+  {
+    title: "Ai wyjasnia",
+    icon: <MessageCircle size={SIDEBAR_ICON_SIZE} />,
+    url: "/dashboard/ai-wyjasnia",
+    childrenItems: [
+      {
+        title: "Start a conversation",
+        url: "/dashboard/ai-wyjasnia",
+        icon: <IconListDetails size={SIDEBAR_ICON_SIZE} />,
+      },
+      {
+        title: "Chat History",
+        url: "/dashboard/ai-wyjasnia/history",
+        icon: <History size={SIDEBAR_ICON_SIZE} />,
+      },
+    ],
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -59,7 +101,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={"/"}>
-                <IconInnerShadowTop className="!size-5" />
+                {<IconInnerShadowTop size={SIDEBAR_ICON_SIZE} />}
                 <span className="text-base font-semibold">Nazwa</span>
               </Link>
             </SidebarMenuButton>
@@ -67,7 +109,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
