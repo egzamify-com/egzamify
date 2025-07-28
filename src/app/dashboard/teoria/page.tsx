@@ -1,14 +1,43 @@
-import FullScreenError from "~/components/full-screen-error";
-import { api } from "~/trpc/server";
-import QualificationsPage from "./QualificationsPage";
+import { Suspense } from "react";
+import { Card, CardContent } from "~/components/ui/card";
+import QualificationsGrid from "~/components/updated-qualifications-grid";
 
-export default async function Page() {
-  return <FullScreenError errorMessage="Under construction" />;
-  const qualifications = await api.qualifications.getQualificationsList();
-  console.log(qualifications);
+export default function TeoriaPage() {
   return (
-    <div>
-      <QualificationsPage initialQualifications={qualifications} />
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="mb-2 text-3xl font-bold">Egzamin Teoretyczny</h1>
+        <p className="text-gray-600">
+          Wybierz kwalifikację i rozpocznij naukę. Dostępne są różne tryby nauki
+          i testowania wiedzy.
+        </p>
+      </div>
+
+      {/* Kwalifikacje */}
+      <Suspense fallback={<LoadingGrid />}>
+        <QualificationsGrid qualificationId="nh7b1y1vssqva39k0xs5mpqjz57mkfwm" />
+      </Suspense>
+    </div>
+  );
+}
+
+function LoadingGrid() {
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {[...Array(6)].map((_, i) => (
+        <Card key={i} className="flex flex-col overflow-hidden">
+          <div className="relative h-40 animate-pulse bg-gray-200" />
+          <CardContent className="flex-grow pt-4">
+            <div className="mb-2 h-6 animate-pulse rounded bg-gray-200" />
+            <div className="mb-4 h-4 animate-pulse rounded bg-gray-200" />
+            <div className="flex items-center gap-4">
+              <div className="h-4 flex-1 animate-pulse rounded bg-gray-200" />
+              <div className="h-4 flex-1 animate-pulse rounded bg-gray-200" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }

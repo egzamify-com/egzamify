@@ -8,16 +8,17 @@ import {
   Shuffle,
   Target,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 interface GameModesProps {
-  qualificationName?: string;
+  qualificationId: string;
 }
 
-export default function GameModes({
-  qualificationName = "Kwalifikacja",
-}: GameModesProps) {
+export default function GameModes({ qualificationId }: GameModesProps) {
+  const router = useRouter();
+
   const gameModes = [
     {
       id: 1,
@@ -30,6 +31,7 @@ export default function GameModes({
       questions: 40,
       color: "bg-blue-500",
       variant: "default" as const,
+      route: "full-test",
     },
     {
       id: 2,
@@ -42,6 +44,7 @@ export default function GameModes({
       questions: 1,
       color: "bg-green-500",
       variant: "secondary" as const,
+      route: "random-question",
     },
     {
       id: 3,
@@ -54,67 +57,50 @@ export default function GameModes({
       questions: "Wszystkie",
       color: "bg-purple-500",
       variant: "outline" as const,
+      route: "browse-questions",
     },
   ];
 
-  const handleModeSelect = (modeId: number) => {
-    const qualificationId = qualificationName?.split(" ")[1] || "1";
-
-    switch (modeId) {
-      case 1:
-        // 40 pytań z teorii
-        window.location.href = `/dashboard/teoria/${qualificationId}/game-modes/full-test`;
-        break;
-      case 2:
-        // 1 losowe pytanie
-        window.location.href = `/dashboard/teoria/${qualificationId}/game-modes/random-question`;
-        break;
-      case 3:
-        // Przeglądanie bazy pytań
-        window.location.href = `/dashboard/teoria/${qualificationId}/game-modes/browse-questions`;
-        break;
-      default:
-        console.log(`Nieznany tryb: ${modeId}`);
-    }
+  const handleModeSelect = (mode: (typeof gameModes)[0]) => {
+    router.push(
+      `/dashboard/teoria/${qualificationId}/game-modes/${mode.route}`,
+    );
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Wybierz tryb gry</h1>
-        <p className="text-gray-600">
-          Kwalifikacja:{" "}
-          <span className="font-semibold">{qualificationName}</span>
-        </p>
+        <h1 className="mb-2 text-3xl font-bold">Wybierz tryb gry</h1>
+        <p className="text-gray-600">Kwalifikacja: {qualificationId}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {gameModes.map((mode) => {
           const IconComponent = mode.icon;
 
           return (
             <Card
               key={mode.id}
-              className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
-              onClick={() => handleModeSelect(mode.id)}
+              className="group relative cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-lg"
+              onClick={() => handleModeSelect(mode)}
             >
               <div
-                className={`absolute top-0 left-0 right-0 h-1 ${mode.color}`}
+                className={`absolute top-0 right-0 left-0 h-1 ${mode.color}`}
               />
 
               <CardHeader className="pb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className={`p-3 rounded-lg ${mode.color} bg-opacity-10`}>
+                <div className="mb-2 flex items-center justify-between">
+                  <div className={`rounded-lg p-3 ${mode.color} bg-opacity-10`}>
                     <IconComponent className="h-6 w-6" />
                   </div>
                 </div>
-                <CardTitle className="text-xl group-hover:text-blue-600 transition-colors">
+                <CardTitle className="text-xl transition-colors group-hover:text-blue-600">
                   {mode.title}
                 </CardTitle>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-sm leading-relaxed text-gray-600">
                   {mode.description}
                 </p>
 
@@ -130,15 +116,15 @@ export default function GameModes({
                 </div>
 
                 <Button
-                  className="w-full mt-4 group-hover:bg-blue-600 transition-colors"
+                  className="mt-4 w-full transition-colors group-hover:bg-blue-600"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleModeSelect(mode.id);
+                    handleModeSelect(mode);
                   }}
                 >
                   {mode.id === 3 ? (
                     <>
-                      <Search className="h-4 w-4 mr-2" />
+                      <Search className="mr-2 h-4 w-4" />
                       Przeglądaj
                     </>
                   ) : (
@@ -152,7 +138,10 @@ export default function GameModes({
       </div>
 
       <div className="mt-8 text-center">
-        <Button variant="outline" onClick={() => window.history.back()}>
+        <Button
+          variant="outline"
+          onClick={() => router.push("/dashboard/teoria")}
+        >
           Powrót do kwalifikacji
         </Button>
       </div>

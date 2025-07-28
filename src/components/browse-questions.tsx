@@ -1,12 +1,14 @@
 "use client";
 
+import { useQuery } from "convex/react";
 import { ChevronDown, ChevronUp, Filter, Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { api } from "~/trpc/react";
+import { api } from "~/convex/_generated/api";
+import type { Id } from "~/convex/_generated/dataModel";
 
 interface BrowseQuestionsProps {
   qualificationId: string;
@@ -21,19 +23,17 @@ export default function BrowseQuestions({
   );
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
 
-  const {
-    data: questionsData,
-    isLoading,
-    error,
-  } = api.questions.getBrowseQuestions.useQuery({
-    qualificationId,
+  // Pobieranie pytań z Convex
+  const questionsData = useQuery(api.teoria.query.getBrowseQuestions, {
+    qualificationId: qualificationId as Id<"qualifications">,
     search: searchTerm || undefined,
     year: selectedYear,
     limit: 100,
   });
 
-  const { data: statsData } = api.questions.getQuestionsStats.useQuery({
-    qualificationId,
+  // Pobieranie statystyk
+  const statsData = useQuery(api.teoria.query.getQuestionsStats, {
+    qualificationId: qualificationId as Id<"qualifications">,
   });
 
   const questions = questionsData?.questions || [];
@@ -43,45 +43,15 @@ export default function BrowseQuestions({
     setExpandedQuestion(expandedQuestion === questionId ? null : questionId);
   };
 
-  // const getDifficultyColor = (difficulty: string) => {
-  //   switch (difficulty) {
-  //     case "Łatwy":
-  //       return "bg-green-100 text-green-800";
-  //     case "Średni":
-  //       return "bg-yellow-100 text-yellow-800";
-  //     case "Trudny":
-  //       return "bg-red-100 text-red-800";
-  //     default:
-  //       return "bg-gray-100 text-gray-800";
-  //   }
-  // };
-
-  if (isLoading) {
+  // Loading state
+  if (!questionsData || !statsData) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto">
+        <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <h1 className="text-2xl font-bold mb-4">Ładowanie pytań...</h1>
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <h1 className="mb-4 text-2xl font-bold">Ładowanie pytań...</h1>
             <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto">
-          <CardContent className="py-12 text-center">
-            <h1 className="text-2xl font-bold mb-4 text-red-600">
-              Błąd ładowania
-            </h1>
-            <p className="text-gray-500 mb-4">{error.message}</p>
-            <Button onClick={() => window.history.back()} variant="outline">
-              Powrót do trybów
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -90,23 +60,25 @@ export default function BrowseQuestions({
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Baza pytań</h1>
+        <h1 className="mb-2 text-2xl font-bold">Baza pytań</h1>
         <p className="text-gray-600">
           Przeglądaj wszystkie dostępne pytania i odpowiedzi
         </p>
       </div>
 
+      {/* Filtry */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
             <Filter className="h-5 w-5" />
             Filtry i wyszukiwanie
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
               placeholder="Szukaj pytań..."
               value={searchTerm}
@@ -117,7 +89,7 @@ export default function BrowseQuestions({
 
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-2">Rok</label>
+              <label className="mb-2 block text-sm font-medium">Rok</label>
               <select
                 value={selectedYear || ""}
                 onChange={(e) =>
@@ -127,7 +99,7 @@ export default function BrowseQuestions({
                       : undefined,
                   )
                 }
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full rounded-md border border-gray-300 p-2"
               >
                 <option value="">Wszystkie lata</option>
                 {stats.years
@@ -143,6 +115,7 @@ export default function BrowseQuestions({
         </CardContent>
       </Card>
 
+      {/* Statystyki */}
       <div className="mb-6">
         <div className="flex items-center gap-4 text-sm text-gray-600">
           <span>
@@ -166,16 +139,17 @@ export default function BrowseQuestions({
         </div>
       </div>
 
+      {/* Lista pytań */}
       <div className="space-y-4">
         {questions.map((question) => (
           <Card key={question.id} className="overflow-hidden">
             <CardHeader
-              className="cursor-pointer hover:bg-gray-50 transition-colors"
+              className="cursor-pointer transition-colors hover:bg-gray-50"
               onClick={() => toggleQuestion(question.id)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
+                  <div className="mb-2 flex items-center gap-3">
                     <Badge variant="outline">#{question.id.slice(-8)}</Badge>
                     {question.year && (
                       <Badge variant="outline">Rok {question.year}</Badge>
@@ -203,18 +177,18 @@ export default function BrowseQuestions({
                       <img
                         src={question.imageUrl || "/placeholder.svg"}
                         alt="Obrazek do pytania"
-                        className="max-w-full h-auto rounded-lg border"
+                        className="h-auto max-w-full rounded-lg border"
                       />
                     </div>
                   )}
 
                   <div>
-                    <h4 className="font-medium mb-3">Odpowiedzi:</h4>
+                    <h4 className="mb-3 font-medium">Odpowiedzi:</h4>
                     <div className="space-y-2">
                       {question.answers.map((answer, index) => (
                         <div
                           key={index}
-                          className={`p-3 rounded-lg border ${
+                          className={`rounded-lg border p-3 ${
                             index === question.correctAnswer
                               ? "border-green-500 bg-green-50 text-green-800"
                               : "border-gray-200 bg-gray-50"
@@ -242,7 +216,8 @@ export default function BrowseQuestions({
         ))}
       </div>
 
-      {questions.length === 0 && !isLoading && (
+      {/* Brak danych */}
+      {questions.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-lg text-gray-500">
@@ -266,6 +241,7 @@ export default function BrowseQuestions({
         </Card>
       )}
 
+      {/* Powrót */}
       <div className="mt-8 text-center">
         <Button onClick={() => window.history.back()} variant="outline">
           Powrót do trybów gry

@@ -12,6 +12,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
+    "seed": "tsx scripts/seed-database.ts",
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },
