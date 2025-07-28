@@ -60,7 +60,7 @@ const schema = defineSchema({
     .index("requestingUserId", ["requestingUserId"])
     .index("receivingUserId", ["receivingUserId"]),
 
-  base_practical_exams: defineTable({
+  basePracticalExams: defineTable({
     qualificationId: v.id("qualifications"),
     maxPoints: v.number(),
     examPdf: v.id("_storage"),
@@ -71,7 +71,7 @@ const schema = defineSchema({
     ratingData: requirementsValidator,
   }).index("qualificationId", ["qualificationId"]),
 
-  users_practical_exams: defineTable({
+  usersPracticalExams: defineTable({
     userId: v.id("users"),
     examId: v.id("base_practical_exams"),
     attachments: v.array(v.string()),
