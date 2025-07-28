@@ -1,28 +1,62 @@
 "use client";
 
 import { api } from "convex/_generated/api";
-import { usePaginatedQuery } from "convex/react";
+import { usePaginatedQuery, type PaginatedQueryItem } from "convex/react";
+import _ from "lodash";
 import FullScreenError from "~/components/full-screen-error";
-import ExamItem from "~/components/praktyka/ExamItem";
-import { Button } from "~/components/ui/button";
+import ExamGroup from "~/components/praktyka/exam-group";
+import PracticalExamsFilters from "~/components/praktyka/filters";
+import PracticalExamHeader from "~/components/praktyka/header";
+import LoadMoreButton from "~/components/praktyka/load-more";
+import ExamPageSkeleton, { LoadingMore } from "~/components/praktyka/loadings";
+
+export type ConvertedExams = {
+  qualificationId: string;
+  count: number;
+  exams: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>[];
+};
 
 export default function PraktykaPage() {
-  const { results, status, loadMore } = usePaginatedQuery(
+  const {
+    results: exams,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
     api.praktyka.query.listPracticalExams,
     {},
     { initialNumItems: 1 },
   );
-  if (!results) return <FullScreenError />;
-  if (status === "LoadingFirstPage") return <div>Loading first page...</div>;
+
+  if (!exams) return <FullScreenError />;
+  if (status === "LoadingFirstPage") return <ExamPageSkeleton />;
+  function convertExams() {
+    const grouped = _.groupBy(exams, "qualificationId");
+    console.log("lodash client - ", grouped);
+    return Object.entries(grouped).map(([qualificationId, examsInGroup]) => ({
+      qualificationId: qualificationId,
+      count: examsInGroup.length,
+      exams: examsInGroup,
+    }));
+  }
+  console.log("convert - ", convertExams());
   return (
     <>
-      {results.map((exam) => (
-        <ExamItem key={exam._id} exam={exam} />
-      ))}
-      {status === "LoadingMore" && <div>Loading more...</div>}
-      {status === "CanLoadMore" && (
-        <Button onClick={() => loadMore(1)}>Load More</Button>
-      )}
+      <div className="min-h-screen">
+        <PracticalExamHeader />
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <PracticalExamsFilters />
+
+          {convertExams().map((group) => (
+            <ExamGroup key={group.qualificationId} group={group} />
+          ))}
+
+          <LoadingMore isLoading={status === "LoadingMore"} />
+          <LoadMoreButton
+            onClick={() => loadMore(40)}
+            canLoadMore={status === "CanLoadMore"}
+          />
+        </div>
+      </div>
     </>
   );
 }

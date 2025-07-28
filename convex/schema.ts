@@ -56,8 +56,8 @@ const schema = defineSchema({
     updatedAt: v.number(),
   })
     .index("from_to", ["requestingUserId", "receivingUserId"])
-    .index("requesting_user_id", ["requestingUserId"])
-    .index("receiving_user_id", ["receivingUserId"]),
+    .index("requestingUserId", ["requestingUserId"])
+    .index("receivingUserId", ["receivingUserId"]),
 
   // ----------------TEORIA TABLES----------------------
   users_theory: defineTable({
