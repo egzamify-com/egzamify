@@ -46,19 +46,19 @@ const schema = defineSchema({
     }),
 
   explanations: defineTable({
-    user_id: v.id("users"),
+    userId: v.id("users"),
     content: v.string(),
-  }).index("by_user", ["user_id"]),
+  }).index("by_user", ["userId"]),
 
   friends: defineTable({
-    requesting_user_id: v.id("users"),
-    receiving_user_id: v.id("users"),
+    requestingUserId: v.id("users"),
+    receivingUserId: v.id("users"),
     status: v.union(v.literal("request_sent"), v.literal("accepted")),
-    updated_at: v.number(),
+    updatedAt: v.number(),
   })
-    .index("from_to", ["requesting_user_id", "receiving_user_id"])
-    .index("requesting_user_id", ["requesting_user_id"])
-    .index("receiving_user_id", ["receiving_user_id"]),
+    .index("from_to", ["requestingUserId", "receivingUserId"])
+    .index("requestingUserId", ["requestingUserId"])
+    .index("receivingUserId", ["receivingUserId"]),
 
   base_practical_exams: defineTable({
     qualificationId: v.id("qualifications"),

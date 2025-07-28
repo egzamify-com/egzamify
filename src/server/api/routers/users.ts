@@ -159,13 +159,13 @@ const getCurrentUsersFriendsQuery = (
       or(
         // Scenario 1: Current user is requester, friend is receiver
         and(
-          eq(friend.requesting_user_id, currentUserId),
-          eq(friend.receiving_user_id, user.id), // Friend is the receiver
+          eq(friend.requestingUserId, currentUserId),
+          eq(friend.receivingUserId, user.id), // Friend is the receiver
         ),
         // Scenario 2: Current user is receiver, friend is requester
         and(
-          eq(friend.receiving_user_id, currentUserId),
-          eq(friend.requesting_user_id, user.id), // Friend is the requester
+          eq(friend.receivingUserId, currentUserId),
+          eq(friend.requestingUserId, user.id), // Friend is the requester
         ),
       ),
     )
@@ -194,13 +194,13 @@ const getNotFriendsQuery = (
         // The ON clause defines *any* friendship record that exists between `user.id` and `currentUserId`
         // `user.id` is one participant in the friendship record
         or(
-          eq(friend.requesting_user_id, user.id),
-          eq(friend.receiving_user_id, user.id), // Ensure this column name matches your schema
+          eq(friend.requestingUserId, user.id),
+          eq(friend.receivingUserId, user.id), // Ensure this column name matches your schema
         ),
         // `currentUserId` is the other participant in the friendship record
         or(
-          eq(friend.requesting_user_id, currentUserId),
-          eq(friend.receiving_user_id, currentUserId), // Ensure this column name matches your schema
+          eq(friend.requestingUserId, currentUserId),
+          eq(friend.receivingUserId, currentUserId), // Ensure this column name matches your schema
         ),
         // Crucially, only consider *accepted* friendships here for the JOIN
         // eq(friend.status, "accepted"),
@@ -236,8 +236,8 @@ const getCurrentUsersIncomingRequestsQuery = (
 
       // Scenario 2: Current user is receiver, friend is requester
       and(
-        eq(friend.receiving_user_id, currentUserId),
-        eq(friend.requesting_user_id, user.id), // Friend is the requester
+        eq(friend.receivingUserId, currentUserId),
+        eq(friend.requestingUserId, user.id), // Friend is the requester
       ),
     )
     .where(
@@ -263,8 +263,8 @@ const getCurrentUsersPendingRequestsQuery = (
     .innerJoin(
       user,
       and(
-        eq(friend.requesting_user_id, currentUserId),
-        eq(friend.receiving_user_id, user.id), // Friend is the requester
+        eq(friend.requestingUserId, currentUserId),
+        eq(friend.receivingUserId, user.id), // Friend is the requester
       ),
     )
     .where(

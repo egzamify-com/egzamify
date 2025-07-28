@@ -12,7 +12,7 @@ export const cancelFriendRequest = mutation({
     const document = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", userId).eq("receiving_user_id", friendId),
+        q.eq("requestingUserId", userId).eq("receivingUserId", friendId),
       )
       .first();
 
@@ -34,13 +34,13 @@ export const deleteFriend = mutation({
     const friendRecordFromUser = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", userId).eq("receiving_user_id", friendId),
+        q.eq("requestingUserId", userId).eq("receivingUserId", friendId),
       )
       .first();
     const friendRecordFromFriend = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", friendId).eq("receiving_user_id", userId),
+        q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
       .first();
 
@@ -68,7 +68,7 @@ export const rejectFriendRequest = mutation({
     const friendRequest = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", friendId).eq("receiving_user_id", userId),
+        q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
       .first();
     console.log("req found  - ", friendRequest);
@@ -92,7 +92,7 @@ export const acceptFriendRequest = mutation({
     const friendRequest = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", friendId).eq("receiving_user_id", userId),
+        q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
       .first();
 
@@ -114,10 +114,10 @@ export const sendFriendRequest = mutation({
     if (!userId) throw new Error("Failed to get current user");
 
     void (await ctx.db.insert("friends", {
-      requesting_user_id: userId,
-      receiving_user_id: friendId,
+      requestingUserId: userId,
+      receivingUserId: friendId,
       status: "request_sent",
-      updated_at: Date.now(),
+      updatedAt: Date.now(),
     }));
   },
 });
