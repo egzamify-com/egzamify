@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import QualificationsList from "~/components/qualifications-list";
-import QualificationsGrid from "~/components/qualifications-grid";
-import QualificationsIconGrid from "~/components/qualifications-icon-grid";
-import SearchBar from "~/components/search-bar";
+import type { inferProcedureOutput } from "@trpc/server";
+import { useMemo, useState } from "react";
 import FilterOptions from "~/components/filter-options";
+import SearchBar from "~/components/search-bar";
 import SortOptions from "~/components/sort-options";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import type { inferProcedureOutput } from "@trpc/server";
+import QualificationsGrid from "~/components/updated-qualifications-grid";
 import type { AppRouter } from "~/server/api/root";
 // import { qualifications } from "~/data/qualifications"
 

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
-import { Progress } from "~/components/ui/progress";
+import { api } from "convex/_generated/api";
+import type { Id } from "convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import { Clock, Flag, Loader2, SkipForward } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Badge } from "~/components/ui/badge";
-import { Clock, SkipForward, Flag, Loader2 } from "lucide-react";
-import { api } from "~/trpc/react";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Progress } from "~/components/ui/progress";
 
 interface FullTestGameProps {
   qualificationId: string;
@@ -19,13 +21,9 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
   const [isFinished, setIsFinished] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  // Pobieranie pytań z tRPC
-  const {
-    data: questionsData,
-    isLoading,
-    error,
-  } = api.questions.getQuestionsByQualification.useQuery({
-    qualificationId,
+  // Pobieranie pytań z Convex
+  const questionsData = useQuery(api.teoria.query.getQuestionsByQualification, {
+    qualificationId: qualificationId as Id<"qualifications">,
   });
 
   const questions = questionsData?.questions || [];
@@ -93,7 +91,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
     questions.length > 0 ? (answeredQuestions / questions.length) * 100 : 0;
 
   // Loading state
-  if (isLoading) {
+  if (!questionsData) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-2xl">
@@ -101,25 +99,6 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
             <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
             <h1 className="mb-4 text-2xl font-bold">Ładowanie testu...</h1>
             <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
-          <CardContent className="py-12 text-center">
-            <h1 className="mb-4 text-2xl font-bold text-red-600">
-              Błąd ładowania
-            </h1>
-            <p className="mb-4 text-gray-500">{error.message}</p>
-            <Button onClick={() => window.history.back()} variant="outline">
-              Powrót do trybów
-            </Button>
           </CardContent>
         </Card>
       </div>

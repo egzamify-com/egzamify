@@ -1,6 +1,6 @@
 "use client";
-
 import { usePathname } from "next/navigation";
+import type React from "react";
 import { Suspense, useEffect } from "react";
 import { AppSidebar } from "~/components/dashboardSidebar/app-sidebar";
 import { SiteHeader } from "~/components/dashboardSidebar/site-header";

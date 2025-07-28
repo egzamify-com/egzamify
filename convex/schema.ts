@@ -44,7 +44,6 @@ const schema = defineSchema({
       searchField: "username",
       filterFields: ["username", "name"],
     }),
-
   explanations: defineTable({
     userId: v.id("users"),
     content: v.string(),
@@ -57,8 +56,44 @@ const schema = defineSchema({
     updatedAt: v.number(),
   })
     .index("from_to", ["requestingUserId", "receivingUserId"])
-    .index("requestingUserId", ["requestingUserId"])
-    .index("receivingUserId", ["receivingUserId"]),
+    .index("requesting_user_id", ["requestingUserId"])
+    .index("receiving_user_id", ["receivingUserId"]),
+
+  // ----------------TEORIA TABLES----------------------
+  users_theory: defineTable({
+    name: v.string(),
+    email: v.string(),
+  })
+    .index("by_email", ["email"])
+    .index("by_name", ["name"]),
+
+  qualifications: defineTable({
+    name: v.string(),
+    label: v.string(),
+    created_at: v.optional(v.number()),
+  })
+    .index("by_name", ["name"])
+    .index("by_label", ["label"]),
+
+  questions: defineTable({
+    qualification_id: v.id("qualifications"),
+    content: v.string(),
+    year: v.number(),
+    image_url: v.optional(v.string()),
+    explanation: v.optional(v.string()),
+    created_at: v.optional(v.number()),
+  })
+    .index("by_qualification", ["qualification_id"])
+    .index("by_year", ["year"])
+    .index("by_qualification_year", ["qualification_id", "year"]),
+
+  answers: defineTable({
+    question_id: v.id("questions"),
+    content: v.string(),
+    image_url: v.optional(v.string()),
+    is_correct: v.boolean(),
+    label: v.string(),
+  }).index("by_question", ["question_id"]),
 
   basePracticalExams: defineTable({
     qualificationId: v.id("qualifications"),
@@ -94,5 +129,4 @@ const schema = defineSchema({
 });
 
 export const vv = typedV(schema);
-
 export default schema;
