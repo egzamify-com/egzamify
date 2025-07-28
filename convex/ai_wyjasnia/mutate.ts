@@ -14,7 +14,7 @@ export const storeNewThread = mutation({
     }
 
     return await ctx.db.insert("explanations", {
-      user_id: userId,
+      userId: userId,
       content: "",
     });
   },
@@ -98,9 +98,10 @@ export const updateAssistantAnnotations = mutation({
 
     // 4. Append the new annotations to the last message's annotations array
     // Initialize annotations if they don't exist
-    if (!lastMessage.annotations) {
-      lastMessage.annotations = [];
-    }
+    // if (!lastMessage.annotations) {
+    //   lastMessage.annotations = [];
+    // }
+    lastMessage.annotations ??= [];
     // Append the new parsed annotations
     lastMessage.annotations.push(...parsedAnnotations);
 

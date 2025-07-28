@@ -16,6 +16,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
+import type { NavbarItem } from "./app-sidebar";
 
 export function NavMain({ items }: { items: NavbarItem[] }) {
   return (
@@ -107,11 +108,3 @@ function NavbarItemCore({
     </Link>
   );
 }
-
-export type NavbarItem = {
-  title: string;
-  url: string;
-  icon: React.ReactNode;
-  badgeComponent?: React.ReactNode;
-  childrenItems?: NavbarItem[];
-};

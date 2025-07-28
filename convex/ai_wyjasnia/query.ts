@@ -36,7 +36,7 @@ export const getAiResponsesHistory = query({
 
     const history = await ctx.db
       .query("explanations")
-      .withIndex("by_user", (q) => q.eq("user_id", userId))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .order("desc")
       .paginate(args.paginationOpts);
 

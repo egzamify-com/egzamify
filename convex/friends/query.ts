@@ -67,12 +67,12 @@ async function getUsersFriends({
 }: FriendsQueryInfo) {
   const fromRequestsRecords = await ctx.db
     .query("friends")
-    .withIndex("requesting_user_id", (q) => q.eq("requesting_user_id", userId))
+    .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId))
     .collect();
 
   const fromOthersRecords = await ctx.db
     .query("friends")
-    .withIndex("receiving_user_id", (q) => q.eq("receiving_user_id", userId))
+    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
     .collect();
 
   const usersFromReq = fromRequestsRecords
@@ -80,7 +80,7 @@ async function getUsersFriends({
       if (friendRecord.status === "accepted") return true;
     })
     .map((friendRecord) => {
-      const user = ctx.db.get(friendRecord.receiving_user_id);
+      const user = ctx.db.get(friendRecord.receivingUserId);
       return user;
     });
 
@@ -89,14 +89,14 @@ async function getUsersFriends({
       if (friendRecord.status === "accepted") return true;
     })
     .map((friendRecord) => {
-      const user = ctx.db.get(friendRecord.requesting_user_id);
+      const user = ctx.db.get(friendRecord.requestingUserId);
       return user;
     });
 
   const usersPromises = [...usersFromReq, ...usersFromOthers];
   const users = await Promise.all(usersPromises);
 
-  const filtered = users.filter(async (user) => {
+  const filtered = users.filter((user) => {
     if (!user) return false;
     if (!searchRan) return true;
 
@@ -123,7 +123,7 @@ async function getUsersOutcomingRequests({
 }: FriendsQueryInfo) {
   const ids = stream(ctx.db, schema)
     .query("friends")
-    .withIndex("requesting_user_id", (q) => q.eq("requesting_user_id", userId));
+    .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId));
 
   const onlyRequests = ids.filterWith(async (id) => {
     if (id.status === "request_sent") return true;
@@ -134,7 +134,7 @@ async function getUsersOutcomingRequests({
     async (requestRecord) =>
       stream(ctx.db, schema)
         .query("users")
-        .withIndex("by_id", (q) => q.eq("_id", requestRecord.receiving_user_id))
+        .withIndex("by_id", (q) => q.eq("_id", requestRecord.receivingUserId))
         .filterWith(async (user) => {
           if (!searchRan) return true;
 
@@ -163,7 +163,7 @@ async function getUsersIncomingRequests({
 }: FriendsQueryInfo) {
   const ids = stream(ctx.db, schema)
     .query("friends")
-    .withIndex("receiving_user_id", (q) => q.eq("receiving_user_id", userId));
+    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId));
 
   const onlyRequests = ids.filterWith(async (id) => {
     if (id.status === "request_sent") return true;
@@ -174,9 +174,7 @@ async function getUsersIncomingRequests({
     async (requestRecord) =>
       stream(ctx.db, schema)
         .query("users")
-        .withIndex("by_id", (q) =>
-          q.eq("_id", requestRecord.requesting_user_id),
-        )
+        .withIndex("by_id", (q) => q.eq("_id", requestRecord.requestingUserId))
         .filterWith(async (user) => {
           if (!searchRan) return true;
 
@@ -205,17 +203,17 @@ async function getNotFriends({
 }: FriendsQueryInfo) {
   const sent = await ctx.db
     .query("friends")
-    .withIndex("requesting_user_id", (q) => q.eq("requesting_user_id", userId))
+    .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId))
     .collect();
   const received = await ctx.db
     .query("friends")
-    .withIndex("receiving_user_id", (q) => q.eq("receiving_user_id", userId))
+    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
     .collect();
 
   // 2. Collect all friend user IDs
   const friendIds = new Set([
-    ...sent.map((f) => f.receiving_user_id),
-    ...received.map((f) => f.requesting_user_id),
+    ...sent.map((f) => f.receivingUserId),
+    ...received.map((f) => f.requestingUserId),
     userId,
   ]);
 
@@ -238,14 +236,14 @@ export const checkUserFriendStatus = query({
     const userSideReq = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", userId).eq("receiving_user_id", friendId),
+        q.eq("requestingUserId", userId).eq("receivingUserId", friendId),
       )
       .first();
 
     const friendSideReq = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
-        q.eq("requesting_user_id", friendId).eq("receiving_user_id", userId),
+        q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
       .first();
 

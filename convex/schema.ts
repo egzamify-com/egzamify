@@ -3,6 +3,26 @@ import { typedV } from "convex-helpers/validators";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+const requirementsValidator = v.array(
+  v.object({
+    title: v.string(),
+    note: v.optional(v.string()),
+    symbol: v.string(),
+    requirements: v.array(
+      v.object({
+        symbol: v.string(),
+        description: v.string(),
+        answer: v.optional(
+          v.object({
+            isCorrect: v.boolean(),
+            explanation: v.string(),
+          }),
+        ),
+      }),
+    ),
+  }),
+);
+
 const schema = defineSchema({
   ...authTables,
   users: defineTable({
@@ -25,18 +45,19 @@ const schema = defineSchema({
       filterFields: ["username", "name"],
     }),
   explanations: defineTable({
-    user_id: v.id("users"),
+    userId: v.id("users"),
     content: v.string(),
-  }).index("by_user", ["user_id"]),
+  }).index("by_user", ["userId"]),
+
   friends: defineTable({
-    requesting_user_id: v.id("users"),
-    receiving_user_id: v.id("users"),
+    requestingUserId: v.id("users"),
+    receivingUserId: v.id("users"),
     status: v.union(v.literal("request_sent"), v.literal("accepted")),
-    updated_at: v.number(),
+    updatedAt: v.number(),
   })
-    .index("from_to", ["requesting_user_id", "receiving_user_id"])
-    .index("requesting_user_id", ["requesting_user_id"])
-    .index("receiving_user_id", ["receiving_user_id"]),
+    .index("from_to", ["requestingUserId", "receivingUserId"])
+    .index("requesting_user_id", ["requestingUserId"])
+    .index("receiving_user_id", ["receivingUserId"]),
 
   // ----------------TEORIA TABLES----------------------
   users_theory: defineTable({
@@ -73,6 +94,34 @@ const schema = defineSchema({
     is_correct: v.boolean(),
     label: v.string(),
   }).index("by_question", ["question_id"]),
+
+  basePracticalExams: defineTable({
+    qualificationId: v.id("qualifications"),
+    maxPoints: v.number(),
+    examPdf: v.id("_storage"),
+    examInstructions: v.string(),
+    examDate: v.string(),
+    examAttachments: v.array(v.id("_storage")),
+    ratingPdf: v.id("_storage"),
+    ratingData: requirementsValidator,
+  }).index("qualificationId", ["qualificationId"]),
+
+  usersPracticalExams: defineTable({
+    userId: v.id("users"),
+    examId: v.id("base_practical_exams"),
+    attachments: v.array(v.string()),
+    status: v.union(
+      v.literal("user_pending"),
+      v.literal("ai_pending"),
+      v.literal("done"),
+    ),
+    aiRating: v.object({
+      score: v.number(),
+      percantageScore: v.number(),
+      summary: v.string(),
+      details: requirementsValidator,
+    }),
+  }),
 });
 
 export const vv = typedV(schema);

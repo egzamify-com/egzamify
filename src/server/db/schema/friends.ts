@@ -8,10 +8,10 @@ export const friend = pgTable(
   "friends",
   {
     id: uuid("id").notNull().primaryKey().defaultRandom(),
-    requesting_user_id: text("requesting_user_id")
+    requestingUserId: text("requestingUserId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    receiving_user_id: text("receiving_user_id")
+    receivingUserId: text("receivingUserId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     status: text("status")
@@ -23,8 +23,8 @@ export const friend = pgTable(
   },
   (table) => [
     index("friends_id_idx").on(table.id),
-    index("friends_user_id_idx").on(table.requesting_user_id),
-    index("friends_receiving_user_id_idx").on(table.receiving_user_id),
+    index("friends_user_id_idx").on(table.requestingUserId),
+    index("friends_receivingUserId_idx").on(table.receivingUserId),
     index("friends_status_idx").on(table.status),
   ],
 );
@@ -32,13 +32,13 @@ export const friend = pgTable(
 export const friendsRelations = relations(friend, ({ one }) => ({
   requestingUser: one(user, {
     relationName: "requestingUser",
-    fields: [friend.requesting_user_id],
+    fields: [friend.requestingUserId],
     references: [user.id],
   }),
 
   receivingUser: one(user, {
     relationName: "receivingUser",
-    fields: [friend.receiving_user_id],
+    fields: [friend.receivingUserId],
     references: [user.id],
   }),
 }));
