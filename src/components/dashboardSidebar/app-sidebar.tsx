@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import InvitesNavBadge from "../friends/invites-nav-badge";
-import { NavMain, type NavbarItem } from "./nav-main";
+import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 
 const SIDEBAR_ICON_SIZE = 18;

@@ -33,6 +33,23 @@ export function NavMain({ items }: { items: NavbarItem[] }) {
     </>
   );
 }
+function NavbarItemCore({
+  item: { url, icon, title, badgeComponent },
+}: {
+  item: NavbarItem;
+}) {
+  return (
+    <Link href={url}>
+      <SidebarMenuButton className="flex flex-row items-center justify-between text-sm">
+        <div className="flex flex-row items-center gap-2">
+          {icon}
+          {title}
+        </div>
+        <div>{badgeComponent && <>{badgeComponent}</>}</div>
+      </SidebarMenuButton>
+    </Link>
+  );
+}
 
 function NavbarItem({ item }: { item: NavbarItem }) {
   if (item.childrenItems) {
@@ -76,35 +93,14 @@ function CollapsibleNavbarItem({
           <SidebarMenuSub>
             {items.map((item) => {
               return (
-                <NavbarItemCore
-                  key={`collabsiblesidebar-${item.url}`}
-                  item={item}
-                />
+                <SidebarMenuSubItem key={`collabsiblesidebar-${item.url}`}>
+                  <NavbarItemCore item={item} />{" "}
+                </SidebarMenuSubItem>
               );
             })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>
-  );
-}
-
-function NavbarItemCore({
-  item: { url, icon, title, badgeComponent },
-}: {
-  item: NavbarItem;
-}) {
-  return (
-    <Link href={url}>
-      <SidebarMenuSubItem>
-        <SidebarMenuButton className="flex flex-row items-center justify-between text-sm">
-          <div className="flex flex-row items-center gap-2">
-            {icon}
-            {title}
-          </div>
-          <div>{badgeComponent && <>{badgeComponent}</>}</div>
-        </SidebarMenuButton>
-      </SidebarMenuSubItem>
-    </Link>
   );
 }
