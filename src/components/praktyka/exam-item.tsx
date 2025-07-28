@@ -11,44 +11,31 @@ export default function ExamItem({
   exam: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>;
 }) {
   return (
-    <Link href={`/exam/${exam._id}`}>
-      <Card className="group cursor-pointer border-0 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-xl">
-        <CardContent className="p-0">
-          <div className="flex">
-            {/* Smaller Image */}
-            <div className="relative h-20 w-20 flex-shrink-0">
-              {/* <Image
-                src={exam.image || "/placeholder.svg"}
-                alt={exam.title}
-                width={80}
-                height={80}
-                className="h-full w-full rounded-l-lg object-cover transition-transform duration-200 group-hover:scale-105"
-              /> */}
-              <img />
+    <Link
+      href={`/dashboard/egzamin-praktyczny/egzamin/${exam._id}`}
+      key={exam._id}
+      className="w-1/3 flex-shrink-0 p-5"
+    >
+      <Card className="h-full w-full cursor-pointer border shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-xl">
+        <CardContent className="">
+          {/* Content */}
+          <div className="space-y-4">
+            {/* Title */}
+            <h4 className="line-clamp-2 text-sm leading-tight font-semibold transition-colors">
+              Styczen 2025
+            </h4>
+
+            {/* Difficulty and Status */}
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary">hard</Badge>
+              <Badge variant="secondary">test</Badge>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 p-4">
-              <div className="space-y-2">
-                {/* Title */}
-                <h4 className="line-clamp-2 text-base font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
-                  {exam.qualification?.label ?? "Unknown"}
-                </h4>
+            {/* Participants */}
+            <div className="flex items-center text-xs text-gray-500">
+              <Users className="mr-1 h-3 w-3" />
 
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">
-                    {/* <span className="mr-1">{statusConfig.icon}</span> */}
-                    {/* {statusConfig.label} */}
-                    some status here
-                  </Badge>
-                </div>
-
-                {/* Participants */}
-                <div className="flex items-center text-xs text-gray-500">
-                  <Users className="mr-1 h-3 w-3" />
-                  <span>10 enrolled</span>
-                </div>
-              </div>
+              <span>fjdksla</span>
             </div>
           </div>
         </CardContent>

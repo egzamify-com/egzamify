@@ -46,9 +46,11 @@ export default function PraktykaPage() {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <PracticalExamsFilters />
 
-          {convertExams().map((group) => (
-            <ExamGroup key={group.qualificationId} group={group} />
-          ))}
+          <div className="flex flex-col gap-4">
+            {convertExams().map((group) => (
+              <ExamGroup key={group.qualificationId} group={group} />
+            ))}
+          </div>
 
           <LoadingMore isLoading={status === "LoadingMore"} />
           <LoadMoreButton

@@ -238,3 +238,16 @@ export const getQuestionsStats = query({
     };
   },
 });
+
+export const getQualificationDetails = query({
+  args: { qualificationId: v.id("qualifications") },
+  handler: async (ctx, args) => {
+    const { qualificationId } = args;
+
+    const qualification = await ctx.db.get(qualificationId);
+
+    if (!qualification) throw new Error("Qualification not found");
+
+    return qualification;
+  },
+});
