@@ -96,7 +96,7 @@ async function getUsersFriends({
   const usersPromises = [...usersFromReq, ...usersFromOthers];
   const users = await Promise.all(usersPromises);
 
-  const filtered = users.filter(async (user) => {
+  const filtered = users.filter((user) => {
     if (!user) return false;
     if (!searchRan) return true;
 
