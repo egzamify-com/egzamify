@@ -62,18 +62,22 @@ const schema = defineSchema({
 
   basePracticalExams: defineTable({
     qualificationId: v.id("qualifications"),
+    code: v.string(),
     maxPoints: v.number(),
-    examPdf: v.id("_storage"),
     examInstructions: v.string(),
     examDate: v.string(),
-    examAttachments: v.array(v.id("_storage")),
-    ratingPdf: v.id("_storage"),
+    examAttachments: v.array(
+      v.object({
+        attachmentName: v.string(),
+        attachmentId: v.id("_storage"),
+      }),
+    ),
     ratingData: requirementsValidator,
   }).index("qualificationId", ["qualificationId"]),
 
   usersPracticalExams: defineTable({
     userId: v.id("users"),
-    examId: v.id("base_practical_exams"),
+    examId: v.id("basePracticalExams"),
     attachments: v.array(v.string()),
     status: v.union(
       v.literal("user_pending"),
