@@ -5,7 +5,6 @@ import Navbar from "~/components/Navbar";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
 import "~/styles/globals.css";
-import { TRPCReactProvider } from "~/trpc/react";
 import { ConvexClientProvider } from "./providers/ConvexClientProvider";
 import UserActivity from "./providers/user-activity-provier";
 
@@ -33,19 +32,17 @@ export default function RootLayout({
             disableTransitionOnChange
             enableSystem={false}
           >
-            <TRPCReactProvider>
-              <ConvexClientProvider>
-                <UserActivity>
-                  <div className="flex min-h-screen flex-col">
-                    <Navbar />
-                    <main className="flex flex-1 flex-col">
-                      {children}
-                      <Toaster />
-                    </main>
-                  </div>
-                </UserActivity>
-              </ConvexClientProvider>
-            </TRPCReactProvider>
+            <ConvexClientProvider>
+              <UserActivity>
+                <div className="flex min-h-screen flex-col">
+                  <Navbar />
+                  <main className="flex flex-1 flex-col">
+                    {children}
+                    <Toaster />
+                  </main>
+                </div>
+              </UserActivity>
+            </ConvexClientProvider>
           </ThemeProvider>
         </body>
       </html>

@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
 import { useRouter } from "next/navigation";
@@ -6,9 +8,9 @@ import { Button } from "../ui/button";
 export default function SignIn() {
   const { isAuthenticated } = useConvexAuth();
   const router = useRouter();
-  const { signIn, signOut } = useAuthActions();
+  const { signIn } = useAuthActions();
   if (isAuthenticated) {
-    router.push("/");
+    router.replace("/");
   }
   return (
     <>

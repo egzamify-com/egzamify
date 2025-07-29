@@ -6,7 +6,8 @@ import { api } from "convex/_generated/api";
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,6 +58,7 @@ function SignedOut() {
 export function NavSignedIn() {
   const { signOut } = useAuthActions();
   const { data: user, isPending } = useQuery(api.users.query.getCurrentUser);
+  const router = useRouter();
   if (isPending) {
     return <AuthSkeleton />;
   }
@@ -73,7 +75,10 @@ export function NavSignedIn() {
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={async () => {
-              void (await signOut());
+              await signOut();
+              console.log("[AUTH] succesfully signed out");
+              toast.success("Succefully loged out");
+              router.replace("/");
             }}
           >
             <LogOut color="red" />

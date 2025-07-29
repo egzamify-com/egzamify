@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthActions } from "@convex-dev/auth/react";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
@@ -22,12 +23,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { authClient } from "~/lib/auth-client";
 import { Skeleton } from "../ui/skeleton";
 import ActivityStatusAvatar from "../users/activity-status-avatar";
 
 export function NavUser() {
   const router = useRouter();
+  const { signOut } = useAuthActions();
   const { isMobile } = useSidebar();
   const {
     data: user,
@@ -117,20 +118,10 @@ export function NavUser() {
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={async () => {
-                await authClient.signOut({
-                  fetchOptions: {
-                    onError: (ctx) => {
-                      console.log("[AUTH] sign out error: ", ctx.error);
-                      toast.error("Failed to logout");
-                    },
-                    onSuccess: (data) => {
-                      console.log("[AUTH] succesfully signed out: ", data);
-                      toast.success("Succefully loged out");
-                      history.replaceState(null, "", "/");
-                      router.push("/");
-                    },
-                  },
-                });
+                await signOut();
+                console.log("[AUTH] succesfully signed out");
+                toast.success("Succefully loged out");
+                router.replace("/");
               }}
             >
               <LogOut color="red" />
