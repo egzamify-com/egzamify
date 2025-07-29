@@ -1,9 +1,10 @@
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { ConvertedExams } from "~/app/dashboard/egzamin-praktyczny/page";
+import { cn } from "~/lib/utils";
 import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
 import ExamItem from "./exam-item";
@@ -40,21 +41,12 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
             <Badge variant="outline" className="">
               {group.count === 1 ? "1 exam" : `${group.count} exams`}
             </Badge>
-            <div className="flex items-center text-gray-400">
-              {isExpanded ? (
-                <>
-                  <span className="mr-2 text-xs">Hide</span>
-                  <ChevronUp className="h-5 w-5" />
-                </>
-              ) : (
-                <>
-                  <span className="mr-2 text-xs">
-                    {group.count === 1 ? "Show exam" : "Show all"}
-                  </span>
-                  <ChevronDown className="h-5 w-5" />
-                </>
+            <ChevronDown
+              className={cn(
+                `h-5 w-5 transition-transform`,
+                isExpanded ? "rotate-180" : "",
               )}
-            </div>
+            />
           </div>
         </div>
       </button>

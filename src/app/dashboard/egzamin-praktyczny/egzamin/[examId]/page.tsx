@@ -8,6 +8,7 @@ import AttachmentsCard from "~/components/praktyka/details-page/attachments-card
 import BackToExams from "~/components/praktyka/details-page/back-exams-btn";
 import Header from "~/components/praktyka/details-page/header";
 import { Instructions } from "~/components/praktyka/details-page/instructions";
+import AttachmentsList from "~/components/praktyka/details-page/render-attachments-list";
 import Sidebar from "~/components/praktyka/details-page/sidebar";
 import { ExamDetailSkeleton } from "~/components/praktyka/loadings";
 import { tryCatch } from "~/lib/tryCatch";
@@ -43,7 +44,9 @@ async function Component({ params }: { params: PropsType }) {
         <div className="grid gap-8 lg:grid-cols-4">
           <div className="space-y-6 lg:col-span-3">
             <Header {...{ exam }} />
-            <AttachmentsCard {...{ exam }} />
+            <AttachmentsCard {...{ exam }}>
+              <AttachmentsList {...{ exam }} />
+            </AttachmentsCard>
             <Instructions {...{ exam }} />
           </div>
           <Sidebar {...{ exam }} />

@@ -1,38 +1,43 @@
-import type { api } from "convex/_generated/api";
-import type { FunctionReturnType } from "convex/server";
-import { Download } from "lucide-react";
-import { getFileFromId } from "~/lib/utils";
+"use client";
+
+import { ChevronDown, Download } from "lucide-react";
+
+import { useState, type ReactNode } from "react";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import AttachmentItem from "./attachment-item";
 
 export default function AttachmentsCard({
-  exam,
+  children,
 }: {
-  exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
+  children?: ReactNode;
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center">
-          <Download className="mr-2 h-5 w-5" />
-          Reference Materials & Attachments
+        <CardTitle className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-center gap-1">
+            <Download className="mr-2 h-5 w-5" />
+            Reference Materials & Attachments
+          </div>
+          <Button
+            variant={"ghost"}
+            onClick={() => setIsExpanded((old) => !old)}
+          >
+            <ChevronDown
+              className={cn(
+                `h-5 w-5 transition-transform`,
+                isExpanded ? "rotate-180" : "",
+              )}
+            />
+          </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        {exam.examAttachments.map((attachment) => {
-          const url = getFileFromId(
-            attachment.attachmentId,
-            attachment.attachmentName,
-          );
-          return (
-            <AttachmentItem
-              key={`attachment-${attachment.attachmentId}`}
-              url={url}
-              attachment={attachment}
-            />
-          );
-        })}
-      </CardContent>
+
+      {isExpanded && (
+        <CardContent className="flex flex-col gap-4">{children}</CardContent>
+      )}
     </Card>
   );
 }
