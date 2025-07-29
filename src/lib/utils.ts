@@ -12,6 +12,6 @@ export function getFileFromId(storageId: Id<"_storage">, filename: string) {
   );
   getImageUrl.searchParams.set("storageId", storageId);
   getImageUrl.searchParams.set("filename", filename);
-  console.log("URL - ", getImageUrl.href);
+  // console.log("URL - ", getImageUrl.href);
   return getImageUrl.href;
 }
