@@ -5,7 +5,6 @@ import {
   History,
   Mail,
   MessageCircle,
-  Settings,
   User,
   UserPlus,
   Users,
@@ -46,16 +45,7 @@ const navMain: NavbarItem[] = [
     url: "/dashboard/teoria",
     icon: <User size={SIDEBAR_ICON_SIZE} />,
   },
-  {
-    title: "Account",
-    url: "/dashboard/konto",
-    icon: <User size={SIDEBAR_ICON_SIZE} />,
-  },
-  {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: <Settings size={SIDEBAR_ICON_SIZE} />,
-  },
+
   {
     title: "Friends",
     icon: <Users size={SIDEBAR_ICON_SIZE} />,
