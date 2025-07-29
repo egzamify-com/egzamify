@@ -5,7 +5,7 @@ import { useMutation } from "convex/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import FullScreenLoading from "~/components/full-screen-loading";
-import { tryCatch } from "~/utils/tryCatch";
+import { tryCatch } from "~/lib/tryCatch";
 
 export default function Page() {
   const storeNewThread = useMutation(api.ai_wyjasnia.mutate.storeNewThread);

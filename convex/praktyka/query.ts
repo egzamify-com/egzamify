@@ -12,6 +12,11 @@ export const getExamDetails = query({
   handler: async (ctx, { examId }) => {
     const exam = await ctx.db.get(examId);
     if (!exam) throw new Error("Exam not found");
-    return exam;
+    const qualification = await ctx.db.get(exam.qualificationId);
+
+    return {
+      ...exam,
+      qualification,
+    };
   },
 });

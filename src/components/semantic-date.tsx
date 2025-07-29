@@ -1,11 +1,12 @@
 import { Clock } from "lucide-react";
 // Import the revised functions that expect/return milliseconds
 import { cn } from "~/lib/utils";
+
 import {
   convertEpochToYYYYMMDD,
-  type EpochMilliseconds,
   toSemanticTime,
-} from "~/utils/dateUtils";
+  type EpochMilliseconds,
+} from "~/lib/dateUtils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export default function SemanticDate({

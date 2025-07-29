@@ -1,7 +1,7 @@
 import type { Message } from "ai";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
-import { convertDateToEpoch } from "~/utils/dateUtils";
+import { convertDateToEpoch } from "~/lib/dateUtils";
 import SemanticDate from "../semantic-date";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
