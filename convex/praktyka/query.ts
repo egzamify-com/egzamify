@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { query } from "../_generated/server";
@@ -18,5 +19,20 @@ export const getExamDetails = query({
       ...exam,
       qualification,
     };
+  },
+});
+export const getUserExam = query({
+  args: { examId: v.id("basePracticalExams") },
+  handler: async (ctx, { examId }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("User not authenticated");
+    const userExams = await ctx.db
+      .query("usersPracticalExams")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .collect();
+
+    const selectedExam = userExams.filter((exam) => exam.examId === examId);
+    if (selectedExam.length === 0) throw new Error("Exam not found");
+    return selectedExam[0];
   },
 });

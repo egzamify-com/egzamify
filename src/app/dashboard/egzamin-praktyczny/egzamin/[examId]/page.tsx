@@ -9,6 +9,7 @@ import BackToExams from "~/components/praktyka/details-page/back-exams-btn";
 import Header from "~/components/praktyka/details-page/header";
 import { Instructions } from "~/components/praktyka/details-page/instructions";
 import AttachmentsList from "~/components/praktyka/details-page/render-attachments-list";
+import SelectSources from "~/components/praktyka/details-page/select-sources";
 import Sidebar from "~/components/praktyka/details-page/sidebar";
 import { ExamDetailSkeleton } from "~/components/praktyka/loadings";
 import { tryCatch } from "~/lib/tryCatch";
@@ -48,6 +49,7 @@ async function Component({ params }: { params: PropsType }) {
               <AttachmentsList {...{ exam }} />
             </AttachmentsCard>
             <Instructions {...{ exam }} />
+            <SelectSources {...{ exam }} />
           </div>
           <Sidebar {...{ exam }} />
         </div>

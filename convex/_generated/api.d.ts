@@ -20,6 +20,7 @@ import type * as auth from "../auth.js";
 import type * as friends_mutate from "../friends/mutate.js";
 import type * as friends_query from "../friends/query.js";
 import type * as http from "../http.js";
+import type * as praktyka_helpers from "../praktyka/helpers.js";
 import type * as praktyka_mutate from "../praktyka/mutate.js";
 import type * as praktyka_query from "../praktyka/query.js";
 import type * as teoria_mutate from "../teoria/mutate.js";
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   "friends/mutate": typeof friends_mutate;
   "friends/query": typeof friends_query;
   http: typeof http;
+  "praktyka/helpers": typeof praktyka_helpers;
   "praktyka/mutate": typeof praktyka_mutate;
   "praktyka/query": typeof praktyka_query;
   "teoria/mutate": typeof teoria_mutate;

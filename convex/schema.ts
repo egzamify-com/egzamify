@@ -2,26 +2,7 @@ import { authTables } from "@convex-dev/auth/server";
 import { typedV } from "convex-helpers/validators";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-
-const requirementsValidator = v.array(
-  v.object({
-    title: v.string(),
-    note: v.optional(v.string()),
-    symbol: v.string(),
-    requirements: v.array(
-      v.object({
-        symbol: v.string(),
-        description: v.string(),
-        answer: v.optional(
-          v.object({
-            isCorrect: v.boolean(),
-            explanation: v.string(),
-          }),
-        ),
-      }),
-    ),
-  }),
-);
+import { requirementsValidator } from "./praktyka/helpers";
 
 const schema = defineSchema({
   ...authTables,
@@ -113,19 +94,29 @@ const schema = defineSchema({
   usersPracticalExams: defineTable({
     userId: v.id("users"),
     examId: v.id("basePracticalExams"),
-    attachments: v.array(v.string()),
+    attachments: v.optional(
+      v.array(
+        v.object({
+          attachmentName: v.string(),
+          attachmentId: v.optional(v.id("_storage")),
+          attachmentUrl: v.optional(v.string()),
+        }),
+      ),
+    ),
     status: v.union(
       v.literal("user_pending"),
       v.literal("ai_pending"),
       v.literal("done"),
     ),
-    aiRating: v.object({
-      score: v.number(),
-      percantageScore: v.number(),
-      summary: v.string(),
-      details: requirementsValidator,
-    }),
-  }),
+    aiRating: v.optional(
+      v.object({
+        score: v.number(),
+        percantageScore: v.number(),
+        summary: v.string(),
+        details: requirementsValidator,
+      }),
+    ),
+  }).index("by_user_id", ["userId"]),
 });
 
 export const vv = typedV(schema);

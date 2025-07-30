@@ -1,26 +1,59 @@
-import type { api } from "convex/_generated/api";
+"use client";
+
+import { useQuery } from "convex-helpers/react";
+import { api } from "convex/_generated/api";
+import { useMutation } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
-import { User } from "lucide-react";
+import { CirclePlay, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 
 export default function Sidebar({
   exam,
 }: {
   exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
 }) {
+  const { data: userExam } = useQuery(api.praktyka.query.getUserExam, {
+    examId: exam._id,
+  });
+  const startExam = useMutation(api.praktyka.mutate.startExam);
+  const deleteUserExam = useMutation(api.praktyka.mutate.deleteUserExam);
   return (
     <div className="lg:col-span-1">
       <div className="sticky top-8 space-y-6">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button size="lg" className="w-full">
-              <User className="mr-2 h-4 w-4" />
-              test button label
-            </Button>
+          <CardContent>
+            {userExam && userExam.status === "user_pending" ? (
+              <div className="flex w-full flex-col gap-2">
+                <Link
+                  href={`/dashboard/egzamin-praktyczny/egzamin/${exam._id}#select-sources`}
+                >
+                  <Button size="lg" className="w-full">
+                    Select source and submit
+                  </Button>
+                </Link>
+                <Button
+                  variant={"destructive"}
+                  size="lg"
+                  className="w-full"
+                  onClick={async () =>
+                    await deleteUserExam({ userExamId: userExam._id })
+                  }
+                >
+                  <Trash2 /> Cancel
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={async () => await startExam({ examId: exam._id })}
+              >
+                <CirclePlay />
+                Start exam!
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>
