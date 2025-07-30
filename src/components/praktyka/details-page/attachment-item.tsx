@@ -1,7 +1,7 @@
 "use client";
 
-import type { Doc } from "convex/_generated/dataModel";
 import { Download, Image as ImageIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -11,18 +11,19 @@ import {
 } from "../../ui/dialog";
 
 export default function AttachmentItem({
-  attachment,
+  attachmentName,
   url,
+  actionButtons,
 }: {
-  attachment: Doc<"basePracticalExams">["examAttachments"][number];
+  attachmentName: string;
   url: string;
+  actionButtons?: ReactNode;
 }) {
-  console.log(attachment);
   return (
     <div className="grid gap-4">
       <div className="flex items-center rounded-lg border p-4 transition-colors">
         <div className="flex-1">
-          <h4 className="font-medium"> {attachment.attachmentName}</h4>
+          <h4 className="font-medium">{attachmentName}</h4>
         </div>
         <div className="flex flex-row items-center justify-center gap-2">
           <Dialog>
@@ -32,16 +33,17 @@ export default function AttachmentItem({
               </Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogTitle>{attachment.attachmentName}</DialogTitle>
+              <DialogTitle>{attachmentName}</DialogTitle>
               <img src={url} alt="attachment for exams" />
             </DialogContent>
           </Dialog>
-          <a href={url} download={attachment.attachmentName}>
+          <a href={url} download={attachmentName}>
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Download
             </Button>
           </a>
+          {actionButtons}
         </div>
       </div>
     </div>

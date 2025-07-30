@@ -19,7 +19,7 @@ export default function AttachmentsCard({
         className={cn("cursor-pointer transition-colors", "hover:bg-muted")}
         onClick={() => setIsExpanded((old) => !old)}
       >
-        <CardHeader>
+        <CardHeader className="">
           <CardTitle className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-end justify-center gap-1">
               <Download className="mr-2 h-5 w-5" />

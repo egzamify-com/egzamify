@@ -19,7 +19,7 @@ export default async function AttachmentsList({
           <AttachmentItem
             key={`attachment-${attachment.attachmentId}`}
             url={url}
-            attachment={attachment}
+            attachmentName={attachment.attachmentName}
           />
         );
       })}
