@@ -98,8 +98,7 @@ const schema = defineSchema({
       v.array(
         v.object({
           attachmentName: v.string(),
-          attachmentId: v.optional(v.id("_storage")),
-          attachmentUrl: v.optional(v.string()),
+          attachmentId: v.id("_storage"),
         }),
       ),
     ),

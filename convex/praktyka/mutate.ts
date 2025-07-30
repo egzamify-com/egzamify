@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { v } from "convex/values";
+import { Infer, v } from "convex/values";
 import { mutation } from "../_generated/server";
 import { vv } from "../schema";
 
@@ -41,6 +41,55 @@ export const updateUserExamStatus = mutation({
 export const deleteUserExam = mutation({
   args: { userExamId: v.id("usersPracticalExams") },
   handler: async (ctx, { userExamId }) => {
+    const userExam = await ctx.db.get(userExamId);
+
+    userExam?.attachments?.map(async (attachment) => {
+      await ctx.storage.delete(attachment.attachmentId!);
+      return null;
+    });
+
     await ctx.db.delete(userExamId);
+  },
+});
+
+export const generateUploadUrl = mutation({
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+export const sendAttachment = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    userExamId: v.id("usersPracticalExams"),
+    attachmentName: v.string(),
+  },
+  handler: async (ctx, { storageId, userExamId, attachmentName }) => {
+    console.log("Upload happend - ", storageId);
+    const userExam = await ctx.db.get(userExamId);
+    if (!userExam) throw new Error("User exam not found");
+    const attachmentType = vv.doc("usersPracticalExams").fields.attachments;
+
+    const newAttachments: Infer<typeof attachmentType> = [
+      ...(userExam.attachments ?? []),
+      { attachmentName, attachmentId: storageId },
+    ];
+    await ctx.db.patch(userExamId, { attachments: newAttachments });
+  },
+});
+export const deleteAttachment = mutation({
+  args: {
+    userExamId: v.id("usersPracticalExams"),
+    attachmentId: v.id("_storage"),
+  },
+  handler: async (ctx, { userExamId, attachmentId }) => {
+    const userExam = await ctx.db.get(userExamId);
+    if (!userExam) throw new Error("User exam not found");
+    const attachmentType = vv.doc("usersPracticalExams").fields.attachments;
+
+    const newAttachments: Infer<typeof attachmentType> =
+      userExam.attachments?.filter(
+        (attachment) => attachment.attachmentId !== attachmentId,
+      );
+    await ctx.db.patch(userExamId, { attachments: newAttachments });
   },
 });

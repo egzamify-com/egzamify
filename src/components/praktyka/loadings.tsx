@@ -1,7 +1,7 @@
 "use client";
 
 import { BookOpen, Calendar, Search } from "lucide-react";
-import { Card } from "../ui/card";
+import { Card, CardAction, CardDescription } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 
 export default function EnhancedExamSkeleton() {
@@ -277,5 +277,51 @@ export function ExamDetailSkeleton() {
         </div>
       </div>
     </div>
+  );
+}
+export function SelectSourceSkeleton() {
+  return (
+    <Card id="select-sources" className="gap-0">
+      <CardHeader>
+        <CardTitle>
+          <Skeleton className="h-8 w-48" /> {/* Skeleton for the title */}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <CardDescription>
+          <Skeleton className="h-4 w-64" /> {/* Skeleton for description */}
+        </CardDescription>
+        <div className="flex w-full flex-col gap-4">
+          {/* Skeletons for individual AttachmentItem components */}
+          {[1, 2, 3].map(
+            (
+              i, // Render a few skeleton items
+            ) => (
+              <div
+                key={i}
+                className="flex items-center rounded-lg border p-4 transition-colors"
+              >
+                <div className="flex-1">
+                  <Skeleton className="h-6 w-3/4" />{" "}
+                  {/* Skeleton for attachment name */}
+                </div>
+                <div className="flex flex-row items-center justify-center gap-2">
+                  <Skeleton className="h-10 w-10 rounded-md" />{" "}
+                  {/* Skeleton for image icon button */}
+                  <Skeleton className="h-10 w-28 rounded-md" />{" "}
+                  {/* Skeleton for download button */}
+                  <Skeleton className="h-10 w-24 rounded-md" />{" "}
+                  {/* Skeleton for delete button */}
+                </div>
+              </div>
+            ),
+          )}
+        </div>
+        <CardAction className="flex w-full flex-row items-end justify-end">
+          <Skeleton className="h-10 w-40 rounded-md" />{" "}
+          {/* Skeleton for UploadAttachment button */}
+        </CardAction>
+      </CardContent>
+    </Card>
   );
 }

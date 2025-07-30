@@ -30,7 +30,7 @@ export default function Sidebar({
                   href={`/dashboard/egzamin-praktyczny/egzamin/${exam._id}#select-sources`}
                 >
                   <Button size="lg" className="w-full">
-                    Select source and submit
+                    Jump to sources
                   </Button>
                 </Link>
                 <Button

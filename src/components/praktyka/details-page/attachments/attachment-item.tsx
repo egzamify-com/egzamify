@@ -1,24 +1,35 @@
 "use client";
 
+import type { Id } from "convex/_generated/dataModel";
 import { Download, Image as ImageIcon } from "lucide-react";
-import type { ReactNode } from "react";
-import { Button } from "../../ui/button";
+import { useEffect, useState, type ReactNode } from "react";
+import { getFileUrl } from "~/app/actions";
+import { Button } from "../../../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "../../ui/dialog";
+} from "../../../ui/dialog";
 
 export default function AttachmentItem({
   attachmentName,
-  url,
+  attachmentId,
   actionButtons,
 }: {
   attachmentName: string;
-  url: string;
+  url?: string;
+  attachmentId?: Id<"_storage">;
   actionButtons?: ReactNode;
 }) {
+  const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null);
+  useEffect(() => {
+    (async () => {
+      const response = await getFileUrl(attachmentId, attachmentName);
+      console.log("response - ", response);
+      setAttachmentUrl(response);
+    })();
+  }, []);
   return (
     <div className="grid gap-4">
       <div className="flex items-center rounded-lg border p-4 transition-colors">
@@ -34,10 +45,10 @@ export default function AttachmentItem({
             </DialogTrigger>
             <DialogContent>
               <DialogTitle>{attachmentName}</DialogTitle>
-              <img src={url} alt="attachment for exams" />
+              <img src={attachmentUrl!} alt="attachment for exams" />
             </DialogContent>
           </Dialog>
-          <a href={url} download={attachmentName}>
+          <a href={attachmentUrl!} download={attachmentName}>
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Download

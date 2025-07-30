@@ -1,6 +1,5 @@
 import type { api } from "convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
-import { getFileFromId } from "~/lib/utils";
 import AttachmentItem from "./attachment-item";
 
 export default async function AttachmentsList({
@@ -11,14 +10,10 @@ export default async function AttachmentsList({
   return (
     <>
       {exam.examAttachments.map((attachment) => {
-        const url = getFileFromId(
-          attachment.attachmentId,
-          attachment.attachmentName,
-        );
         return (
           <AttachmentItem
             key={`attachment-${attachment.attachmentId}`}
-            url={url}
+            attachmentId={attachment.attachmentId}
             attachmentName={attachment.attachmentName}
           />
         );
