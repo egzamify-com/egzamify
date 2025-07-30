@@ -16,7 +16,7 @@ export default function ExamItem({
       key={exam._id}
       className="w-1/3 flex-shrink-0 p-5"
     >
-      <Card className="h-full w-full cursor-pointer border shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-xl">
+      <Card className="hover:bg-background h-full w-full border shadow-sm transition-all">
         <CardContent className="">
           {/* Content */}
           <div className="space-y-4">

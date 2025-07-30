@@ -21,7 +21,7 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
   return (
     <div className="overflow-hidden rounded-lg border shadow-sm">
       <button
-        className="w-full border-b p-4 text-left transition-colors"
+        className="hover:bg-card w-full cursor-pointer border-b p-4 text-left transition-colors"
         onClick={() => setIsExpanded((old) => !old)}
       >
         <div className="flex items-center justify-between">

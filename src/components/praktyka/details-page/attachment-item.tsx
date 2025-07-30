@@ -32,7 +32,7 @@ export default function AttachmentItem({
               </Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogTitle></DialogTitle>
+              <DialogTitle>{attachment.attachmentName}</DialogTitle>
               <img src={url} alt="attachment for exams" />
             </DialogContent>
           </Dialog>

@@ -2,6 +2,8 @@
 
 import { IconInnerShadowTop, IconListDetails } from "@tabler/icons-react";
 import {
+  Cpu,
+  Hand,
   History,
   Mail,
   MessageCircle,
@@ -88,13 +90,13 @@ const navMain: NavbarItem[] = [
   },
   {
     title: "Egzamin Praktyczny",
-    icon: <MessageCircle size={SIDEBAR_ICON_SIZE} />,
+    icon: <Hand size={SIDEBAR_ICON_SIZE} />,
     url: "/dashboard/",
     childrenItems: [
       {
         title: "Zacznij egzamin z AI",
         url: "/dashboard/egzamin-praktyczny",
-        icon: <IconListDetails size={SIDEBAR_ICON_SIZE} />,
+        icon: <Cpu size={SIDEBAR_ICON_SIZE} />,
       },
       {
         title: "Wykonane egzaminy",
