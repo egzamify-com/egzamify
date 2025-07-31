@@ -2,6 +2,7 @@
 
 import { IconInnerShadowTop, IconListDetails } from "@tabler/icons-react";
 import {
+  Check,
   Cpu,
   Hand,
   History,
@@ -40,11 +41,6 @@ const navMain: NavbarItem[] = [
   {
     title: "Dashboard",
     url: "/dashboard",
-    icon: <User size={SIDEBAR_ICON_SIZE} />,
-  },
-  {
-    title: "Egzamin Teoretyczny",
-    url: "/dashboard/teoria",
     icon: <User size={SIDEBAR_ICON_SIZE} />,
   },
 
@@ -87,6 +83,11 @@ const navMain: NavbarItem[] = [
         icon: <History size={SIDEBAR_ICON_SIZE} />,
       },
     ],
+  },
+  {
+    title: "Egzamin Teoretyczny",
+    url: "/dashboard/teoria",
+    icon: <Check size={SIDEBAR_ICON_SIZE} />,
   },
   {
     title: "Egzamin Praktyczny",
