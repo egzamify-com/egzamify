@@ -1,12 +1,13 @@
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import { ConvexQueryCacheProvider } from "convex-helpers/react/cache/provider";
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import Navbar from "~/components/Navbar";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
+import { ConvexClientProvider } from "~/providers/ConvexClientProvider";
+import UserActivity from "~/providers/user-activity-provier";
 import "~/styles/globals.css";
-import { ConvexClientProvider } from "./providers/ConvexClientProvider";
-import UserActivity from "./providers/user-activity-provier";
 
 export const metadata: Metadata = {
   title: "Learn with AI",
@@ -33,15 +34,17 @@ export default function RootLayout({
             enableSystem={false}
           >
             <ConvexClientProvider>
-              <UserActivity>
-                <div className="flex min-h-screen flex-col">
-                  <Navbar />
-                  <main className="flex flex-1 flex-col">
-                    {children}
-                    <Toaster />
-                  </main>
-                </div>
-              </UserActivity>
+              <ConvexQueryCacheProvider>
+                <UserActivity>
+                  <div className="flex min-h-screen flex-col">
+                    <Navbar />
+                    <main className="flex flex-1 flex-col">
+                      {children}
+                      <Toaster />
+                    </main>
+                  </div>
+                </UserActivity>
+              </ConvexQueryCacheProvider>
             </ConvexClientProvider>
           </ThemeProvider>
         </body>

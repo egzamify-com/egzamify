@@ -25,7 +25,6 @@ export default function Page() {
 }
 export function HistoryPage() {
   const {
-    isLoading,
     loadMore,
     results: history,
     status,

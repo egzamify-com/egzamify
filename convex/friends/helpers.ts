@@ -1,9 +1,6 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { stream } from "convex-helpers/server/stream";
-import { type Infer, v } from "convex/values";
-import { query } from "../_generated/server";
 import schema from "../schema";
-import { type friendFilterValidator, type FriendsQueryInfo } from "./query";
+import { type FriendsQueryInfo } from "./query";
 
 export async function getUsersFriends({
   ctx,
@@ -169,43 +166,3 @@ export async function getNotFriends({
   const allUsers = await ctx.db.query("users").collect();
   return allUsers.filter((u) => u._id && !friendIds.has(u._id));
 }
-export const checkUserFriendStatus = query({
-  args: { friendId: v.id("users") },
-  handler: async (
-    ctx,
-    args,
-  ): Promise<{ status: Infer<typeof friendFilterValidator> }> => {
-    const { friendId } = args;
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Failed to get current user");
-
-    const userSideReq = await ctx.db
-      .query("friends")
-      .withIndex("from_to", (q) =>
-        q.eq("requestingUserId", userId).eq("receivingUserId", friendId),
-      )
-      .first();
-
-    const friendSideReq = await ctx.db
-      .query("friends")
-      .withIndex("from_to", (q) =>
-        q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
-      )
-      .first();
-
-    if (userSideReq && !friendSideReq) {
-      if (userSideReq.status === "request_sent")
-        return { status: "outcoming_requests" };
-      else if (userSideReq.status === "accepted")
-        return { status: "accepted_friends" };
-    } else if (!userSideReq && friendSideReq) {
-      if (friendSideReq.status === "request_sent")
-        return { status: "incoming_requests" };
-      else if (friendSideReq.status === "accepted")
-        return { status: "accepted_friends" };
-    } else if (!userSideReq && !friendSideReq) {
-      return { status: "not_friends" };
-    }
-    return { status: "not_friends" };
-  },
-});

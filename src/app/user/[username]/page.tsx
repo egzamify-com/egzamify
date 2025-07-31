@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
+import { useQuery } from "convex/custom_helpers";
 import { useParams } from "next/navigation";
 import FullScreenError from "~/components/full-screen-error";
 import FullScreenLoading from "~/components/full-screen-loading";

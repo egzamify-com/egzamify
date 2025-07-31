@@ -1,7 +1,8 @@
 "use client";
 
+import { usePaginatedQuery } from "convex-helpers/react/cache";
 import { api } from "convex/_generated/api";
-import { usePaginatedQuery, type PaginatedQueryItem } from "convex/react";
+import { type PaginatedQueryItem } from "convex/react";
 import _ from "lodash";
 import FullScreenError from "~/components/full-screen-error";
 import ExamGroup from "~/components/praktyka/exam-group";
@@ -29,6 +30,7 @@ export default function PraktykaPage() {
 
   if (!exams) return <FullScreenError />;
   if (status === "LoadingFirstPage") return <ExamPageSkeleton />;
+
   function convertExams() {
     const grouped = _.groupBy(exams, "qualificationId");
     console.log("lodash client - ", grouped);
@@ -38,7 +40,7 @@ export default function PraktykaPage() {
       exams: examsInGroup,
     }));
   }
-  console.log("convert - ", convertExams());
+
   return (
     <>
       <div className="min-h-screen">

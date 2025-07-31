@@ -1,11 +1,11 @@
-import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
+import { useQuery } from "convex/custom_helpers";
 import type { Infer } from "convex/values";
 import { Search } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import useDebouncedSearch from "~/hooks/use-debounced-search";
 import { cn } from "~/lib/utils";
-import { friendFilterValidator } from "../../../convex/friends/query";
+import { type friendFilterValidator } from "../../../convex/friends/query";
 import { Card, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Skeleton } from "../ui/skeleton";
@@ -28,7 +28,6 @@ export default function DisplayFriendList({
 }) {
   const { isPending, debouncedSearch, inputOnChange, search } =
     useDebouncedSearch({ time: 250 });
-  const [showInput, setShowInput] = useState(true);
   return (
     <div
       className={cn(
@@ -42,23 +41,20 @@ export default function DisplayFriendList({
           <p className="text-muted-foreground">{headerDescription}</p>
         </div>
       )}
-      {showInput && (
-        <div className="relative mb-6">
-          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
-          <Input
-            value={search}
-            onChange={inputOnChange}
-            placeholder="Search for friends..."
-            className="max-w-md pl-10"
-          />
-        </div>
-      )}
+      <div className="relative mb-6">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
+        <Input
+          value={search}
+          onChange={inputOnChange}
+          placeholder="Search for friends..."
+          className="max-w-md pl-10"
+        />
+      </div>
       {isPending && <FriendsSkeleton countOfSkeletons={10} />}
       {!isPending && (
         <Render
           search={debouncedSearch}
           filter={filter}
-          showInput={(newState: boolean) => setShowInput(newState)}
           notFoundComponent={notFoundComponent}
           errorComponent={errorComponent}
         />
@@ -69,13 +65,11 @@ export default function DisplayFriendList({
 function Render({
   search,
   filter,
-  showInput,
   notFoundComponent,
   errorComponent,
 }: {
   search: string;
   filter: Infer<typeof friendFilterValidator>;
-  showInput: (newState: boolean) => void;
   notFoundComponent: ReactNode;
   errorComponent: ReactNode;
 }) {
@@ -107,7 +101,7 @@ function Render({
           {friend && (
             <Friend
               friend={{
-                user: friend!,
+                user: friend,
                 status: filter,
               }}
             />
