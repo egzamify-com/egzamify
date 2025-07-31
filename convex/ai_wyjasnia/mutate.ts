@@ -8,7 +8,7 @@ export const storeNewThread = mutation({
   handler: async (ctx) => {
     const userId = await getUserId(ctx);
 
-    await ctx.db.insert("explanations", {
+    return await ctx.db.insert("explanations", {
       userId: userId,
       content: "",
     });
