@@ -29,21 +29,17 @@ export default function RandomQuestionGame({
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Dodajemy lokalny stan dla wyjaśnienia AI
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
 
-  // Pobieranie losowego pytania z Convex
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationId: qualificationId as Id<"qualifications">,
   });
 
   const currentQuestion = questionData?.question;
 
-  // Mutacje Convex
   const saveExplanation = useMutation(api.teoria.mutate.saveExplanation);
 
-  // Ustawienie wyjaśnienia z bazy danych, jeśli istnieje
   useEffect(() => {
     if (currentQuestion?.explanation) {
       setAiExplanation(currentQuestion.explanation);
@@ -52,7 +48,6 @@ export default function RandomQuestionGame({
     }
   }, [currentQuestion]);
 
-  // Timer
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -88,17 +83,14 @@ export default function RandomQuestionGame({
     setIsCorrect(null);
     setTimeLeft(120);
     setAiExplanation(null);
-    setRefreshKey((prev) => prev + 1); // Force refresh
+    setRefreshKey((prev) => prev + 1);
   };
 
-  // Funkcja do generowania wyjaśnienia (placeholder - będzie potrzebna integracja z AI)
   const handleGenerateExplanation = async () => {
     if (!currentQuestion) return;
 
     setIsLoadingExplanation(true);
 
-    // Tu będzie integracja z AI (Groq)
-    // Na razie placeholder
     const mockExplanation = `Wyjaśnienie AI dla pytania: ${currentQuestion.question.slice(0, 50)}...`;
 
     setAiExplanation(mockExplanation);
@@ -115,7 +107,6 @@ export default function RandomQuestionGame({
     }
   };
 
-  // Loading state
   if (questionData === undefined) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -130,7 +121,6 @@ export default function RandomQuestionGame({
     );
   }
 
-  // Brak pytania
   if (!currentQuestion) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -155,7 +145,6 @@ export default function RandomQuestionGame({
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
-      {/* Header */}
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Losowe pytanie</h1>
@@ -174,7 +163,6 @@ export default function RandomQuestionGame({
         </div>
       </div>
 
-      {/* Pytanie */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-lg">Pytanie</CardTitle>
@@ -263,7 +251,6 @@ export default function RandomQuestionGame({
         </CardContent>
       </Card>
 
-      {/* Wynik */}
       {showResult && (
         <Card className="mb-6">
           <CardContent className="pt-6">
@@ -299,7 +286,6 @@ export default function RandomQuestionGame({
         </Card>
       )}
 
-      {/* Akcje */}
       <div className="flex items-center justify-between">
         <Button onClick={() => window.history.back()} variant="outline">
           Powrót do trybów

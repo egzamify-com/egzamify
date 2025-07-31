@@ -1,11 +1,11 @@
 import { Suspense } from "react";
+import AllQualificationsList from "~/components/all-qualification-list";
+
 import { Card, CardContent } from "~/components/ui/card";
-import QualificationsGrid from "~/components/updated-qualifications-grid";
 
 export default function TeoriaPage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="mb-2 text-3xl font-bold">Egzamin Teoretyczny</h1>
         <p className="text-gray-600">
@@ -14,9 +14,8 @@ export default function TeoriaPage() {
         </p>
       </div>
 
-      {/* Kwalifikacje */}
       <Suspense fallback={<LoadingGrid />}>
-        <QualificationsGrid qualificationId="nh7b1y1vssqva39k0xs5mpqjz57mkfwm" />
+        <AllQualificationsList />
       </Suspense>
     </div>
   );

@@ -36,9 +36,7 @@ export const getQualificationsList = query({
           id: qualification._id,
           name: qualification.name,
           label: qualification.label,
-          created_at: qualification.created_at
-            ? new Date(qualification.created_at)
-            : new Date(),
+          created_at: qualification.created_at || Date.now(), // Zwracaj timestamp jako liczbę
           questionsCount: questions.length,
         };
       }),
@@ -125,7 +123,6 @@ export const getRandomQuestion = query({
       .withIndex("by_question", (q) => q.eq("question_id", randomQuestion._id))
       .collect();
 
-    // Sortuj odpowiedzi według label
     const sortedAnswers = answers.sort((a, b) =>
       a.label.localeCompare(b.label),
     );
@@ -163,12 +160,10 @@ export const getBrowseQuestions = query({
       )
       .collect();
 
-    // Filtruj po roku jeśli podano
     if (year) {
       questions = questions.filter((q) => q.year === year);
     }
 
-    // Filtruj po tekście jeśli podano
     if (search && search.trim() !== "") {
       const searchLower = search.toLowerCase();
       questions = questions.filter((q) =>
@@ -179,7 +174,6 @@ export const getBrowseQuestions = query({
     // Sortuj według daty utworzenia (najnowsze pierwsze)
     questions.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
 
-    // Paginacja
     const paginatedQuestions = questions.slice(offset, offset + limit);
 
     const questionsWithAnswers = await Promise.all(
@@ -236,18 +230,5 @@ export const getQuestionsStats = query({
       total: questions.length,
       years,
     };
-  },
-});
-
-export const getQualificationDetails = query({
-  args: { qualificationId: v.id("qualifications") },
-  handler: async (ctx, args) => {
-    const { qualificationId } = args;
-
-    const qualification = await ctx.db.get(qualificationId);
-
-    if (!qualification) throw new Error("Qualification not found");
-
-    return qualification;
   },
 });
