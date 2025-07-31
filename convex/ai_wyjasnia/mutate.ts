@@ -1,19 +1,14 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { Message } from "ai";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { mutation } from "../_generated/server";
+import { getUserId } from "../auth";
 
 export const storeNewThread = mutation({
-  args: {},
   handler: async (ctx) => {
-    console.log("store new thread mut hit");
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Failed to get user");
-    }
+    const userId = await getUserId(ctx);
 
-    return await ctx.db.insert("explanations", {
+    await ctx.db.insert("explanations", {
       userId: userId,
       content: "",
     });
@@ -22,43 +17,42 @@ export const storeNewThread = mutation({
 
 export const storeChatMessages = mutation({
   args: { chatId: v.string(), newContent: v.string() },
-  handler: async (ctx, args) => {
-    console.log("store chat mut hit");
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Failed to get user");
-    }
-    const { chatId, newContent } = args;
-    console.log("looking for chatId - ", chatId);
+  handler: async (ctx, { chatId, newContent }) => {
+    const userId = await getUserId(ctx);
 
-    void (await ctx.db.patch(chatId as Id<"explanations">, {
+    const thread = await ctx.db.get(chatId as Id<"explanations">);
+    if (!thread) throw new Error("Thread not found");
+    if (thread.userId !== userId) throw new Error("Unauthorized");
+
+    await ctx.db.patch(chatId as Id<"explanations">, {
       content: newContent,
-    }));
+    });
   },
 });
 
 export const deleteChat = mutation({
   args: { chatId: v.id("explanations") },
-  handler: async (ctx, args) => {
-    console.log("delete chat mut hit");
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Failed to get user");
-    const { chatId } = args;
-    void (await ctx.db.delete(chatId));
+  handler: async (ctx, { chatId }) => {
+    const userId = await getUserId(ctx);
+
+    const thread = await ctx.db.get(chatId);
+
+    if (!thread) throw new Error("Thread not found");
+    if (thread.userId !== userId) throw new Error("Unauthorized");
+
+    await ctx.db.delete(chatId);
   },
 });
+
 export const updateAssistantAnnotations = mutation({
   args: { chatId: v.id("explanations"), newAnnotation: v.string() },
-  handler: async (ctx, args) => {
-    console.log("update chat with annotation");
-    const { chatId, newAnnotation } = args;
-
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Failed to get user");
+  handler: async (ctx, { chatId, newAnnotation }) => {
+    const userId = await getUserId(ctx);
 
     const thread = await ctx.db.get(chatId);
     if (!thread) throw new Error("Chat not found");
-    // 1. Parse the stringified content of the thread into an array of messages
+    if (thread.userId !== userId) throw new Error("Unauthorized");
+
     let threadContent: Message[];
     try {
       threadContent = JSON.parse(thread.content);
@@ -74,17 +68,13 @@ export const updateAssistantAnnotations = mutation({
       throw new Error("Invalid thread content format.");
     }
 
-    // Check if there are any messages in the thread
     if (threadContent.length === 0) {
       console.warn("No messages in thread to add annotation to:", chatId);
-      // Depending on your logic, you might want to throw an error or just return
       return;
     }
 
-    // 2. Get the last message in the array
     const lastMessage = threadContent[threadContent.length - 1];
 
-    // 3. Parse the newAnnotation string into an array of annotation objects
     let parsedAnnotations: { id: string; mode: string }[];
     try {
       parsedAnnotations = JSON.parse(newAnnotation);
@@ -96,22 +86,13 @@ export const updateAssistantAnnotations = mutation({
       throw new Error("Invalid newAnnotation format.");
     }
 
-    // 4. Append the new annotations to the last message's annotations array
-    // Initialize annotations if they don't exist
-    // if (!lastMessage.annotations) {
-    //   lastMessage.annotations = [];
-    // }
     lastMessage.annotations ??= [];
-    // Append the new parsed annotations
     lastMessage.annotations.push(...parsedAnnotations);
 
     console.log("Updated last message:", lastMessage);
 
-    // 5. Stringify the entire updated thread content array back to a string
     const newContentString = JSON.stringify(threadContent);
 
-    // 6. Patch the Convex document with the new stringified content
     await ctx.db.patch(chatId, { content: newContentString });
-    console.log("Chat updated successfully with new annotation.");
   },
 });

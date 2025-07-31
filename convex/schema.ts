@@ -115,7 +115,9 @@ const schema = defineSchema({
         details: requirementsValidator,
       }),
     ),
-  }).index("by_user_id", ["userId"]),
+  })
+    .index("by_user_id", ["userId"])
+    .index("by_userId_examId", ["userId", "examId"]),
 });
 
 export const vv = typedV(schema);

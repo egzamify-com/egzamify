@@ -17,6 +17,7 @@ import type * as ai_wyjasnia_helpers from "../ai_wyjasnia/helpers.js";
 import type * as ai_wyjasnia_mutate from "../ai_wyjasnia/mutate.js";
 import type * as ai_wyjasnia_query from "../ai_wyjasnia/query.js";
 import type * as auth from "../auth.js";
+import type * as friends_helpers from "../friends/helpers.js";
 import type * as friends_mutate from "../friends/mutate.js";
 import type * as friends_query from "../friends/query.js";
 import type * as http from "../http.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   "ai_wyjasnia/mutate": typeof ai_wyjasnia_mutate;
   "ai_wyjasnia/query": typeof ai_wyjasnia_query;
   auth: typeof auth;
+  "friends/helpers": typeof friends_helpers;
   "friends/mutate": typeof friends_mutate;
   "friends/query": typeof friends_query;
   http: typeof http;

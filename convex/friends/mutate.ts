@@ -1,13 +1,11 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation } from "../_generated/server";
+import { getUserId } from "../auth";
 
 export const cancelFriendRequest = mutation({
   args: { friendId: v.id("users") },
-  handler: async (ctx, args) => {
-    const { friendId } = args;
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("User not authenticated");
+  handler: async (ctx, { friendId }) => {
+    const userId = await getUserId(ctx);
 
     const document = await ctx.db
       .query("friends")
@@ -18,18 +16,14 @@ export const cancelFriendRequest = mutation({
 
     if (!document) throw new Error("Friend request not found");
 
-    void (await ctx.db.delete(document._id));
+    await ctx.db.delete(document._id);
   },
 });
+
 export const deleteFriend = mutation({
   args: { friendId: v.id("users") },
-  handler: async (ctx, args) => {
-    const { friendId } = args;
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("User not authenticated");
-
-    console.log("userid used - ", userId);
-    console.log("friendId userd- ", friendId);
+  handler: async (ctx, { friendId }) => {
+    const userId = await getUserId(ctx);
 
     const friendRecordFromUser = await ctx.db
       .query("friends")
@@ -44,26 +38,19 @@ export const deleteFriend = mutation({
       )
       .first();
 
-    console.log("user side ", friendRecordFromUser);
-    console.log("friend side ", friendRecordFromFriend);
-
     // delete the friend record based on who initiated the friend request
     if (friendRecordFromUser && !friendRecordFromFriend) {
-      void (await ctx.db.delete(friendRecordFromUser._id));
+      await ctx.db.delete(friendRecordFromUser._id);
     } else if (friendRecordFromFriend && !friendRecordFromUser) {
-      void (await ctx.db.delete(friendRecordFromFriend._id));
+      await ctx.db.delete(friendRecordFromFriend._id);
     }
   },
 });
+
 export const rejectFriendRequest = mutation({
   args: { friendId: v.id("users") },
-  handler: async (ctx, args) => {
-    const { friendId } = args;
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Failed to get current user");
-
-    console.log("user id used - ", userId);
-    console.log("friend id used - ", friendId);
+  handler: async (ctx, { friendId }) => {
+    const userId = await getUserId(ctx);
 
     const friendRequest = await ctx.db
       .query("friends")
@@ -71,23 +58,20 @@ export const rejectFriendRequest = mutation({
         q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
       .first();
-    console.log("req found  - ", friendRequest);
 
     if (!friendRequest) throw new Error("Failed to find friend request");
 
     if (friendRequest.status != "request_sent")
       throw new Error("Friend already accepted");
 
-    void (await ctx.db.delete(friendRequest._id));
+    await ctx.db.delete(friendRequest._id);
   },
 });
 
 export const acceptFriendRequest = mutation({
   args: { friendId: v.id("users") },
-  handler: async (ctx, args) => {
-    const { friendId } = args;
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Failed to get current user");
+  handler: async (ctx, { friendId }) => {
+    const userId = await getUserId(ctx);
 
     const friendRequest = await ctx.db
       .query("friends")
@@ -96,28 +80,25 @@ export const acceptFriendRequest = mutation({
       )
       .first();
 
-    console.log("req found  - ", friendRequest);
-
     if (!friendRequest) throw new Error("Failed to find friend request");
 
     if (friendRequest.status != "request_sent")
       throw new Error("Friend already accepted");
 
-    void (await ctx.db.patch(friendRequest._id, { status: "accepted" }));
+    await ctx.db.patch(friendRequest._id, { status: "accepted" });
   },
 });
+
 export const sendFriendRequest = mutation({
   args: { friendId: v.id("users") },
-  handler: async (ctx, args) => {
-    const { friendId } = args;
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Failed to get current user");
+  handler: async (ctx, { friendId }) => {
+    const userId = await getUserId(ctx);
 
-    void (await ctx.db.insert("friends", {
+    await ctx.db.insert("friends", {
       requestingUserId: userId,
       receivingUserId: friendId,
       status: "request_sent",
       updatedAt: Date.now(),
-    }));
+    });
   },
 });
