@@ -1,22 +1,13 @@
-import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
-import { useQuery } from "convex/custom_helpers";
 import { Calendar, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { ConvertedExams } from "~/app/dashboard/egzamin-praktyczny/page";
 import { cn } from "~/lib/utils";
 import { Badge } from "../ui/badge";
-import { Skeleton } from "../ui/skeleton";
 import ExamItem from "./exam-item";
 
 export default function ExamGroup({ group }: { group: ConvertedExams }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { data: qualification, isPending } = useQuery(
-    api.teoria.query.getQualificationDetails,
-    {
-      qualificationId: group.qualificationId as Id<"qualifications">,
-    },
-  );
+
   return (
     <div className="overflow-hidden rounded-lg border shadow-sm">
       <button
@@ -24,15 +15,15 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
         onClick={() => setIsExpanded((old) => !old)}
       >
         <div className="flex items-center justify-between">
-          {isPending ? (
-            <Skeleton className="mb-2 h-5 w-80" />
-          ) : (
-            <div className="flex flex-row gap-2">
-              <Badge variant={"secondary"}>{qualification?.name}</Badge>
+          <div className="flex flex-row gap-2">
+            <Badge variant={"secondary"}>
+              {group.exams[0]?.qualification?.name}
+            </Badge>
 
-              <h3 className="text-lg font-semibold">{qualification?.label}</h3>
-            </div>
-          )}
+            <h3 className="text-lg font-semibold">
+              {group.exams[0]?.qualification?.label}
+            </h3>
+          </div>
 
           <div className="flex items-center justify-center gap-3">
             <div className="flex items-center text-sm">

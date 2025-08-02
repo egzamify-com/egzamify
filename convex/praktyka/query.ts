@@ -1,3 +1,4 @@
+import { asyncMap } from "convex-helpers";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { query } from "../_generated/server";
@@ -7,7 +8,23 @@ export const listPracticalExams = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, { paginationOpts }) => {
     await getUserId(ctx);
-    return await ctx.db.query("basePracticalExams").paginate(paginationOpts);
+
+    const baseExams = await ctx.db
+      .query("basePracticalExams")
+      .paginate(paginationOpts);
+
+    const withQs = await asyncMap(baseExams.page, async (exam) => {
+      const qualification = await ctx.db.get(exam.qualificationId);
+      return {
+        ...exam,
+        qualification,
+      };
+    });
+
+    return {
+      ...baseExams,
+      page: withQs,
+    };
   },
 });
 
