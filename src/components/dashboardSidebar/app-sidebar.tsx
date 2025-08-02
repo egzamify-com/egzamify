@@ -1,7 +1,7 @@
 "use client";
 
-import { IconInnerShadowTop, IconListDetails } from "@tabler/icons-react";
 import {
+  Calendar,
   Check,
   Cpu,
   Hand,
@@ -75,7 +75,7 @@ const navMain: NavbarItem[] = [
       {
         title: "Start a conversation",
         url: "/dashboard/ai-wyjasnia",
-        icon: <IconListDetails size={SIDEBAR_ICON_SIZE} />,
+        icon: <Calendar size={SIDEBAR_ICON_SIZE} />,
       },
       {
         title: "Chat History",
@@ -119,7 +119,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={"/"}>
-                {<IconInnerShadowTop />}
                 <span className="text-base font-semibold">Nazwa</span>
               </Link>
             </SidebarMenuButton>

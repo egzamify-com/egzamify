@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { IconDotsVertical } from "@tabler/icons-react";
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
@@ -61,7 +60,6 @@ export function NavUser() {
                       {user.email}
                     </span>
                   </div>
-                  <IconDotsVertical className="ml-auto size-4" />
                 </>
               )}
             </SidebarMenuButton>
