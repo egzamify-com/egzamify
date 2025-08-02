@@ -44,7 +44,7 @@ export const getExamDetails = query({
   },
 });
 
-export const getUserExam = query({
+export const getUserExamFromExamId = query({
   args: { examId: v.id("basePracticalExams") },
   handler: async (ctx, { examId }) => {
     const userId = await getUserId(ctx);
@@ -55,5 +55,22 @@ export const getUserExam = query({
         q.eq("userId", userId).eq("examId", examId),
       )
       .first();
+  },
+});
+
+export const getUserExamDetails = query({
+  args: { userExamId: v.id("usersPracticalExams") },
+  handler: async (ctx, { userExamId }) => {
+    const userId = await getUserId(ctx);
+
+    const userExam = await ctx.db
+      .query("usersPracticalExams")
+      .withIndex("by_id", (q) => q.eq("_id", userExamId))
+      .first();
+
+    if (!userExam) throw new Error("User exam not found");
+    if (userExam.userId !== userId) throw new Error("Unauthorized");
+
+    return userExam;
   },
 });

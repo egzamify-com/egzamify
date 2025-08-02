@@ -3,7 +3,7 @@
 import type { Id } from "convex/_generated/dataModel";
 import { Download, Image as ImageIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
-import { getFileUrl } from "~/app/actions";
+import { getFileUrl } from "~/actions/actions";
 import { Button } from "../../../ui/button";
 import {
   Dialog,
@@ -25,11 +25,12 @@ export default function AttachmentItem({
   const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null);
   useEffect(() => {
     (async () => {
-      const response = await getFileUrl(attachmentId, attachmentName);
-      console.log("response - ", response);
+      const response = await getFileUrl(attachmentId, attachmentName, {
+        raw: false,
+      });
       setAttachmentUrl(response);
     })();
-  }, []);
+  }, [attachmentId, attachmentName]);
   return (
     <div className="grid gap-4">
       <div className="flex items-center rounded-lg border p-4 transition-colors">

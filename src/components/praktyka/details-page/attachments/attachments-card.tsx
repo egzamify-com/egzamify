@@ -36,9 +36,12 @@ export default function AttachmentsCard({
           </CardTitle>
         </CardHeader>
       </Card>
-      {isExpanded && (
-        <CardContent className="flex flex-col gap-4">{children}</CardContent>
-      )}
+      {/*!!! only change visibility in styles, so the images dont hit server so much, now only 1 req for url is needed */}
+      <CardContent
+        className={cn(`flex flex-col gap-4`, isExpanded ? "flex" : "hidden")}
+      >
+        {children}
+      </CardContent>
     </>
   );
 }

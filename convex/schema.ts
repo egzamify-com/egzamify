@@ -2,7 +2,10 @@ import { authTables } from "@convex-dev/auth/server";
 import { typedV } from "convex-helpers/validators";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { requirementsValidator } from "./praktyka/helpers";
+import {
+  practicalExamAttachmentValidator,
+  requirementsValidator,
+} from "./praktyka/helpers";
 
 const schema = defineSchema({
   ...authTables,
@@ -82,26 +85,14 @@ const schema = defineSchema({
     maxPoints: v.number(),
     examInstructions: v.string(),
     examDate: v.string(),
-    examAttachments: v.array(
-      v.object({
-        attachmentName: v.string(),
-        attachmentId: v.id("_storage"),
-      }),
-    ),
+    examAttachments: practicalExamAttachmentValidator,
     ratingData: requirementsValidator,
   }).index("qualificationId", ["qualificationId"]),
 
   usersPracticalExams: defineTable({
     userId: v.id("users"),
     examId: v.id("basePracticalExams"),
-    attachments: v.optional(
-      v.array(
-        v.object({
-          attachmentName: v.string(),
-          attachmentId: v.id("_storage"),
-        }),
-      ),
-    ),
+    attachments: v.optional(practicalExamAttachmentValidator),
     status: v.union(
       v.literal("user_pending"),
       v.literal("ai_pending"),

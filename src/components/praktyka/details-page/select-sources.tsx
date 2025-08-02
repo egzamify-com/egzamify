@@ -3,7 +3,9 @@
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
-import { Files } from "lucide-react";
+import { Brain, Files } from "lucide-react";
+import { requestPracticalExamCheck } from "~/actions/request-practical-exam-check-action";
+import { Button } from "~/components/ui/button";
 import {
   Card,
   CardAction,
@@ -23,11 +25,12 @@ export default function SelectSources({
   exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
 }) {
   const { data: userExam, isPending } = useQuery(
-    api.praktyka.query.getUserExam,
+    api.praktyka.query.getUserExamFromExamId,
     {
       examId: exam._id,
     },
   );
+
   if (isPending) return <SelectSourceSkeleton />;
 
   if (!userExam) return null;
@@ -58,9 +61,13 @@ export default function SelectSources({
           </div>
           <CardAction className="flex w-full flex-row items-end justify-end gap-4">
             <UploadAttachment {...{ userExam }} />
-            {/* <Button>
+            <Button
+              onClick={async () => {
+                await requestPracticalExamCheck(userExam._id);
+              }}
+            >
               <Brain /> Check your exam with AI
-            </Button> */}
+            </Button>
           </CardAction>
         </CardContent>
       </Card>

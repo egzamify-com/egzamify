@@ -14,9 +14,12 @@ export default function Sidebar({
 }: {
   exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
 }) {
-  const { data: userExam } = useQuery(api.praktyka.query.getUserExam, {
-    examId: exam._id,
-  });
+  const { data: userExam } = useQuery(
+    api.praktyka.query.getUserExamFromExamId,
+    {
+      examId: exam._id,
+    },
+  );
   const startExam = useMutation(api.praktyka.mutate.startExam);
   const deleteUserExam = useMutation(api.praktyka.mutate.deleteUserExam);
   return (

@@ -19,3 +19,9 @@ export const requirementsValidator = v.array(
     ),
   }),
 );
+export const practicalExamAttachmentValidator = v.array(
+  v.object({
+    attachmentName: v.string(),
+    attachmentId: v.id("_storage"),
+  }),
+);
