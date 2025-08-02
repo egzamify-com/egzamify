@@ -44,6 +44,7 @@ export default function UploadAttachment({
       });
 
       if (!result.ok) {
+        console.log(result);
         throw new Error(`HTTP error! status: ${result.status}`);
       }
 
@@ -84,7 +85,6 @@ export default function UploadAttachment({
       <input
         hidden
         type="file"
-        accept="image/*"
         ref={imageInput}
         onChange={handleFileChange}
         style={{ display: "none" }}
