@@ -1,6 +1,6 @@
-import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
+import { useQuery } from "convex/custom_helpers";
 import { Calendar, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { ConvertedExams } from "~/app/dashboard/egzamin-praktyczny/page";
@@ -10,7 +10,6 @@ import { Skeleton } from "../ui/skeleton";
 import ExamItem from "./exam-item";
 
 export default function ExamGroup({ group }: { group: ConvertedExams }) {
-  console.log("from group - ", group);
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: qualification, isPending } = useQuery(
     api.teoria.query.getQualificationDetails,
@@ -25,22 +24,24 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
         onClick={() => setIsExpanded((old) => !old)}
       >
         <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold">
-              {qualification?.name ?? <Skeleton className="mb-2 h-5 w-80" />}
-            </h3>
-            <div className="mt-1 flex items-center text-sm">
+          {isPending ? (
+            <Skeleton className="mb-2 h-5 w-80" />
+          ) : (
+            <div className="flex flex-row gap-2">
+              <Badge variant={"secondary"}>{qualification?.name}</Badge>
+
+              <h3 className="text-lg font-semibold">{qualification?.label}</h3>
+            </div>
+          )}
+
+          <div className="flex items-center justify-center gap-3">
+            <div className="flex items-center text-sm">
               <Calendar className="mr-2 h-4 w-4" />
               <span>
                 {group.count === 1 ? "1 exam" : `${group.count} exams`}{" "}
                 available
               </span>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="">
-              {group.count === 1 ? "1 exam" : `${group.count} exams`}
-            </Badge>
             <ChevronDown
               className={cn(
                 `h-5 w-5 transition-transform`,

@@ -53,7 +53,6 @@ export default function PraktykaPage() {
               <ExamGroup key={group.qualificationId} group={group} />
             ))}
           </div>
-
           <LoadingMore isLoading={status === "LoadingMore"} />
           <LoadMoreButton
             onClick={() => loadMore(40)}
