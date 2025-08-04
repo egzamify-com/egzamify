@@ -5,7 +5,6 @@ import { fetchQuery } from "convex/nextjs";
 import { Suspense } from "react";
 import FullScreenError from "~/components/full-screen-error";
 import AttachmentsCard from "~/components/praktyka/details-page/attachments/attachments-card";
-import AttachmentsList from "~/components/praktyka/details-page/attachments/render-attachments-list";
 import BackToExams from "~/components/praktyka/details-page/back-exams-btn";
 import Header from "~/components/praktyka/details-page/header";
 import { Instructions } from "~/components/praktyka/details-page/instructions";
@@ -45,9 +44,7 @@ async function Component({ params }: { params: PropsType }) {
         <div className="grid gap-8 lg:grid-cols-4">
           <div className="space-y-6 lg:col-span-3">
             <Header {...{ exam }} />
-            <AttachmentsCard {...{ exam }}>
-              <AttachmentsList {...{ exam }} />
-            </AttachmentsCard>
+            <AttachmentsCard {...{ exam }} />
             <Instructions {...{ exam }} />
             <SelectSources {...{ exam }} />
           </div>

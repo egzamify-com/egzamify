@@ -33,7 +33,6 @@ export default function PraktykaPage() {
 
   function convertExams() {
     const grouped = _.groupBy(exams, "qualificationId");
-    console.log("lodash client - ", grouped);
     return Object.entries(grouped).map(([qualificationId, examsInGroup]) => ({
       qualificationId: qualificationId,
       count: examsInGroup.length,

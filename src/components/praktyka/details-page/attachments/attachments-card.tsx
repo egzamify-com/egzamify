@@ -2,15 +2,18 @@
 
 import { ChevronDown, Download } from "lucide-react";
 
-import { useState, type ReactNode } from "react";
+import type { api } from "convex/_generated/api";
+import type { FunctionReturnType } from "convex/server";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
+import AttachmentItem from "./attachment-item";
 
 export default function AttachmentsCard({
-  children,
+  exam,
 }: {
-  children?: ReactNode;
+  exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
@@ -36,12 +39,19 @@ export default function AttachmentsCard({
           </CardTitle>
         </CardHeader>
       </Card>
-      {/*!!! only change visibility in styles, so the images dont hit server so much, now only 1 req for url is needed */}
-      <CardContent
-        className={cn(`flex flex-col gap-4`, isExpanded ? "flex" : "hidden")}
-      >
-        {children}
-      </CardContent>
+      {isExpanded && (
+        <CardContent className={`flex flex-col gap-4`}>
+          {exam.examAttachments.map((attachment) => {
+            return (
+              <AttachmentItem
+                key={`attachment-${attachment.attachmentId}`}
+                attachmentId={attachment.attachmentId}
+                attachmentName={attachment.attachmentName}
+              />
+            );
+          })}
+        </CardContent>
+      )}
     </>
   );
 }

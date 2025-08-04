@@ -6,6 +6,7 @@ import Navbar from "~/components/Navbar";
 import { ThemeProvider } from "~/components/theme/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
 import { ConvexClientProvider } from "~/providers/ConvexClientProvider";
+import MyQueryProvider from "~/providers/query-client";
 import UserActivity from "~/providers/user-activity-provier";
 import "~/styles/globals.css";
 
@@ -24,31 +25,37 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ConvexAuthNextjsServerProvider>
-      <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            disableTransitionOnChange
-            enableSystem={false}
-          >
-            <ConvexClientProvider>
-              <ConvexQueryCacheProvider>
-                <UserActivity>
-                  <div className="flex min-h-screen flex-col">
-                    <Navbar />
-                    <main className="flex flex-1 flex-col">
-                      {children}
-                      <Toaster />
-                    </main>
-                  </div>
-                </UserActivity>
-              </ConvexQueryCacheProvider>
-            </ConvexClientProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ConvexAuthNextjsServerProvider>
+    <MyQueryProvider>
+      <ConvexAuthNextjsServerProvider>
+        <html
+          lang="en"
+          className={`${geist.variable}`}
+          suppressHydrationWarning
+        >
+          <body>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              disableTransitionOnChange
+              enableSystem={false}
+            >
+              <ConvexClientProvider>
+                <ConvexQueryCacheProvider>
+                  <UserActivity>
+                    <div className="flex min-h-screen flex-col">
+                      <Navbar />
+                      <main className="flex flex-1 flex-col">
+                        {children}
+                        <Toaster />
+                      </main>
+                    </div>
+                  </UserActivity>
+                </ConvexQueryCacheProvider>
+              </ConvexClientProvider>
+            </ThemeProvider>
+          </body>
+        </html>
+      </ConvexAuthNextjsServerProvider>
+    </MyQueryProvider>
   );
 }

@@ -36,7 +36,6 @@ export default function LayoutDashboard({
 function DashbboardBreadcrumbs() {
   const pathname = usePathname();
   useEffect(() => {
-    console.log(pathname);
     switch (pathname) {
       case "/dashboard/teoria":
         updateDashboardBreadcrumbs("Egzamin Teoretyczny");

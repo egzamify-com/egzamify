@@ -1,9 +1,9 @@
-"use client";
-
+import { useQuery as useTanstackQuery } from "@tanstack/react-query";
 import type { Id } from "convex/_generated/dataModel";
 import { Download, Image as ImageIcon } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { getFileUrl } from "~/actions/actions";
+import SpinnerLoading from "~/components/SpinnerLoading";
 import { Button } from "../../../ui/button";
 import {
   Dialog,
@@ -22,15 +22,16 @@ export default function AttachmentItem({
   attachmentId?: Id<"_storage">;
   actionButtons?: ReactNode;
 }) {
-  const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null);
-  useEffect(() => {
-    (async () => {
-      const response = await getFileUrl(attachmentId, attachmentName, {
-        raw: false,
-      });
-      setAttachmentUrl(response);
-    })();
-  }, [attachmentId, attachmentName]);
+  const {
+    data: attachmentUrl,
+    isPending,
+    isError,
+  } = useTanstackQuery({
+    queryKey: ["attachment", attachmentId],
+    queryFn: () => getFileUrl(attachmentId, attachmentName, { raw: false }),
+    staleTime: 1000 * 60 * 15,
+  });
+
   return (
     <div className="grid gap-4">
       <div className="flex items-center rounded-lg border p-4 transition-colors">
@@ -49,12 +50,24 @@ export default function AttachmentItem({
               <img src={attachmentUrl!} alt="attachment for exams" />
             </DialogContent>
           </Dialog>
-          <a href={attachmentUrl!} download={attachmentName}>
-            <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Download
-            </Button>
-          </a>
+          {isPending ? (
+            <>
+              <Button variant={"outline"}>
+                <SpinnerLoading />
+              </Button>
+            </>
+          ) : (
+            <>
+              {attachmentUrl && !isError && (
+                <a href={attachmentUrl} download={attachmentName}>
+                  <Button variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </Button>
+                </a>
+              )}
+            </>
+          )}
           {actionButtons}
         </div>
       </div>

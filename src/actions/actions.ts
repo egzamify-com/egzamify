@@ -20,7 +20,7 @@ export async function getFileUrl(
   }
   imageUrl.searchParams.set("storageId", storageId);
   imageUrl.searchParams.set("filename", filename);
-  // console.log("URL - ", getImageUrl.href);
+  // console.log("URL - ", imageUrl.href);
   return imageUrl.href;
 }
 
