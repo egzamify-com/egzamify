@@ -1,14 +1,12 @@
-import { groq } from "@ai-sdk/groq";
-
 export const APP_CONFIG = {
   friends: {
     maxSearchResults: 200,
   },
   baseCreditPrice: 0,
   ai_wyjasnia: {
-    creditPrice: 0,
-    maxOutputTokens: 400,
-    model: groq("llama-3.3-70b-versatile"),
+    creditPricePerMessage: 0,
+    maxOutputTokens: 100,
+    model: "google/gemini-2.0-flash",
     baseSystem: "",
     modes: [
       {

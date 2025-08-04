@@ -1,7 +1,6 @@
-import { Message } from "ai";
-import { Doc } from "../_generated/dataModel";
-
+import { type MyUIMessage } from "../../src/app/api/chat/route";
+import { type Doc } from "../_generated/dataModel";
 export function parseThreadMessages(thread: Doc<"explanations">) {
-  const dbMessages: Message[] = JSON.parse(thread.content);
+  const dbMessages: MyUIMessage[] = JSON.parse(thread.content);
   return dbMessages;
 }

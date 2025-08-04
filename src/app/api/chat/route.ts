@@ -1,56 +1,41 @@
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import {
-  appendResponseMessages,
-  createDataStreamResponse,
-  type Message,
-  streamText,
-} from "ai";
+
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { api } from "convex/_generated/api";
 import { fetchMutation } from "convex/nextjs";
-import { APP_CONFIG } from "~/APP_CONFIG";
+import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG";
+
+type MyMessageMetadata = {
+  mode: AiWyjasniaMode;
+  createdAt: number;
+};
+
+export type MyUIMessage = UIMessage<MyMessageMetadata>;
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const body = await req.json();
-  console.log("body", body);
-  const { messages, id, currentSystemPrompt, selectedMode } = body;
+  console.dir(body, { depth: null });
+  const { messages, id } = body;
 
-  const messagesForLLM: Message[] = [
-    { role: "system", content: `${currentSystemPrompt}` },
-    ...messages.filter((m: Message) => m.role !== "system"),
-  ];
-
-  return createDataStreamResponse({
-    execute: (dataStream) => {
-      dataStream.writeData("initialized call");
-
-      const result = streamText({
-        model: APP_CONFIG.ai_wyjasnia.model,
-        maxTokens: APP_CONFIG.ai_wyjasnia.maxOutputTokens,
-        messages: messagesForLLM,
-
-        async onFinish({ response }) {
-          dataStream.writeMessageAnnotation({
-            id,
-            mode: `${selectedMode}`,
-          });
-          console.log("responses mess - ", response.messages);
-          await saveChat({
-            id,
-            messages: appendResponseMessages({
-              messages,
-              responseMessages: response.messages,
-            }),
-          });
-          dataStream.writeData("call completed");
-        },
-      });
-
-      result.mergeIntoDataStream(dataStream);
+  const result = streamText({
+    model: APP_CONFIG.ai_wyjasnia.model,
+    maxOutputTokens: APP_CONFIG.ai_wyjasnia.maxOutputTokens,
+    messages: convertToModelMessages(messages as UIMessage[]),
+  });
+  return result.toUIMessageStreamResponse<MyUIMessage>({
+    originalMessages: messages as MyUIMessage[],
+    messageMetadata: ({ part }) => {
+      if (part.type === "start") {
+        return {
+          createdAt: Date.now(),
+          mode: messages[messages.length - 1].metadata.mode,
+        };
+      }
     },
-    onError: (error) => {
-      return error instanceof Error ? error.message : String(error);
+    onFinish: ({ messages }) => {
+      saveChat({ id: id as string, messages });
     },
   });
 }
@@ -60,7 +45,7 @@ export async function saveChat({
   messages,
 }: {
   id: string;
-  messages: Message[];
+  messages: UIMessage[];
 }): Promise<void> {
   const content = JSON.stringify(messages, null, 2);
   // console.log("id - ", id);

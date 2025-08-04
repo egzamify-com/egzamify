@@ -1,44 +1,47 @@
-import type { Message } from "ai";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import type { MyUIMessage } from "~/app/api/chat/route";
 import { convertDateToEpoch } from "~/lib/dateUtils";
 import SemanticDate from "../semantic-date";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-export default function MessageMode({ message }: { message: Message }) {
+export default function MessageModeAndActionBtns({
+  message,
+}: {
+  message: MyUIMessage;
+}) {
   return (
     <div className="absolute top-[-38px] left-[0px] flex w-full flex-row justify-between px-2">
       <div>
-        {message.role === "assistant" &&
-          parseAnnotations(message.annotations) && (
-            <Badge variant="outline">
-              {parseAnnotations(message.annotations)}
-            </Badge>
-          )}
+        {message.role === "assistant" && (
+          <Badge variant="outline">{message.metadata?.mode}</Badge>
+        )}
       </div>
       <div className={`flex flex-row gap-2`}>
         <CopyButton {...{ message }} />
-        {message.createdAt && (
+        {message.metadata?.createdAt && (
           <SemanticDate
             size="text-sm"
             withIcon
-            date={convertDateToEpoch(new Date(message.createdAt))}
+            date={convertDateToEpoch(new Date(message.metadata.createdAt))}
           />
         )}
       </div>
     </div>
   );
 }
-function parseAnnotations(annotations: any) {
-  if (!annotations) return null;
-  // console.log("annotations", annotations[0].mode);
-  return annotations[0].mode;
-}
-function CopyButton({ message }: { message: Message }) {
+
+function CopyButton({ message }: { message: MyUIMessage }) {
+  // we grab "1" part becasue first '0' part is a 'step-start' indicator,
+  // actual llms response is in second object
+  //
   function handleCopy() {
-    navigator.clipboard.writeText(message.content);
+    const textToCopy =
+      message.parts[1]?.type === "text" ? message.parts[1].text : "";
+
+    navigator.clipboard.writeText(textToCopy);
     toast.message("Copied to clipboard");
   }
   return (

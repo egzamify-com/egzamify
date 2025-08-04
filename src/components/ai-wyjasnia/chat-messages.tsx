@@ -1,20 +1,24 @@
-import type { Message } from "ai";
 import { Bot } from "lucide-react";
+import type { MyUIMessage } from "~/app/api/chat/route";
 import { Card, CardContent } from "../ui/card";
 import ActivityStatusAvatar from "../users/activity-status-avatar";
-import MessageMode from "./message-mode";
+import MessageModeAndActionBtns from "./message-mode";
 
-export default function ChatMessages({ messages }: { messages: Message[] }) {
+export default function ChatMessages({
+  messages,
+}: {
+  messages: MyUIMessage[];
+}) {
   return (
     <div className="pt-10">
-      {messages?.map((message: Message) => (
-        <ChatMessage key={message.id} {...{ message }} />
+      {messages?.map((message) => (
+        <ChatMessage key={`chat-message-key-${message.id}`} {...{ message }} />
       ))}
     </div>
   );
 }
 
-function ChatMessage({ message }: { message: Message }) {
+function ChatMessage({ message }: { message: MyUIMessage }) {
   return (
     <div
       className={`my-3 flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
@@ -30,7 +34,6 @@ function ChatMessage({ message }: { message: Message }) {
           }`}
         >
           {message.role === "user" ? (
-            // <User className="h-4 w-4" />
             <ActivityStatusAvatar />
           ) : (
             <Bot className="h-4 w-4" />
@@ -39,9 +42,15 @@ function ChatMessage({ message }: { message: Message }) {
         <Card
           className={`relative flex items-center justify-center py-2 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-card"}`}
         >
-          <MessageMode {...{ message }} />
+          <MessageModeAndActionBtns {...{ message }} />
           <CardContent>
-            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+            <p className="text-sm whitespace-pre-wrap">
+              {message.parts.map((part, index) =>
+                part.type === "text" ? (
+                  <span key={index}>{part.text}</span>
+                ) : null,
+              )}
+            </p>
           </CardContent>
         </Card>
       </div>

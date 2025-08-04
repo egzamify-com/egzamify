@@ -1,41 +1,26 @@
 "use client";
 
-import { type Message, useChat } from "@ai-sdk/react";
+import { useChat } from "@ai-sdk/react";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { useEffect, useRef, useState } from "react";
-import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG";
+import type { MyUIMessage } from "~/app/api/chat/route";
+import { type AiWyjasniaMode } from "~/APP_CONFIG";
 import ChatMessages from "~/components/ai-wyjasnia/chat-messages";
 import NoMessages from "~/components/ai-wyjasnia/no-messages-info";
-import ChatInput from "./chat-input";
+import SpinnerLoading from "../SpinnerLoading";
+import { ChatInputWithModeSelection } from "./chat-input";
 
 export default function Chat({
   id,
   initialMessages,
-}: { id?: string | undefined; initialMessages?: Message[] } = {}) {
-  const updateThread = useMutation(
-    api.ai_wyjasnia.mutate.updateAssistantAnnotations,
-  );
+}: { id?: string | undefined; initialMessages?: MyUIMessage[] } = {}) {
   const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat);
   const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal");
-  const { input, handleInputChange, handleSubmit, messages } = useChat({
+  const { sendMessage, messages, status } = useChat<MyUIMessage>({
     id,
-    initialMessages,
-    sendExtraMessageFields: true,
-    body: {
-      selectedMode,
-      currentSystemPrompt: APP_CONFIG.ai_wyjasnia.modes.find(
-        (m) => m.id === selectedMode,
-      )?.systemPrompt,
-    },
-
-    async onFinish(message) {
-      await updateThread({
-        chatId: id as Id<"explanations">,
-        newAnnotation: JSON.stringify(message.annotations),
-      });
-    },
+    messages: initialMessages,
   });
 
   // handle empty chats, delete if user left with no messages (useEffect and ref)
@@ -67,17 +52,15 @@ export default function Chat({
         {messages?.length === 0 ? (
           <NoMessages />
         ) : (
-          <ChatMessages {...{ messages }} />
+          <>
+            <ChatMessages {...{ messages }} />
+            {status === "submitted" && <SpinnerLoading />}
+          </>
         )}
       </div>
-      <ChatInput
-        {...{
-          input,
-          handleInputChange,
-          handleSubmit,
-          selectedMode,
-          onValueChange: (value) => setSelectedMode(value as AiWyjasniaMode),
-        }}
+
+      <ChatInputWithModeSelection
+        {...{ selectedMode, setSelectedMode, sendMessage }}
       />
     </div>
   );
