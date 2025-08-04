@@ -4,6 +4,7 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
 import { fetchQuery } from "convex/nextjs";
+import { env } from "~/env";
 
 export async function getFileUrl(
   storageId: Id<"_storage"> | undefined,
@@ -11,16 +12,14 @@ export async function getFileUrl(
   type?: { raw: boolean },
 ) {
   if (!storageId) return null;
-  // USE ACTUAL URL FROM ENV HERE
   let imageUrl;
   if (type?.raw) {
-    imageUrl = new URL(`https://precise-bobcat-903.convex.site/getRawImage`);
+    imageUrl = new URL(`${env.CONVEX_SITE_URL}/getRawImage`);
   } else {
-    imageUrl = new URL(`https://precise-bobcat-903.convex.site/getImage`);
+    imageUrl = new URL(`${env.CONVEX_SITE_URL}/getImage`);
   }
   imageUrl.searchParams.set("storageId", storageId);
   imageUrl.searchParams.set("filename", filename);
-  // console.log("URL - ", imageUrl.href);
   return imageUrl.href;
 }
 
