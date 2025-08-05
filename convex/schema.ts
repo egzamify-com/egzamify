@@ -103,7 +103,7 @@ const schema = defineSchema({
         score: v.number(),
         percantageScore: v.number(),
         summary: v.string(),
-        details: requirementsValidator,
+        details: v.optional(requirementsValidator),
       }),
     ),
   })

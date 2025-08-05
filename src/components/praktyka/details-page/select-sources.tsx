@@ -4,7 +4,11 @@ import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { Brain, Files } from "lucide-react";
-import { requestPracticalExamCheck } from "~/actions/request-practical-exam-check-action";
+import { useState } from "react";
+import {
+  requestPracticalExamCheck,
+  type PracticalExamCheckMode,
+} from "~/actions/request-practical-exam-check-action";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -14,11 +18,12 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { SelectSourceSkeleton } from "../loadings";
 import AttachmentItem from "./attachments/attachment-item";
 import { DeleteAttachment } from "./attachments/delete-exam-attachment";
 import UploadAttachment from "./attachments/upload-attachment";
-
 export default function SelectSources({
   exam,
 }: {
@@ -30,9 +35,9 @@ export default function SelectSources({
       examId: exam._id,
     },
   );
-
+  const [selectedMode, setSelectedMode] =
+    useState<PracticalExamCheckMode>("standard");
   if (isPending) return <SelectSourceSkeleton />;
-
   if (!userExam) return null;
   if (userExam && userExam.status === "user_pending")
     return (
@@ -59,11 +64,31 @@ export default function SelectSources({
               />
             ))}
           </div>
+          <RadioGroup
+            defaultValue="standard"
+            onValueChange={(value: PracticalExamCheckMode) =>
+              setSelectedMode(value)
+            }
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="standard" id="standard" />
+              <Label
+                htmlFor="option-one"
+                className="flex flex-col items-start justify-center"
+              >
+                <h3>Standard</h3>
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="complete" id="complete" />
+              <Label htmlFor="option-two">Complete breakdown</Label>
+            </div>
+          </RadioGroup>
           <CardAction className="flex w-full flex-row items-end justify-end gap-4">
             <UploadAttachment {...{ userExam }} />
             <Button
               onClick={async () => {
-                await requestPracticalExamCheck(userExam._id);
+                await requestPracticalExamCheck(userExam._id, selectedMode);
               }}
             >
               <Brain /> Check your exam with AI

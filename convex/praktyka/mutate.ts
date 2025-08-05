@@ -103,3 +103,20 @@ export const deleteAttachment = mutation({
     await ctx.db.patch(userExamId, { attachments: newAttachments });
   },
 });
+export const saveRatingData = mutation({
+  args: {
+    userExamId: v.id("usersPracticalExams"),
+    ratingData: vv.doc("usersPracticalExams").fields.aiRating,
+  },
+  handler: async (ctx, { userExamId, ratingData }) => {
+    const userId = await getUserId(ctx);
+
+    const userExam = await ctx.db.get(userExamId);
+    if (!userExam) throw new Error("User exam not found");
+    if (userExam.userId !== userId) throw new Error("User not authorized");
+
+    await ctx.db.patch(userExamId, {
+      aiRating: ratingData,
+    });
+  },
+});
