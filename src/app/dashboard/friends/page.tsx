@@ -13,8 +13,6 @@ export default function Page() {
     >
       <DisplayFriendList
         filter="accepted_friends"
-        headerTitle="Friends"
-        headerDescription="Manage your connections and stay in touch"
         notFoundComponent={
           <div className="flex flex-col items-start gap-2">
             <p className="mt-2">You dont have any friends yet.</p>
