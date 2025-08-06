@@ -13,41 +13,24 @@ import Friend from "./friend";
 
 export default function DisplayFriendList({
   filter,
-  headerTitle,
-  disableTopPadding = false,
-  headerDescription,
   notFoundComponent,
   errorComponent,
 }: {
   filter: Infer<typeof friendFilterValidator>;
-  headerTitle: string;
-  headerDescription: string;
-  disableTopPadding?: boolean;
   notFoundComponent: ReactNode;
   errorComponent: ReactNode;
 }) {
   const { isPending, debouncedSearch, inputOnChange, search } =
     useDebouncedSearch({ time: 250 });
   return (
-    <div
-      className={cn(
-        !disableTopPadding && "py-8",
-        `container mx-auto max-w-4xl px-4`,
-      )}
-    >
-      {headerTitle && headerDescription && (
-        <div className="mb-6">
-          <h1 className="text-foreground text-3xl font-bold">{headerTitle}</h1>
-          <p className="text-muted-foreground">{headerDescription}</p>
-        </div>
-      )}
+    <div className={cn(`container mx-auto`)}>
       <div className="relative mb-6">
         <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
         <Input
           value={search}
           onChange={inputOnChange}
           placeholder="Search for friends..."
-          className="max-w-md pl-10"
+          className="max-w-1/2 pl-10"
         />
       </div>
       {isPending && <FriendsSkeleton countOfSkeletons={10} />}
