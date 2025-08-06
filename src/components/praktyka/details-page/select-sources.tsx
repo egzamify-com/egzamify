@@ -4,6 +4,7 @@ import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
 import { Brain, Files } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import {
   requestPracticalExamCheck,
@@ -39,7 +40,7 @@ export default function SelectSources({
     useState<PracticalExamCheckMode>("standard");
   if (isPending) return <SelectSourceSkeleton />;
   if (!userExam) return null;
-  if (userExam && userExam.status === "user_pending")
+  if (userExam)
     return (
       <Card id="select-sources" className="gap-2">
         <CardHeader>
@@ -72,27 +73,31 @@ export default function SelectSources({
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="standard" id="standard" />
-              <Label
-                htmlFor="option-one"
-                className="flex flex-col items-start justify-center"
-              >
+              <Label htmlFor="standard" className="cursor-pointer">
                 <h3>Standard</h3>
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="complete" id="complete" />
-              <Label htmlFor="option-two">Complete breakdown</Label>
+              <Label htmlFor="complete" className="cursor-pointer">
+                Complete breakdown
+              </Label>
             </div>
           </RadioGroup>
           <CardAction className="flex w-full flex-row items-end justify-end gap-4">
             <UploadAttachment {...{ userExam }} />
-            <Button
-              onClick={async () => {
-                await requestPracticalExamCheck(userExam._id, selectedMode);
-              }}
+            <Link
+              href={`/dashboard/egzamin-praktyczny/historia/${userExam._id}`}
             >
-              <Brain /> Check your exam with AI
-            </Button>
+              <Button
+                disabled={!userExam.attachments}
+                onClick={async () => {
+                  await requestPracticalExamCheck(userExam._id, selectedMode);
+                }}
+              >
+                <Brain /> Check your exam with AI
+              </Button>
+            </Link>
           </CardAction>
         </CardContent>
       </Card>

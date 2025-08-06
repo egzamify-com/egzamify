@@ -44,7 +44,7 @@ async function Component({ params }: { params: PropsType }) {
         <div className="grid gap-8 lg:grid-cols-4">
           <div className="space-y-6 lg:col-span-3">
             <Header {...{ exam }} />
-            <AttachmentsCard {...{ exam }} />
+            <AttachmentsCard attachmentList={exam.examAttachments} />
             <Instructions {...{ exam }} />
             <SelectSources {...{ exam }} />
           </div>

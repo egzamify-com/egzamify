@@ -13,10 +13,12 @@ export default function SemanticDate({
   date, // This `date` should now consistently be EpochMilliseconds
   withIcon,
   size = "text-sm",
+  color = "text-muted-foreground",
 }: {
   date: EpochMilliseconds; // Explicitly type as EpochMilliseconds
   withIcon?: boolean;
   size?: "text-xs" | "text-sm" | "text-md" | "text-lg" | "text-xl" | "text-2xl";
+  color?: "foreground" | "text-muted-foreground";
 }) {
   // convertEpochToYYYYMMDD now expects milliseconds, which it gets from `date`
   const yyyymmddDate = convertEpochToYYYYMMDD(date);
@@ -27,8 +29,9 @@ export default function SemanticDate({
     <Tooltip>
       <TooltipTrigger
         className={cn(
-          `text-muted-foreground flex cursor-pointer flex-row items-center justify-center gap-2`,
+          `flex cursor-pointer flex-row items-center justify-center gap-2`,
           size,
+          color,
         )}
       >
         {withIcon && (

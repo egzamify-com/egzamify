@@ -12,14 +12,6 @@ export default function Header({
     <Card className="gap-2">
       <CardHeader>
         <CardTitle className="flex flex-col items-start justify-center gap-2">
-          {/*<div className="flex w-full flex-row items-center justify-start gap-2">
-            <Badge variant={"secondary"} className="text-md">
-              {exam.qualification?.name}
-            </Badge>
-            <Badge variant={"secondary"} className="text-md">
-              {exam.examDate}
-            </Badge>
-          </div>*/}
           <h1 className="text-3xl font-bold">{exam.qualification?.label}</h1>
         </CardTitle>
       </CardHeader>

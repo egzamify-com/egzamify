@@ -1,8 +1,9 @@
 import type { api } from "convex/_generated/api";
 import type { PaginatedQueryItem } from "convex/react";
+import { Box, Calendar } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "../ui/badge";
-import { Card, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardHeader } from "../ui/card";
+import ExamBadge from "./exam-badge";
 
 export default function ExamItem({
   exam,
@@ -16,13 +17,12 @@ export default function ExamItem({
       className="w-1/4 flex-shrink-0 p-5"
     >
       <Card className="hover:bg-background h-full w-full border shadow-sm transition-all">
-        <CardHeader>
-          <CardTitle className="flex flex-row items-center justify-start gap-2">
-            <Badge variant="secondary">
-              <p className="text-md">{exam.qualification?.name}</p>
-            </Badge>
-            <p> {exam.examDate}</p>
-          </CardTitle>
+        <CardHeader className="flex flex-row items-center justify-center">
+          <ExamBadge
+            icon={<Box size={18} />}
+            stat={`${exam.qualification?.name}`}
+          />
+          <ExamBadge icon={<Calendar size={18} />} stat={`${exam.examDate}`} />
         </CardHeader>
       </Card>
     </Link>

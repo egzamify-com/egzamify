@@ -54,6 +54,7 @@ export const getUserExamFromExamId = query({
       .withIndex("by_userId_examId", (q) =>
         q.eq("userId", userId).eq("examId", examId),
       )
+      .filter((q) => q.eq(q.field("status"), "user_pending"))
       .first();
   },
 });
@@ -71,6 +72,47 @@ export const getUserExamDetails = query({
     if (!userExam) throw new Error("User exam not found");
     if (userExam.userId !== userId) throw new Error("Unauthorized");
 
-    return userExam;
+    const baseExam = await ctx.db.get(userExam.examId);
+    if (!baseExam) throw new Error("Base exam not found");
+
+    const qualification = await ctx.db.get(baseExam.qualificationId);
+    if (!qualification) throw new Error("Qualification not found");
+
+    return {
+      ...userExam,
+      baseExam: {
+        ...baseExam,
+        qualification,
+      },
+    };
+  },
+});
+export const listUserExams = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, { paginationOpts }) => {
+    const userId = await getUserId(ctx);
+    const userExams = await ctx.db
+      .query("usersPracticalExams")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .order("desc")
+      .paginate(paginationOpts);
+
+    const withQ = await asyncMap(userExams.page, async (userExam) => {
+      const baseExam = await ctx.db.get(userExam.examId);
+      if (!baseExam) throw new Error("Exam not found");
+      const qualification = await ctx.db.get(baseExam.qualificationId);
+
+      return {
+        ...userExam,
+        baseExam: {
+          ...baseExam,
+          qualification,
+        },
+      };
+    });
+    return {
+      ...userExams,
+      page: withQ,
+    };
   },
 });

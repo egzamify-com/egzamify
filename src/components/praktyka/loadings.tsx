@@ -131,92 +131,11 @@ export function ExamDetailSkeleton() {
         <div className="grid gap-8 lg:grid-cols-4">
           {/* Main Content Skeleton */}
           <div className="space-y-6 lg:col-span-3">
-            {/* Header Card Skeleton */}
-            <Card className="rounded-lg border p-6">
-              <div className="mb-4 flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="mb-2 flex items-center gap-3">
-                    <Skeleton className="h-6 w-16 rounded-full" />{" "}
-                    {/* Badge 1 */}
-                    <Skeleton className="h-6 w-20 rounded-full" />{" "}
-                    {/* Badge 2 */}
-                  </div>
-                  <Skeleton className="mb-2 h-9 w-3/4" /> {/* Title */}
-                  <Skeleton className="mb-4 h-6 w-2/3" /> {/* Qualification */}
-                  <Skeleton className="h-5 w-full" /> {/* Description line 1 */}
-                  <Skeleton className="h-5 w-5/6" /> {/* Description line 2 */}
-                </div>
-                {/* Small Image Skeleton */}
-                <Skeleton className="ml-6 h-20 w-32 flex-shrink-0 rounded-lg" />
-              </div>
+            <ExamHeaderSkeleton />
 
-              {/* Metadata Skeleton */}
-              <div className="grid grid-cols-2 gap-4 border-t pt-4 text-sm md:grid-cols-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex items-center">
-                    <Calendar className="mr-2 h-4 w-4 text-gray-300" />{" "}
-                    {/* Icon placeholder */}
-                    <Skeleton className="h-4 w-24" /> {/* Text placeholder */}
-                  </div>
-                ))}
-              </div>
-            </Card>
+            <ExamInstructionsSkeleton />
 
-            {/* Instructions Card Skeleton */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-xl">
-                  <FileText className="mr-2 h-5 w-5 text-gray-300" />
-                  <Skeleton className="h-6 w-48" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="prose prose-gray max-w-none space-y-3">
-                  <Skeleton className="h-5 w-full" />
-                  <Skeleton className="h-5 w-11/12" />
-                  <Skeleton className="h-5 w-full" />
-                  <Skeleton className="h-5 w-10/12" />
-                  <Skeleton className="h-5 w-full" />
-                  <Skeleton className="h-5 w-5/6" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Attachments Card Skeleton */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Download className="mr-2 h-5 w-5 text-gray-300" />
-                  <Skeleton className="h-6 w-64" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  {[1, 2].map(
-                    (
-                      i, // Show 2 attachment skeletons
-                    ) => (
-                      <div
-                        key={i}
-                        className="flex items-center rounded-lg border p-4"
-                      >
-                        <Skeleton className="mr-4 h-16 w-16 flex-shrink-0 rounded" />{" "}
-                        {/* Image */}
-                        <div className="flex-1">
-                          <Skeleton className="mb-1 h-5 w-48" /> {/* Name */}
-                          <Skeleton className="mb-2 h-4 w-full" />{" "}
-                          {/* Description */}
-                          <Skeleton className="h-5 w-16 rounded-full" />{" "}
-                          {/* Badge */}
-                        </div>
-                        <Skeleton className="h-9 w-28 rounded-md" />{" "}
-                        {/* Download Button */}
-                      </div>
-                    ),
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            <ExamAttachmentsSkeleton />
           </div>
 
           {/* Sidebar Skeleton */}
@@ -233,50 +152,86 @@ export function ExamDetailSkeleton() {
                   <Skeleton className="h-12 w-full" /> {/* Button */}
                 </CardContent>
               </Card>
-
-              {/* Topics Card Skeleton */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <BookOpen className="mr-2 h-5 w-5 text-gray-300" />
-                    <Skeleton className="h-6 w-32" />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {[1, 2, 3].map((i) => (
-                      <li key={i} className="flex items-center">
-                        <Skeleton className="mr-3 h-2 w-2 rounded-full" />
-                        <Skeleton className="h-4 w-full" />
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* Requirements Card Skeleton */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    <Skeleton className="h-6 w-36" />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {[1, 2].map((i) => (
-                      <li key={i} className="flex items-center">
-                        <Skeleton className="mr-3 h-2 w-2 rounded-full" />
-                        <Skeleton className="h-4 w-full" />
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+export function ExamAttachmentsSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center">
+          <Download className="mr-2 h-5 w-5 text-gray-300" />
+          <Skeleton className="h-6 w-64" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-4">
+          {[1, 2].map(
+            (
+              i, // Show 2 attachment skeletons
+            ) => (
+              <div key={i} className="flex items-center rounded-lg border p-4">
+                <Skeleton className="mr-4 h-16 w-16 flex-shrink-0 rounded" />{" "}
+                {/* Image */}
+                <div className="flex-1">
+                  <Skeleton className="mb-1 h-5 w-48" /> {/* Name */}
+                  <Skeleton className="mb-2 h-4 w-full" /> {/* Description */}
+                  <Skeleton className="h-5 w-16 rounded-full" /> {/* Badge */}
+                </div>
+                <Skeleton className="h-9 w-28 rounded-md" />{" "}
+                {/* Download Button */}
+              </div>
+            ),
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+export function ExamHeaderSkeleton() {
+  return (
+    <Card className="rounded-lg border p-6">
+      <div className="mb-4 flex items-start justify-between">
+        <div className="flex-1">
+          <div className="mb-2 flex items-center gap-3">
+            <Skeleton className="h-6 w-16 rounded-full" /> {/* Badge 1 */}
+            <Skeleton className="h-6 w-20 rounded-full" /> {/* Badge 2 */}
+          </div>
+          <Skeleton className="mb-2 h-9 w-3/4" /> {/* Title */}
+          <Skeleton className="mb-4 h-6 w-2/3" /> {/* Qualification */}
+          <Skeleton className="h-5 w-full" /> {/* Description line 1 */}
+        </div>
+        {/* Small Image Skeleton */}
+        <Skeleton className="ml-6 h-20 w-32 flex-shrink-0 rounded-lg" />
+      </div>
+
+      {/* Metadata Skeleton */}
+      <div className="grid grid-cols-2 gap-4 border-t pt-4 text-sm md:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex items-center">
+            <Calendar className="mr-2 h-4 w-4 text-gray-300" />{" "}
+            {/* Icon placeholder */}
+            <Skeleton className="h-4 w-24" /> {/* Text placeholder */}
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+export function ExamInstructionsSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-xl">
+          <FileText className="mr-2 h-5 w-5 text-gray-300" />
+          <Skeleton className="h-6 w-48" />
+        </CardTitle>
+      </CardHeader>
+    </Card>
   );
 }
 export function SelectSourceSkeleton() {
@@ -321,6 +276,53 @@ export function SelectSourceSkeleton() {
           <Skeleton className="h-10 w-40 rounded-md" />{" "}
           {/* Skeleton for UploadAttachment button */}
         </CardAction>
+      </CardContent>
+    </Card>
+  );
+}
+export function MainContentLoading({ title }: { title?: string }) {
+  return (
+    <>
+      <ExamHeaderSkeleton />
+      <Card className="mx-auto w-full max-w-4xl space-y-6 p-6">
+        {title && (
+          <h2 className="text-primary animate-pulse text-center text-3xl font-bold">
+            {title}
+          </h2>
+        )}
+        <Skeleton className="mx-auto h-8 w-3/4" />
+        <Skeleton className="mx-auto h-4 w-1/2" />
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+          <div className="flex flex-col items-center justify-center space-y-2 rounded-lg p-4 shadow-sm">
+            <Skeleton className="h-12 w-24" />
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-10 w-full max-w-[200px]" />
+          </div>
+        </div>
+        <Skeleton className="h-6 w-1/3" />
+        <Skeleton className="h-96 w-full" />
+      </Card>
+      <ExamInstructionsSkeleton />
+      <ExamAttachmentsSkeleton />
+    </>
+  );
+}
+export function UserExamItemSkeleton() {
+  return (
+    <Card className="overflow-hidden rounded-lg shadow-sm">
+      <CardContent className="flex items-center justify-between">
+        <div>
+          <Skeleton className="mb-2 h-6 w-64" />
+        </div>
+
+        <div className="flex items-center">
+          <Skeleton className="h-6 w-20 rounded-full" />
+        </div>
       </CardContent>
     </Card>
   );

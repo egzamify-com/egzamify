@@ -4,20 +4,37 @@ import { usePaginatedQuery } from "convex-helpers/react/cache";
 import { api } from "convex/_generated/api";
 import { type PaginatedQueryItem } from "convex/react";
 import _ from "lodash";
+import { ErrorBoundary } from "react-error-boundary";
 import FullScreenError from "~/components/full-screen-error";
+import LoadMoreBtn from "~/components/load-more";
+import PageHeaderWrapper from "~/components/page-header-wrapper";
 import ExamGroup from "~/components/praktyka/exam-group";
 import PracticalExamsFilters from "~/components/praktyka/filters";
-import PracticalExamHeader from "~/components/praktyka/header";
-import LoadMoreButton from "~/components/praktyka/load-more";
 import ExamPageSkeleton, { LoadingMore } from "~/components/praktyka/loadings";
-
+import { Button } from "~/components/ui/button";
 export type ConvertedExams = {
   qualificationId: string;
   count: number;
   exams: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>[];
 };
-
-export default function PraktykaPage() {
+export default function Page() {
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error, resetErrorBoundary }) => {
+        return (
+          <FullScreenError
+            errorDetail={error.message}
+            errorMessage="Failed to load exams"
+            actionButton={<Button onClick={resetErrorBoundary}>Retry</Button>}
+          />
+        );
+      }}
+    >
+      <PraktykaPage />
+    </ErrorBoundary>
+  );
+}
+function PraktykaPage() {
   const {
     results: exams,
     status,
@@ -28,8 +45,9 @@ export default function PraktykaPage() {
     { initialNumItems: 1 },
   );
 
-  if (!exams) return <FullScreenError />;
   if (status === "LoadingFirstPage") return <ExamPageSkeleton />;
+  if (exams.length === 0)
+    return <FullScreenError type="warning" errorMessage="No exams found" />;
 
   function convertExams() {
     const grouped = _.groupBy(exams, "qualificationId");
@@ -41,24 +59,21 @@ export default function PraktykaPage() {
   }
 
   return (
-    <>
-      <div className="min-h-screen">
-        <PracticalExamHeader />
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <PracticalExamsFilters />
-
-          <div className="flex flex-col gap-4">
-            {convertExams().map((group) => (
-              <ExamGroup key={group.qualificationId} group={group} />
-            ))}
-          </div>
-          <LoadingMore isLoading={status === "LoadingMore"} />
-          <LoadMoreButton
-            onClick={() => loadMore(40)}
-            canLoadMore={status === "CanLoadMore"}
-          />
-        </div>
+    <PageHeaderWrapper
+      title="Available Exams"
+      description="Choose from our comprehensive exam catalog"
+    >
+      <PracticalExamsFilters />
+      <div className="flex flex-col gap-4">
+        {convertExams().map((group) => (
+          <ExamGroup key={group.qualificationId} group={group} />
+        ))}
       </div>
-    </>
+      <LoadingMore isLoading={status === "LoadingMore"} />
+      <LoadMoreBtn
+        onClick={() => loadMore(40)}
+        canLoadMore={status === "CanLoadMore"}
+      />
+    </PageHeaderWrapper>
   );
 }

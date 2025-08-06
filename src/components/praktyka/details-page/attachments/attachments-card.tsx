@@ -2,8 +2,8 @@
 
 import { ChevronDown, Download } from "lucide-react";
 
-import type { api } from "convex/_generated/api";
-import type { FunctionReturnType } from "convex/server";
+import type { practicalExamAttachmentValidator } from "convex/praktyka/helpers";
+import type { Infer } from "convex/values";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
@@ -11,9 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import AttachmentItem from "./attachment-item";
 
 export default function AttachmentsCard({
-  exam,
+  attachmentList,
+  customTitle,
 }: {
-  exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
+  attachmentList: Infer<typeof practicalExamAttachmentValidator>;
+  customTitle?: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
@@ -26,7 +28,7 @@ export default function AttachmentsCard({
           <CardTitle className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-end justify-center gap-1">
               <Download className="mr-2 h-5 w-5" />
-              Reference Materials & Attachments
+              {customTitle ?? "Reference Materials & Attachments "}
             </div>
             <Button variant={"ghost"}>
               <ChevronDown
@@ -41,7 +43,7 @@ export default function AttachmentsCard({
       </Card>
       {isExpanded && (
         <CardContent className={`flex flex-col gap-4`}>
-          {exam.examAttachments.map((attachment) => {
+          {attachmentList.map((attachment) => {
             return (
               <AttachmentItem
                 key={`attachment-${attachment.attachmentId}`}
