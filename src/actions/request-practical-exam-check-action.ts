@@ -10,7 +10,8 @@ import { type practicalExamAttachmentValidator } from "convex/praktyka/helpers";
 import type { Infer } from "convex/values";
 import mime from "mime";
 import { z } from "zod/v4";
-import { getFileUrl, getNextjsUser } from "./actions";
+import { getFileUrl } from "~/lib/utils";
+import { getNextjsUser } from "./actions";
 
 export type PracticalExamCheckMode = "standard" | "complete";
 

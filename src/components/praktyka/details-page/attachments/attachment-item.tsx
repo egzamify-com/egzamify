@@ -1,9 +1,7 @@
-import { useQuery as useTanstackQuery } from "@tanstack/react-query";
 import type { Id } from "convex/_generated/dataModel";
 import { Download, Image as ImageIcon } from "lucide-react";
 import { type ReactNode } from "react";
-import { getFileUrl } from "~/actions/actions";
-import SpinnerLoading from "~/components/SpinnerLoading";
+import { getFileUrl } from "~/lib/utils";
 import { Button } from "../../../ui/button";
 import {
   Dialog,
@@ -22,14 +20,8 @@ export default function AttachmentItem({
   attachmentId?: Id<"_storage">;
   actionButtons?: ReactNode;
 }) {
-  const {
-    data: attachmentUrl,
-    isPending,
-    isError,
-  } = useTanstackQuery({
-    queryKey: ["attachment", attachmentId],
-    queryFn: () => getFileUrl(attachmentId, attachmentName, { raw: false }),
-    staleTime: 1000 * 60 * 15,
+  const attachmentUrl = getFileUrl(attachmentId, attachmentName, {
+    raw: false,
   });
 
   return (
@@ -47,27 +39,19 @@ export default function AttachmentItem({
             </DialogTrigger>
             <DialogContent>
               <DialogTitle>{attachmentName}</DialogTitle>
-              <img src={attachmentUrl!} alt="attachment for exams" />
+              <img src={attachmentUrl} alt="attachment for exams" />
             </DialogContent>
           </Dialog>
-          {isPending ? (
-            <>
-              <Button variant={"outline"}>
-                <SpinnerLoading />
+
+          {attachmentUrl && (
+            <a href={attachmentUrl} download={attachmentName}>
+              <Button variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Download
               </Button>
-            </>
-          ) : (
-            <>
-              {attachmentUrl && !isError && (
-                <a href={attachmentUrl} download={attachmentName}>
-                  <Button variant="outline">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
-                  </Button>
-                </a>
-              )}
-            </>
+            </a>
           )}
+
           {actionButtons}
         </div>
       </div>
