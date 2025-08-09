@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
-import { getUserId } from "../auth";
+import { getUserId } from "../custom_helpers";
 
 export const getCurrentUser = query({
   handler: async (ctx) => {

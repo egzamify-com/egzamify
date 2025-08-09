@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { getUserId } from "../auth";
+import { getUserId } from "../custom_helpers";
 
 export const cancelFriendRequest = mutation({
   args: { friendId: v.id("users") },

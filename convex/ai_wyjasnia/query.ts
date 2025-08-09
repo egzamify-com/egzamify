@@ -2,7 +2,7 @@ import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { query } from "../_generated/server";
-import { getUserId } from "../auth";
+import { getUserId } from "../custom_helpers";
 import { parseThreadMessages } from "./helpers";
 
 export const getThreadMessages = query({

@@ -3,6 +3,8 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
+import type { Doc } from "convex/_generated/dataModel";
+import { useMutation } from "convex/react";
 import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -22,6 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar";
+import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import ActivityStatusAvatar from "../users/activity-status-avatar";
 
@@ -40,6 +43,9 @@ export function NavUser() {
   if (!user) return null;
   return (
     <SidebarMenu>
+      <SidebarMenuItem>
+        <Credits {...{ user }} />
+      </SidebarMenuItem>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -140,6 +146,22 @@ function Loading() {
         <Skeleton className="h-3 w-1/2 rounded-md" />{" "}
       </div>
       <Skeleton className="ml-auto h-4 w-4 rounded-md" />{" "}
+    </div>
+  );
+}
+function Credits({ user }: { user: Doc<"users"> }) {
+  const addCredits = useMutation(api.users.mutate.updateUserCredits);
+  return (
+    <div className="flex items-center justify-between">
+      <h1>{user.credits ?? 0} credits</h1>
+      <Button
+        onClick={async () => {
+          console.log("clicked");
+          await addCredits({ creditsToAdd: 10 });
+        }}
+      >
+        Buy credits
+      </Button>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { mutation } from "../_generated/server";
-import { getUserId } from "../auth";
+import { getUserId } from "../custom_helpers";
 
 export const storeNewThread = mutation({
   handler: async (ctx) => {

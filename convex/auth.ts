@@ -1,7 +1,6 @@
 import GitHub from "@auth/core/providers/github";
-import { convexAuth, getAuthUserId } from "@convex-dev/auth/server";
+import { convexAuth } from "@convex-dev/auth/server";
 import { type Doc } from "./_generated/dataModel";
-import { MutationCtx, QueryCtx } from "./_generated/server";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
@@ -43,18 +42,4 @@ function createDefaultUsername(inputString: string): string {
     // If '@' is found, return the substring from the beginning up to the '@'
     return inputString.substring(0, atIndex);
   }
-}
-export async function getUserId(ctx: QueryCtx | MutationCtx) {
-  const userId = await getAuthUserId(ctx);
-  if (!userId) {
-    throw new Error("User not authenticated");
-  }
-  return userId;
-}
-export async function getUserProfile(ctx: QueryCtx | MutationCtx) {
-  const userId = await getAuthUserId(ctx);
-  if (!userId) {
-    throw new Error("User not authenticated");
-  }
-  return await ctx.db.get(userId);
 }

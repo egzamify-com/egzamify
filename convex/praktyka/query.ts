@@ -2,7 +2,7 @@ import { asyncMap } from "convex-helpers";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { query } from "../_generated/server";
-import { getUserId } from "../auth";
+import { getUserId } from "../custom_helpers";
 
 export const listPracticalExams = query({
   args: { paginationOpts: paginationOptsValidator },
