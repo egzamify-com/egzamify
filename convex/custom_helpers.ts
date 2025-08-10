@@ -19,5 +19,9 @@ export async function getUserProfile(ctx: QueryCtx | MutationCtx) {
   if (!userId) {
     throw new Error("User not authenticated");
   }
-  return await ctx.db.get(userId);
+  const res = await ctx.db.get(userId);
+  if (!res) {
+    throw new Error("User not found");
+  }
+  return res;
 }

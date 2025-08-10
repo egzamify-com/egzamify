@@ -1,7 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserProfile } from "../custom_helpers";
 
 export const toggleUserActivityStatus = mutation({
   args: { newStatus: v.boolean() },
@@ -19,10 +19,28 @@ export const toggleUserActivityStatus = mutation({
 export const updateUserCredits = mutation({
   args: { creditsToAdd: v.number() },
   handler: async (ctx, { creditsToAdd }) => {
-    const userId = await getUserId(ctx);
-    const user = await ctx.db.get(userId);
-    if (!user) throw new Error("User not found");
+    const user = await getUserProfile(ctx);
 
-    await ctx.db.patch(userId, { credits: (user.credits ?? 0) + creditsToAdd });
+    await ctx.db.patch(user._id, {
+      credits: (user.credits ?? 0) + creditsToAdd,
+    });
+  },
+});
+export const chargeCreditsOrThrow = mutation({
+  args: { creditsToCharge: v.number() },
+  handler: async (ctx, { creditsToCharge }) => {
+    const user = await getUserProfile(ctx);
+
+    if ((user.credits ?? 0) >= creditsToCharge) {
+      console.log("user has enough to charge");
+      await ctx.db.patch(user._id, {
+        credits: (user.credits ?? 0) - creditsToCharge,
+      });
+      return { ok: true, message: "user has enough credits" } as const;
+    }
+    if ((user.credits ?? 0) < creditsToCharge) {
+      return { ok: false, message: "user DOESNT have enough credits" } as const;
+    }
+    return { ok: false, message: "no if hit?" } as const;
   },
 });

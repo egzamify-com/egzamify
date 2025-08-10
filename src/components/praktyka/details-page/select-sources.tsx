@@ -10,6 +10,7 @@ import {
   requestPracticalExamCheck,
   type PracticalExamCheckMode,
 } from "~/actions/request-practical-exam-check-action";
+import { APP_CONFIG } from "~/APP_CONFIG";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -74,13 +75,19 @@ export default function SelectSources({
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="standard" id="standard" />
               <Label htmlFor="standard" className="cursor-pointer">
-                <h3>Standard</h3>
+                <h3>
+                  Standard - {APP_CONFIG.practicalExamRating.standardPrice}{" "}
+                  credits
+                </h3>
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="complete" id="complete" />
               <Label htmlFor="complete" className="cursor-pointer">
-                Complete breakdown
+                <h3>
+                  Complete breakdown -{" "}
+                  {APP_CONFIG.practicalExamRating.completePrice} credits
+                </h3>
               </Label>
             </div>
           </RadioGroup>

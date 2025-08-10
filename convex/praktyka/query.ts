@@ -11,6 +11,7 @@ export const listPracticalExams = query({
 
     const baseExams = await ctx.db
       .query("basePracticalExams")
+
       .paginate(paginationOpts);
 
     const withQs = await asyncMap(baseExams.page, async (exam) => {
@@ -94,6 +95,7 @@ export const listUserExams = query({
     const userExams = await ctx.db
       .query("usersPracticalExams")
       .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("status"), "done"))
       .order("desc")
       .paginate(paginationOpts);
 

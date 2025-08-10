@@ -97,6 +97,8 @@ const schema = defineSchema({
     status: v.union(
       v.literal("user_pending"),
       v.literal("ai_pending"),
+      v.literal("not_enough_credits_error"),
+      v.literal("unknown_error_credits_refunded"),
       v.literal("done"),
     ),
     aiRating: v.optional(

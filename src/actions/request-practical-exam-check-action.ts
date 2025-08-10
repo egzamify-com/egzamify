@@ -10,6 +10,7 @@ import { type practicalExamAttachmentValidator } from "convex/praktyka/helpers";
 import type { Infer } from "convex/values";
 import mime from "mime";
 import { z } from "zod/v4";
+import { APP_CONFIG } from "~/APP_CONFIG";
 import { getFileUrl } from "~/lib/utils";
 import { getNextjsUser } from "./actions";
 
@@ -19,6 +20,11 @@ export async function requestPracticalExamCheck(
   userExamId: Id<"usersPracticalExams">,
   mode: "standard" | "complete",
 ) {
+  const gotCharged = await chargeCredits(getModePrice(mode));
+  if (!gotCharged) {
+    await updateUserExamStatus(userExamId, "not_enough_credits_error");
+    return;
+  }
   await updateUserExamStatus(userExamId, "ai_pending");
   const user = await getNextjsUser();
   const userExam = await getUserExamDetails(userExamId);
@@ -70,9 +76,54 @@ export async function requestPracticalExamCheck(
     },
   ];
 
-  const generatedRating = await generateAiCheck(mode, resources);
-  await saveRatingData(userExamId, generatedRating);
-  await updateUserExamStatus(userExamId, "done");
+  try {
+    throw new Error("some error in critical place");
+    const generatedRating = await generateAiCheck(mode, resources);
+    await saveRatingData(userExamId, generatedRating);
+    await updateUserExamStatus(userExamId, "done");
+  } catch (e) {
+    await refundCredits(getModePrice(mode));
+    await updateUserExamStatus(userExamId, "unknown_error_credits_refunded");
+  }
+}
+function getModePrice(mode: PracticalExamCheckMode) {
+  switch (mode) {
+    case "standard":
+      return APP_CONFIG.practicalExamRating.standardPrice;
+    case "complete":
+      return APP_CONFIG.practicalExamRating.completePrice;
+  }
+}
+async function chargeCredits(creditsToCharge: number) {
+  const result = await fetchMutation(
+    api.users.mutate.chargeCreditsOrThrow,
+    {
+      creditsToCharge,
+    },
+    {
+      token: await convexAuthNextjsToken(),
+    },
+  );
+  if (result.message === "user has enough credits") {
+    console.log("user got charged");
+    return true;
+  }
+  if (result.message === "user DOESNT have enough credits") {
+    console.log("user doesnt have enough credits");
+    return false;
+  }
+  return false;
+}
+async function refundCredits(creditsToRefund: number) {
+  await fetchMutation(
+    api.users.mutate.updateUserCredits,
+    {
+      creditsToAdd: creditsToRefund,
+    },
+    {
+      token: await convexAuthNextjsToken(),
+    },
+  );
 }
 
 async function updateUserExamStatus(
@@ -125,11 +176,9 @@ async function getAttachmentsUrls(
   attachments: Infer<typeof practicalExamAttachmentValidator>,
 ) {
   return await asyncMap(attachments, async (attachment) => {
-    const url = await getFileUrl(
-      attachment.attachmentId,
-      attachment.attachmentName,
-      { raw: true },
-    );
+    const url = getFileUrl(attachment.attachmentId, attachment.attachmentName, {
+      raw: true,
+    });
     return {
       ...attachment,
       url,
@@ -138,7 +187,7 @@ async function getAttachmentsUrls(
 }
 function transformAttachments(
   attachments: {
-    url: string | null;
+    url: string | undefined;
     attachmentName: string;
     attachmentId: Id<"_storage">;
   }[],
@@ -242,13 +291,11 @@ async function generateAiCheck(
   resources: ModelMessage[],
 ) {
   const { object, response } = await generateObject({
-    model: "google/gemini-2.0-flash",
+    model: APP_CONFIG.practicalExamRating.model,
     schema: getSchema(mode),
-    system:
-      "You are a assistant for young student learning for exams. You will be provided with a exam data like how to rate exam (every requirement is one point), also exam content, so actual exam tasks which user need to solve, and also you will be provided with exams attachments, which can be needed. This is only data for the base exam, next comes user data you will get. You will be provided with users files (in URL form), this is users solution for the exam. Your job is to understand base exam needs, and then compare the requirements to users work. You have to rate users exam, but the exam solution is in file format, can be multiple files. Also be aware that the studets are polish and are taking polish exams 'Egzamin Zawodowy'. You support two modes, first one 'standard', in this mode you only return summary, and points, you dont care about requrements(details). Second mode is complete, in this mode you return to user full output with details array.   ",
-    schemaName: "User's exam rating data",
-    schemaDescription:
-      "Result of rating user's exam files based on exam rating data and exam actual content",
+    system: APP_CONFIG.practicalExamRating.system,
+    schemaName: APP_CONFIG.practicalExamRating.schemaName,
+    schemaDescription: APP_CONFIG.practicalExamRating.schemaDescription,
     messages: resources,
   });
   console.log("what we passeed - ");
