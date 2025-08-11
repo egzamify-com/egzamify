@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "convex-helpers/react";
 import { api } from "convex/_generated/api";
+import { useQuery } from "convex/custom_helpers";
 import { use } from "react";
 import Chat from "~/components/ai-wyjasnia/chat";
 import FullScreenError from "~/components/full-screen-error";
@@ -33,6 +33,6 @@ export default function Page({
       />
     );
   }
-
-  return <Chat id={chatId} initialMessages={data} />;
+  console.log("thread - ", data);
+  return <Chat id={chatId} initialMessages={data?.messages ?? []} />;
 }

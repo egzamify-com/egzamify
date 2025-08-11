@@ -1,5 +1,4 @@
 import { authTables } from "@convex-dev/auth/server";
-import { typedV } from "convex-helpers/validators";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import {
@@ -114,5 +113,4 @@ const schema = defineSchema({
     .index("by_userId_examId", ["userId", "examId"]),
 });
 
-export const vv = typedV(schema);
 export default schema;

@@ -1,7 +1,6 @@
 import { type Infer, v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { getUserIdOrThrow } from "../custom_helpers";
-import { vv } from "../schema";
+import { getUserIdOrThrow, vv } from "../custom_helpers";
 
 export const startExam = mutation({
   args: { examId: v.id("basePracticalExams") },

@@ -12,7 +12,7 @@ import mime from "mime";
 import { z } from "zod/v4";
 import { APP_CONFIG } from "~/APP_CONFIG";
 import { getFileUrl } from "~/lib/utils";
-import { getNextjsUser } from "./actions";
+import { chargeCredits, getNextjsUser, refundCredits } from "./actions";
 
 export type PracticalExamCheckMode = "standard" | "complete";
 
@@ -92,37 +92,6 @@ function getModePrice(mode: PracticalExamCheckMode) {
     case "complete":
       return APP_CONFIG.practicalExamRating.completePrice;
   }
-}
-async function chargeCredits(creditsToCharge: number) {
-  const result = await fetchMutation(
-    api.users.mutate.chargeCreditsOrThrow,
-    {
-      creditsToCharge,
-    },
-    {
-      token: await convexAuthNextjsToken(),
-    },
-  );
-  if (result.message === "user has enough credits") {
-    console.log("user got charged");
-    return true;
-  }
-  if (result.message === "user DOESNT have enough credits") {
-    console.log("user doesnt have enough credits");
-    return false;
-  }
-  return false;
-}
-async function refundCredits(creditsToRefund: number) {
-  await fetchMutation(
-    api.users.mutate.updateUserCredits,
-    {
-      creditsToAdd: creditsToRefund,
-    },
-    {
-      token: await convexAuthNextjsToken(),
-    },
-  );
 }
 
 async function updateUserExamStatus(

@@ -15,11 +15,14 @@ export const getThreadMessages = query({
       .withIndex("by_id", (q) => q.eq("_id", chatId as Id<"explanations">))
       .first();
 
-    if (!thread) return [];
-    if (!thread.content) return [];
+    if (!thread) return null;
+    if (!thread.content) return null;
     if (thread.userId !== userId) throw new Error("Unauthorized");
 
-    return parseThreadMessages(thread);
+    return {
+      messages: parseThreadMessages(thread),
+      ...thread,
+    };
   },
 });
 

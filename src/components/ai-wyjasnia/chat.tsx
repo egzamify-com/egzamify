@@ -15,12 +15,18 @@ import { ChatInputWithModeSelection } from "./chat-input";
 export default function Chat({
   id,
   initialMessages,
-}: { id?: string | undefined; initialMessages?: MyUIMessage[] } = {}) {
+}: {
+  id?: string | undefined;
+  initialMessages?: MyUIMessage[];
+} = {}) {
   const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat);
   const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal");
-  const { sendMessage, messages, status } = useChat<MyUIMessage>({
+  const { sendMessage, messages, status, error } = useChat<MyUIMessage>({
     id,
     messages: initialMessages,
+    onError: (error) => {
+      console.error("Error:", error);
+    },
   });
 
   // handle empty chats, delete if user left with no messages (useEffect and ref)
@@ -56,6 +62,9 @@ export default function Chat({
             <ChatMessages {...{ messages }} />
             {status === "submitted" && <SpinnerLoading />}
           </>
+        )}
+        {error && (
+          <div className="text-destructive text-xl">An error occurred.</div>
         )}
       </div>
 
