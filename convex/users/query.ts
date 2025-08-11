@@ -1,10 +1,10 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 
 export const getCurrentUser = query({
   handler: async (ctx) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     // console.log("current user fetched");
     return await ctx.db.get(userId);

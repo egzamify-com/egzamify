@@ -1,11 +1,11 @@
 import { v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 
 export const cancelFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const document = await ctx.db
       .query("friends")
@@ -23,7 +23,7 @@ export const cancelFriendRequest = mutation({
 export const deleteFriend = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const friendRecordFromUser = await ctx.db
       .query("friends")
@@ -50,7 +50,7 @@ export const deleteFriend = mutation({
 export const rejectFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const friendRequest = await ctx.db
       .query("friends")
@@ -71,7 +71,7 @@ export const rejectFriendRequest = mutation({
 export const acceptFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const friendRequest = await ctx.db
       .query("friends")
@@ -92,7 +92,7 @@ export const acceptFriendRequest = mutation({
 export const sendFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     await ctx.db.insert("friends", {
       requestingUserId: userId,

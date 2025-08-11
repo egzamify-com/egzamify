@@ -3,7 +3,7 @@ import { type Infer, v } from "convex/values";
 import { APP_CONFIG } from "../../src/APP_CONFIG";
 import { type Doc, type Id } from "../_generated/dataModel";
 import { query, type QueryCtx } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 import {
   getNotFriends,
   getUsersFriends,
@@ -31,7 +31,7 @@ export const getFriendsWithSearch = query({
     filter: friendFilterValidator,
   },
   handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const { search, filter } = args;
 

@@ -2,12 +2,12 @@ import { asyncMap } from "convex-helpers";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { query } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 
 export const listPracticalExams = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, { paginationOpts }) => {
-    await getUserId(ctx);
+    await getUserIdOrThrow(ctx);
 
     const baseExams = await ctx.db
       .query("basePracticalExams")
@@ -32,7 +32,7 @@ export const listPracticalExams = query({
 export const getExamDetails = query({
   args: { examId: v.id("basePracticalExams") },
   handler: async (ctx, { examId }) => {
-    await getUserId(ctx);
+    await getUserIdOrThrow(ctx);
 
     const exam = await ctx.db.get(examId);
     if (!exam) throw new Error("Exam not found");
@@ -48,7 +48,7 @@ export const getExamDetails = query({
 export const getUserExamFromExamId = query({
   args: { examId: v.id("basePracticalExams") },
   handler: async (ctx, { examId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     return await ctx.db
       .query("usersPracticalExams")
@@ -63,7 +63,7 @@ export const getUserExamFromExamId = query({
 export const getUserExamDetails = query({
   args: { userExamId: v.id("usersPracticalExams") },
   handler: async (ctx, { userExamId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const userExam = await ctx.db
       .query("usersPracticalExams")
@@ -91,7 +91,7 @@ export const getUserExamDetails = query({
 export const listUserExams = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, { paginationOpts }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
     const userExams = await ctx.db
       .query("usersPracticalExams")
       .withIndex("by_user_id", (q) => q.eq("userId", userId))

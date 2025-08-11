@@ -1,11 +1,11 @@
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { mutation } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 
 export const storeNewThread = mutation({
   handler: async (ctx) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     return await ctx.db.insert("explanations", {
       userId: userId,
@@ -17,7 +17,7 @@ export const storeNewThread = mutation({
 export const storeChatMessages = mutation({
   args: { chatId: v.string(), newContent: v.string() },
   handler: async (ctx, { chatId, newContent }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const thread = await ctx.db.get(chatId as Id<"explanations">);
     if (!thread) throw new Error("Thread not found");
@@ -32,7 +32,7 @@ export const storeChatMessages = mutation({
 export const deleteChat = mutation({
   args: { chatId: v.id("explanations") },
   handler: async (ctx, { chatId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const thread = await ctx.db.get(chatId);
 

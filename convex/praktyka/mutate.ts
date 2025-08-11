@@ -1,12 +1,12 @@
 import { type Infer, v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 import { vv } from "../schema";
 
 export const startExam = mutation({
   args: { examId: v.id("basePracticalExams") },
   handler: async (ctx, { examId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     await ctx.db.insert("usersPracticalExams", {
       examId: examId,
@@ -22,7 +22,7 @@ export const updateUserExamStatus = mutation({
     newStatus: vv.doc("usersPracticalExams").fields.status,
   },
   handler: async (ctx, { userExamId, newStatus }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const userExam = await ctx.db.get(userExamId);
     if (!userExam) throw new Error("User exam not found");
@@ -37,7 +37,7 @@ export const updateUserExamStatus = mutation({
 export const deleteUserExam = mutation({
   args: { userExamId: v.id("usersPracticalExams") },
   handler: async (ctx, { userExamId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const userExam = await ctx.db.get(userExamId);
     if (!userExam) throw new Error("User exam not found");
@@ -54,7 +54,7 @@ export const deleteUserExam = mutation({
 
 export const generateUploadUrl = mutation({
   handler: async (ctx) => {
-    await getUserId(ctx);
+    await getUserIdOrThrow(ctx);
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -66,7 +66,7 @@ export const sendAttachment = mutation({
     attachmentName: v.string(),
   },
   handler: async (ctx, { storageId, userExamId, attachmentName }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const userExam = await ctx.db.get(userExamId);
     if (!userExam) throw new Error("User exam not found");
@@ -88,7 +88,7 @@ export const deleteAttachment = mutation({
     attachmentId: v.id("_storage"),
   },
   handler: async (ctx, { userExamId, attachmentId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const userExam = await ctx.db.get(userExamId);
     if (!userExam) throw new Error("User exam not found");
@@ -109,7 +109,7 @@ export const saveRatingData = mutation({
     ratingData: vv.doc("usersPracticalExams").fields.aiRating,
   },
   handler: async (ctx, { userExamId, ratingData }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const userExam = await ctx.db.get(userExamId);
     if (!userExam) throw new Error("User exam not found");

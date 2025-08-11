@@ -2,13 +2,13 @@ import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { type Id } from "../_generated/dataModel";
 import { query } from "../_generated/server";
-import { getUserId } from "../custom_helpers";
+import { getUserIdOrThrow } from "../custom_helpers";
 import { parseThreadMessages } from "./helpers";
 
 export const getThreadMessages = query({
   args: { chatId: v.string() },
   handler: async (ctx, { chatId }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const thread = await ctx.db
       .query("explanations")
@@ -26,7 +26,7 @@ export const getThreadMessages = query({
 export const getAiResponsesHistory = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, { paginationOpts }) => {
-    const userId = await getUserId(ctx);
+    const userId = await getUserIdOrThrow(ctx);
 
     const history = await ctx.db
       .query("explanations")

@@ -5,7 +5,7 @@ import type { Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 export const useQuery = makeUseQueryWithStatus(useQueries);
 
-export async function getUserId(
+export async function getUserIdOrThrow(
   ctx: QueryCtx | MutationCtx,
 ): Promise<Id<"users">> {
   const userId = await getAuthUserId(ctx);
@@ -14,7 +14,7 @@ export async function getUserId(
   }
   return userId;
 }
-export async function getUserProfile(ctx: QueryCtx | MutationCtx) {
+export async function getUserProfileOrThrow(ctx: QueryCtx | MutationCtx) {
   const userId = await getAuthUserId(ctx);
   if (!userId) {
     throw new Error("User not authenticated");
