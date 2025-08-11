@@ -25,40 +25,41 @@ export async function requestPracticalExamCheck(
     await updateUserExamStatus(userExamId, "not_enough_credits_error");
     return;
   }
-  await updateUserExamStatus(userExamId, "ai_pending");
-  const user = await getNextjsUser();
-  const userExam = await getUserExamDetails(userExamId);
-  if (!userExam.attachments) throw new Error("No attachments found");
-  const realExam = await getRealExamDetails(userExam.examId);
+  try {
+    await updateUserExamStatus(userExamId, "ai_pending");
+    const user = await getNextjsUser();
+    const userExam = await getUserExamDetails(userExamId);
+    if (!userExam.attachments) throw new Error("No attachments found");
+    const realExam = await getRealExamDetails(userExam.examId);
 
-  console.log("check for  - ", userExamId);
-  console.log("user requesting - ", user);
-  console.log("user sent attachments:");
-  console.dir(userExam.attachments);
-  console.log("base exam attachments:");
-  console.dir(realExam.examAttachments);
-  console.log("mode selected - ", mode);
+    console.log("check for  - ", userExamId);
+    console.log("user requesting - ", user);
+    console.log("user sent attachments:");
+    console.dir(userExam.attachments);
+    console.log("base exam attachments:");
+    console.dir(realExam.examAttachments);
+    console.log("mode selected - ", mode);
 
-  const userAttachments = transformAttachments(userExam.attachments);
-  const examAttachments = transformAttachments(realExam.examAttachments);
+    const userAttachments = transformAttachments(userExam.attachments);
+    const examAttachments = transformAttachments(realExam.examAttachments);
 
-  // feed the ai all the context it needs
-  const resources: ModelMessage[] = [
-    {
-      role: "user",
-      content: examAttachments,
-    },
-    {
-      role: "user",
-      content: userAttachments,
-    },
-    {
-      role: "user",
-      content: `I want to check my exam in ${mode} mode.`,
-    },
-    {
-      role: "assistant",
-      content: `This is the rating schema you have to follow for this exam:
+    // feed the ai all the context it needs
+    const resources: ModelMessage[] = [
+      {
+        role: "user",
+        content: examAttachments,
+      },
+      {
+        role: "user",
+        content: userAttachments,
+      },
+      {
+        role: "user",
+        content: `I want to check my exam in ${mode} mode.`,
+      },
+      {
+        role: "assistant",
+        content: `This is the rating schema you have to follow for this exam:
       <ratingData>
       ${JSON.stringify(realExam.ratingData)}
       </ratingData>
@@ -73,11 +74,9 @@ export async function requestPracticalExamCheck(
       qualification for this exam: ${realExam.qualification!.label}
 
       `,
-    },
-  ];
+      },
+    ];
 
-  try {
-    throw new Error("some error in critical place");
     const generatedRating = await generateAiCheck(mode, resources);
     await saveRatingData(userExamId, generatedRating);
     await updateUserExamStatus(userExamId, "done");
