@@ -32,11 +32,7 @@ export function NavUser() {
   const router = useRouter();
   const { signOut } = useAuthActions();
   const { isMobile } = useSidebar();
-  const {
-    data: user,
-    error,
-    isPending,
-  } = useQuery(api.users.query.getCurrentUser);
+  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser);
 
   const { setTheme, theme } = useTheme();
   if (isPending) return <Loading />;
