@@ -93,8 +93,8 @@ function toMessagesWithModeInContent(
 ): UIMessage[] {
   const messes = originalMessages.map((mess) => {
     const newContent =
-      mess.parts[0]!.type === "text"
-        ? (mess.parts[0]!.text = `MODE=${mess.metadata?.mode ?? "Normal"} USER-MESSAGE=${mess.parts[0]?.text ?? ""}`)
+      mess.parts[0]?.type === "text"
+        ? (mess.parts[0].text = `MODE=${mess.metadata?.mode ?? "Normal"} USER-MESSAGE=${mess.parts[0]?.text ?? ""}`)
         : "";
 
     const a = {

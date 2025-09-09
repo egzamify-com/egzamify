@@ -2,8 +2,8 @@
 import { usePathname } from "next/navigation";
 import type React from "react";
 import { Suspense, useEffect } from "react";
-import { AppSidebar } from "~/components/dashboardSidebar/app-sidebar";
-import { SiteHeader } from "~/components/dashboardSidebar/site-header";
+import { AppSidebar } from "~/components/dashboard-sidebar/app-sidebar";
+import { SiteHeader } from "~/components/dashboard-sidebar/site-header";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { updateDashboardBreadcrumbs } from "~/lib/stores/breadcrumbsStore";
 

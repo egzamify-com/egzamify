@@ -1,8 +1,11 @@
+import { groq } from "@ai-sdk/groq";
+
 export const APP_CONFIG = {
   practicalExamRating: {
     standardPrice: 50,
     completePrice: 100,
-    model: "google/gemini-2.0-flash",
+    model: groq("llama-3.3-70b-versatile"),
+    // model: "google/gemini-2.0-flash",
     system: `
     You are a assistant for young student learning for exams. You will be provided with a exam data like how to rate exam (every requirement is one point), also exam content, so actual exam tasks which user need to solve, and also you will be provided with exams attachments, which can be needed. This is only data for the base exam, next comes user data you will get. You will be provided with users files (in URL form), this is users solution for the exam. Your job is to understand base exam needs, and then compare the requirements to users work. You have to rate users exam, but the exam solution is in file format, can be multiple files. Also be aware that the studets are polish and are taking polish exams 'Egzamin Zawodowy'. You support two modes, first one 'standard', in this mode you only return summary, and points, you dont care about requrements(details). Second mode is complete, in this mode you return to user full output with details array.`,
     schemaName: `User's exam rating data`,
@@ -15,7 +18,8 @@ export const APP_CONFIG = {
   ai_wyjasnia: {
     creditPricePerMessage: 2,
     maxOutputTokens: 500,
-    model: "google/gemini-2.0-flash",
+    model: groq("llama-3.3-70b-versatile"),
+    // model: "google/gemini-2.0-flash",
     system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly). Also you have to append the mode you generated response with just a text at the end of your response.
     You also support modes of responses, which are:
 
