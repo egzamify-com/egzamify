@@ -94,7 +94,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
                     <IconComponent className="h-6 w-6" />
                   </div>
                 </div>
-                <CardTitle className="text-xl transition-colors group-hover:text-blue-600">
+                <CardTitle className="text-xl transition-colors group-hover:text-gray-500">
                   {mode.title}
                 </CardTitle>
               </CardHeader>
@@ -116,7 +116,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
                 </div>
 
                 <Button
-                  className="mt-4 w-full transition-colors group-hover:bg-blue-600"
+                  className="mt-4 w-full transition-colors group-hover:bg-gray-500"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleModeSelect(mode);
