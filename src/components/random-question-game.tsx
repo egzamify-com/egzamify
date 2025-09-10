@@ -34,6 +34,7 @@ export default function RandomQuestionGame({
 
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationId: qualificationId as Id<"qualifications">,
+    _refreshKey: refreshKey,
   });
 
   const currentQuestion = questionData?.question;
@@ -41,12 +42,19 @@ export default function RandomQuestionGame({
   const saveExplanation = useMutation(api.teoria.mutate.saveExplanation);
 
   useEffect(() => {
-    if (currentQuestion?.explanation) {
-      setAiExplanation(currentQuestion.explanation);
-    } else {
-      setAiExplanation(null);
+    if (currentQuestion) {
+      setSelectedAnswer(null);
+      setShowResult(false);
+      setIsCorrect(null);
+      setTimeLeft(120);
+
+      if (currentQuestion.explanation) {
+        setAiExplanation(currentQuestion.explanation);
+      } else {
+        setAiExplanation(null);
+      }
     }
-  }, [currentQuestion]);
+  }, [currentQuestion]); // Reaguj na zmianę pytania
 
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
@@ -78,12 +86,9 @@ export default function RandomQuestionGame({
   };
 
   const handleNewQuestion = () => {
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setIsCorrect(null);
-    setTimeLeft(120);
-    setAiExplanation(null);
+    // Zwiększ refreshKey - to spowoduje nowe zapytanie do bazy
     setRefreshKey((prev) => prev + 1);
+    // Reszta stanu zostanie zresetowana w useEffect gdy przyjdzie nowe pytanie
   };
 
   const handleGenerateExplanation = async () => {

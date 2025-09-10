@@ -36,7 +36,7 @@ export const getQualificationsList = query({
           id: qualification._id,
           name: qualification.name,
           label: qualification.label,
-          created_at: qualification.created_at || Date.now(), // Zwracaj timestamp jako liczbę
+          created_at: qualification.created_at || Date.now(),
           questionsCount: questions.length,
         };
       }),
@@ -99,7 +99,10 @@ export const getQuestionsByQualification = query({
 });
 
 export const getRandomQuestion = query({
-  args: { qualificationId: v.id("qualifications") },
+  args: {
+    qualificationId: v.id("qualifications"),
+    _refreshKey: v.optional(v.number()), // Parametr do wymuszania nowego zapytania
+  },
   handler: async (ctx, args) => {
     const { qualificationId } = args;
 
@@ -118,11 +121,17 @@ export const getRandomQuestion = query({
     const randomIndex = Math.floor(Math.random() * questions.length);
     const randomQuestion = questions[randomIndex];
 
+    // DODAJ SPRAWDZENIE - to rozwiąże błąd TypeScript
+    if (!randomQuestion) {
+      return { question: null };
+    }
+
     const answers = await ctx.db
       .query("answers")
       .withIndex("by_question", (q) => q.eq("question_id", randomQuestion._id))
       .collect();
 
+    // Sortuj odpowiedzi według label
     const sortedAnswers = answers.sort((a, b) =>
       a.label.localeCompare(b.label),
     );
@@ -160,10 +169,12 @@ export const getBrowseQuestions = query({
       )
       .collect();
 
+    // Filtruj po roku jeśli podano
     if (year) {
       questions = questions.filter((q) => q.year === year);
     }
 
+    // Filtruj po tekście jeśli podano
     if (search && search.trim() !== "") {
       const searchLower = search.toLowerCase();
       questions = questions.filter((q) =>
@@ -174,6 +185,7 @@ export const getBrowseQuestions = query({
     // Sortuj według daty utworzenia (najnowsze pierwsze)
     questions.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
 
+    // Paginacja
     const paginatedQuestions = questions.slice(offset, offset + limit);
 
     const questionsWithAnswers = await Promise.all(
