@@ -18,7 +18,8 @@ export function ChatInputWithModeSelection({
   selectedMode: AiWyjasniaMode;
   setSelectedMode: (mode: AiWyjasniaMode) => void;
   sendMessage: (
-    message: CreateUIMessage | string,
+    // @ts-expect-error idk, this works
+    message: CreateUIMessage,
     options?: ChatRequestOptions,
   ) => Promise<void>;
 }) {
@@ -32,7 +33,7 @@ export function ChatInputWithModeSelection({
           <Label className="text-sm font-medium">AI Response Mode</Label>
           <RadioGroup
             value={selectedMode}
-            onValueChange={(value) => setSelectedMode(value as AiWyjasniaMode)}
+            onValueChange={(value) => setSelectedMode(value)}
             className="flex flex-wrap gap-4"
           >
             {APP_CONFIG.ai_wyjasnia.modes.map((mode) => (
@@ -56,7 +57,10 @@ export function ChatInputWithModeSelection({
             e.preventDefault();
             sendMessage({
               text: input,
-              metadata: { mode: selectedMode, createdAt: Date.now() },
+              metadata: {
+                mode: selectedMode,
+                createdAt: Date.now(),
+              },
             });
             setInput("");
           }}

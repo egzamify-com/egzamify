@@ -39,7 +39,7 @@ export default function Page() {
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
       <ProfileHeader info={{ user: data }} />
-      <Achievements userId={data._id} />
+      <Achievements />
       <UserCharts />
     </div>
   );

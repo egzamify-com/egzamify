@@ -65,7 +65,7 @@ export function formatToYYYYMMDD(
  */
 export function convertEpochToYYYYMMDD(
   epochMs: EpochMilliseconds, // Clearly indicate it expects milliseconds
-  timezone: string = "UTC", // Default to UTC
+  timezone = "UTC", // Default to UTC
 ): string {
   // New Date() constructor expects milliseconds since epoch
   const date = new Date(epochMs);
