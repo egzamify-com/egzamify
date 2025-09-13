@@ -1,9 +1,7 @@
-import { env } from "~/env";
-
 export default {
   providers: [
     {
-      domain: env.NEXT_PUBLIC_CONVEX_CLOUD_URL,
+      domain: process.env.SITE_URL,
       applicationID: "convex",
     },
   ],
