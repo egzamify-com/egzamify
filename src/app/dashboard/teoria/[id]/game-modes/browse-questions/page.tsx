@@ -1,4 +1,4 @@
-import BrowseQuestions from "~/components/browse-questions";
+import BrowseQuestions from "~/components/teoria/browse-questions";
 
 interface BrowseQuestionsPageProps {
   params: {

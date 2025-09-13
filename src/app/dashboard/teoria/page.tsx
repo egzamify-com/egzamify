@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import AllQualificationsList from "~/components/all-qualification-list";
+import AllQualificationsList from "~/components/teoria/all-qualification-list";
 
 import { Card, CardContent } from "~/components/ui/card";
 

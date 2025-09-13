@@ -1,4 +1,4 @@
-import FullTestGame from "~/components/full-test-game";
+import FullTestGame from "~/components/teoria/full-test-game";
 
 interface FullTestPageProps {
   params: {

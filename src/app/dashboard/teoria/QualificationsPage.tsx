@@ -3,10 +3,10 @@
 import type { inferProcedureOutput } from "@trpc/server";
 import { useMemo, useState } from "react";
 import FilterOptions from "~/components/filter-options";
-import SearchBar from "~/components/search-bar";
-import SortOptions from "~/components/sort-options";
+import SearchBar from "~/components/teoria/search-bar";
+import SortOptions from "~/components/teoria/sort-options";
+import QualificationsGrid from "~/components/teoria/updated-qualifications-grid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import QualificationsGrid from "~/components/updated-qualifications-grid";
 import type { AppRouter } from "~/server/api/root";
 // import { qualifications } from "~/data/qualifications"
 

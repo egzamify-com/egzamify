@@ -1,4 +1,4 @@
-import RandomQuestionGame from "~/components/random-question-game";
+import RandomQuestionGame from "~/components/teoria/random-question-game";
 
 interface RandomQuestionPageProps {
   params: {

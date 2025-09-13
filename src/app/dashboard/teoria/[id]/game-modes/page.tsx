@@ -1,4 +1,4 @@
-import GameModes from "~/components/game-modes";
+import GameModes from "~/components/teoria/game-modes";
 
 interface GameModesPageProps {
   params: {
