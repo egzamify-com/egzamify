@@ -21,6 +21,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_CONVEX_SITE_URL: z.string().url(),
+    NEXT_PUBLIC_CONVEX_CLOUD_URL: z.string().url(),
   },
 
   /**
@@ -32,6 +33,7 @@ export const env = createEnv({
     GROQ_API_KEY: process.env.GROQ_API_KEY,
     AI_GATEWAY_API_KEY: process.env.AI_GATEWAY_API_KEY,
     NEXT_PUBLIC_CONVEX_SITE_URL: process.env.NEXT_PUBLIC_CONVEX_SITE_URL,
+    NEXT_PUBLIC_CONVEX_CLOUD_URL: process.env.NEXT_PUBLIC_CONVEX_CLOUD_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
