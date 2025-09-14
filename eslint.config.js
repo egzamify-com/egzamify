@@ -20,6 +20,7 @@ export default tseslint.config(
       ...tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
+      "@typescript-eslint/no-unsafe-return": "warn",
       "@typescript-eslint/consistent-indexed-object-style": "warn",
       "@typescript-eslint/no-unsafe-argument": "warn",
       "@typescript-eslint/restrict-template-expressions": "warn",

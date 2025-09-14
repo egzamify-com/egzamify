@@ -12,7 +12,7 @@ import mime from "mime";
 import { z } from "zod/v4";
 import { APP_CONFIG } from "~/APP_CONFIG";
 import { getFileUrl } from "~/lib/utils";
-import { chargeCredits, getNextjsUser, refundCredits } from "./actions";
+import { chargeCredits, getNextjsUserOrThrow, refundCredits } from "./actions";
 
 export type PracticalExamCheckMode = "standard" | "complete";
 
@@ -27,7 +27,7 @@ export async function requestPracticalExamCheck(
   }
   try {
     await updateUserExamStatus(userExamId, "ai_pending");
-    const user = await getNextjsUser();
+    const user = await getNextjsUserOrThrow();
     const userExam = await getUserExamDetails(userExamId);
     if (!userExam.attachments) throw new Error("No attachments found");
     const realExam = await getRealExamDetails(userExam.examId);
