@@ -1,5 +1,5 @@
-import { mutation } from "convex/_generated/server";
 import { v } from "convex/values";
+import { mutation } from "../_generated/server";
 
 export const storeStripeCustomerId = mutation({
   args: { userId: v.id("users"), customerId: v.string() },

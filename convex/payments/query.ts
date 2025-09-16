@@ -1,5 +1,5 @@
-import { query } from "convex/_generated/server";
 import { v } from "convex/values";
+import { query } from "../_generated/server";
 
 export const getStripeCustomerId = query({
   args: { userId: v.id("users") },
