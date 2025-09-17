@@ -1,15 +1,21 @@
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
-import { syncStripeDataToKV } from "~/lib/stripe-utils";
+import Link from "next/link"
+import { Button } from "~/components/ui/button"
+import { syncStripeDataToKV } from "~/lib/stripe-utils"
 
-export default async function SyncData({ customerId }: { customerId: string }) {
+export default async function SyncData({
+  customerId,
+  sessionId,
+}: {
+  customerId: string
+  sessionId: string
+}) {
   try {
-    await syncStripeDataToKV(customerId);
+    await syncStripeDataToKV(customerId, sessionId)
     console.log(
       "[STRIPE] Adding real credits to user account after successful payment",
-    );
+    )
   } catch (e) {
-    console.log("[STRIPE] stripe data to kv sync failed - ", e);
+    console.log("[STRIPE] stripe data to kv sync failed - ", e)
   }
   return (
     <div>
@@ -18,5 +24,5 @@ export default async function SyncData({ customerId }: { customerId: string }) {
         <Button>Back to dashboard</Button>
       </Link>
     </div>
-  );
+  )
 }

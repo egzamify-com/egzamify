@@ -21,6 +21,7 @@ const schema = defineSchema({
     isAnonymous: v.optional(v.boolean()),
     isActive: v.optional(v.boolean()),
     credits: v.optional(v.number()),
+    pendingCredits: v.optional(v.number()),
   })
     .index("username", ["username"])
     .index("email", ["email"])

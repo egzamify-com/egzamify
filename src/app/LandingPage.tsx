@@ -1,5 +1,15 @@
-"use client";
+"use client"
+
+import Link from "next/link"
+import { Button } from "~/components/ui/button"
 
 export default function LandingPage() {
-  return <main className="bg-green-100">Landing page</main>;
+  return (
+    <main className="">
+      Landing page{" "}
+      <Button>
+        <Link href={"/pricing"}>pricing</Link>
+      </Button>
+    </main>
+  )
 }
