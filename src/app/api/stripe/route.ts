@@ -3,6 +3,7 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import type Stripe from "stripe"
 import { stripe } from "~/actions/stripe/init-stripe"
+import { env } from "~/env"
 import { syncStripeDataToKV } from "~/lib/stripe-utils"
 import { tryCatch } from "~/lib/tryCatch"
 
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
     const event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!,
+      env.STRIPE_WEBHOOK_SECRET,
     )
 
     waitUntil(processEvent(event))
