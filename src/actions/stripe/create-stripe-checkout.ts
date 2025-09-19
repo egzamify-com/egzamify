@@ -1,14 +1,25 @@
 "use server"
 
+import type Stripe from "stripe"
 import { getStripeCustomerId, storeStripeCustomerId } from "~/lib/stripe-utils"
 import { getNextjsUserOrThrow } from "../actions"
 import { stripe } from "./init-stripe"
 
 export async function createStripeCheckout(
-  productPriceId: string,
+  product: Stripe.Product,
+  // productPriceId: string,
   quantity: number,
 ) {
   console.log("[STRIPE] Creating new checkout")
+
+  const productPriceId = product.default_price
+  if (!productPriceId) {
+    console.error(
+      "[STRIPE] Product doesnt have a price (?), product id - ",
+      product.id,
+    )
+    throw new Error("[STRIPE] Product doesnt have a price (?), product id - ")
+  }
 
   let stripeCustomerId = await getStripeCustomerId()
 
@@ -33,27 +44,29 @@ export async function createStripeCheckout(
     stripeCustomerId,
   )
   const randomUUID = crypto.randomUUID()
+  const checkoutMetadata = {
+    mySessionId: randomUUID,
+    creditsPurchased: quantity * parseInt(product.name),
+  }
   const checkout = await stripe.checkout.sessions.create({
-    metadata: {
-      mySessionId: randomUUID,
-    },
+    metadata: { ...checkoutMetadata },
     payment_intent_data: {
-      metadata: {
-        mySessionId: randomUUID,
-      },
+      metadata: { ...checkoutMetadata },
     },
     customer: stripeCustomerId,
     success_url: `http://localhost:3000/success?sessionId=${randomUUID}`,
     mode: "payment",
     line_items: [
       {
-        price: JSON.parse(productPriceId) as string,
+        price: JSON.stringify(productPriceId),
         quantity,
       },
     ],
   })
 
-  console.log("[STRIPE] Created new checkout successfully - ", checkout.id)
+  console.log("[STRIPE] Created new checkout successfully")
+  console.log("[STRIPE] Our random checkout id - ", randomUUID)
+  console.log("[STRIPE] Officical stripe checkout id - ", checkout.id)
 
   return checkout.id
 }

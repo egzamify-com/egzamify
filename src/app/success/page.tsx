@@ -3,7 +3,7 @@ import { api } from "convex/_generated/api"
 import { fetchQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
-import SyncData from "./sync-data"
+import SyncData from "./sync-stripe-data"
 
 export default async function SuccessPage({
   searchParams,
@@ -46,6 +46,7 @@ export default async function SuccessPage({
         <SyncData
           customerId={customerId}
           sessionId={(await searchParams).sessionId}
+          user={user}
         />
       </Suspense>
     </>

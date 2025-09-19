@@ -4,11 +4,13 @@ import { api } from "convex/_generated/api"
 import { useMutation } from "convex/react"
 import { Minus, Plus } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 import type Stripe from "stripe"
 import { createStripeCheckout } from "~/actions/stripe/create-stripe-checkout"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import useStripe from "~/hooks/use-stripe"
+import { tryCatch } from "~/lib/tryCatch"
 
 export default function Product({ product }: { product: Stripe.Product }) {
   const [quantity, setQuantity] = useState(1)
@@ -18,31 +20,32 @@ export default function Product({ product }: { product: Stripe.Product }) {
   const stripePromise = useStripe()
   async function handleCheckout() {
     console.log("[STRIPE] Checkout handler started")
-    const productPriceId = product.default_price
-    if (!productPriceId) {
-      console.error(
-        "[STRIPE] Product doesnt have a price (?), product id - ",
-        product.id,
-      )
+
+    const [checkoutId, checkoutIdErr] = await tryCatch(
+      createStripeCheckout(product, quantity),
+    )
+    if (checkoutIdErr) {
+      console.error("[STRIPE] Error creating checkout session", checkoutIdErr)
+      toast.error("Failed to create checkout session, please try again")
       return
     }
-
-    const checkoutId = await createStripeCheckout(
-      JSON.stringify(productPriceId),
-      quantity,
-    )
     const stripe = await stripePromise()
     if (!stripe) {
       console.error("[STRIPE] Stripe on client not initialized")
+      toast.error("Failed to create checkout session, please try again")
       return
     }
-    // here before redirect, store in db amount of credits user attempts to buy, after success page renders,
-    // update actual users credits, and clear the pending ones (prolly the cleanest and easiest way to know how much credits to add after
-    // successful puchase)
-    await updateUserPendingCredits({
-      pendingCreditsToAdd: quantity * parseInt(product.name),
-    })
 
+    const [res, err] = await tryCatch(
+      updateUserPendingCredits({
+        pendingCreditsToAdd: quantity * parseInt(product.name),
+      }),
+    )
+    if (err) {
+      console.error("[STRIPE] Error creating checkout session", err)
+      toast.error("Failed to create checkout session, please try again")
+      return
+    }
     console.log("[STRIPE] storing pending credits")
     await stripe.redirectToCheckout({
       sessionId: checkoutId,

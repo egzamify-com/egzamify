@@ -40,10 +40,32 @@ export const storeCustomerData = mutation({
 export const updatePendingCredits = mutation({
   args: { pendingCreditsToAdd: v.number() },
   handler: async (ctx, { pendingCreditsToAdd }) => {
+    console.log(
+      "[STRIPE] Updating pending credits, adding - ",
+      pendingCreditsToAdd,
+    )
     const user = await getUserProfileOrThrow(ctx)
 
+    const userCurrents = user.pendingCredits ?? 0
     await ctx.db.patch(user._id, {
-      pendingCredits: user.pendingCredits ?? 0 + pendingCreditsToAdd,
+      pendingCredits: pendingCreditsToAdd + userCurrents,
+    })
+  },
+})
+
+export const updateUserCreditsAndClearPendings = mutation({
+  args: { creditsToAdd: v.number() },
+  handler: async (ctx, { creditsToAdd }) => {
+    const user = await getUserProfileOrThrow(ctx)
+
+    const userCurrents = user.credits ?? 0
+    console.log({ userCurrents })
+    const res = creditsToAdd + userCurrents
+    console.log({ res })
+    console.log({ creditsToAdd })
+    await ctx.db.patch(user._id, {
+      credits: creditsToAdd + userCurrents,
+      pendingCredits: 0,
     })
   },
 })

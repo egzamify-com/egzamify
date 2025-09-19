@@ -66,6 +66,7 @@ export async function syncStripeDataToKV(
   }
 
   const paymentData = payment.data[0]
+
   await storeStripeCustomerData(
     customerId,
     sessionId,
