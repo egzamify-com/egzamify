@@ -7,7 +7,6 @@ import { stripe } from "./init-stripe"
 
 export async function createStripeCheckout(
   product: Stripe.Product,
-  // productPriceId: string,
   quantity: number,
 ) {
   console.log("[STRIPE] Creating new checkout")
@@ -58,7 +57,7 @@ export async function createStripeCheckout(
     mode: "payment",
     line_items: [
       {
-        price: JSON.stringify(productPriceId),
+        price: productPriceId as string,
         quantity,
       },
     ],

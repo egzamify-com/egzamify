@@ -36,7 +36,7 @@ export default function Product({ product }: { product: Stripe.Product }) {
       return
     }
 
-    const [res, err] = await tryCatch(
+    const [, err] = await tryCatch(
       updateUserPendingCredits({
         pendingCreditsToAdd: quantity * parseInt(product.name),
       }),

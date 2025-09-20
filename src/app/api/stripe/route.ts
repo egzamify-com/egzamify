@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     waitUntil(processEvent(event))
   }
 
-  const [_res, error] = await tryCatch(doEventProcessing())
+  const [, error] = await tryCatch(doEventProcessing())
 
   if (error) {
     console.error("[STRIPE HOOK] Error processing event", error)
