@@ -39,7 +39,9 @@ export default function RandomQuestionGame({
 
   const currentQuestion = questionData?.question;
 
-  const saveExplanation = useMutation(api.teoria.mutate.saveExplanation);
+  const generateExplanation = useMutation(
+    api.teoria.mutate.generateExplanation,
+  );
 
   useEffect(() => {
     if (currentQuestion) {
@@ -54,7 +56,7 @@ export default function RandomQuestionGame({
         setAiExplanation(null);
       }
     }
-  }, [currentQuestion]); // Reaguj na zmianę pytania
+  }, [currentQuestion]);
 
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
@@ -86,29 +88,41 @@ export default function RandomQuestionGame({
   };
 
   const handleNewQuestion = () => {
-    // Zwiększ refreshKey - to spowoduje nowe zapytanie do bazy
     setRefreshKey((prev) => prev + 1);
-    // Reszta stanu zostanie zresetowana w useEffect gdy przyjdzie nowe pytanie
   };
 
   const handleGenerateExplanation = async () => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || isLoadingExplanation) return;
+
+    console.log("🚀 Rozpoczynam generowanie wyjaśnienia...");
+    console.log("📝 Pytanie:", currentQuestion.question);
+    console.log(
+      "🎯 Poprawna odpowiedź:",
+      currentQuestion.answers[currentQuestion.correctAnswer],
+    );
 
     setIsLoadingExplanation(true);
 
-    const mockExplanation = `Wyjaśnienie AI dla pytania: ${currentQuestion.question.slice(0, 50)}...`;
-
-    setAiExplanation(mockExplanation);
-    setIsLoadingExplanation(false);
-
-    // Zapisz wyjaśnienie do bazy w tle
     try {
-      await saveExplanation({
+      console.log("🔄 Wywołuję mutation generateExplanation...");
+
+      const result = await generateExplanation({
         questionId: currentQuestion.id,
-        explanation: mockExplanation,
+        questionContent: currentQuestion.question,
+        answers: currentQuestion.answers,
+        correctAnswerIndex: currentQuestion.correctAnswer,
+        answerLabels: currentQuestion.answerLabels,
       });
+
+      console.log("✅ Otrzymano wyjaśnienie z AI:", result.explanation);
+      setAiExplanation(result.explanation);
     } catch (error) {
-      console.error("Błąd podczas zapisywania wyjaśnienia:", error);
+      console.error("❌ Błąd podczas generowania wyjaśnienia:", error);
+      setAiExplanation(
+        "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.",
+      );
+    } finally {
+      setIsLoadingExplanation(false);
     }
   };
 
@@ -277,12 +291,11 @@ export default function RandomQuestionGame({
               )}
             </div>
 
-            {/* Wyjaśnienie */}
             {aiExplanation && (
               <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <h3 className="mb-2 flex items-center gap-2 font-medium text-blue-800">
                   <Lightbulb className="h-5 w-5" />
-                  Wyjaśnienie:
+                  Wyjaśnienie AI:
                 </h3>
                 <p className="text-gray-700">{aiExplanation}</p>
               </div>
@@ -309,12 +322,12 @@ export default function RandomQuestionGame({
                   {isLoadingExplanation ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Generowanie...
+                      Generowanie z Groq...
                     </>
                   ) : (
                     <>
                       <Lightbulb className="h-4 w-4" />
-                      Objaśnij z AI
+                      Objaśnij z AI (Groq)
                     </>
                   )}
                 </Button>
