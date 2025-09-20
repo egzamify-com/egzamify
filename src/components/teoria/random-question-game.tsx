@@ -2,7 +2,7 @@
 
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import {
   CheckCircle,
   Clock,
@@ -39,9 +39,8 @@ export default function RandomQuestionGame({
 
   const currentQuestion = questionData?.question;
 
-  const generateExplanation = useMutation(
-    api.teoria.mutate.generateExplanation,
-  );
+  // Zmieniono z useMutation na useAction
+  const generateExplanation = useAction(api.teoria.actions.generateExplanation);
 
   useEffect(() => {
     if (currentQuestion) {
@@ -104,7 +103,7 @@ export default function RandomQuestionGame({
     setIsLoadingExplanation(true);
 
     try {
-      console.log("🔄 Wywołuję mutation generateExplanation...");
+      console.log("🔄 Wywołuję action generateExplanation...");
 
       const result = await generateExplanation({
         questionId: currentQuestion.id,
