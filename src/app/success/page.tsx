@@ -3,6 +3,7 @@ import { api } from "convex/_generated/api"
 import { fetchQuery } from "convex/nextjs"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
+import FullScreenLoading from "~/components/full-screen-loading"
 import SyncData from "./sync-stripe-data"
 
 export default async function SuccessPage({
@@ -37,10 +38,10 @@ export default async function SuccessPage({
     <>
       <Suspense
         fallback={
-          <div>
-            <h1 className="text-xl">We received your payment!</h1>
-            <h2>Let us finalize your transaction</h2>
-          </div>
+          <FullScreenLoading
+            loadingMessage="Thank you, we received your payment!"
+            loadingDetail="Finalizing transaction"
+          />
         }
       >
         <SyncData

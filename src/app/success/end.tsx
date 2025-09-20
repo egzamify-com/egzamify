@@ -6,9 +6,11 @@ import Link from "next/link"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import { Button } from "~/components/ui/button"
+import useBlockNavigation from "~/hooks/use-block-navigation"
 import RenderToast from "./render-toast"
 
 export default function SyncEnd({ sessionId }: { sessionId: string }) {
+  useBlockNavigation(true)
   const { data: user, isPending: userPending } = useQuery(
     api.users.query.getCurrentUser,
   )
@@ -41,7 +43,7 @@ export default function SyncEnd({ sessionId }: { sessionId: string }) {
     <>
       {transaction && user && (
         <>
-          <h1 className="text-3xl font-bold">{`Success!`}</h1>
+          <h1 className="text-3xl font-bold">{`Thank you!`}</h1>
           <h1 className="text-xl font-bold">{`You purchased ${transaction.creditsPurchased} credits!`}</h1>
           <Link href={"/dashboard"}>
             <Button>Back to the app</Button>
