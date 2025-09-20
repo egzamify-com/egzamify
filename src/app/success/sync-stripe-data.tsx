@@ -59,11 +59,11 @@ export default async function SyncData({
     }
   }
   return (
-    <>
+    <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
       <Suspense fallback={<div>syncing credits...</div>}>
         <SyncEnd {...{ sessionId }} />
       </Suspense>
-    </>
+    </div>
   )
 }
 async function clearPendingsAndSkipRealCredits() {

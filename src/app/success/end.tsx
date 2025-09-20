@@ -2,8 +2,11 @@
 
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
+import Link from "next/link"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
+import { Button } from "~/components/ui/button"
+import RenderToast from "./render-toast"
 
 export default function SyncEnd({ sessionId }: { sessionId: string }) {
   const { data: user, isPending: userPending } = useQuery(
@@ -18,6 +21,16 @@ export default function SyncEnd({ sessionId }: { sessionId: string }) {
 
   if (transactionPending || userPending) <FullScreenLoading />
 
+  if (!user && !userPending) {
+    console.error("[STRIPE] Failed to get user")
+    return <FullScreenError errorMessage={"Failed to get user"} />
+  }
+
+  if (!transaction && !transactionPending) {
+    console.error("[STRIPE] Failed to get transaction")
+    return <FullScreenError errorMessage={"Failed to get transaction"} />
+  }
+
   if (!transactionPending && transaction?.status === "requires_payment_method")
     <FullScreenError errorMessage="Payment failed" />
 
@@ -25,10 +38,20 @@ export default function SyncEnd({ sessionId }: { sessionId: string }) {
     <FullScreenError type="warning" errorMessage="Payment canceled" />
 
   return (
-    <div className="h-full w-full items-center justify-center">
-      <p>payment status: {transaction?.status}</p>
-      <h1>you purchased: {transaction?.creditsPurchased}</h1>
-      <h1>current credist: {user?.credits}</h1>
-    </div>
+    <>
+      {transaction && user && (
+        <>
+          <h1 className="text-3xl font-bold">{`Success!`}</h1>
+          <h1 className="text-xl font-bold">{`You purchased ${transaction.creditsPurchased} credits!`}</h1>
+          <Link href={"/dashboard"}>
+            <Button>Back to the app</Button>
+          </Link>
+          <RenderToast
+            transactionStatus={transaction.status}
+            purchasedCredits={transaction.creditsPurchased}
+          />
+        </>
+      )}
+    </>
   )
 }
