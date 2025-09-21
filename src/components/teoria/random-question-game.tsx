@@ -12,7 +12,7 @@ import {
   RotateCcw,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -26,7 +26,7 @@ export default function RandomQuestionGame({
 }: RandomQuestionGameProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minuty
+  const [timeLeft, setTimeLeft] = useState(120);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [answerStreak, setAnswerStreak] = useState(0);
@@ -36,6 +36,8 @@ export default function RandomQuestionGame({
   const [displayedExplanation, setDisplayedExplanation] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
+
+  const isGeneratingRef = useRef(false);
 
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationId: qualificationId as Id<"qualifications">,
@@ -92,7 +94,7 @@ export default function RandomQuestionGame({
   }, []);
 
   useEffect(() => {
-    if (currentQuestion) {
+    if (currentQuestion && !isGeneratingRef.current) {
       setSelectedAnswer(null);
       setShowResult(false);
       setIsCorrect(null);
@@ -144,7 +146,9 @@ export default function RandomQuestionGame({
   };
 
   const handleNewQuestion = () => {
-    setRefreshKey((prev) => prev + 1);
+    if (!isGeneratingRef.current) {
+      setRefreshKey((prev) => prev + 1);
+    }
   };
 
   const handleShowExplanation = () => {
@@ -160,19 +164,20 @@ export default function RandomQuestionGame({
   const handleGenerateExplanation = async () => {
     if (!currentQuestion || isLoadingExplanation) return;
 
-    console.log("🚀 Rozpoczynam generowanie wyjaśnienia...");
-    console.log("📝 Pytanie:", currentQuestion.question);
+    console.log("Rozpoczynam generowanie wyjaśnienia...");
+    console.log("Pytanie:", currentQuestion.question);
     console.log(
       "Poprawna odpowiedź:",
       currentQuestion.answers[currentQuestion.correctAnswer],
     );
 
+    isGeneratingRef.current = true;
     setIsLoadingExplanation(true);
     setShowExplanation(true);
     setDisplayedExplanation("");
 
     try {
-      console.log("Wywołuję action generateExplanation...");
+      console.log("🔄 Wywołuję action generateExplanation...");
 
       const result = await generateExplanation({
         questionId: currentQuestion.id,
@@ -182,18 +187,20 @@ export default function RandomQuestionGame({
         answerLabels: currentQuestion.answerLabels,
       });
 
-      console.log("Otrzymano wyjaśnienie z AI:", result.explanation);
+      console.log("✅ Otrzymano wyjaśnienie z AI:", result.explanation);
       setAiExplanation(result.explanation);
 
       typeWriterEffect(result.explanation, 25);
     } catch (error) {
-      console.error("Błąd podczas generowania wyjaśnienia:", error);
+      console.error("❌ Błąd podczas generowania wyjaśnienia:", error);
       const errorMessage =
         "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.";
       setAiExplanation(errorMessage);
       typeWriterEffect(errorMessage, 25);
     } finally {
       setIsLoadingExplanation(false);
+
+      isGeneratingRef.current = false;
     }
   };
 
@@ -239,7 +246,6 @@ export default function RandomQuestionGame({
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Losowe pytanie</h1>
           <div className="flex items-center gap-4">
-            {/* Answer Streak */}
             <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
               <Flame className="h-5 w-5 text-orange-500" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
@@ -441,7 +447,6 @@ export default function RandomQuestionGame({
         <div className="flex gap-2">
           {showResult && (
             <>
-              {/* Przycisk do wyjaśnienia - zawsze widoczny gdy nie ma aktywnego wyjaśnienia */}
               {!showExplanation && (
                 <Button
                   onClick={
@@ -458,10 +463,10 @@ export default function RandomQuestionGame({
                 </Button>
               )}
 
-              {/* Przycisk nowego pytania - zawsze dostępny */}
               <Button
                 onClick={handleNewQuestion}
                 className="bg-blue-600 hover:bg-blue-700"
+                disabled={isLoadingExplanation}
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 Nowe pytanie
