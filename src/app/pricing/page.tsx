@@ -1,17 +1,29 @@
+import { unstable_cache } from "next/cache"
 import { stripe } from "~/actions/stripe/init-stripe"
+import FullScreenError from "~/components/full-screen-error"
 import { tryCatch } from "~/lib/tryCatch"
 import Product from "./product"
 
 export default async function PricingPage() {
-  const [products, error] = await tryCatch(getProductList())
+  const [products, error] = await tryCatch(getCachedProducts())
   if (error) {
     console.error("[STRIPE] Error fetching stripe products - ", error)
-    return <div>failed to get products sorry.</div>
+    return (
+      <FullScreenError
+        errorDetail={error.message}
+        errorMessage="Sorry, this page in unavailable."
+      />
+    )
   }
 
   if (products.length === 0) {
     console.error("[STRIPE] No products found (?)")
-    return <div>No products found. (?)</div>
+    return (
+      <FullScreenError
+        errorMessage="Sorry, no products found."
+        type="warning"
+      />
+    )
   }
 
   return (
@@ -35,6 +47,11 @@ export default async function PricingPage() {
     </div>
   )
 }
+const getCachedProducts = unstable_cache(
+  async () => getProductList(),
+  ["stripe-products"],
+)
+
 async function getProductList() {
   const stripeProducts = await stripe.products.list({ active: true })
   const productsPromises = stripeProducts.data
