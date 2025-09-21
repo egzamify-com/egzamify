@@ -1,11 +1,9 @@
-import { unstable_cache } from "next/cache"
-import { stripe } from "~/actions/stripe/init-stripe"
 import FullScreenError from "~/components/full-screen-error"
 import { tryCatch } from "~/lib/tryCatch"
+import type { GetProductsResponse } from "../api/stripe/get-stripe-products/route"
 import Product from "./product"
-
 export default async function PricingPage() {
-  const [products, error] = await tryCatch(getCachedProducts())
+  const [products, error] = await tryCatch(getProducts())
   if (error) {
     console.error("[STRIPE] Error fetching stripe products - ", error)
     return (
@@ -47,29 +45,19 @@ export default async function PricingPage() {
     </div>
   )
 }
-const getCachedProducts = unstable_cache(
-  async () => getProductList(),
-  ["stripe-products"],
-)
+async function getProducts() {
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000"
+  console.log({ baseUrl })
 
-async function getProductList() {
-  const stripeProducts = await stripe.products.list({ active: true })
-  const productsPromises = stripeProducts.data
-    .reverse()
-    .map(async (product) => {
-      const price = await stripe.prices.retrieve(
-        product.default_price as string,
-      )
-
-      return {
-        ...product,
-        price: {
-          ...price,
-          transformed_amount: (price.unit_amount ?? 0) / 100,
-        },
-      }
-    })
-  const products = await Promise.all(productsPromises)
-  console.log("[STIRPE] Stripe products fetched - ", products)
+  const res = await fetch(`${baseUrl}/api/stripe/get-stripe-products`, {
+    next: { revalidate: 3600, tags: ["stripe-products"] },
+  })
+  if (!res.ok) {
+    console.error(res)
+    throw new Error("Failed to fetch products")
+  }
+  const products: GetProductsResponse = await res.json()
   return products
 }
