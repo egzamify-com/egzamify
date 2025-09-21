@@ -33,6 +33,9 @@ export default function RandomQuestionGame({
 
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
+  const [displayedExplanation, setDisplayedExplanation] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationId: qualificationId as Id<"qualifications">,
@@ -41,7 +44,6 @@ export default function RandomQuestionGame({
 
   const currentQuestion = questionData?.question;
 
-  // Zmieniono z useMutation na useAction
   const generateExplanation = useAction(api.teoria.actions.generateExplanation);
 
   const getStreakFromStorage = (): number => {
@@ -66,6 +68,24 @@ export default function RandomQuestionGame({
     }
   };
 
+  const typeWriterEffect = (text: string, speed = 30) => {
+    setIsTyping(true);
+    setDisplayedExplanation("");
+
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedExplanation((prev) => prev + text.charAt(index));
+        index++;
+      } else {
+        clearInterval(timer);
+        setIsTyping(false);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  };
+
   useEffect(() => {
     const savedStreak = getStreakFromStorage();
     setAnswerStreak(savedStreak);
@@ -77,6 +97,10 @@ export default function RandomQuestionGame({
       setShowResult(false);
       setIsCorrect(null);
       setTimeLeft(120);
+      setDisplayedExplanation("");
+      setIsTyping(false);
+      setShowExplanation(false);
+      setIsLoadingExplanation(false);
 
       if (currentQuestion.explanation) {
         setAiExplanation(currentQuestion.explanation);
@@ -123,6 +147,16 @@ export default function RandomQuestionGame({
     setRefreshKey((prev) => prev + 1);
   };
 
+  const handleShowExplanation = () => {
+    if (!currentQuestion) return;
+
+    setShowExplanation(true);
+
+    if (aiExplanation) {
+      typeWriterEffect(aiExplanation, 15);
+    }
+  };
+
   const handleGenerateExplanation = async () => {
     if (!currentQuestion || isLoadingExplanation) return;
 
@@ -134,6 +168,8 @@ export default function RandomQuestionGame({
     );
 
     setIsLoadingExplanation(true);
+    setShowExplanation(true);
+    setDisplayedExplanation("");
 
     try {
       console.log("Wywołuję action generateExplanation...");
@@ -146,13 +182,16 @@ export default function RandomQuestionGame({
         answerLabels: currentQuestion.answerLabels,
       });
 
-      console.log("✅ Otrzymano wyjaśnienie z AI:", result.explanation);
+      console.log("Otrzymano wyjaśnienie z AI:", result.explanation);
       setAiExplanation(result.explanation);
+
+      typeWriterEffect(result.explanation, 25);
     } catch (error) {
       console.error("Błąd podczas generowania wyjaśnienia:", error);
-      setAiExplanation(
-        "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.",
-      );
+      const errorMessage =
+        "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.";
+      setAiExplanation(errorMessage);
+      typeWriterEffect(errorMessage, 25);
     } finally {
       setIsLoadingExplanation(false);
     }
@@ -200,6 +239,7 @@ export default function RandomQuestionGame({
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Losowe pytanie</h1>
           <div className="flex items-center gap-4">
+            {/* Answer Streak */}
             <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
               <Flame className="h-5 w-5 text-orange-500" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
@@ -348,13 +388,45 @@ export default function RandomQuestionGame({
               )}
             </div>
 
-            {aiExplanation && (
-              <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h3 className="mb-2 flex items-center gap-2 font-medium text-blue-800">
+            {showExplanation && (
+              <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 transition-all duration-300">
+                <h3 className="mb-3 flex items-center gap-2 font-medium text-blue-800">
                   <Lightbulb className="h-5 w-5" />
                   Wyjaśnienie AI:
+                  {isLoadingExplanation && (
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  )}
                 </h3>
-                <p className="text-gray-700">{aiExplanation}</p>
+
+                {isLoadingExplanation && !displayedExplanation && (
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <div className="flex space-x-1">
+                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500"></div>
+                      <div
+                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                    </div>
+                    <span className="text-sm">
+                      Groq generuje wyjaśnienie...
+                    </span>
+                  </div>
+                )}
+
+                {displayedExplanation && (
+                  <div className="leading-relaxed text-gray-700">
+                    <p className="whitespace-pre-wrap">
+                      {displayedExplanation}
+                      {isTyping && (
+                        <span className="ml-1 inline-block h-5 w-2 animate-pulse bg-blue-500"></span>
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
@@ -369,26 +441,24 @@ export default function RandomQuestionGame({
         <div className="flex gap-2">
           {showResult && (
             <>
-              {!aiExplanation && (
+              {/* Przycisk do wyjaśnienia - zawsze widoczny gdy nie ma aktywnego wyjaśnienia */}
+              {!showExplanation && (
                 <Button
-                  onClick={handleGenerateExplanation}
+                  onClick={
+                    aiExplanation
+                      ? handleShowExplanation
+                      : handleGenerateExplanation
+                  }
                   variant="outline"
                   className="flex items-center gap-2 bg-transparent"
                   disabled={isLoadingExplanation}
                 >
-                  {isLoadingExplanation ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Generowanie z Groq...
-                    </>
-                  ) : (
-                    <>
-                      <Lightbulb className="h-4 w-4" />
-                      Objaśnij z AI (Groq)
-                    </>
-                  )}
+                  <Lightbulb className="h-4 w-4" />
+                  {aiExplanation ? "Pokaż wyjaśnienie" : "Objaśnij z AI (Groq)"}
                 </Button>
               )}
+
+              {/* Przycisk nowego pytania - zawsze dostępny */}
               <Button
                 onClick={handleNewQuestion}
                 className="bg-blue-600 hover:bg-blue-700"
