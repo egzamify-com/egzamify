@@ -1,10 +1,10 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import tseslint from "typescript-eslint";
+import { FlatCompat } from "@eslint/eslintrc"
+import tseslint from "typescript-eslint"
 // @ts-ignore -- no types for this plugin
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
-});
+})
 
 export default tseslint.config(
   {
@@ -20,6 +20,7 @@ export default tseslint.config(
       ...tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
+      "@typescript-eslint/unbound-method": "warn",
       "@typescript-eslint/no-unsafe-return": "warn",
       "@typescript-eslint/consistent-indexed-object-style": "warn",
       "@typescript-eslint/no-unsafe-argument": "warn",
@@ -57,4 +58,4 @@ export default tseslint.config(
       },
     },
   },
-);
+)
