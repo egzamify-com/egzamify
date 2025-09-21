@@ -6,6 +6,7 @@ import { useAction, useQuery } from "convex/react";
 import {
   CheckCircle,
   Clock,
+  Flame,
   Lightbulb,
   Loader2,
   RotateCcw,
@@ -28,6 +29,7 @@ export default function RandomQuestionGame({
   const [timeLeft, setTimeLeft] = useState(120); // 2 minuty
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [answerStreak, setAnswerStreak] = useState(0);
 
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
@@ -41,6 +43,33 @@ export default function RandomQuestionGame({
 
   // Zmieniono z useMutation na useAction
   const generateExplanation = useAction(api.teoria.actions.generateExplanation);
+
+  const getStreakFromStorage = (): number => {
+    if (typeof window === "undefined") return 0;
+    const stored = localStorage.getItem("answerStreak");
+    return stored ? Number.parseInt(stored, 10) : 0;
+  };
+
+  const saveStreakToStorage = (streak: number): void => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("answerStreak", streak.toString());
+  };
+
+  const updateStreak = (correct: boolean): void => {
+    if (correct) {
+      const newStreak = answerStreak + 1;
+      setAnswerStreak(newStreak);
+      saveStreakToStorage(newStreak);
+    } else {
+      setAnswerStreak(0);
+      saveStreakToStorage(0);
+    }
+  };
+
+  useEffect(() => {
+    const savedStreak = getStreakFromStorage();
+    setAnswerStreak(savedStreak);
+  }, []);
 
   useEffect(() => {
     if (currentQuestion) {
@@ -79,11 +108,15 @@ export default function RandomQuestionGame({
     const correct = answerIndex === currentQuestion.correctAnswer;
     setIsCorrect(correct);
     setShowResult(true);
+
+    updateStreak(correct);
   };
 
   const handleTimeUp = () => {
     setIsCorrect(false);
     setShowResult(true);
+
+    updateStreak(false);
   };
 
   const handleNewQuestion = () => {
@@ -96,14 +129,14 @@ export default function RandomQuestionGame({
     console.log("🚀 Rozpoczynam generowanie wyjaśnienia...");
     console.log("📝 Pytanie:", currentQuestion.question);
     console.log(
-      "🎯 Poprawna odpowiedź:",
+      "Poprawna odpowiedź:",
       currentQuestion.answers[currentQuestion.correctAnswer],
     );
 
     setIsLoadingExplanation(true);
 
     try {
-      console.log("🔄 Wywołuję action generateExplanation...");
+      console.log("Wywołuję action generateExplanation...");
 
       const result = await generateExplanation({
         questionId: currentQuestion.id,
@@ -116,7 +149,7 @@ export default function RandomQuestionGame({
       console.log("✅ Otrzymano wyjaśnienie z AI:", result.explanation);
       setAiExplanation(result.explanation);
     } catch (error) {
-      console.error("❌ Błąd podczas generowania wyjaśnienia:", error);
+      console.error("Błąd podczas generowania wyjaśnienia:", error);
       setAiExplanation(
         "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.",
       );
@@ -167,6 +200,12 @@ export default function RandomQuestionGame({
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Losowe pytanie</h1>
           <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
+              <Flame className="h-5 w-5 text-orange-500" />
+              <span className="font-bold text-orange-700">{answerStreak}</span>
+              <span className="text-sm text-orange-600">seria</span>
+            </div>
+
             <div className="flex items-center gap-2 text-lg font-semibold">
               <Clock className="h-5 w-5" />
               <span className={timeLeft < 30 ? "text-red-600" : ""}>
@@ -274,18 +313,37 @@ export default function RandomQuestionGame({
           <CardContent className="pt-6">
             <div className="mb-4 text-center">
               {isCorrect ? (
-                <div className="flex items-center justify-center gap-2 text-green-600">
-                  <CheckCircle className="h-8 w-8" />
-                  <span className="text-2xl font-bold">
-                    Poprawna odpowiedź!
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-green-600">
+                    <CheckCircle className="h-8 w-8" />
+                    <span className="text-2xl font-bold">
+                      Poprawna odpowiedź!
+                    </span>
+                  </div>
+                  {answerStreak > 1 && (
+                    <div className="flex items-center justify-center gap-2 text-orange-600">
+                      <Flame className="h-6 w-6" />
+                      <span className="text-lg font-semibold">
+                        Seria {answerStreak} poprawnych odpowiedzi! 🔥
+                      </span>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="flex items-center justify-center gap-2 text-red-600">
-                  <XCircle className="h-8 w-8" />
-                  <span className="text-2xl font-bold">
-                    {timeLeft === 0 ? "Czas minął!" : "Niepoprawna odpowiedź"}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-red-600">
+                    <XCircle className="h-8 w-8" />
+                    <span className="text-2xl font-bold">
+                      {timeLeft === 0 ? "Czas minął!" : "Niepoprawna odpowiedź"}
+                    </span>
+                  </div>
+                  {answerStreak > 0 && (
+                    <div className="text-gray-600">
+                      <span className="text-sm">
+                        Seria została przerwana na {answerStreak} odpowiedziach
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
