@@ -1,44 +1,44 @@
-import { groq } from "@ai-sdk/groq";
+import { groq } from "@ai-sdk/groq"
 type AppConfig = {
   practicalExamRating: {
-    standardPrice: number;
-    completePrice: number;
-    model: any;
+    standardPrice: number
+    completePrice: number
+    model: any
     // model: "google/gemini-2.0-flash",
-    system: string;
-    schemaName: string;
-    schemaDescription: string;
-  };
+    system: string
+    schemaName: string
+    schemaDescription: string
+  }
   friends: {
-    maxSearchResults: number;
-  };
-  baseCreditPrice: number;
+    maxSearchResults: number
+  }
+  baseCreditPrice: number
   ai_wyjasnia: {
-    creditPricePerMessage: number;
-    maxOutputTokens: number;
-    model: any;
+    creditPricePerMessage: number
+    maxOutputTokens: number
+    model: any
     // model: "google/gemini-2.0-flash",
-    system: string;
+    system: string
     modes: [
       {
-        id: string;
-        title: string;
-        description: string;
+        id: string
+        title: string
+        description: string
       },
       {
-        id: string;
-        title: string;
-        description: string;
+        id: string
+        title: string
+        description: string
       },
 
       {
-        id: string;
-        title: string;
-        description: string;
+        id: string
+        title: string
+        description: string
       },
-    ];
-  };
-};
+    ]
+  }
+}
 
 export const APP_CONFIG: AppConfig = {
   practicalExamRating: {
@@ -60,7 +60,7 @@ export const APP_CONFIG: AppConfig = {
     maxOutputTokens: 500,
     model: groq("llama-3.3-70b-versatile"),
     // model: "google/gemini-2.0-flash",
-    system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly). Also you have to append the mode you generated response with just a text at the end of your response.
+    system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly).
     You also support modes of responses, which are:
 
     Normal:
@@ -93,7 +93,7 @@ export const APP_CONFIG: AppConfig = {
       },
     ],
   },
-};
-type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes;
-type ModeObject = ModesArray[number];
-export type AiWyjasniaMode = ModeObject["title"];
+}
+type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes
+type ModeObject = ModesArray[number]
+export type AiWyjasniaMode = ModeObject["title"]
