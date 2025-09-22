@@ -81,6 +81,14 @@ const schema = defineSchema({
     label: v.string(),
   }).index("by_question", ["question_id"]),
 
+  userAnswers: defineTable({
+    user_id: v.id("users"),
+    question_id: v.id("users"),
+    isCorrect: v.boolean(),
+    answer_id: v.id("answers"),
+    // test_id: v.optional()
+  }),
+
   basePracticalExams: defineTable({
     qualificationId: v.id("qualifications"),
     code: v.string(),

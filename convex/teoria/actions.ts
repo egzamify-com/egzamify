@@ -65,7 +65,7 @@ Wyjaśnienie powinno:
 2. Krótko wyjaśnić dlaczego inne odpowiedzi są niepoprawne (jeśli to pomocne)
 3. Podać dodatkowy kontekst lub informacje pomocne w zrozumieniu tematu
 4. Być napisane w języku polskim
-5. Być zwięzłe (maksymalnie 200 słów)
+5. Być krótkie i zwięzłe 
 
 Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia.`;
 
