@@ -19,7 +19,9 @@ export default function SummaryAndScore({
       </div>
       <div className="flex flex-col items-center justify-center rounded-lg p-4 shadow-sm">
         <div className="text-primary text-5xl font-extrabold">
-          {aiRating?.percantageScore}%
+          {aiRating?.score && (
+            <>{parseScore(aiRating.score, baseExam.maxPoints)}%</>
+          )}
         </div>
         <div className="text-muted-foreground text-lg">
           {aiRating?.score} / {baseExam.maxPoints} Points
@@ -30,4 +32,7 @@ export default function SummaryAndScore({
       </div>
     </div>
   );
+}
+function parseScore(score: number, maxPoints: number) {
+  return Math.round((score / maxPoints) * 100);
 }

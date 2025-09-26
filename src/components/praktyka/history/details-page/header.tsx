@@ -1,6 +1,6 @@
 import type { api } from "convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
-import { Box, Calendar, Check } from "lucide-react";
+import { Box, Calendar, Check, IdCard } from "lucide-react";
 import SemanticDate from "~/components/semantic-date";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import ExamBadge from "../../exam-badge";
@@ -21,6 +21,10 @@ export default function UserExamCheckHeader({
       </CardHeader>
       <CardContent>
         <div className="flex flex-row gap-2">
+          <ExamBadge
+            stat={userExam.baseExam.code}
+            icon={<IdCard size={18} />}
+          />
           <ExamBadge
             stat={userExam.baseExam.qualification.name}
             icon={<Box size={18} />}

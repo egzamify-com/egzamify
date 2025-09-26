@@ -189,7 +189,7 @@ async function getAttachmentsUrls(
     if (!urls) throw new Error("Attachment URL not found");
     return {
       ...attachment,
-      url: urls.raw,
+      url: urls.normal.toString(),
     };
   });
 }

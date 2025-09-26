@@ -2,6 +2,11 @@ import type { Id } from "convex/_generated/dataModel";
 import { Download, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { type ReactNode } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { getFileUrl } from "~/lib/utils";
 import { Button } from "../../../ui/button";
 
@@ -26,16 +31,30 @@ export default function AttachmentItem({
         <div className="flex flex-row items-center justify-center gap-2">
           {urls && (
             <>
-              <Link href={urls.raw} target="_blank">
-                <Button variant={"ghost"}>
-                  <ExternalLink />
-                </Button>
-              </Link>
-              <a href={urls.normal.toString()} download={attachmentName}>
-                <Button variant="ghost">
-                  <Download />
-                </Button>
-              </a>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Link href={urls.raw} target="_blank">
+                    <Button variant={"ghost"}>
+                      <ExternalLink />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Open in new tab</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger>
+                  <a href={urls.normal.toString()} download={attachmentName}>
+                    <Button variant="ghost">
+                      <Download />
+                    </Button>
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Download</p>
+                </TooltipContent>
+              </Tooltip>
               {actionButtons}
             </>
           )}

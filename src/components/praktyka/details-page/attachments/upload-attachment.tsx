@@ -6,6 +6,7 @@ import { useMutation } from "convex/react";
 import { Upload } from "lucide-react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import SpinnerLoading from "~/components/SpinnerLoading";
 import { Button } from "~/components/ui/button";
 
 export default function UploadAttachment({
@@ -85,11 +86,11 @@ export default function UploadAttachment({
   }, [selectedFiles]);
 
   async function handleStartUpload() {
-    console.log("upload func start");
+    console.log("[P-EXAM RATING] upload func start");
     if (!selectedFiles) {
+      console.log("[P-EXAM RATING] upload func end, no files to upload");
       return;
     }
-    console.log("creating promises");
     const promises = [...selectedFiles].map((file) => {
       return uploadSelectedFile(file);
     });
@@ -123,8 +124,14 @@ export default function UploadAttachment({
         }}
         disabled={isUploading}
       >
-        <Upload />
-        {isUploading ? "Uploading..." : "Upload exam attachment"}
+        {isUploading ? (
+          <SpinnerLoading />
+        ) : (
+          <>
+            <Upload />
+            <p>Upload exam attachments</p>
+          </>
+        )}
       </Button>
     </form>
   );
