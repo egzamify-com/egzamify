@@ -185,12 +185,11 @@ async function getAttachmentsUrls(
   attachments: Infer<typeof practicalExamAttachmentValidator>,
 ) {
   return await asyncMap(attachments, async (attachment) => {
-    const url = getFileUrl(attachment.attachmentId, attachment.attachmentName, {
-      raw: true,
-    });
+    const urls = getFileUrl(attachment.attachmentId, attachment.attachmentName);
+    if (!urls) throw new Error("Attachment URL not found");
     return {
       ...attachment,
-      url,
+      url: urls.raw,
     };
   });
 }

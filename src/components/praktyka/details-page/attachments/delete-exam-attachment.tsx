@@ -19,7 +19,8 @@ export function DeleteAttachment({
   const deleteAttachment = useMutation(api.praktyka.mutate.deleteAttachment);
   return (
     <Button
-      variant={"destructive"}
+      variant={"ghost"}
+      className="text-destructive hover:text-destructive"
       onClick={async () => {
         setIsDeleting(true);
         await deleteAttachment({
@@ -29,13 +30,7 @@ export function DeleteAttachment({
         setIsDeleting(false);
       }}
     >
-      {isDeleting ? (
-        <SpinnerLoading />
-      ) : (
-        <>
-          <Trash2 /> Delete
-        </>
-      )}
+      {isDeleting ? <SpinnerLoading /> : <Trash2 />}
     </Button>
   );
 }
