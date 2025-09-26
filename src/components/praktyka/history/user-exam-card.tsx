@@ -1,6 +1,6 @@
 import type { api } from "convex/_generated/api";
 import type { PaginatedQueryItem } from "convex/react";
-import { Box, Calendar, Check } from "lucide-react";
+import { Box, Calendar, Check, IdCard } from "lucide-react";
 import Link from "next/link";
 import SemanticDate from "~/components/semantic-date";
 import ExamBadge from "../exam-badge";
@@ -17,6 +17,10 @@ export default function UserExamCard({
         <div className="flex flex-col items-center justify-center gap-2">
           <h3 className="text-lg font-semibold">{qualification?.label}</h3>
           <div className="flex w-full items-center justify-start gap-2">
+            <ExamBadge
+              stat={userExam.baseExam.code}
+              icon={<IdCard size={18} />}
+            />
             <ExamBadge stat={qualification!.name} icon={<Box size={18} />} />
             <ExamBadge stat={examDate} icon={<Calendar size={18} />} />
             <ExamBadge

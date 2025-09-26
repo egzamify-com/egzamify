@@ -4,7 +4,9 @@ import { api } from "convex/_generated/api";
 import type { Doc } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { Upload } from "lucide-react";
-import { type ChangeEvent, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import SpinnerLoading from "~/components/SpinnerLoading";
 import { Button } from "~/components/ui/button";
 
 export default function UploadAttachment({
@@ -16,19 +18,17 @@ export default function UploadAttachment({
   const sendAttachment = useMutation(api.praktyka.mutate.sendAttachment);
 
   const imageInput = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [isUploading, setIsUploading] = useState(false); // State to track upload in progress
 
-  const [name] = useState(() => "User " + Math.floor(Math.random() * 10000));
-
   // This function now exclusively handles the upload logic
-  async function uploadSelectedImage(file: File) {
+  async function uploadSelectedFile(file: File) {
     if (!file) {
-      console.log("No file provided for upload.");
+      console.error("No file provided for upload.");
       return;
     }
 
-    setIsUploading(true); // Indicate that upload has started
+    // setIsUploading(true); // Indicate that upload has started
     console.log("Starting upload for file:", file.name);
 
     try {
@@ -61,30 +61,52 @@ export default function UploadAttachment({
     } catch (error) {
       console.error("Error during image upload:", error);
       alert(`Failed to upload image "${file.name}". Please try again.`); // User feedback
-    } finally {
-      setSelectedFile(null); // Clear the selected image state
-      if (imageInput.current) {
-        imageInput.current.value = ""; // Clear the file input element's value
-      }
-      setIsUploading(false); // Indicate that upload has finished
-      console.log("Upload process finished.");
     }
+    // finally {
+    //   setSelectedFile(null); // Clear the selected image state
+    //   if (imageInput.current) {
+    //     imageInput.current.value = ""; // Clear the file input element's value
+    //   }
+    //   setIsUploading(false); // Indicate that upload has finished
+    //   console.log("Upload process finished.");
+    // }
   }
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log("File selected:", file.name);
-      setSelectedFile(file);
-      await uploadSelectedImage(file);
+    if (event.target.files) {
+      console.log("files selected");
+      setSelectedFiles(event.target.files);
     }
   };
+  useEffect(() => {
+    (async () => {
+      await handleStartUpload();
+      setSelectedFiles(null);
+    })();
+  }, [selectedFiles]);
+
+  async function handleStartUpload() {
+    console.log("[P-EXAM RATING] upload func start");
+    if (!selectedFiles) {
+      console.log("[P-EXAM RATING] upload func end, no files to upload");
+      return;
+    }
+    const promises = [...selectedFiles].map((file) => {
+      return uploadSelectedFile(file);
+    });
+    setIsUploading(true);
+    console.log("exec promsies");
+    await Promise.all(promises);
+    setIsUploading(false);
+    toast.success("Attachments uploaded successfully");
+  }
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <input
         hidden
         type="file"
+        multiple
         ref={imageInput}
         onChange={handleFileChange}
         style={{ display: "none" }}
@@ -93,15 +115,23 @@ export default function UploadAttachment({
       <Button
         variant={"outline"}
         type="button"
-        onClick={() => {
+        onClick={async () => {
           if (!isUploading) {
             imageInput.current?.click();
+
+            console.log("image input clicked");
           }
         }}
         disabled={isUploading}
       >
-        <Upload />
-        {isUploading ? "Uploading..." : "Upload exam attachment"}
+        {isUploading ? (
+          <SpinnerLoading />
+        ) : (
+          <>
+            <Upload />
+            <p>Upload exam attachments</p>
+          </>
+        )}
       </Button>
     </form>
   );

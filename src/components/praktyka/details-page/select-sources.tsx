@@ -10,7 +10,6 @@ import {
   requestPracticalExamCheck,
   type PracticalExamCheckMode,
 } from "~/actions/request-practical-exam-check-action";
-import { APP_CONFIG } from "~/APP_CONFIG";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -20,12 +19,12 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Label } from "~/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { SelectSourceSkeleton } from "../loadings";
 import AttachmentItem from "./attachments/attachment-item";
+import ClearAll from "./attachments/clear-all";
 import { DeleteAttachment } from "./attachments/delete-exam-attachment";
 import UploadAttachment from "./attachments/upload-attachment";
+import SelectMode from "./select-mode";
 export default function SelectSources({
   exam,
 }: {
@@ -39,22 +38,29 @@ export default function SelectSources({
   );
   const [selectedMode, setSelectedMode] =
     useState<PracticalExamCheckMode>("standard");
+  console.log({ selectedMode });
   if (isPending) return <SelectSourceSkeleton />;
   if (!userExam) return null;
   if (userExam)
     return (
-      <Card id="select-sources" className="gap-2">
-        <CardHeader>
+      <Card className="gap-2">
+        <CardHeader className="relative flex items-start justify-between">
           <CardTitle className="flex flex-row items-center justify-start gap-1">
-            <Files className="mr-2 h-5 w-5" /> Select sources
+            <Files className="mr-2 h-5 w-5" />
+            <h2>Select sources</h2>
           </CardTitle>
+          {userExam.attachments && userExam.attachments.length > 0 && (
+            <ClearAll {...{ userExam }} />
+          )}
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <CardDescription>Here upload your exam files.</CardDescription>
+          <CardDescription>
+            <p className="text-sm">Here upload your exam files.</p>
+          </CardDescription>
           <div className="flex w-full flex-col gap-4">
             {userExam.attachments?.map((attachment) => (
               <AttachmentItem
-                key={`user-exam-attachment-${attachment.attachmentName}`}
+                key={`user-exam-attachment-${attachment.attachmentId}`}
                 attachmentName={attachment.attachmentName}
                 attachmentId={attachment.attachmentId}
                 actionButtons={
@@ -65,34 +71,17 @@ export default function SelectSources({
                 }
               />
             ))}
+
+            <div className="flex w-full flex-col items-center justify-center gap-4">
+              {userExam.attachments?.length === 0 && (
+                <p className="text-muted-foreground">No attachments added.</p>
+              )}
+              <UploadAttachment {...{ userExam }} />
+            </div>
           </div>
-          <RadioGroup
-            defaultValue="standard"
-            onValueChange={(value: PracticalExamCheckMode) =>
-              setSelectedMode(value)
-            }
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="standard" id="standard" />
-              <Label htmlFor="standard" className="cursor-pointer">
-                <h3>
-                  Standard - {APP_CONFIG.practicalExamRating.standardPrice}{" "}
-                  credits
-                </h3>
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="complete" id="complete" />
-              <Label htmlFor="complete" className="cursor-pointer">
-                <h3>
-                  Complete breakdown -{" "}
-                  {APP_CONFIG.practicalExamRating.completePrice} credits
-                </h3>
-              </Label>
-            </div>
-          </RadioGroup>
+
+          <SelectMode {...{ selectedMode, setSelectedMode }} />
           <CardAction className="flex w-full flex-row items-end justify-end gap-4">
-            <UploadAttachment {...{ userExam }} />
             <Link
               href={`/dashboard/egzamin-praktyczny/historia/${userExam._id}`}
             >
