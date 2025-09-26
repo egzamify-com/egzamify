@@ -54,7 +54,7 @@ export default function SelectSources({
           <div className="flex w-full flex-col gap-4">
             {userExam.attachments?.map((attachment) => (
               <AttachmentItem
-                key={`user-exam-attachment-${attachment.attachmentName}`}
+                key={`user-exam-attachment-${attachment.attachmentId}`}
                 attachmentName={attachment.attachmentName}
                 attachmentId={attachment.attachmentId}
                 actionButtons={
