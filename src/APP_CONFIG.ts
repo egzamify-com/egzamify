@@ -1,55 +1,51 @@
-import { groq } from "@ai-sdk/groq"
+import { groq } from "@ai-sdk/groq";
 type AppConfig = {
   practicalExamRating: {
-    standardPrice: number
-    completePrice: number
-    model: any
+    standardPrice: number;
+    completePrice: number;
+    model: any;
     // model: "google/gemini-2.0-flash",
-    system: string
-    schemaName: string
-    schemaDescription: string
-  }
+    system: string;
+    schemaName: string;
+    schemaDescription: string;
+  };
   friends: {
-    maxSearchResults: number
-  }
-  baseCreditPrice: number
+    maxSearchResults: number;
+  };
+  baseCreditPrice: number;
   ai_wyjasnia: {
-    creditPricePerMessage: number
-    maxOutputTokens: number
-    model: any
+    creditPricePerMessage: number;
+    maxOutputTokens: number;
+    model: any;
     // model: "google/gemini-2.0-flash",
-    system: string
+    system: string;
     modes: [
       {
-        id: string
-        title: string
-        description: string
+        id: string;
+        title: string;
+        description: string;
       },
       {
-        id: string
-        title: string
-        description: string
+        id: string;
+        title: string;
+        description: string;
       },
 
       {
-        id: string
-        title: string
-        description: string
+        id: string;
+        title: string;
+        description: string;
       },
-    ]
-  }
-}
+    ];
+  };
+};
 
 export const APP_CONFIG: AppConfig = {
   practicalExamRating: {
     standardPrice: 50,
     completePrice: 100,
-<<<<<<< HEAD
-    model: groq("llama-3.3-70b-versatile"),
     // model: "google/gemini-2.0-flash",
-=======
     model: "google/gemini-2.5-flash",
->>>>>>> practical-exam-rating
     system: `
     You are an assistant evaluating Polish vocational exams ("Egzamin Zawodowy").
     Your task is to rate the student’s solution based strictly on the provided exam data.
@@ -124,7 +120,7 @@ export const APP_CONFIG: AppConfig = {
       },
     ],
   },
-}
-type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes
-type ModeObject = ModesArray[number]
-export type AiWyjasniaMode = ModeObject["title"]
+};
+type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes;
+type ModeObject = ModesArray[number];
+export type AiWyjasniaMode = ModeObject["title"];
