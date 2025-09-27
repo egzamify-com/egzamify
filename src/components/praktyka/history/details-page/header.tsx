@@ -1,9 +1,7 @@
 import type { api } from "convex/_generated/api";
 import type { FunctionReturnType } from "convex/server";
-import { Box, Calendar, Check, IdCard } from "lucide-react";
-import SemanticDate from "~/components/semantic-date";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import ExamBadge from "../../exam-badge";
+import UserExamBadges from "../user-exam-badges";
 
 export default function UserExamCheckHeader({
   userExam,
@@ -20,30 +18,7 @@ export default function UserExamCheckHeader({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-row gap-2">
-          <ExamBadge
-            stat={userExam.baseExam.code}
-            icon={<IdCard size={18} />}
-          />
-          <ExamBadge
-            stat={userExam.baseExam.qualification.name}
-            icon={<Box size={18} />}
-          />
-          <ExamBadge
-            stat={userExam.baseExam.examDate}
-            icon={<Calendar size={18} />}
-          />
-          <ExamBadge
-            stat={
-              <SemanticDate date={userExam._creationTime} color="foreground" />
-            }
-            icon={<Calendar size={18} />}
-          />
-          <ExamBadge
-            stat={`${userExam.aiRating?.score}/${userExam.baseExam.maxPoints}`}
-            icon={<Check size={18} />}
-          />
-        </div>
+        <UserExamBadges {...{ userExam }} />
       </CardContent>
     </Card>
   );
