@@ -38,7 +38,7 @@ export function parseExamScore(score: number, maxPoints: number) {
   const finalScore = Math.round((score / maxPoints) * 100);
   return (
     <span
-      className={`${cn(finalScore >= 75 && "text-green-500", finalScore < 75 && finalScore >= 40 && "text-yellow-500", finalScore < 40 && "text-red-500")}`}
+      className={`${cn(finalScore >= 75 && "text-green-500", finalScore < 75 && finalScore >= 40 && "text-yellow-500", finalScore < 40 && "text-destructive")}`}
     >
       {finalScore}%
     </span>
