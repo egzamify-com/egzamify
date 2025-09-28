@@ -32,7 +32,7 @@ export default function AttachmentItem({
           {urls && (
             <>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <Link href={urls.raw} target="_blank">
                     <Button variant={"ghost"}>
                       <ExternalLink />
@@ -44,7 +44,7 @@ export default function AttachmentItem({
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <a href={urls.normal.toString()} download={attachmentName}>
                     <Button variant="ghost">
                       <Download />
