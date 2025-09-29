@@ -24,7 +24,7 @@ export function DeleteAttachment({
   const deleteAttachment = useMutation(api.praktyka.mutate.deleteAttachment);
   return (
     <Tooltip>
-      <TooltipTrigger>
+      <TooltipTrigger asChild>
         <Button
           variant={"ghost"}
           className="text-destructive hover:text-destructive"

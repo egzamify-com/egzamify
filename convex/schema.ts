@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import {
   practicalExamAttachmentValidator,
   requirementsValidator,
+  userExamStatusValidator,
 } from "./praktyka/helpers";
 
 const schema = defineSchema({
@@ -94,13 +95,7 @@ const schema = defineSchema({
     userId: v.id("users"),
     examId: v.id("basePracticalExams"),
     attachments: v.optional(practicalExamAttachmentValidator),
-    status: v.union(
-      v.literal("user_pending"),
-      v.literal("ai_pending"),
-      v.literal("not_enough_credits_error"),
-      v.literal("unknown_error_credits_refunded"),
-      v.literal("done"),
-    ),
+    status: userExamStatusValidator,
     aiRating: v.optional(
       v.object({
         score: v.number(),

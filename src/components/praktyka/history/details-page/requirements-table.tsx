@@ -3,7 +3,7 @@
 import type { Doc } from "convex/_generated/dataModel";
 import type { requirementsArray } from "convex/praktyka/helpers";
 import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 
@@ -12,8 +12,6 @@ export default function RequirementsTable({
 }: {
   aiRating: Doc<"usersPracticalExams">["aiRating"];
 }) {
-  const answerCounters = useRef(parseRequirementsCount(aiRating));
-
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(),
   );

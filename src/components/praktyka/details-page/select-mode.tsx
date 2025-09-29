@@ -15,7 +15,7 @@ export default function SelectMode({
 }) {
   return (
     <>
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto">
         <div className="mb-4">
           <h1 className="mb-2 flex flex-row items-center justify-start gap-1 font-semibold">
             <CircleDot className="mr-2 h-5 w-5" /> Choose Your Mode
@@ -26,7 +26,6 @@ export default function SelectMode({
         </div>
 
         <RadioGroup
-          defaultValue="standard"
           onValueChange={(value: PracticalExamCheckMode) =>
             setSelectedMode(value)
           }

@@ -57,19 +57,12 @@ export default function UploadAttachment({
         attachmentName: file.name,
         userExamId: userExam._id,
       });
-      console.log("Storage ID saved to database.");
     } catch (error) {
-      console.error("Error during image upload:", error);
-      alert(`Failed to upload image "${file.name}". Please try again.`); // User feedback
+      console.error("[EXAM CHECK] Error during image upload:", error);
+      toast.error("Failed to upload file!", {
+        description: `File ${file.name} failed to upload.`,
+      });
     }
-    // finally {
-    //   setSelectedFile(null); // Clear the selected image state
-    //   if (imageInput.current) {
-    //     imageInput.current.value = ""; // Clear the file input element's value
-    //   }
-    //   setIsUploading(false); // Indicate that upload has finished
-    //   console.log("Upload process finished.");
-    // }
   }
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {

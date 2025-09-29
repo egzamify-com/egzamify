@@ -1,7 +1,9 @@
-import { type Infer, v } from "convex/values";
+import type { Doc } from "convex/_generated/dataModel";
+import { v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { getUserIdOrThrow, vv } from "../custom_helpers";
-
+import { getUserIdOrThrow } from "../custom_helpers";
+import schema from "../schema";
+import { userExamStatusValidator } from "./helpers";
 export const startExam = mutation({
   args: { examId: v.id("basePracticalExams") },
   handler: async (ctx, { examId }) => {
@@ -18,7 +20,7 @@ export const startExam = mutation({
 export const updateUserExamStatus = mutation({
   args: {
     userExamId: v.id("usersPracticalExams"),
-    newStatus: vv.doc("usersPracticalExams").fields.status,
+    newStatus: userExamStatusValidator,
   },
   handler: async (ctx, { userExamId, newStatus }) => {
     const userId = await getUserIdOrThrow(ctx);
@@ -71,9 +73,7 @@ export const sendAttachment = mutation({
     if (!userExam) throw new Error("User exam not found");
     if (userExam.userId !== userId) throw new Error("User not authorized");
 
-    const attachmentType = vv.doc("usersPracticalExams").fields.attachments;
-
-    const newAttachments: Infer<typeof attachmentType> = [
+    const newAttachments: Doc<"usersPracticalExams">["attachments"] = [
       ...(userExam.attachments ?? []),
       { attachmentName, attachmentId: storageId },
     ];
@@ -93,9 +93,7 @@ export const deleteAttachment = mutation({
     if (!userExam) throw new Error("User exam not found");
     if (userExam.userId !== userId) throw new Error("User not authorized");
 
-    const attachmentType = vv.doc("usersPracticalExams").fields.attachments;
-
-    const newAttachments: Infer<typeof attachmentType> =
+    const newAttachments: Doc<"usersPracticalExams">["attachments"] =
       userExam.attachments?.filter(
         (attachment) => attachment.attachmentId !== attachmentId,
       );
@@ -105,7 +103,7 @@ export const deleteAttachment = mutation({
 export const saveRatingData = mutation({
   args: {
     userExamId: v.id("usersPracticalExams"),
-    ratingData: vv.doc("usersPracticalExams").fields.aiRating,
+    ratingData: schema.tables.usersPracticalExams.validator.fields.aiRating,
   },
   handler: async (ctx, { userExamId, ratingData }) => {
     const userId = await getUserIdOrThrow(ctx);
