@@ -104,7 +104,6 @@ const schema = defineSchema({
     aiRating: v.optional(
       v.object({
         score: v.number(),
-        percantageScore: v.number(),
         summary: v.string(),
         details: v.optional(requirementsValidator),
       }),
