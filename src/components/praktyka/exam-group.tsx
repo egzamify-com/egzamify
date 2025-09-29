@@ -44,7 +44,7 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
         </div>
       </button>
       {isExpanded && (
-        <div className="flex flex-row flex-wrap overflow-y-auto pb-2">
+        <div className="flex flex-wrap gap-4 pb-2">
           {group.exams.map((exam) => (
             <ExamItem key={exam._id} exam={exam} />
           ))}

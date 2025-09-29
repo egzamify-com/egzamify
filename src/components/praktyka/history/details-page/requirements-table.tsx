@@ -1,8 +1,9 @@
 "use client";
 
 import type { Doc } from "convex/_generated/dataModel";
+import type { requirementsArray } from "convex/praktyka/helpers";
 import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 
@@ -11,6 +12,8 @@ export default function RequirementsTable({
 }: {
   aiRating: Doc<"usersPracticalExams">["aiRating"];
 }) {
+  const answerCounters = useRef(parseRequirementsCount(aiRating));
+
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(),
   );
@@ -64,11 +67,24 @@ export default function RequirementsTable({
                       {category.title}
                     </span>
                   </div>
-                  {isExpanded ? (
-                    <ChevronDown className="h-4 w-4 shrink-0" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4 shrink-0" />
-                  )}
+                  <div className="flex flex-row items-center justify-center gap-2">
+                    <div className="flex flex-row items-center justify-center gap-1">
+                      <CheckCircle2 className="text-green-500" size={20} />
+                      <p>
+                        {
+                          parseRequirementsCount(category.requirements)
+                            ?.corrects
+                        }
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center justify-center gap-1">
+                      <XCircle className="text-destructive" size={20} />
+                      <p>
+                        {parseRequirementsCount(category.requirements)?.bads}
+                      </p>
+                    </div>
+                    {isExpanded ? <ChevronDown /> : <ChevronRight />}
+                  </div>
                 </Button>
 
                 {/* Requirements List */}
@@ -98,7 +114,10 @@ export default function RequirementsTable({
                                     size={20}
                                   />
                                 ) : (
-                                  <XCircle className="text-red-500" size={20} />
+                                  <XCircle
+                                    className="text-destructive"
+                                    size={20}
+                                  />
                                 )}
                               </div>
 
@@ -154,4 +173,13 @@ export default function RequirementsTable({
       </div>
     </div>
   );
+}
+function parseRequirementsCount(requirements: typeof requirementsArray.type) {
+  let corrects = 0;
+  let bads = 0;
+  for (const requirement of Array.from(requirements)) {
+    if (requirement.answer?.isCorrect) corrects++;
+    else bads++;
+  }
+  return { corrects, bads };
 }

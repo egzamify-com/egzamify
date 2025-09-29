@@ -18,7 +18,7 @@ export default function Page() {
   const { results, status, loadMore } = usePaginatedQuery(
     api.praktyka.query.listUserExams,
     {},
-    { initialNumItems: 1 },
+    { initialNumItems: 40 },
   );
   if (status === "LoadingFirstPage") {
     return (

@@ -42,7 +42,7 @@ function PraktykaPage() {
   } = usePaginatedQuery(
     api.praktyka.query.listPracticalExams,
     {},
-    { initialNumItems: 1 },
+    { initialNumItems: 40 },
   );
 
   if (status === "LoadingFirstPage") return <ExamPageSkeleton />;

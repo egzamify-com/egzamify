@@ -1,6 +1,7 @@
 import type { Doc } from "convex/_generated/dataModel";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
 export default function SummaryAndScore({
   aiRating,
@@ -20,7 +21,7 @@ export default function SummaryAndScore({
       <div className="flex flex-col items-center justify-center rounded-lg p-4 shadow-sm">
         <div className="text-primary text-5xl font-extrabold">
           {aiRating?.score && (
-            <>{parseScore(aiRating.score, baseExam.maxPoints)}%</>
+            <p>{parseExamScore(aiRating.score, baseExam.maxPoints)}</p>
           )}
         </div>
         <div className="text-muted-foreground text-lg">
@@ -33,6 +34,13 @@ export default function SummaryAndScore({
     </div>
   );
 }
-function parseScore(score: number, maxPoints: number) {
-  return Math.round((score / maxPoints) * 100);
+export function parseExamScore(score: number, maxPoints: number) {
+  const finalScore = Math.round((score / maxPoints) * 100);
+  return (
+    <span
+      className={`${cn(finalScore >= 75 && "text-green-500", finalScore < 75 && finalScore >= 40 && "text-yellow-500", finalScore < 40 && "text-destructive")}`}
+    >
+      {finalScore}%
+    </span>
+  );
 }
