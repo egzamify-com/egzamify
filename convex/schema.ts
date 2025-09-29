@@ -106,6 +106,11 @@ const schema = defineSchema({
   })
     .index("by_user_id", ["userId"])
     .index("by_userId_examId", ["userId", "examId"]),
+
+  kv: defineTable({
+    key: v.string(),
+    value: v.string(),
+  }).index("by_key", ["key"]),
 });
 
 export default schema;

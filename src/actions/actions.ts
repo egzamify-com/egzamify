@@ -4,7 +4,7 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import { api } from "convex/_generated/api";
 import { fetchMutation, fetchQuery } from "convex/nextjs";
 
-export async function getNextjsUser() {
+export async function getNextjsUserOrThrow() {
   const user = await fetchQuery(
     api.users.query.getCurrentUser,
     {},
