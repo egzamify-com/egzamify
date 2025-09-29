@@ -1,66 +1,76 @@
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
+"use client";
+
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { fetchQuery } from "convex/nextjs";
-import { Suspense } from "react";
+import { useQuery } from "convex/custom_helpers";
+import { useMutation } from "convex/react";
+import { use } from "react";
 import FullScreenError from "~/components/full-screen-error";
 import AttachmentsCard from "~/components/praktyka/details-page/attachments/attachments-card";
 import BackToExams from "~/components/praktyka/details-page/back-exams-btn";
 import Header from "~/components/praktyka/details-page/header";
 import { Instructions } from "~/components/praktyka/details-page/instructions";
 import SelectSources from "~/components/praktyka/details-page/select-sources";
-import Sidebar from "~/components/praktyka/details-page/sidebar";
 import { ExamDetailSkeleton } from "~/components/praktyka/loadings";
-import { tryCatch } from "~/lib/tryCatch";
 type PropsType = Promise<{ examId: string }>;
 
-export default async function Page({ params }: { params: PropsType }) {
-  return (
-    <>
-      <Suspense fallback={<ExamDetailSkeleton />}>
-        <Component params={params} />
-      </Suspense>
-    </>
-  );
-}
+export default function Page({ params }: { params: PropsType }) {
+  const { examId } = use(params);
 
-async function Component({ params }: { params: PropsType }) {
-  const { examId } = await params;
-  const [exam, error] = await tryCatch(getExam(examId));
-  if (error) {
-    console.log("[ERROR]", error);
+  const startUserExam = useMutation(api.praktyka.mutate.startExam);
+
+  const { data, isPending, error } = useQuery(
+    api.praktyka.query.getUserExamFromExamId,
+    {
+      examId: examId as Id<"basePracticalExams">,
+    },
+  );
+  console.log({ data });
+  if (isPending) {
+    return <ExamDetailSkeleton />;
+  }
+  if (error && !isPending) {
+    console.error("[EXAM PAGE ERROR]", error);
     return (
       <FullScreenError
         errorMessage="Failed to load exam"
-        errorDetail={error.message}
+        errorDetail={error?.message}
       />
     );
   }
 
-  return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <BackToExams />
-        <div className="grid gap-8 lg:grid-cols-4">
-          <div className="space-y-6 lg:col-span-3">
-            <Header {...{ exam }} />
-            <AttachmentsCard attachmentList={exam.examAttachments} />
-            <Instructions {...{ exam }} />
-            <SelectSources {...{ exam }} />
+  if (!data.baseExam) {
+    console.error("[ERROR]", error);
+    return (
+      <FullScreenError
+        errorMessage="Failed to load exam"
+        errorDetail={"This exam does not exists"}
+      />
+    );
+  }
+
+  if (!data.userExam) {
+    console.warn("auto starting exam for user!");
+    startUserExam({ examId: data.baseExam._id });
+    return <ExamDetailSkeleton />;
+  }
+
+  if (data.userExam) {
+    return (
+      <div className="min-h-screen">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+          <BackToExams />
+          <div>
+            <div className="space-y-6 lg:col-span-3">
+              <Header exam={data.baseExam} />
+              <AttachmentsCard attachmentList={data.baseExam.examAttachments} />
+              <Instructions exam={data.baseExam} />
+              <SelectSources exams={data} />
+            </div>
+            {/*<Sidebar exam={data.baseExam} />*/}
           </div>
-          <Sidebar {...{ exam }} />
         </div>
       </div>
-    </div>
-  );
-}
-
-async function getExam(id: string) {
-  return await fetchQuery(
-    api.praktyka.query.getExamDetails,
-    {
-      examId: id as Id<"basePracticalExams">,
-    },
-    { token: await convexAuthNextjsToken() },
-  );
+    );
+  }
 }

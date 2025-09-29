@@ -1,7 +1,7 @@
 "use server";
 
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import { generateObject, type ModelMessage, type UserContent } from "ai";
+import { generateObject, type FilePart, type ModelMessage } from "ai";
 import { asyncMap } from "convex-helpers";
 import { api } from "convex/_generated/api";
 import type { Doc, Id } from "convex/_generated/dataModel";
@@ -12,7 +12,8 @@ import mime from "mime";
 import { z } from "zod/v4";
 import { APP_CONFIG } from "~/APP_CONFIG";
 import { getFileUrl } from "~/lib/utils";
-import { chargeCredits, getNextjsUserOrThrow, refundCredits } from "./actions";
+
+import { chargeCredits, refundCredits } from "./actions";
 
 export type PracticalExamCheckMode = "standard" | "complete";
 
@@ -27,18 +28,10 @@ export async function requestPracticalExamCheck(
   }
   try {
     await updateUserExamStatus(userExamId, "ai_pending");
-    const user = await getNextjsUserOrThrow();
-    const userExam = await getUserExamDetails(userExamId);
-    if (!userExam.attachments) throw new Error("No attachments found");
-    const realExam = await getRealExamDetails(userExam.examId);
 
+    const userExam = await getUserExamDetails(userExamId);
+    const realExam = await getRealExamDetails(userExam.examId);
     console.log("check for  - ", userExamId);
-    console.log("user requesting - ", user);
-    console.log("user sent attachments:");
-    console.dir(userExam.attachments);
-    console.log("base exam attachments:");
-    console.dir(realExam.examAttachments);
-    console.log("mode selected - ", mode);
 
     const userAttachments = transformAttachments(userExam.attachments);
     const examAttachments = transformAttachments(realExam.examAttachments);
@@ -46,41 +39,60 @@ export async function requestPracticalExamCheck(
     // feed the ai all the context it needs
     const resources: ModelMessage[] = [
       {
-        role: "user",
-        content: examAttachments,
+        role: "system",
+        content: `
+           ${APP_CONFIG.practicalExamRating.system}\n\n
+
+           This is the rating schema you have to follow for this exam
+           <ratingData>
+           ${minimizeRatingDataJsonSize(realExam.ratingData)}
+           </ratingData>
+
+           Exam content (objectives)
+           <exam content>
+           ${cleanExamMarkdown(realExam.examInstructions)}
+           </exam content>
+
+           <exam max points>
+           ${realExam.maxPoints}
+           </exam max points>
+
+           <exam qualification>
+           ${realExam.qualification!.label}
+           </exam qualification>
+           `,
       },
       {
         role: "user",
-        content: userAttachments,
+        content: [
+          {
+            type: "text",
+            text: `Sprawdź mój egzamin w trybie ${mode}.`,
+          },
+          {
+            type: "text",
+            text: "Poniżej znajdują się **załączniki egzaminacyjne (bazowe)** – materiały referencyjne dostarczone w treści egzaminu. Nie są moją pracą i nie podlegają ocenie, ale mogą być pomocne przy analizie.",
+          },
+          ...examAttachments,
+        ],
       },
       {
         role: "user",
-        content: `I want to check my exam in ${mode} mode.`,
-      },
-      {
-        role: "assistant",
-        content: `This is the rating schema you have to follow for this exam:
-      <ratingData>
-      ${JSON.stringify(realExam.ratingData)}
-      </ratingData>
-
-      this is the exam content (objectives):
-      <exam content>
-      ${JSON.stringify(realExam.examInstructions)}
-      </exam content>
-
-      exam max points: ${realExam.maxPoints}
-
-      qualification for this exam: ${realExam.qualification!.label}
-
-      `,
+        content: [
+          {
+            type: "text",
+            text: "Poniżej znajdują się **pliki egzaminacyjne użytkownika** – moja własna praca stworzona zgodnie z instrukcją egzaminu. Tylko te pliki należy ocenić.",
+          },
+          ...userAttachments,
+        ],
       },
     ];
-
+    console.dir(resources, { depth: null });
     const generatedRating = await generateAiCheck(mode, resources);
     await saveRatingData(userExamId, generatedRating);
     await updateUserExamStatus(userExamId, "done");
   } catch (e) {
+    console.error("[PRACTICAL EXAM] Error - ", e);
     await refundCredits(getModePrice(mode));
     await updateUserExamStatus(userExamId, "unknown_error_credits_refunded");
   }
@@ -120,6 +132,7 @@ async function getUserExamDetails(userExamId: Id<"usersPracticalExams">) {
   if (!userExam) throw new Error("User exam not found");
   if (!userExam.attachments) throw new Error("User exam attachments not found");
   const urls = await getAttachmentsUrls(userExam.attachments);
+  if (!userExam.attachments) throw new Error("No attachments found");
   return {
     ...userExam,
     attachments: urls,
@@ -144,12 +157,11 @@ async function getAttachmentsUrls(
   attachments: Infer<typeof practicalExamAttachmentValidator>,
 ) {
   return await asyncMap(attachments, async (attachment) => {
-    const url = getFileUrl(attachment.attachmentId, attachment.attachmentName, {
-      raw: true,
-    });
+    const urls = getFileUrl(attachment.attachmentId, attachment.attachmentName);
+    if (!urls) throw new Error("Attachment URL not found");
     return {
       ...attachment,
-      url,
+      url: urls.normal.toString(),
     };
   });
 }
@@ -159,16 +171,16 @@ function transformAttachments(
     attachmentName: string;
     attachmentId: Id<"_storage">;
   }[],
-): UserContent {
+) {
   return attachments.map((attachment) => {
     const mimetype = mime.getType(attachment.url!);
     return {
       type: "file",
       data: new URL(attachment.url!),
       // skip sql because it errors ("not supported type")
-      mediaType: `${mimetype !== "application/sql" ? mimetype : "text/plain"}`,
+      mediaType: `${(mimetype?.includes("application/") ? "text/plain" : mimetype) ?? "text/plain"}`,
       filename: attachment.attachmentName,
-    };
+    } as FilePart;
   });
 }
 function getSchema(mode: PracticalExamCheckMode) {
@@ -220,11 +232,6 @@ function getSchema(mode: PracticalExamCheckMode) {
     score: z
       .number()
       .describe("Total number of points, the correct 'answers' user scored."),
-    percantageScore: z
-      .number()
-      .describe(
-        "Different represantation of score, the total possible points to score for an exam will be provided",
-      ),
     summary: z
       .string()
       .describe(
@@ -261,15 +268,53 @@ async function generateAiCheck(
   const { object, response } = await generateObject({
     model: APP_CONFIG.practicalExamRating.model,
     schema: getSchema(mode),
-    system: APP_CONFIG.practicalExamRating.system,
     schemaName: APP_CONFIG.practicalExamRating.schemaName,
     schemaDescription: APP_CONFIG.practicalExamRating.schemaDescription,
     messages: resources,
   });
-  console.log("what we passeed - ");
-  console.dir(resources, { depth: null });
-  console.log("response - ");
-  console.dir(object, { depth: null });
   console.dir(response, { depth: null });
   return object;
+}
+
+function minimizeRatingDataJsonSize(
+  jsonData: Doc<"basePracticalExams">["ratingData"],
+) {
+  const formatted = jsonData
+    .map((item) => {
+      const requirements = item.requirements
+        .map((req) => `${req.symbol}:${req.description}`)
+        .join("; ");
+
+      return `${item.symbol}|${item.title}|${requirements}|${item.note ?? ""}`;
+    })
+    .join("\n");
+
+  const headerLine = `symbol|title|requirements(symbol:description;...)|optionalNote`;
+
+  return headerLine + "\n" + formatted;
+}
+function cleanExamMarkdown(md: string): string {
+  return (
+    md
+      // remove code fences and inline backticks
+      .replace(/```[\s\S]*?```/g, " ")
+      .replace(/`+/g, "")
+      // remove markdown headings (#, ##, ###)
+      .replace(/^#{1,6}\s*/gm, "")
+      // remove bold/italic markers (*, _, **, __)
+      .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, "$1")
+      // remove horizontal rules (--- or ***)
+      .replace(/^\s*[-*_]{3,}\s*$/gm, "")
+      // convert markdown bullets (-, *, +) into a dash prefix
+      .replace(/^\s*[-*+]\s+/gm, "- ")
+      // preserve numbered lists (leave "1. " etc. intact)
+      // remove blockquotes
+      .replace(/^\s*>+\s?/gm, "")
+      // collapse multiple spaces
+      .replace(/[ \t]+/g, " ")
+      // collapse >2 newlines into just 2 (paragraph separation)
+      .replace(/\n{3,}/g, "\n\n")
+      // trim
+      .trim()
+  );
 }

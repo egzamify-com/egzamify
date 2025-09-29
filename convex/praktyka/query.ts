@@ -3,6 +3,7 @@ import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 import { getUserIdOrThrow } from "../custom_helpers";
+import { getExamDetailsFunc } from "./helpers";
 
 export const listPracticalExams = query({
   args: { paginationOpts: paginationOptsValidator },
@@ -34,14 +35,7 @@ export const getExamDetails = query({
   handler: async (ctx, { examId }) => {
     await getUserIdOrThrow(ctx);
 
-    const exam = await ctx.db.get(examId);
-    if (!exam) throw new Error("Exam not found");
-    const qualification = await ctx.db.get(exam.qualificationId);
-
-    return {
-      ...exam,
-      qualification,
-    };
+    return getExamDetailsFunc(examId, ctx);
   },
 });
 
@@ -50,13 +44,21 @@ export const getUserExamFromExamId = query({
   handler: async (ctx, { examId }) => {
     const userId = await getUserIdOrThrow(ctx);
 
-    return await ctx.db
+    const userExam = await ctx.db
       .query("usersPracticalExams")
       .withIndex("by_userId_examId", (q) =>
         q.eq("userId", userId).eq("examId", examId),
       )
       .filter((q) => q.eq(q.field("status"), "user_pending"))
       .first();
+
+    const baseExam = await getExamDetailsFunc(examId, ctx);
+    if (!baseExam) throw new Error("Base exam not found");
+
+    return {
+      userExam,
+      baseExam,
+    };
   },
 });
 

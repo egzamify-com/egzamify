@@ -1,16 +1,16 @@
-import { api } from "convex/_generated/api";
-import type { Doc } from "convex/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { MessageCircle, Trash } from "lucide-react";
-import Link from "next/link";
-import type { MyUIMessage } from "~/app/api/chat/route";
-import SemanticDate from "~/components/semantic-date";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
+import { api } from "convex/_generated/api"
+import type { Doc } from "convex/_generated/dataModel"
+import { useMutation } from "convex/react"
+import { MessageCircle, Trash } from "lucide-react"
+import Link from "next/link"
+import type { MyUIMessage } from "~/app/api/chat/route"
+import SemanticDate from "~/components/semantic-date"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent } from "~/components/ui/card"
 
 export default function ThreadCard({ item }: { item: Doc<"explanations"> }) {
-  const messages = parseContent(item.content);
-  const deleteChat = useMutation(api.ai_wyjasnia.mutate.deleteChat);
+  const messages = parseContent(item.content)
+  const deleteChat = useMutation(api.ai_wyjasnia.mutate.deleteChat)
 
   return (
     <Link
@@ -45,9 +45,9 @@ export default function ThreadCard({ item }: { item: Doc<"explanations"> }) {
             <Button
               variant={"outline"}
               onClick={async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                await deleteChat({ chatId: item._id });
+                e.preventDefault()
+                e.stopPropagation()
+                await deleteChat({ chatId: item._id })
               }}
             >
               <Trash className="text-destructive" />
@@ -56,13 +56,13 @@ export default function ThreadCard({ item }: { item: Doc<"explanations"> }) {
         </CardContent>
       </Card>
     </Link>
-  );
+  )
 }
 function parseContent(content: string) {
   try {
-    const parsed: MyUIMessage[] = JSON.parse(content);
-    return parsed;
+    const parsed: MyUIMessage[] = JSON.parse(content)
+    return parsed
   } catch (error) {
-    return [];
+    return []
   }
 }

@@ -35,7 +35,7 @@ export function ExamRating({
           ) : (
             <div className="flex items-center justify-center rounded-lg border p-5">
               <h1 className="">
-                Buy complete AI check to see specific requirements{" "}
+                Buy complete AI check to see specific requirements
               </h1>
             </div>
           )}
