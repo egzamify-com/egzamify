@@ -1,18 +1,17 @@
-"use client";
+"use client"
 
-import type { api } from "convex/_generated/api";
-import type { FunctionReturnType } from "convex/server";
-import { Brain, Files } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { toast } from "sonner";
+import type { BaseExam, UserExam } from "convex/praktyka/helpers"
+import { Brain, Files } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
+import { toast } from "sonner"
 import {
   requestPracticalExamCheck,
   type PracticalExamCheckMode,
-} from "~/actions/request-practical-exam-check-action";
-import FullScreenError from "~/components/full-screen-error";
-import SpinnerLoading from "~/components/SpinnerLoading";
-import { Button } from "~/components/ui/button";
+} from "~/actions/request-practical-exam-check-action"
+import FullScreenError from "~/components/full-screen-error"
+import SpinnerLoading from "~/components/SpinnerLoading"
+import { Button } from "~/components/ui/button"
 import {
   Card,
   CardAction,
@@ -20,24 +19,25 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import AttachmentItem from "./attachments/attachment-item";
-import ClearAll from "./attachments/clear-all";
-import { DeleteAttachment } from "./attachments/delete-exam-attachment";
-import UploadAttachment from "./attachments/upload-attachment";
-import SelectMode from "./select-mode";
+} from "~/components/ui/card"
+import AttachmentItem from "./attachments/attachment-item"
+import ClearAll from "./attachments/clear-all"
+import { DeleteAttachment } from "./attachments/delete-exam-attachment"
+import UploadAttachment from "./attachments/upload-attachment"
+import SelectMode from "./select-mode"
 export default function SelectSources({
-  exams,
+  userExam,
+  baseExam,
 }: {
-  exams: FunctionReturnType<typeof api.praktyka.query.getUserExamFromExamId>;
+  userExam: UserExam
+  baseExam: BaseExam
 }) {
-  const [isSubmittingExamCheck, setIsSubmittingExamCheck] = useState(false);
+  const [isSubmittingExamCheck, setIsSubmittingExamCheck] = useState(false)
   const [selectedMode, setSelectedMode] =
-    useState<PracticalExamCheckMode>("standard");
+    useState<PracticalExamCheckMode>("standard")
 
-  if (!exams) return null;
-  const { userExam } = exams;
-  if (!userExam) return <FullScreenError errorMessage="No user exam found" />;
+  if (!userExam || !baseExam)
+    return <FullScreenError errorMessage="No user exam found" />
   return (
     <Card className="gap-2">
       <CardHeader className="relative flex items-start justify-between">
@@ -82,11 +82,11 @@ export default function SelectSources({
             href={`/dashboard/egzamin-praktyczny/historia/${userExam._id}`}
             onClick={(e) => {
               if (!userExam.attachments) {
-                console.warn("no attachemnts");
-                toast.error("Upload some attachments first");
-                e.preventDefault();
-                e.stopPropagation();
-                return;
+                console.warn("no attachemnts")
+                toast.error("Upload some attachments first")
+                e.preventDefault()
+                e.stopPropagation()
+                return
               }
             }}
           >
@@ -94,9 +94,9 @@ export default function SelectSources({
               size={"lg"}
               disabled={!userExam.attachments}
               onClick={async () => {
-                if (!userExam.attachments) return;
-                setIsSubmittingExamCheck(true);
-                await requestPracticalExamCheck(userExam._id, selectedMode);
+                if (!userExam.attachments) return
+                setIsSubmittingExamCheck(true)
+                await requestPracticalExamCheck(userExam._id, selectedMode)
               }}
             >
               {isSubmittingExamCheck ? (
@@ -111,5 +111,5 @@ export default function SelectSources({
         </CardAction>
       </CardContent>
     </Card>
-  );
+  )
 }

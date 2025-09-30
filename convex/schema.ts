@@ -1,11 +1,10 @@
-import { authTables } from "@convex-dev/auth/server";
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server"
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
 import {
   practicalExamAttachmentValidator,
   requirementsValidator,
-  userExamStatusValidator,
-} from "./praktyka/helpers";
+} from "./praktyka/helpers"
 
 const schema = defineSchema({
   ...authTables,
@@ -95,7 +94,13 @@ const schema = defineSchema({
     userId: v.id("users"),
     examId: v.id("basePracticalExams"),
     attachments: v.optional(practicalExamAttachmentValidator),
-    status: userExamStatusValidator,
+    status: v.union(
+      v.literal("user_pending"),
+      v.literal("ai_pending"),
+      v.literal("not_enough_credits_error"),
+      v.literal("unknown_error_credits_refunded"),
+      v.literal("done"),
+    ),
     aiRating: v.optional(
       v.object({
         score: v.number(),
@@ -111,6 +116,6 @@ const schema = defineSchema({
     key: v.string(),
     value: v.string(),
   }).index("by_key", ["key"]),
-});
+})
 
-export default schema;
+export default schema

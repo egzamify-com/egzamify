@@ -1,14 +1,13 @@
-import type { Id } from "convex/_generated/dataModel";
-import type { QueryCtx } from "convex/_generated/server";
-import { v } from "convex/values";
+import type { api } from "convex/_generated/api"
+import type { Doc, Id } from "convex/_generated/dataModel"
+import type { QueryCtx } from "convex/_generated/server"
+import type { FunctionReturnType } from "convex/server"
+import { v } from "convex/values"
 
-export const userExamStatusValidator = v.union(
-  v.literal("user_pending"),
-  v.literal("ai_pending"),
-  v.literal("not_enough_credits_error"),
-  v.literal("unknown_error_credits_refunded"),
-  v.literal("done"),
-);
+export type BaseExam = FunctionReturnType<
+  typeof api.praktyka.query.getExamDetails
+>
+export type UserExam = Doc<"usersPracticalExams">
 
 export const requirementsArray = v.array(
   v.object({
@@ -21,7 +20,7 @@ export const requirementsArray = v.array(
       }),
     ),
   }),
-);
+)
 
 export const requirementsValidator = v.array(
   v.object({
@@ -30,24 +29,24 @@ export const requirementsValidator = v.array(
     symbol: v.string(),
     requirements: requirementsArray,
   }),
-);
+)
 
 export const practicalExamAttachmentValidator = v.array(
   v.object({
     attachmentName: v.string(),
     attachmentId: v.id("_storage"),
   }),
-);
+)
 export async function getExamDetailsFunc(
   examId: Id<"basePracticalExams">,
   ctx: QueryCtx,
 ) {
-  const exam = await ctx.db.get(examId);
-  if (!exam) throw new Error("Exam not found");
-  const qualification = await ctx.db.get(exam.qualificationId);
+  const exam = await ctx.db.get(examId)
+  if (!exam) throw new Error("Exam not found")
+  const qualification = await ctx.db.get(exam.qualificationId)
 
   return {
     ...exam,
     qualification,
-  };
+  }
 }

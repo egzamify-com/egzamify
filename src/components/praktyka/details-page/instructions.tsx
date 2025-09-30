@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import type { Doc } from "convex/_generated/dataModel";
-import { ChevronDown, FileText } from "lucide-react";
-import Markdown from "marked-react";
-import { useState } from "react";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { cn } from "~/lib/utils";
+import type { BaseExam } from "convex/praktyka/helpers"
+import { ChevronDown, FileText } from "lucide-react"
+import Markdown from "marked-react"
+import { useState } from "react"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { cn } from "~/lib/utils"
 
-export const Instructions = ({ exam }: { exam: Doc<"basePracticalExams"> }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const Instructions = ({ exam }: { exam: BaseExam }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
   return (
     <>
       <Card
@@ -41,5 +41,5 @@ export const Instructions = ({ exam }: { exam: Doc<"basePracticalExams"> }) => {
         </CardContent>
       )}
     </>
-  );
-};
+  )
+}

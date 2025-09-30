@@ -1,13 +1,8 @@
-import type { api } from "convex/_generated/api";
-import type { FunctionReturnType } from "convex/server";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import PracticalExamMetadata from "./practical-exam-metadata";
+import type { BaseExam } from "convex/praktyka/helpers"
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card"
+import PracticalExamMetadata from "./practical-exam-metadata"
 
-export default function Header({
-  exam,
-}: {
-  exam: FunctionReturnType<typeof api.praktyka.query.getExamDetails>;
-}) {
+export default function Header({ exam }: { exam: BaseExam }) {
   return (
     <Card className="gap-2">
       <CardHeader>
@@ -19,5 +14,5 @@ export default function Header({
         <PracticalExamMetadata {...{ exam }} />
       </CardContent>
     </Card>
-  );
+  )
 }
