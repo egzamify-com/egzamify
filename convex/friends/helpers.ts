@@ -1,86 +1,15 @@
 import { stream } from "convex-helpers/server/stream"
 import type { Id } from "convex/_generated/dataModel"
 import type { QueryCtx } from "convex/_generated/server"
+import { v } from "convex/values"
 import schema from "../schema"
-import { type FriendsQueryInfo } from "./query"
 
-export async function getUsersOutcomingRequests({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const requests = stream(ctx.db, schema)
-    .query("friends")
-    .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId))
-    .filterWith(async (id) => {
-      if (id.status === "request_sent") return true
-      return false
-    })
-
-  const users = requests.flatMap(
-    async (requestRecord) =>
-      stream(ctx.db, schema)
-        .query("users")
-        .withIndex("by_id", (q) => q.eq("_id", requestRecord.receivingUserId))
-        .filterWith(async (user) => {
-          if (!searchRan) return true
-
-          if (searchedUsers.length === 0) return false
-
-          if (
-            searchRan &&
-            searchedUsers.map((user) => user.username).includes(user.username)
-          ) {
-            // console.log(`FOUND MATCH for ${user.username}`)
-            return true
-          }
-
-          return false
-        }),
-    ["_id"],
-  )
-
-  return users.collect()
-}
-export async function getUsersIncomingRequests({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const requests = stream(ctx.db, schema)
-    .query("friends")
-    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
-    .filterWith(async (id) => {
-      if (id.status === "request_sent") return true
-      return false
-    })
-
-  const users = requests.flatMap(
-    async (requestRecord) =>
-      stream(ctx.db, schema)
-        .query("users")
-        .withIndex("by_id", (q) => q.eq("_id", requestRecord.requestingUserId))
-        .filterWith(async (user) => {
-          if (!searchRan) return true
-
-          if (searchedUsers.length === 0) return false
-
-          if (
-            searchRan &&
-            searchedUsers.map((user) => user.username).includes(user.username)
-          ) {
-            // console.log(`[FRIENDS] found match for ${user.username}`)
-            return true
-          }
-
-          return false
-        }),
-    ["_id"],
-  )
-  return users.collect()
-}
+export const friendFilterValidator = v.union(
+  v.literal("not_friends"),
+  v.literal("accepted_friends"),
+  v.literal("incoming_requests"),
+  v.literal("outcoming_requests"),
+)
 
 export async function getFriendIds(ctx: QueryCtx, userId: Id<"users">) {
   const friendsFromRequests = await ctx.db
@@ -105,4 +34,32 @@ export async function getFriendIds(ctx: QueryCtx, userId: Id<"users">) {
     friendIds.add(friend.requestingUserId)
   })
   return friendIds
+}
+
+export async function getRequestingUserIds(ctx: QueryCtx, userId: Id<"users">) {
+  const requests = await ctx.db
+    .query("friends")
+    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
+    .filter((q) => q.eq(q.field("status"), "request_sent"))
+    .collect()
+
+  return new Set(requests.map((r) => r.requestingUserId))
+}
+export async function getReceivingUserIds(ctx: QueryCtx, userId: Id<"users">) {
+  const requests = await ctx.db
+    .query("friends")
+    .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId))
+    .filter((q) => q.eq(q.field("status"), "request_sent"))
+    .collect()
+
+  return new Set(requests.map((r) => r.receivingUserId))
+}
+export async function getUsersFromFriendIds(
+  ctx: QueryCtx,
+  userId: Id<"users">,
+  ids: Set<Id<"users">>,
+) {
+  return stream(ctx.db, schema)
+    .query("users")
+    .filterWith(async (user) => ids.has(user._id) && user._id !== userId)
 }

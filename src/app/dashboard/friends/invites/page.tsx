@@ -9,25 +9,9 @@ import { Badge } from "~/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 
 export default function Page() {
-  const { data: incomingRequests } = useQuery(
-    api.friends.query.getFriendsWithSearch,
-    {
-      filter: "incoming_requests",
-      search: "",
-    },
-  )
-  const incomingRequestsCount = incomingRequests?.length ?? 0
-
-  const { data: outcomingRequests } = useQuery(
-    api.friends.query.getFriendsWithSearch,
-    {
-      filter: "outcoming_requests",
-      search: "",
-    },
-  )
-
-  const outcomingRequestsCount = outcomingRequests?.length ?? 0
-
+  const { data } = useQuery(api.friends.query.getInvitesDataForSidebar)
+  if (!data) return null
+  const { incomingRequestsCount, outcomingRequestsCount } = data
   return (
     <PageHeaderWrapper
       title="Friend Invites"
@@ -57,7 +41,7 @@ export default function Page() {
               <Clock className="h-4 w-4" />
               <span>Pending</span>
 
-              {outcomingRequests !== undefined && (
+              {outcomingRequestsCount !== undefined && (
                 <>
                   {outcomingRequestsCount > 0 ? (
                     <Badge className="ml-1">

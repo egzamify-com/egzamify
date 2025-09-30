@@ -1,18 +1,18 @@
-import type { Infer } from "convex/values";
-import Link from "next/link";
-import { type Doc } from "~/../convex/_generated/dataModel";
-import { Card, CardContent } from "~/components/ui/card";
-import { friendFilterValidator } from "../../../convex/friends/query";
-import ActivityStatusAvatar from "../users/activity-status-avatar";
-import FriendButton from "./friend-button";
+import type { friendFilterValidator } from "convex/friends/helpers"
+import type { Infer } from "convex/values"
+import Link from "next/link"
+import { type Doc } from "~/../convex/_generated/dataModel"
+import { Card, CardContent } from "~/components/ui/card"
+import ActivityStatusAvatar from "../users/activity-status-avatar"
+import FriendButton from "./friend-button"
 type FriendProps = {
-  user: Doc<"users">;
-  status?: Infer<typeof friendFilterValidator>;
-  updated_at?: Date;
-  created_at?: Date;
-};
+  user: Doc<"users">
+  status?: Infer<typeof friendFilterValidator>
+  updated_at?: Date
+  created_at?: Date
+}
 export default function Friend({ friend }: { friend: FriendProps }) {
-  const { user, status } = friend;
+  const { user, status } = friend
 
   return (
     <Card
@@ -58,5 +58,5 @@ export default function Friend({ friend }: { friend: FriendProps }) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
