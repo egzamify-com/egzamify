@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import DisplayFriendList from "~/components/friends/display-friend-list";
-import PageHeaderWrapper from "~/components/page-header-wrapper";
-import { Button } from "~/components/ui/button";
+import Link from "next/link"
+import DisplayFriendList from "~/components/friends/display-friend-list"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
+import { Button } from "~/components/ui/button"
 
 export default function Page() {
   return (
@@ -21,12 +21,7 @@ export default function Page() {
             </Link>
           </div>
         }
-        errorComponent={
-          <div className="flex flex-col items-start gap-2">
-            <p className="mt-2">Something went wrong.</p>
-          </div>
-        }
       />
     </PageHeaderWrapper>
-  );
+  )
 }

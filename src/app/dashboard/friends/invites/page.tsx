@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { useQuery } from "convex-helpers/react";
-import { api } from "convex/_generated/api";
-import { Clock, UserPlus } from "lucide-react";
-import DisplayFriendList from "~/components/friends/display-friend-list";
-import PageHeaderWrapper from "~/components/page-header-wrapper";
-import { Badge } from "~/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { useQuery } from "convex-helpers/react"
+import { api } from "convex/_generated/api"
+import { Clock, UserPlus } from "lucide-react"
+import DisplayFriendList from "~/components/friends/display-friend-list"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
+import { Badge } from "~/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 
 export default function Page() {
   const { data: incomingRequests } = useQuery(
@@ -15,8 +15,8 @@ export default function Page() {
       filter: "incoming_requests",
       search: "",
     },
-  );
-  const incomingRequestsCount = incomingRequests?.length ?? 0;
+  )
+  const incomingRequestsCount = incomingRequests?.length ?? 0
 
   const { data: outcomingRequests } = useQuery(
     api.friends.query.getFriendsWithSearch,
@@ -24,9 +24,10 @@ export default function Page() {
       filter: "outcoming_requests",
       search: "",
     },
-  );
+  )
 
-  const outcomingRequestsCount = outcomingRequests?.length ?? 0;
+  const outcomingRequestsCount = outcomingRequests?.length ?? 0
+
   return (
     <PageHeaderWrapper
       title="Friend Invites"
@@ -81,11 +82,6 @@ export default function Page() {
                 <p className="mt-2 text-gray-500">No users found.</p>
               </div>
             }
-            errorComponent={
-              <div className="flex flex-col items-start gap-2">
-                <p className="mt-2 text-gray-500">Something went wrong.</p>
-              </div>
-            }
           />
         </TabsContent>
 
@@ -97,14 +93,9 @@ export default function Page() {
                 <p className="mt-2 text-gray-500">No users found.</p>
               </div>
             }
-            errorComponent={
-              <div className="flex flex-col items-start gap-2">
-                <p className="mt-2 text-gray-500">Something went wrong.</p>
-              </div>
-            }
           />
         </TabsContent>
       </Tabs>
     </PageHeaderWrapper>
-  );
+  )
 }

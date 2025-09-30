@@ -10,7 +10,7 @@ type AppConfig = {
     schemaDescription: string
   }
   friends: {
-    maxSearchResults: number
+    friendsPerPage: number
   }
   baseCreditPrice: number
   ai_wyjasnia: {
@@ -79,7 +79,7 @@ export const APP_CONFIG: AppConfig = {
     schemaDescription: `Result of rating user's exam files based on exam rating data and exam actual content`,
   },
   friends: {
-    maxSearchResults: 200,
+    friendsPerPage: 50,
   },
   baseCreditPrice: 0,
   ai_wyjasnia: {
