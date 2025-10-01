@@ -51,11 +51,9 @@ export default function Navbar() {
 
 function SignedOut() {
   return (
-    <div>
-      <Link href={`/sign-in`}>
-        <Button>Sign in</Button>
-      </Link>
-    </div>
+    <Link href={`/sign-in`}>
+      <Button>Sign in</Button>
+    </Link>
   )
 }
 

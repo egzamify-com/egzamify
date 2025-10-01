@@ -7,7 +7,7 @@ export default function Feedbackbtn() {
   return (
     <Link href={"/feedback"}>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button variant={"outline"} size={"icon"}>
             <Bug />
           </Button>
