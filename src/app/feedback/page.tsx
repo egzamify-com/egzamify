@@ -6,6 +6,7 @@ import { useAction } from "convex/react"
 import { Send } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import SpinnerLoading from "~/components/SpinnerLoading"
 import { Button } from "~/components/ui/button"
 import { Label } from "~/components/ui/label"
 import {
@@ -42,6 +43,7 @@ export default function Page() {
             <Textarea
               id="feedback-input"
               placeholder="..."
+              value={content}
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
@@ -76,6 +78,7 @@ export default function Page() {
                     description: "Thank you for your feedback!",
                   })
                 } catch (e) {
+                  setIsActionPending(false)
                   console.error("[FEEDBACK] Error while sending feedback: ", e)
                   toast.error("Sorry, failed to send feedback.", {
                     description:
@@ -84,8 +87,14 @@ export default function Page() {
                 }
               }}
             >
-              <Send />
-              Send
+              {isActionPending ? (
+                <SpinnerLoading />
+              ) : (
+                <>
+                  <Send />
+                  <p>Send</p>
+                </>
+              )}
             </Button>
           </div>
         </div>
