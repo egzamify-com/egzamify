@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useQuery } from "convex-helpers/react";
-import { api } from "convex/_generated/api";
-import type { Doc } from "convex/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
-import { useTheme } from "next-themes";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { useAuthActions } from "@convex-dev/auth/react"
+import { useQuery } from "convex-helpers/react"
+import { api } from "convex/_generated/api"
+import type { Doc } from "convex/_generated/dataModel"
+import { useMutation } from "convex/react"
+import { Bug, LogOut, Moon, Settings, Sun, User } from "lucide-react"
+import { useTheme } from "next-themes"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,26 +17,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+} from "~/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "~/components/ui/sidebar";
-import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
-import ActivityStatusAvatar from "../users/activity-status-avatar";
+} from "~/components/ui/sidebar"
+import { Button } from "../ui/button"
+import { Skeleton } from "../ui/skeleton"
+import ActivityStatusAvatar from "../users/activity-status-avatar"
 
 export function NavUser() {
-  const router = useRouter();
-  const { signOut } = useAuthActions();
-  const { isMobile } = useSidebar();
-  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser);
+  const router = useRouter()
+  const { signOut } = useAuthActions()
+  const { isMobile } = useSidebar()
+  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
 
-  const { setTheme, theme } = useTheme();
-  if (isPending) return <Loading />;
-  if (!user) return null;
+  const { setTheme, theme } = useTheme()
+  if (isPending) return <Loading />
+  if (!user) return null
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -91,6 +91,7 @@ export function NavUser() {
                 Konto
               </DropdownMenuItem>
             </Link>
+
             <Link href={"/dashboard/settings"}>
               <DropdownMenuItem className="cursor-pointer">
                 <Settings />
@@ -114,14 +115,19 @@ export function NavUser() {
                 Dark Theme
               </DropdownMenuItem>
             )}
-
+            <Link href={"/feedback"}>
+              <DropdownMenuItem className="cursor-pointer">
+                <Bug />
+                Report a bug
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={async () => {
-                await signOut();
-                console.log("[AUTH] succesfully signed out");
-                toast.success("Succefully loged out");
-                router.replace("/");
+                await signOut()
+                console.log("[AUTH] succesfully signed out")
+                toast.success("Succefully loged out")
+                router.replace("/")
               }}
             >
               <LogOut color="red" />
@@ -131,7 +137,7 @@ export function NavUser() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }
 function Loading() {
   return (
@@ -143,21 +149,21 @@ function Loading() {
       </div>
       <Skeleton className="ml-auto h-4 w-4 rounded-md" />{" "}
     </div>
-  );
+  )
 }
 function Credits({ user }: { user: Doc<"users"> }) {
-  const addCredits = useMutation(api.users.mutate.updateUserCredits);
+  const addCredits = useMutation(api.users.mutate.updateUserCredits)
   return (
     <div className="flex items-center justify-between">
       <h1>{user.credits ?? 0} credits</h1>
       <Button
         onClick={async () => {
-          console.log("clicked");
-          await addCredits({ creditsToAdd: 10 });
+          console.log("clicked")
+          await addCredits({ creditsToAdd: 10 })
         }}
       >
         Buy credits
       </Button>
     </div>
-  );
+  )
 }
