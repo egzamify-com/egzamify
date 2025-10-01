@@ -116,6 +116,16 @@ const schema = defineSchema({
     key: v.string(),
     value: v.string(),
   }).index("by_key", ["key"]),
+
+  feedbackTable: defineTable({
+    userId: v.id("users"),
+    content: v.string(),
+    type: v.union(
+      v.literal("Bug report"),
+      v.literal("Feature request"),
+      v.literal("User feedback"),
+    ),
+  }).index("by_user_id", ["userId"]),
 })
 
 export default schema
