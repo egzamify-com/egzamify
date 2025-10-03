@@ -2,7 +2,7 @@
 
 import { api } from "convex/_generated/api"
 import type { FeedbackType } from "convex/feedback/feedback"
-import { useAction } from "convex/react"
+import { useMutation } from "convex/react"
 import { Send } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -17,13 +17,15 @@ import {
   SelectValue,
 } from "~/components/ui/select"
 import { Textarea } from "~/components/ui/textarea"
+import { cn } from "~/lib/utils"
 
 const items: FeedbackType[] = ["Bug report", "Feature request", "User feedback"]
 
 const defaultType: FeedbackType = "User feedback"
 
 export default function Page() {
-  const sendFeedback = useAction(api.feedback.feedback.sendFeedback)
+  const sendFeedback = useMutation(api.feedback.feedback.sendFeedback)
+  const [didMutationFail, setDidMutationFail] = useState(false)
   const [content, setContent] = useState("")
   const [selectedType, setSelectedType] = useState<FeedbackType>(defaultType)
   const [isActionPending, setIsActionPending] = useState(false)
@@ -45,6 +47,7 @@ export default function Page() {
               placeholder="..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              className={cn(didMutationFail && "border-destructive border")}
             />
           </div>
           <div className="flex w-full flex-row items-center justify-end gap-2">
@@ -73,12 +76,14 @@ export default function Page() {
                 try {
                   await sendFeedback({ content, type: selectedType })
                   setIsActionPending(false)
+                  setDidMutationFail(false)
                   setContent("")
                   toast.success("Feedback sent successfully.", {
                     description: "Thank you for your feedback!",
                   })
                 } catch (e) {
                   setIsActionPending(false)
+                  setDidMutationFail(true)
                   console.error("[FEEDBACK] Error while sending feedback: ", e)
                   toast.error("Sorry, failed to send feedback.", {
                     description:
