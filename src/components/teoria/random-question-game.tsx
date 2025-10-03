@@ -2,7 +2,7 @@
 
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { useAction, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import {
   CheckCircle,
   Clock,
@@ -30,6 +30,9 @@ export default function RandomQuestionGame({
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [answerStreak, setAnswerStreak] = useState(0);
+  const [sessionId, setSessionId] = useState<Id<"userActivityHistory"> | null>(
+    null,
+  );
 
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
@@ -47,6 +50,31 @@ export default function RandomQuestionGame({
   const currentQuestion = questionData?.question;
 
   const generateExplanation = useAction(api.teoria.actions.generateExplanation);
+  const saveUserAnswer = useMutation(api.statistics.mutations.saveUserAnswer);
+  const startStudySession = useMutation(
+    api.statistics.mutations.startStudySession,
+  );
+  const endStudySession = useMutation(api.statistics.mutations.endStudySession);
+
+  // POPRAWIONE: Sesja nauki - start i cleanup
+  useEffect(() => {
+    let currentSessionId: Id<"userActivityHistory"> | null = null;
+
+    // Start sesji
+    startStudySession().then((result) => {
+      currentSessionId = result.sessionId;
+      setSessionId(result.sessionId);
+      console.log("📚 Sesja nauki rozpoczęta:", result.sessionId);
+    });
+
+    // Cleanup - zakończ sesję przy odmontowaniu
+    return () => {
+      if (currentSessionId) {
+        console.log("🛑 Kończenie sesji nauki:", currentSessionId);
+        endStudySession({ sessionId: currentSessionId });
+      }
+    };
+  }, []); // Pusty deps array - tylko raz przy montowaniu
 
   const getStreakFromStorage = (): number => {
     if (typeof window === "undefined") return 0;
@@ -127,7 +155,7 @@ export default function RandomQuestionGame({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleAnswerSelect = (answerIndex: number) => {
+  const handleAnswerSelect = async (answerIndex: number) => {
     if (showResult || !currentQuestion) return;
 
     setSelectedAnswer(answerIndex);
@@ -135,13 +163,18 @@ export default function RandomQuestionGame({
     setIsCorrect(correct);
     setShowResult(true);
 
+    await saveUserAnswer({
+      question_id: currentQuestion.id as Id<"questions">,
+      answer_index: answerIndex,
+      isCorrect: correct,
+    });
+
     updateStreak(correct);
   };
 
   const handleTimeUp = () => {
     setIsCorrect(false);
     setShowResult(true);
-
     updateStreak(false);
   };
 
@@ -153,9 +186,7 @@ export default function RandomQuestionGame({
 
   const handleShowExplanation = () => {
     if (!currentQuestion) return;
-
     setShowExplanation(true);
-
     if (aiExplanation) {
       typeWriterEffect(aiExplanation, 15);
     }
@@ -164,21 +195,12 @@ export default function RandomQuestionGame({
   const handleGenerateExplanation = async () => {
     if (!currentQuestion || isLoadingExplanation) return;
 
-    console.log("Rozpoczynam generowanie wyjaśnienia...");
-    console.log("Pytanie:", currentQuestion.question);
-    console.log(
-      "Poprawna odpowiedź:",
-      currentQuestion.answers[currentQuestion.correctAnswer],
-    );
-
     isGeneratingRef.current = true;
     setIsLoadingExplanation(true);
     setShowExplanation(true);
     setDisplayedExplanation("");
 
     try {
-      console.log("🔄 Wywołuję action generateExplanation...");
-
       const result = await generateExplanation({
         questionId: currentQuestion.id,
         questionContent: currentQuestion.question,
@@ -187,9 +209,7 @@ export default function RandomQuestionGame({
         answerLabels: currentQuestion.answerLabels,
       });
 
-      console.log("✅ Otrzymano wyjaśnienie z AI:", result.explanation);
       setAiExplanation(result.explanation);
-
       typeWriterEffect(result.explanation, 25);
     } catch (error) {
       console.error("❌ Błąd podczas generowania wyjaśnienia:", error);
@@ -199,7 +219,6 @@ export default function RandomQuestionGame({
       typeWriterEffect(errorMessage, 25);
     } finally {
       setIsLoadingExplanation(false);
-
       isGeneratingRef.current = false;
     }
   };
@@ -244,12 +263,19 @@ export default function RandomQuestionGame({
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Losowe pytanie</h1>
+          <div className="flex">
+            <h1 className="text-2xl font-bold">Losowe pytanie</h1>
+            <Badge variant="secondary">
+              Pytanie #{currentQuestion.id.slice(-8)}
+              {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
+            </Badge>
+          </div>
+
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
               <Flame className="h-5 w-5 text-orange-500" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
-              <span className="text-sm text-orange-600">seria</span>
+              <span className="text-sm text-orange-600">seria odpowiedzi</span>
             </div>
 
             <div className="flex items-center gap-2 text-lg font-semibold">
@@ -258,10 +284,6 @@ export default function RandomQuestionGame({
                 {formatTime(timeLeft)}
               </span>
             </div>
-            <Badge variant="secondary">
-              Pytanie #{currentQuestion.id.slice(-8)}
-              {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
-            </Badge>
           </div>
         </div>
       </div>
@@ -370,8 +392,9 @@ export default function RandomQuestionGame({
                     <div className="flex items-center justify-center gap-2 text-orange-600">
                       <Flame className="h-6 w-6" />
                       <span className="text-lg font-semibold">
-                        Seria {answerStreak} poprawnych odpowiedzi! 🔥
+                        Seria {answerStreak} poprawnych odpowiedzi!
                       </span>
+                      <Flame className="h-6 w-6" />
                     </div>
                   )}
                 </div>
@@ -386,7 +409,7 @@ export default function RandomQuestionGame({
                   {answerStreak > 0 && (
                     <div className="text-gray-600">
                       <span className="text-sm">
-                        Seria została przerwana na {answerStreak} odpowiedziach
+                        Seria odpowiedzi została przerwana na {answerStreak}
                       </span>
                     </div>
                   )}

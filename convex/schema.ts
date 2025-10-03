@@ -22,7 +22,7 @@ const schema = defineSchema({
     isActive: v.optional(v.boolean()),
     credits: v.optional(v.number()),
     pendingCredits: v.optional(v.number()),
-    //////counter_streak
+    daily_streak: v.optional(v.number()),
   })
     .index("username", ["username"])
     .index("email", ["email"])
@@ -45,7 +45,6 @@ const schema = defineSchema({
     .index("requestingUserId", ["requestingUserId"])
     .index("receivingUserId", ["receivingUserId"]),
 
-  // ----------------TEORIA TABLES----------------------
   users_theory: defineTable({
     name: v.string(),
     email: v.string(),
@@ -68,6 +67,8 @@ const schema = defineSchema({
     image_url: v.optional(v.string()),
     explanation: v.optional(v.string()),
     created_at: v.optional(v.number()),
+    tags: v.optional(v.array(v.string())),
+    category: v.optional(v.string()),
   })
     .index("by_qualification", ["qualification_id"])
     .index("by_year", ["year"])
@@ -83,11 +84,22 @@ const schema = defineSchema({
 
   userAnswers: defineTable({
     user_id: v.id("users"),
-    question_id: v.id("users"),
+    question_id: v.id("questions"),
     isCorrect: v.boolean(),
     answer_id: v.id("answers"),
-    // test_id: v.optional()
-  }),
+    answered_at: v.number(),
+  })
+    .index("by_user", ["user_id"])
+    .index("by_user_date", ["user_id", "answered_at"])
+    .index("by_question", ["question_id"]),
+
+  userActivityHistory: defineTable({
+    user_id: v.id("users"),
+    start_date: v.number(),
+    stop_date: v.number(),
+  })
+    .index("by_user", ["user_id"])
+    .index("by_user_date", ["user_id", "start_date"]),
 
   basePracticalExams: defineTable({
     qualificationId: v.id("qualifications"),
@@ -113,7 +125,7 @@ const schema = defineSchema({
     aiRating: v.optional(
       v.object({
         score: v.number(),
-        percantageScore: v.number(),
+        // percantageScore: v.number(),
         summary: v.string(),
         details: v.optional(requirementsValidator),
       }),

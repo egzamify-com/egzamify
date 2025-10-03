@@ -26,6 +26,8 @@ import type * as praktyka_helpers from "../praktyka/helpers.js";
 import type * as praktyka_mutate from "../praktyka/mutate.js";
 import type * as praktyka_query from "../praktyka/query.js";
 import type * as seed from "../seed.js";
+import type * as statistics_mutations from "../statistics/mutations.js";
+import type * as statistics_query from "../statistics/query.js";
 import type * as teoria_actions from "../teoria/actions.js";
 import type * as teoria_mutate from "../teoria/mutate.js";
 import type * as teoria_query from "../teoria/query.js";
@@ -54,6 +56,8 @@ declare const fullApi: ApiFromModules<{
   "praktyka/mutate": typeof praktyka_mutate;
   "praktyka/query": typeof praktyka_query;
   seed: typeof seed;
+  "statistics/mutations": typeof statistics_mutations;
+  "statistics/query": typeof statistics_query;
   "teoria/actions": typeof teoria_actions;
   "teoria/mutate": typeof teoria_mutate;
   "teoria/query": typeof teoria_query;
