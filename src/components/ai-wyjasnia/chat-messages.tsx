@@ -40,7 +40,11 @@ function ChatMessage({ message }: { message: MyUIMessage }) {
           )}
         </div>
         <Card className={`relative flex items-center justify-center py-2`}>
-          <MessageModeAndActionBtns {...{ message }} />
+          <MessageModeAndActionBtns
+            {...{
+              message,
+            }}
+          />
           <CardContent>
             <div className="text-sm whitespace-pre-wrap">
               {message.parts.map((part, index) =>

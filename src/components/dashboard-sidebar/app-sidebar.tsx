@@ -73,12 +73,12 @@ const navMain: NavbarItem[] = [
     url: "/dashboard/ai-wyjasnia",
     childrenItems: [
       {
-        title: "Start a conversation",
+        title: "Rozpocznij czat z AI",
         url: "/dashboard/ai-wyjasnia",
         icon: <Calendar size={SIDEBAR_ICON_SIZE} />,
       },
       {
-        title: "Chat History",
+        title: "Historia czatów",
         url: "/dashboard/ai-wyjasnia/history",
         icon: <History size={SIDEBAR_ICON_SIZE} />,
       },

@@ -1,6 +1,6 @@
 // Define a consistent type for Epoch values
-export type EpochMilliseconds = number;
-export type EpochSeconds = number; // Keep this if you explicitly need seconds sometimes
+export type EpochMilliseconds = number
+export type EpochSeconds = number // Keep this if you explicitly need seconds sometimes
 
 /**
  * Converts a JavaScript Date object to an Epoch timestamp in milliseconds.
@@ -8,7 +8,7 @@ export type EpochSeconds = number; // Keep this if you explicitly need seconds s
  */
 export function convertDateToEpoch(date: Date): EpochMilliseconds {
   // Directly returns milliseconds, as is standard for date.getTime()
-  return date.getTime();
+  return date.getTime()
 }
 
 /**
@@ -18,15 +18,15 @@ export function convertYYYYMMDDToEpoch(
   dateString: string,
 ): EpochMilliseconds | null {
   // Replace slashes with hyphens for robust parsing by Date constructor
-  const isoDateString = dateString.replace(/\//g, "-");
-  const date = new Date(isoDateString);
+  const isoDateString = dateString.replace(/\//g, "-")
+  const date = new Date(isoDateString)
 
   if (isNaN(date.getTime())) {
-    console.warn(`Invalid date string provided for conversion: ${dateString}`);
-    return null; // Return null for invalid input, more robust than NaN
+    console.warn(`Invalid date string provided for conversion: ${dateString}`)
+    return null // Return null for invalid input, more robust than NaN
   }
 
-  return date.getTime(); // Return milliseconds
+  return date.getTime() // Return milliseconds
 }
 
 /**
@@ -36,27 +36,27 @@ export function convertYYYYMMDDToEpoch(
 export function formatToYYYYMMDD(
   input: EpochMilliseconds | Date,
 ): string | null {
-  let date: Date;
+  let date: Date
 
   if (input instanceof Date) {
-    date = input;
+    date = input
   } else if (typeof input === "number") {
     // Heuristic: If number is large (likely milliseconds), use as is. Else, assume seconds and convert.
     // 2,000,000,000 seconds is approx year 2033. Safe assumption.
-    date = new Date(input > 2_000_000_000_000 ? input : input * 1000); // Adjusted threshold for milliseconds
+    date = new Date(input > 2_000_000_000_000 ? input : input * 1000) // Adjusted threshold for milliseconds
   } else {
-    return null;
+    return null
   }
 
   if (isNaN(date.getTime())) {
-    return null;
+    return null
   }
 
-  const year = date.getUTCFullYear();
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-  const day = date.getUTCDate().toString().padStart(2, "0");
+  const year = date.getUTCFullYear()
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0")
+  const day = date.getUTCDate().toString().padStart(2, "0")
 
-  return `${year}-${month}-${day}`;
+  return `${year}-${month}-${day}`
 }
 
 /**
@@ -68,11 +68,11 @@ export function convertEpochToYYYYMMDD(
   timezone = "UTC", // Default to UTC
 ): string {
   // New Date() constructor expects milliseconds since epoch
-  const date = new Date(epochMs);
+  const date = new Date(epochMs)
 
   if (isNaN(date.getTime())) {
-    console.warn(`Invalid epoch milliseconds provided: ${epochMs}`);
-    return "Invalid Date"; // Handle invalid input
+    console.warn(`Invalid epoch milliseconds provided: ${epochMs}`)
+    return "Invalid Date" // Handle invalid input
   }
 
   // Use Intl.DateTimeFormat for robust timezone handling and formatting
@@ -83,14 +83,14 @@ export function convertEpochToYYYYMMDD(
     month: "2-digit",
     day: "2-digit",
     timeZone: timezone,
-  });
+  })
 
   // format() returns "MM/DD/YYYY" for "en-US", "YYYY-MM-DD" for "en-CA"
   // For explicit "YYYY/MM/DD", reorder parts or use replace.
-  const formattedString = formatter.format(date);
+  const formattedString = formatter.format(date)
   // Example for "en-US": "07/26/2025" -> "2025/07/26"
-  const [monthPart, dayPart, yearPart] = formattedString.split("/");
-  return `${yearPart}/${monthPart}/${dayPart}`;
+  const [monthPart, dayPart, yearPart] = formattedString.split("/")
+  return `${yearPart}/${monthPart}/${dayPart}`
 }
 
 /**
@@ -100,25 +100,25 @@ export function convertEpochToYYYYMMDD(
  */
 export function toSemanticTime(yyyymmdd: string): string {
   if (!/^\d{4}\/\d{2}\/\d{2}$/.test(yyyymmdd)) {
-    return "Invalid Date Format";
+    return "Invalid Date Format"
   }
 
-  const parts = yyyymmdd.split("/");
-  const year = parseInt(parts[0]!, 10);
-  const month = parseInt(parts[1]!, 10) - 1;
-  const day = parseInt(parts[2]!, 10);
+  const parts = yyyymmdd.split("/")
+  const year = parseInt(parts[0]!, 10)
+  const month = parseInt(parts[1]!, 10) - 1
+  const day = parseInt(parts[2]!, 10)
 
   // Create UTC date for comparison to avoid timezone issues
-  const inputDateUTC = new Date(Date.UTC(year, month, day));
+  const inputDateUTC = new Date(Date.UTC(year, month, day))
 
-  const now = new Date();
+  const now = new Date()
   // Create a UTC date for "today" at midnight UTC
   const nowUTC = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
+  )
 
   if (isNaN(inputDateUTC.getTime()) || isNaN(nowUTC.getTime())) {
-    return "Invalid Date"; // Handle cases where input date might be unparseable
+    return "Invalid Date" // Handle cases where input date might be unparseable
   }
 
   // If the input date is in the future
@@ -129,18 +129,18 @@ export function toSemanticTime(yyyymmdd: string): string {
     // Example: inputDateUTC = 2025/07/26 (today)
     // nowUTC = 2025/07/26 (today)
     // If inputDateUTC > nowUTC, it implies a date in the future
-    return "Future date";
+    return "Future date"
   }
 
-  const oneDay = 1000 * 60 * 60 * 24;
-  const diffTime = nowUTC.getTime() - inputDateUTC.getTime();
-  const diffDays = Math.floor(diffTime / oneDay);
+  const oneDay = 1000 * 60 * 60 * 24
+  const diffTime = nowUTC.getTime() - inputDateUTC.getTime()
+  const diffDays = Math.floor(diffTime / oneDay)
 
   if (diffDays === 0) {
-    return "Today";
+    return "Dzisiaj"
   } else if (diffDays === 1) {
-    return "Yesterday";
+    return "Wczoraj"
   } else {
-    return `${diffDays} days ago`;
+    return `${diffDays} dni temu`
   }
 }

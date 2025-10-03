@@ -104,19 +104,19 @@ export const APP_CONFIG: AppConfig = {
     modes: [
       {
         id: "normal",
-        title: "Normal" as const,
-        description: "Standard, balanced explanation",
+        title: "Normalny" as const,
+        description: "Domyślna, zbalansowana odpowiedź",
       },
       {
         id: "eli5",
         title: "ELI5" as const,
-        description: "Explain like I'm 5 (simplified, using analogies)",
+        description: "Wyjaśnienie jak dla 5 latka (uproszczone)",
       },
 
       {
         id: "detailed",
-        title: "Detailed" as const,
-        description: "Comprehensive explanation with technical details",
+        title: "Szczegółowy" as const,
+        description: "Wyczerpujące, techniczne wyjaśnienie",
       },
     ],
   },

@@ -1,14 +1,12 @@
-"use client";
+"use client"
 
-import { Suspense } from "react";
-import HistoryPage from "~/components/ai-wyjasnia/history/history-list";
+import HistoryPage from "~/components/ai-wyjasnia/history/history-list"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 
 export default function Page() {
   return (
-    <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <HistoryPage />
-      </Suspense>
-    </>
-  );
+    <PageHeaderWrapper title="Historia czatów">
+      <HistoryPage />
+    </PageHeaderWrapper>
+  )
 }
