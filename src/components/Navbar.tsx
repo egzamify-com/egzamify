@@ -28,8 +28,11 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-end gap-4 border-b px-4`}
+      className={`sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between gap-4 border-b px-4`}
     >
+      <div>
+        <h1 className="text-3xl font-extrabold">Egzamify</h1>
+      </div>
       <div className="flex gap-4">
         <AuthLoading>
           <AuthSkeleton />
