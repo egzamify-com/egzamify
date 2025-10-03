@@ -1,30 +1,30 @@
-"use client";
+"use client"
 
-import { useQuery } from "convex-helpers/react";
-import { api } from "convex/_generated/api";
-import { Settings, User } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import SpinnerLoading from "~/components/SpinnerLoading";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
-import ActivityStatusAvatar from "~/components/users/activity-status-avatar";
+import { useQuery } from "convex-helpers/react"
+import { api } from "convex/_generated/api"
+import { Settings, User } from "lucide-react"
+import Link from "next/link"
+import { redirect } from "next/navigation"
+import SpinnerLoading from "~/components/SpinnerLoading"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent } from "~/components/ui/card"
+import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 
 export default function Page() {
   const {
     data: user,
     error,
     isPending,
-  } = useQuery(api.users.query.getCurrentUser);
+  } = useQuery(api.users.query.getCurrentUser)
 
   if (isPending) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center">
         <SpinnerLoading />
       </div>
-    );
+    )
   }
-  if (!user || error) return redirect("/sign-in");
+  if (!user || error) return redirect("/sign-in")
 
   return (
     <div className="space-y-6 px-10 pt-10">
@@ -39,17 +39,17 @@ export default function Page() {
 
             <Link href={`/user/${user.username}`}>
               <Button variant={"outline"}>
-                <User /> Public profile
+                <User /> Profil publiczny
               </Button>
             </Link>
             <Link href={"/dashboard/settings"}>
               <Button variant={"outline"}>
-                <Settings /> Settings
+                <Settings /> Ustawienia
               </Button>
             </Link>
           </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

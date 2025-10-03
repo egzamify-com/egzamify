@@ -95,7 +95,7 @@ export function NavUser() {
             <Link href={"/dashboard/settings"}>
               <DropdownMenuItem className="cursor-pointer">
                 <Settings />
-                Settings
+                Ustawienia
               </DropdownMenuItem>
             </Link>
             {theme === "dark" ? (
@@ -104,7 +104,7 @@ export function NavUser() {
                 className="cursor-pointer"
               >
                 <Sun />
-                Light Theme
+                Jasny
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem
@@ -112,13 +112,13 @@ export function NavUser() {
                 className="cursor-pointer"
               >
                 <Moon />
-                Dark Theme
+                Ciemny
               </DropdownMenuItem>
             )}
             <Link href={"/feedback"}>
               <DropdownMenuItem className="cursor-pointer">
                 <Bug />
-                Report a bug
+                Zgłoś błąd
               </DropdownMenuItem>
             </Link>
             <DropdownMenuItem
@@ -131,7 +131,7 @@ export function NavUser() {
               }}
             >
               <LogOut color="red" />
-              Sign Out
+              Wyloguj się
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
