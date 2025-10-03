@@ -1,26 +1,26 @@
-import type { Id } from "convex/_generated/dataModel";
-import { Download, ExternalLink } from "lucide-react";
-import Link from "next/link";
-import { type ReactNode } from "react";
+import type { Id } from "convex/_generated/dataModel"
+import { Download, ExternalLink } from "lucide-react"
+import Link from "next/link"
+import { type ReactNode } from "react"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/ui/tooltip";
-import { getFileUrl } from "~/lib/utils";
-import { Button } from "../../../ui/button";
+} from "~/components/ui/tooltip"
+import { getFileUrl } from "~/lib/utils"
+import { Button } from "../../../ui/button"
 
 export default function AttachmentItem({
   attachmentName,
   attachmentId,
   actionButtons,
 }: {
-  attachmentName: string;
-  url?: string;
-  attachmentId?: Id<"_storage">;
-  actionButtons?: ReactNode;
+  attachmentName: string
+  url?: string
+  attachmentId?: Id<"_storage">
+  actionButtons?: ReactNode
 }) {
-  const urls = getFileUrl(attachmentId, attachmentName);
+  const urls = getFileUrl(attachmentId, attachmentName)
 
   return (
     <div className="grid gap-4">
@@ -40,7 +40,7 @@ export default function AttachmentItem({
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Open in new tab</p>
+                  <p>Otwórz w nowej karcie</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -52,7 +52,7 @@ export default function AttachmentItem({
                   </a>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Download</p>
+                  <p>Pobierz</p>
                 </TooltipContent>
               </Tooltip>
               {actionButtons}
@@ -61,5 +61,5 @@ export default function AttachmentItem({
         </div>
       </div>
     </div>
-  );
+  )
 }

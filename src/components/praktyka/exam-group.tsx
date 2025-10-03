@@ -1,12 +1,12 @@
-import { Box, Calendar, ChevronDown } from "lucide-react";
-import { useState } from "react";
-import type { ConvertedExams } from "~/app/dashboard/egzamin-praktyczny/page";
-import { cn } from "~/lib/utils";
-import ExamBadge from "./exam-badge";
-import ExamItem from "./exam-item";
+import { Box, Calendar, ChevronDown } from "lucide-react"
+import { useState } from "react"
+import type { ConvertedExams } from "~/app/dashboard/egzamin-praktyczny/page"
+import { cn } from "~/lib/utils"
+import ExamBadge from "./exam-badge"
+import ExamItem from "./exam-item"
 
 export default function ExamGroup({ group }: { group: ConvertedExams }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
     <div className="overflow-hidden rounded-lg border shadow-sm">
@@ -30,8 +30,7 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
             <div className="flex items-center text-sm">
               <Calendar className="mr-2 h-4 w-4" />
               <span>
-                {group.count === 1 ? "1 exam" : `${group.count} exams`}{" "}
-                available
+                {group.count === 1 ? "1 egzamin" : `${group.count} egzaminów`}
               </span>
             </div>
             <ChevronDown
@@ -51,5 +50,5 @@ export default function ExamGroup({ group }: { group: ConvertedExams }) {
         </div>
       )}
     </div>
-  );
+  )
 }

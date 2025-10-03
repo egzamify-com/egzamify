@@ -55,8 +55,8 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
       })
     } catch (error) {
       console.error("[EXAM CHECK] Error during image upload:", error)
-      toast.error("Failed to upload file!", {
-        description: `File ${file.name} failed to upload.`,
+      toast.error("Nie udało się przesłać pliku!", {
+        description: `Plik ${file.name} nie został przesłany poprawnie.`,
       })
     }
   }
@@ -87,7 +87,7 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
     console.log("exec promsies")
     await Promise.all(promises)
     setIsUploading(false)
-    toast.success("Attachments uploaded successfully")
+    toast.success("Przesłano pliki")
   }
 
   return (
@@ -118,7 +118,7 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
         ) : (
           <>
             <Upload />
-            <p>Upload exam attachments</p>
+            <p>Prześlij pliki</p>
           </>
         )}
       </Button>

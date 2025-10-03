@@ -1,54 +1,54 @@
-"use client";
+"use client"
 
-import type { Doc } from "convex/_generated/dataModel";
-import type { requirementsArray } from "convex/praktyka/helpers";
-import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react";
-import { useState } from "react";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
+import type { Doc } from "convex/_generated/dataModel"
+import type { requirementsArray } from "convex/praktyka/helpers"
+import { CheckCircle2, ChevronDown, ChevronRight, XCircle } from "lucide-react"
+import { useState } from "react"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent } from "~/components/ui/card"
 
 export default function RequirementsTable({
   aiRating,
 }: {
-  aiRating: Doc<"usersPracticalExams">["aiRating"];
+  aiRating: Doc<"usersPracticalExams">["aiRating"]
 }) {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(),
-  );
+  )
   const [expandedRequirements, setExpandedRequirements] = useState<Set<string>>(
     new Set(),
-  );
+  )
 
-  if (!aiRating) return null;
-  if (!aiRating.details) return null;
+  if (!aiRating) return null
+  if (!aiRating.details) return null
 
   const toggleCategory = (categoryId: string) => {
-    const newExpanded = new Set(expandedCategories);
+    const newExpanded = new Set(expandedCategories)
     if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId);
+      newExpanded.delete(categoryId)
     } else {
-      newExpanded.add(categoryId);
+      newExpanded.add(categoryId)
     }
-    setExpandedCategories(newExpanded);
-  };
+    setExpandedCategories(newExpanded)
+  }
 
   const toggleRequirement = (requirementId: string) => {
-    const newExpanded = new Set(expandedRequirements);
+    const newExpanded = new Set(expandedRequirements)
     if (newExpanded.has(requirementId)) {
-      newExpanded.delete(requirementId);
+      newExpanded.delete(requirementId)
     } else {
-      newExpanded.add(requirementId);
+      newExpanded.add(requirementId)
     }
-    setExpandedRequirements(newExpanded);
-  };
+    setExpandedRequirements(newExpanded)
+  }
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold">Objective Breakdown</h3>
+      <h3 className="text-xl font-semibold">Poszczególne wymagania</h3>
       <div className="space-y-3">
         {aiRating.details.map((category) => {
-          const categoryId = `${category.symbol}-${category.title}`;
-          const isExpanded = expandedCategories.has(categoryId);
+          const categoryId = `${category.symbol}-${category.title}`
+          const isExpanded = expandedCategories.has(categoryId)
 
           return (
             <Card key={categoryId} className="overflow-hidden py-0">
@@ -89,12 +89,12 @@ export default function RequirementsTable({
                 {isExpanded && (
                   <div className="border-t">
                     {category.requirements.map((requirement) => {
-                      const requirementId = `${categoryId}-${requirement.symbol}`;
+                      const requirementId = `${categoryId}-${requirement.symbol}`
                       const hasExplanation =
                         requirement.answer?.explanation &&
-                        requirement.answer.explanation !== "N/A";
+                        requirement.answer.explanation !== "N/A"
                       const isRequirementExpanded =
-                        expandedRequirements.has(requirementId);
+                        expandedRequirements.has(requirementId)
 
                       return (
                         <div
@@ -160,24 +160,24 @@ export default function RequirementsTable({
                             </div>
                           )}
                         </div>
-                      );
+                      )
                     })}
                   </div>
                 )}
               </CardContent>
             </Card>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 function parseRequirementsCount(requirements: typeof requirementsArray.type) {
-  let corrects = 0;
-  let bads = 0;
+  let corrects = 0
+  let bads = 0
   for (const requirement of Array.from(requirements)) {
-    if (requirement.answer?.isCorrect) corrects++;
-    else bads++;
+    if (requirement.answer?.isCorrect) corrects++
+    else bads++
   }
-  return { corrects, bads };
+  return { corrects, bads }
 }

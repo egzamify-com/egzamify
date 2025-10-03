@@ -1,27 +1,27 @@
-import { Check, CircleDot } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
-import type { PracticalExamCheckMode } from "~/actions/request-practical-exam-check-action";
-import { APP_CONFIG } from "~/APP_CONFIG";
-import { Card } from "~/components/ui/card";
-import { Label } from "~/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Check, CircleDot } from "lucide-react"
+import type { Dispatch, SetStateAction } from "react"
+import type { PracticalExamCheckMode } from "~/actions/request-practical-exam-check-action"
+import { APP_CONFIG } from "~/APP_CONFIG"
+import { Card } from "~/components/ui/card"
+import { Label } from "~/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 
 export default function SelectMode({
   selectedMode,
   setSelectedMode,
 }: {
-  selectedMode: PracticalExamCheckMode;
-  setSelectedMode: Dispatch<SetStateAction<PracticalExamCheckMode>>;
+  selectedMode: PracticalExamCheckMode
+  setSelectedMode: Dispatch<SetStateAction<PracticalExamCheckMode>>
 }) {
   return (
     <>
       <div className="mx-auto">
         <div className="mb-4">
           <h1 className="mb-2 flex flex-row items-center justify-start gap-1 font-semibold">
-            <CircleDot className="mr-2 h-5 w-5" /> Choose Your Mode
+            <CircleDot className="mr-2 h-5 w-5" /> Wybierz tryb sprawdzenia AI
           </h1>
           <p className="text-muted-foreground text-sm">
-            Select the exam rating option that best fits your needs
+            Wybierz tryb, który bardziej ci odpowiada.
           </p>
         </div>
 
@@ -34,24 +34,24 @@ export default function SelectMode({
           <ModeCard
             selectedMode={selectedMode}
             mode="standard"
-            title="Standard Review"
-            description="Get essential feedback on your practical exam with key
-            insights and improvement suggestions"
-            smallDescription="Perfect for quick feedback"
+            title="Podstawowe sprawdzenie egzaminu"
+            description="Uzyskaj niezbędną informację zwrotną na temat egzaminu wraz z kluczowymi
+            wnioskami i sugestiami dotyczącymi poprawy."
+            smallDescription="Idealne dla szybkiej oceny"
           />
 
           <ModeCard
             selectedMode={selectedMode}
             mode="complete"
-            title="Complete Breakdown"
-            description="Comprehensive analysis, scoring
-          breakdown, and personalized recommendations"
-            smallDescription="Most comprehensive option"
+            title="Pełna ocena egzaminu"
+            description="Kompleksowa analiza, podział na poszczególne wymagania egzaminu
+            i profesjonalne rekomendacje."
+            smallDescription="Najbardziej kompleksowa opcja"
           />
         </RadioGroup>
       </div>
     </>
-  );
+  )
 }
 function ModeCard({
   selectedMode,
@@ -60,11 +60,11 @@ function ModeCard({
   description,
   smallDescription,
 }: {
-  selectedMode: PracticalExamCheckMode;
-  mode: PracticalExamCheckMode;
-  title: string;
-  description: string;
-  smallDescription: string;
+  selectedMode: PracticalExamCheckMode
+  mode: PracticalExamCheckMode
+  title: string
+  description: string
+  smallDescription: string
 }) {
   return (
     <div className="relative h-full">
@@ -118,5 +118,5 @@ function ModeCard({
         </Card>
       </Label>
     </div>
-  );
+  )
 }

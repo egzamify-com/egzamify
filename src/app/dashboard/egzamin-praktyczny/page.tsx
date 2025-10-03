@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import { usePaginatedQuery } from "convex-helpers/react/cache";
-import { api } from "convex/_generated/api";
-import { type PaginatedQueryItem } from "convex/react";
-import _ from "lodash";
-import { ErrorBoundary } from "react-error-boundary";
-import FullScreenError from "~/components/full-screen-error";
-import LoadMoreBtn from "~/components/load-more";
-import PageHeaderWrapper from "~/components/page-header-wrapper";
-import ExamGroup from "~/components/praktyka/exam-group";
-import PracticalExamsFilters from "~/components/praktyka/filters";
-import ExamPageSkeleton, { LoadingMore } from "~/components/praktyka/loadings";
-import { Button } from "~/components/ui/button";
+import { usePaginatedQuery } from "convex-helpers/react/cache"
+import { api } from "convex/_generated/api"
+import { type PaginatedQueryItem } from "convex/react"
+import _ from "lodash"
+import { ErrorBoundary } from "react-error-boundary"
+import FullScreenError from "~/components/full-screen-error"
+import LoadMoreBtn from "~/components/load-more"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
+import ExamGroup from "~/components/praktyka/exam-group"
+import PracticalExamsFilters from "~/components/praktyka/filters"
+import ExamPageSkeleton, { LoadingMore } from "~/components/praktyka/loadings"
+import { Button } from "~/components/ui/button"
 export type ConvertedExams = {
-  qualificationId: string;
-  count: number;
-  exams: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>[];
-};
+  qualificationId: string
+  count: number
+  exams: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>[]
+}
 export default function Page() {
   return (
     <ErrorBoundary
@@ -27,12 +27,12 @@ export default function Page() {
             errorMessage="Failed to load exams"
             actionButton={<Button onClick={resetErrorBoundary}>Retry</Button>}
           />
-        );
+        )
       }}
     >
       <PraktykaPage />
     </ErrorBoundary>
-  );
+  )
 }
 function PraktykaPage() {
   const {
@@ -43,25 +43,25 @@ function PraktykaPage() {
     api.praktyka.query.listPracticalExams,
     {},
     { initialNumItems: 40 },
-  );
+  )
 
-  if (status === "LoadingFirstPage") return <ExamPageSkeleton />;
+  if (status === "LoadingFirstPage") return <ExamPageSkeleton />
   if (exams.length === 0)
-    return <FullScreenError type="warning" errorMessage="No exams found" />;
+    return <FullScreenError type="warning" errorMessage="No exams found" />
 
   function convertExams() {
-    const grouped = _.groupBy(exams, "qualificationId");
+    const grouped = _.groupBy(exams, "qualificationId")
     return Object.entries(grouped).map(([qualificationId, examsInGroup]) => ({
       qualificationId: qualificationId,
       count: examsInGroup.length,
       exams: examsInGroup,
-    }));
+    }))
   }
 
   return (
     <PageHeaderWrapper
-      title="Available Exams"
-      description="Choose from our comprehensive exam catalog"
+      title="Egzamin praktyczny"
+      description="Przeglądaj dostępne egzaminy praktyczne. Prześlij swoją pracę, błyskawicznie otrzymaj wyniki."
     >
       <PracticalExamsFilters />
       <div className="flex flex-col gap-4">
@@ -75,5 +75,5 @@ function PraktykaPage() {
         canLoadMore={status === "CanLoadMore"}
       />
     </PageHeaderWrapper>
-  );
+  )
 }

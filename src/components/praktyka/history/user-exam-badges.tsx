@@ -1,14 +1,14 @@
-import type { api } from "convex/_generated/api";
-import type { PaginatedQueryItem } from "convex/react";
-import { Box, Calendar, Check, IdCard, Star } from "lucide-react";
-import SemanticDate from "~/components/semantic-date";
-import ExamBadge from "../exam-badge";
-import { parseExamScore } from "./details-page/summary-and-score";
+import type { api } from "convex/_generated/api"
+import type { PaginatedQueryItem } from "convex/react"
+import { Box, Calendar, Check, IdCard, Sparkles, Star } from "lucide-react"
+import SemanticDate from "~/components/semantic-date"
+import ExamBadge from "../exam-badge"
+import { parseExamScore } from "./details-page/summary-and-score"
 
 export default function UserExamBadges({
   userExam,
 }: {
-  userExam: PaginatedQueryItem<typeof api.praktyka.query.listUserExams>;
+  userExam: PaginatedQueryItem<typeof api.praktyka.query.listUserExams>
 }) {
   return (
     <div className="flex w-full items-center justify-start gap-2">
@@ -36,9 +36,15 @@ export default function UserExamBadges({
         )}
       />
       <ExamBadge
-        stat={userExam.aiRating?.details ? "Complete check" : "Standard check"}
-        icon={<Star size={18} />}
+        stat={userExam.aiRating?.details ? "Pełna ocena" : "Podstawowa ocena"}
+        icon={
+          userExam.aiRating?.details ? (
+            <Sparkles size={18} />
+          ) : (
+            <Star size={18} />
+          )
+        }
       />
     </div>
-  );
+  )
 }

@@ -1,28 +1,28 @@
-import { api } from "convex/_generated/api";
-import type { Doc } from "convex/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
-import SpinnerLoading from "~/components/SpinnerLoading";
-import { Button } from "~/components/ui/button";
+import { api } from "convex/_generated/api"
+import type { Doc } from "convex/_generated/dataModel"
+import { useMutation } from "convex/react"
+import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import SpinnerLoading from "~/components/SpinnerLoading"
+import { Button } from "~/components/ui/button"
 
 export default function ClearAll({
   userExam,
 }: {
-  userExam: Doc<"usersPracticalExams">;
+  userExam: Doc<"usersPracticalExams">
 }) {
-  const deleteAttachment = useMutation(api.praktyka.mutate.deleteAttachment);
-  const [isPending, setIsPending] = useState(false);
+  const deleteAttachment = useMutation(api.praktyka.mutate.deleteAttachment)
+  const [isPending, setIsPending] = useState(false)
   async function handleClearAll() {
     const promises = userExam.attachments?.map((attachment) => {
       return deleteAttachment({
         attachmentId: attachment.attachmentId,
         userExamId: userExam._id,
-      });
-    });
-    if (!promises) return;
+      })
+    })
+    if (!promises) return
 
-    await Promise.all(promises);
+    await Promise.all(promises)
   }
   return (
     <>
@@ -31,19 +31,19 @@ export default function ClearAll({
         size={"sm"}
         variant={"destructive"}
         onClick={async () => {
-          setIsPending(true);
-          await handleClearAll();
-          setIsPending(false);
+          setIsPending(true)
+          await handleClearAll()
+          setIsPending(false)
         }}
       >
         {isPending ? (
           <SpinnerLoading />
         ) : (
           <>
-            <Trash2 /> Clear all
+            <Trash2 /> Wyczyść wszystkie
           </>
         )}
       </Button>
     </>
-  );
+  )
 }

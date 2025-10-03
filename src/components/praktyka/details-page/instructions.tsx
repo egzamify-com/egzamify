@@ -20,7 +20,7 @@ export const Instructions = ({ exam }: { exam: BaseExam }) => {
           <CardTitle className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-end justify-center gap-1">
               <FileText className="mr-2 h-5 w-5" />
-              Exam Instruction
+              Treść egzaminu
             </div>
             <Button variant={"ghost"}>
               <ChevronDown
