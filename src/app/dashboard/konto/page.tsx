@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { api } from "convex/_generated/api";
-import { useQuery } from "convex/react";
+import { api } from "convex/_generated/api"
+import { useQuery } from "convex/react"
 import {
   Award,
   BookOpen,
@@ -15,9 +15,9 @@ import {
   TrendingUp,
   User,
   XCircle,
-} from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+} from "lucide-react"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 import {
   Area,
   AreaChart,
@@ -33,30 +33,31 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Progress } from "~/components/ui/progress";
+} from "recharts"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Progress } from "~/components/ui/progress"
+import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 
 export default function StatisticsPage() {
-  const user = useQuery(api.users.query.getCurrentUser);
-  const userStats = useQuery(api.statistics.query.getUserStatistics);
-  const weeklyProgress = useQuery(api.statistics.query.getWeeklyProgress);
+  const user = useQuery(api.users.query.getCurrentUser)
+  const userStats = useQuery(api.statistics.query.getUserStatistics)
+  const weeklyProgress = useQuery(api.statistics.query.getWeeklyProgress)
   const qualificationStats = useQuery(
     api.statistics.query.getQualificationStats,
-  );
-  const monthlyTrend = useQuery(api.statistics.query.getMonthlyTrends);
-  const studyPatterns = useQuery(api.statistics.query.getStudyPatterns);
-  const skillRadar = useQuery(api.statistics.query.getSkillRadar);
+  )
+  const monthlyTrend = useQuery(api.statistics.query.getMonthlyTrends)
+  const studyPatterns = useQuery(api.statistics.query.getStudyPatterns)
+  const skillRadar = useQuery(api.statistics.query.getSkillRadar)
   const difficultyBreakdown = useQuery(
     api.statistics.query.getDifficultyBreakdown,
-  );
+  )
 
   const formatTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    return `${hours}h ${mins}m`
+  }
 
   if (
     user === undefined ||
@@ -72,21 +73,22 @@ export default function StatisticsPage() {
       <div className="flex h-full w-full flex-col items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    )
   }
 
-  if (!user) return redirect("/sign-in");
+  if (!user) return redirect("/sign-in")
 
   return (
     <div className="space-y-6 px-10 pt-10 pb-16">
       <Card className="w-full">
         <CardContent className="p-6">
           <div className="flex items-center space-x-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-600">
+            {/*<div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-600">
               <span className="text-lg font-medium text-white">
                 {user.username?.charAt(0).toUpperCase() || "U"}
               </span>
-            </div>
+            </div>*/}
+            <ActivityStatusAvatar size={55} />
             <div className="flex-1">
               <h1 className="text-2xl font-bold">{user.username}</h1>
               <p className="text-muted-foreground mt-1">{user.email}</p>
@@ -390,5 +392,5 @@ export default function StatisticsPage() {
         </Card>
       )}
     </div>
-  );
+  )
 }

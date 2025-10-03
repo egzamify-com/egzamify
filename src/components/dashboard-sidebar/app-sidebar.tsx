@@ -119,7 +119,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={"/"}>
-                <span className="text-base font-semibold">Nazwa</span>
+                <h1 className="text-xl font-extrabold">Egzamify</h1>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
