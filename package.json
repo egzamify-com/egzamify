@@ -55,7 +55,7 @@
     "ai": "^5.0.44",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.27.0",
+    "convex": "^1.27.3",
     "convex-helpers": "^0.1.104",
     "lodash": "^4.17.21",
     "lucide-react": "^0.509.0",
