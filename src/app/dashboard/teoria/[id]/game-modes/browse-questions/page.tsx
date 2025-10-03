@@ -1,13 +1,14 @@
 import BrowseQuestions from "~/components/teoria/browse-questions";
 
 interface BrowseQuestionsPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function BrowseQuestionsPage({
+export default async function BrowseQuestionsPage({
   params,
 }: BrowseQuestionsPageProps) {
-  return <BrowseQuestions qualificationId={params.id} />;
+  const { id } = await params;
+  return <BrowseQuestions qualificationId={id} />;
 }

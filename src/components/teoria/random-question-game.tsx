@@ -2,16 +2,17 @@
 
 import { api } from "convex/_generated/api";
 import type { Id } from "convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import {
   CheckCircle,
   Clock,
+  Flame,
   Lightbulb,
   Loader2,
   RotateCcw,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -25,12 +26,21 @@ export default function RandomQuestionGame({
 }: RandomQuestionGameProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minuty
+  const [timeLeft, setTimeLeft] = useState(120);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [answerStreak, setAnswerStreak] = useState(0);
+  const [sessionId, setSessionId] = useState<Id<"userActivityHistory"> | null>(
+    null,
+  );
 
   const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
+  const [displayedExplanation, setDisplayedExplanation] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
+
+  const isGeneratingRef = useRef(false);
 
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationId: qualificationId as Id<"qualifications">,
@@ -39,14 +49,88 @@ export default function RandomQuestionGame({
 
   const currentQuestion = questionData?.question;
 
-  const saveExplanation = useMutation(api.teoria.mutate.saveExplanation);
+  const generateExplanation = useAction(api.teoria.actions.generateExplanation);
+  const saveUserAnswer = useMutation(api.statistics.mutations.saveUserAnswer);
+  const startStudySession = useMutation(
+    api.statistics.mutations.startStudySession,
+  );
+  const endStudySession = useMutation(api.statistics.mutations.endStudySession);
+
+  // POPRAWIONE: Sesja nauki - start i cleanup
+  useEffect(() => {
+    let currentSessionId: Id<"userActivityHistory"> | null = null;
+
+    // Start sesji
+    startStudySession().then((result) => {
+      currentSessionId = result.sessionId;
+      setSessionId(result.sessionId);
+      console.log("📚 Sesja nauki rozpoczęta:", result.sessionId);
+    });
+
+    // Cleanup - zakończ sesję przy odmontowaniu
+    return () => {
+      if (currentSessionId) {
+        console.log("🛑 Kończenie sesji nauki:", currentSessionId);
+        endStudySession({ sessionId: currentSessionId });
+      }
+    };
+  }, []); // Pusty deps array - tylko raz przy montowaniu
+
+  const getStreakFromStorage = (): number => {
+    if (typeof window === "undefined") return 0;
+    const stored = localStorage.getItem("answerStreak");
+    return stored ? Number.parseInt(stored, 10) : 0;
+  };
+
+  const saveStreakToStorage = (streak: number): void => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("answerStreak", streak.toString());
+  };
+
+  const updateStreak = (correct: boolean): void => {
+    if (correct) {
+      const newStreak = answerStreak + 1;
+      setAnswerStreak(newStreak);
+      saveStreakToStorage(newStreak);
+    } else {
+      setAnswerStreak(0);
+      saveStreakToStorage(0);
+    }
+  };
+
+  const typeWriterEffect = (text: string, speed = 30) => {
+    setIsTyping(true);
+    setDisplayedExplanation("");
+
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedExplanation((prev) => prev + text.charAt(index));
+        index++;
+      } else {
+        clearInterval(timer);
+        setIsTyping(false);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  };
 
   useEffect(() => {
-    if (currentQuestion) {
+    const savedStreak = getStreakFromStorage();
+    setAnswerStreak(savedStreak);
+  }, []);
+
+  useEffect(() => {
+    if (currentQuestion && !isGeneratingRef.current) {
       setSelectedAnswer(null);
       setShowResult(false);
       setIsCorrect(null);
       setTimeLeft(120);
+      setDisplayedExplanation("");
+      setIsTyping(false);
+      setShowExplanation(false);
+      setIsLoadingExplanation(false);
 
       if (currentQuestion.explanation) {
         setAiExplanation(currentQuestion.explanation);
@@ -54,7 +138,7 @@ export default function RandomQuestionGame({
         setAiExplanation(null);
       }
     }
-  }, [currentQuestion]); // Reaguj na zmianę pytania
+  }, [currentQuestion]);
 
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
@@ -71,44 +155,71 @@ export default function RandomQuestionGame({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleAnswerSelect = (answerIndex: number) => {
+  const handleAnswerSelect = async (answerIndex: number) => {
     if (showResult || !currentQuestion) return;
 
     setSelectedAnswer(answerIndex);
     const correct = answerIndex === currentQuestion.correctAnswer;
     setIsCorrect(correct);
     setShowResult(true);
+
+    await saveUserAnswer({
+      question_id: currentQuestion.id as Id<"questions">,
+      answer_index: answerIndex,
+      isCorrect: correct,
+    });
+
+    updateStreak(correct);
   };
 
   const handleTimeUp = () => {
     setIsCorrect(false);
     setShowResult(true);
+    updateStreak(false);
   };
 
   const handleNewQuestion = () => {
-    // Zwiększ refreshKey - to spowoduje nowe zapytanie do bazy
-    setRefreshKey((prev) => prev + 1);
-    // Reszta stanu zostanie zresetowana w useEffect gdy przyjdzie nowe pytanie
+    if (!isGeneratingRef.current) {
+      setRefreshKey((prev) => prev + 1);
+    }
+  };
+
+  const handleShowExplanation = () => {
+    if (!currentQuestion) return;
+    setShowExplanation(true);
+    if (aiExplanation) {
+      typeWriterEffect(aiExplanation, 15);
+    }
   };
 
   const handleGenerateExplanation = async () => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || isLoadingExplanation) return;
 
+    isGeneratingRef.current = true;
     setIsLoadingExplanation(true);
+    setShowExplanation(true);
+    setDisplayedExplanation("");
 
-    const mockExplanation = `Wyjaśnienie AI dla pytania: ${currentQuestion.question.slice(0, 50)}...`;
-
-    setAiExplanation(mockExplanation);
-    setIsLoadingExplanation(false);
-
-    // Zapisz wyjaśnienie do bazy w tle
     try {
-      await saveExplanation({
+      const result = await generateExplanation({
         questionId: currentQuestion.id,
-        explanation: mockExplanation,
+        questionContent: currentQuestion.question,
+        answers: currentQuestion.answers,
+        correctAnswerIndex: currentQuestion.correctAnswer,
+        answerLabels: currentQuestion.answerLabels,
       });
+
+      setAiExplanation(result.explanation);
+      typeWriterEffect(result.explanation, 25);
     } catch (error) {
-      console.error("Błąd podczas zapisywania wyjaśnienia:", error);
+      console.error("❌ Błąd podczas generowania wyjaśnienia:", error);
+      const errorMessage =
+        "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.";
+      setAiExplanation(errorMessage);
+      typeWriterEffect(errorMessage, 25);
+    } finally {
+      setIsLoadingExplanation(false);
+      isGeneratingRef.current = false;
     }
   };
 
@@ -152,18 +263,27 @@ export default function RandomQuestionGame({
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Losowe pytanie</h1>
+          <div className="flex">
+            <h1 className="text-2xl font-bold">Losowe pytanie</h1>
+            <Badge variant="secondary">
+              Pytanie #{currentQuestion.id.slice(-8)}
+              {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
+            </Badge>
+          </div>
+
           <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
+              <Flame className="h-5 w-5 text-orange-500" />
+              <span className="font-bold text-orange-700">{answerStreak}</span>
+              <span className="text-sm text-orange-600">seria odpowiedzi</span>
+            </div>
+
             <div className="flex items-center gap-2 text-lg font-semibold">
               <Clock className="h-5 w-5" />
               <span className={timeLeft < 30 ? "text-red-600" : ""}>
                 {formatTime(timeLeft)}
               </span>
             </div>
-            <Badge variant="secondary">
-              Pytanie #{currentQuestion.id.slice(-8)}
-              {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
-            </Badge>
           </div>
         </div>
       </div>
@@ -261,30 +381,81 @@ export default function RandomQuestionGame({
           <CardContent className="pt-6">
             <div className="mb-4 text-center">
               {isCorrect ? (
-                <div className="flex items-center justify-center gap-2 text-green-600">
-                  <CheckCircle className="h-8 w-8" />
-                  <span className="text-2xl font-bold">
-                    Poprawna odpowiedź!
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-green-600">
+                    <CheckCircle className="h-8 w-8" />
+                    <span className="text-2xl font-bold">
+                      Poprawna odpowiedź!
+                    </span>
+                  </div>
+                  {answerStreak > 1 && (
+                    <div className="flex items-center justify-center gap-2 text-orange-600">
+                      <Flame className="h-6 w-6" />
+                      <span className="text-lg font-semibold">
+                        Seria {answerStreak} poprawnych odpowiedzi!
+                      </span>
+                      <Flame className="h-6 w-6" />
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="flex items-center justify-center gap-2 text-red-600">
-                  <XCircle className="h-8 w-8" />
-                  <span className="text-2xl font-bold">
-                    {timeLeft === 0 ? "Czas minął!" : "Niepoprawna odpowiedź"}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-red-600">
+                    <XCircle className="h-8 w-8" />
+                    <span className="text-2xl font-bold">
+                      {timeLeft === 0 ? "Czas minął!" : "Niepoprawna odpowiedź"}
+                    </span>
+                  </div>
+                  {answerStreak > 0 && (
+                    <div className="text-gray-600">
+                      <span className="text-sm">
+                        Seria odpowiedzi została przerwana na {answerStreak}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Wyjaśnienie */}
-            {aiExplanation && (
-              <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h3 className="mb-2 flex items-center gap-2 font-medium text-blue-800">
+            {showExplanation && (
+              <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 transition-all duration-300">
+                <h3 className="mb-3 flex items-center gap-2 font-medium text-blue-800">
                   <Lightbulb className="h-5 w-5" />
-                  Wyjaśnienie:
+                  Wyjaśnienie AI:
+                  {isLoadingExplanation && (
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  )}
                 </h3>
-                <p className="text-gray-700">{aiExplanation}</p>
+
+                {isLoadingExplanation && !displayedExplanation && (
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <div className="flex space-x-1">
+                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500"></div>
+                      <div
+                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                    </div>
+                    <span className="text-sm">
+                      Groq generuje wyjaśnienie...
+                    </span>
+                  </div>
+                )}
+
+                {displayedExplanation && (
+                  <div className="leading-relaxed text-gray-700">
+                    <p className="whitespace-pre-wrap">
+                      {displayedExplanation}
+                      {isTyping && (
+                        <span className="ml-1 inline-block h-5 w-2 animate-pulse bg-blue-500"></span>
+                      )}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
@@ -299,29 +470,26 @@ export default function RandomQuestionGame({
         <div className="flex gap-2">
           {showResult && (
             <>
-              {!aiExplanation && (
+              {!showExplanation && (
                 <Button
-                  onClick={handleGenerateExplanation}
+                  onClick={
+                    aiExplanation
+                      ? handleShowExplanation
+                      : handleGenerateExplanation
+                  }
                   variant="outline"
                   className="flex items-center gap-2 bg-transparent"
                   disabled={isLoadingExplanation}
                 >
-                  {isLoadingExplanation ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Generowanie...
-                    </>
-                  ) : (
-                    <>
-                      <Lightbulb className="h-4 w-4" />
-                      Objaśnij z AI
-                    </>
-                  )}
+                  <Lightbulb className="h-4 w-4" />
+                  {aiExplanation ? "Pokaż wyjaśnienie" : "Objaśnij z AI (Groq)"}
                 </Button>
               )}
+
               <Button
                 onClick={handleNewQuestion}
                 className="bg-blue-600 hover:bg-blue-700"
+                disabled={isLoadingExplanation}
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 Nowe pytanie
