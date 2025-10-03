@@ -14,15 +14,15 @@ export default function Page() {
   const { incomingRequestsCount, outcomingRequestsCount } = data
   return (
     <PageHeaderWrapper
-      title="Friend Invites"
-      description="Manage your incoming and outgoing friend requests"
+      title="Zaproszenia"
+      description="Zarządzaj swoimi zaproszeniami oraz od innych użytkowników"
     >
       <Tabs defaultValue="incoming" className="w-full">
         <TabsList className="mb-6 grid w-full grid-cols-2">
           <TabsTrigger value="incoming" className="relative">
             <div className="flex items-center gap-2">
               <UserPlus className="h-4 w-4" />
-              <span>Incoming</span>
+              <span>Przychodzące</span>
               {incomingRequestsCount !== undefined && (
                 <>
                   {incomingRequestsCount > 0 ? (
@@ -39,7 +39,7 @@ export default function Page() {
           <TabsTrigger value="pending" className="relative">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              <span>Pending</span>
+              <span>Oczekujące</span>
 
               {outcomingRequestsCount !== undefined && (
                 <>

@@ -28,7 +28,7 @@ export default function DisplayFriendList({
         <Input
           value={search}
           onChange={inputOnChange}
-          placeholder="Search for friends..."
+          placeholder="Wyszukaj znajomego..."
           className="max-w-1/2 pl-10"
         />
       </div>
@@ -93,7 +93,7 @@ function Render({
     return <>{notFoundComponent}</>
   }
 
-  console.log({ friendList })
+  // console.log({ friendList })
   return (
     <div className="space-y-3">
       {friendList.map((friend) => (

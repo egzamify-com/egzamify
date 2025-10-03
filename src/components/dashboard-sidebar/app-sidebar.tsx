@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Calendar,
@@ -11,9 +11,9 @@ import {
   User,
   UserPlus,
   Users,
-} from "lucide-react";
-import Link from "next/link";
-import * as React from "react";
+} from "lucide-react"
+import Link from "next/link"
+import * as React from "react"
 import {
   Sidebar,
   SidebarContent,
@@ -22,20 +22,20 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "~/components/ui/sidebar";
-import InvitesNavBadge from "../friends/invites-nav-badge";
-import { NavMain } from "./nav-main";
-import { NavUser } from "./nav-user";
+} from "~/components/ui/sidebar"
+import InvitesNavBadge from "../friends/invites-nav-badge"
+import { NavMain } from "./nav-main"
+import { NavUser } from "./nav-user"
 
-const SIDEBAR_ICON_SIZE = 18;
+const SIDEBAR_ICON_SIZE = 18
 
 export type NavbarItem = {
-  title: string;
-  url: string;
-  icon: React.ReactNode;
-  badgeComponent?: React.ReactNode;
-  childrenItems?: NavbarItem[];
-};
+  title: string
+  url: string
+  icon: React.ReactNode
+  badgeComponent?: React.ReactNode
+  childrenItems?: NavbarItem[]
+}
 
 const navMain: NavbarItem[] = [
   {
@@ -45,22 +45,22 @@ const navMain: NavbarItem[] = [
   },
 
   {
-    title: "Friends",
+    title: "Znajomi",
     icon: <Users size={SIDEBAR_ICON_SIZE} />,
     url: "/dashboard/friends",
     childrenItems: [
       {
-        title: "My Friends",
+        title: "Moi znajomi",
         url: "/dashboard/friends",
         icon: <Users size={SIDEBAR_ICON_SIZE} />,
       },
       {
-        title: "Add Friends",
+        title: "Dodaj znajomych",
         url: "/dashboard/friends/add",
         icon: <UserPlus size={SIDEBAR_ICON_SIZE} />,
       },
       {
-        title: "Invites",
+        title: "Zaproszenia",
         url: "/dashboard/friends/invites",
         icon: <Mail size={SIDEBAR_ICON_SIZE} />,
         badgeComponent: <InvitesNavBadge />,
@@ -106,7 +106,7 @@ const navMain: NavbarItem[] = [
       },
     ],
   },
-];
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -132,5 +132,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }

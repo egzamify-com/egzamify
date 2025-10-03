@@ -121,9 +121,9 @@ const schema = defineSchema({
     userId: v.id("users"),
     content: v.string(),
     type: v.union(
-      v.literal("Bug report"),
-      v.literal("Feature request"),
-      v.literal("User feedback"),
+      v.literal("Błąd"),
+      v.literal("Propozycja funkcji"),
+      v.literal("Opinia"),
     ),
   }).index("by_user_id", ["userId"]),
 })

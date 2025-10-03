@@ -52,7 +52,7 @@ export default function Navbar() {
 function SignedOut() {
   return (
     <Link href={`/sign-in`}>
-      <Button>Sign in</Button>
+      <Button>Zaloguj się</Button>
     </Link>
   )
 }
@@ -76,6 +76,7 @@ export function NavSignedIn() {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem
+            className="cursor-pointer"
             onClick={async () => {
               await signOut()
               console.log("[AUTH] succesfully signed out")
@@ -84,7 +85,7 @@ export function NavSignedIn() {
             }}
           >
             <LogOut color="red" />
-            Sign Out
+            Wyloguj się
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

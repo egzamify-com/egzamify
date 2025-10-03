@@ -18,7 +18,6 @@ export default function FriendButton({
   alreadyKnownStatus?: Infer<typeof friendFilterValidator>
 }) {
   const { data: currentUser } = useQuery(api.users.query.getCurrentUser)
-
   const { data, error, isPending } = useQuery(
     api.friends.query.checkUserFriendStatus,
     {
@@ -27,15 +26,10 @@ export default function FriendButton({
   )
   if (friendId === currentUser?._id) return null
 
-  if (isPending)
-    return (
-      <div>
-        <SpinnerLoading />
-      </div>
-    )
+  if (isPending) return <SpinnerLoading />
 
   if (error) {
-    console.log(error)
+    console.error(`[FRIENDS] Error - `, error)
     return <div className="text-destructive">Error</div>
   }
 

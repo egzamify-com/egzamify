@@ -12,7 +12,7 @@ export default function Feedbackbtn() {
             <Bug />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Report a bug or send feedback</TooltipContent>
+        <TooltipContent>{"Zgłoś błąd lub podziel się opinią"}</TooltipContent>
       </Tooltip>
     </Link>
   )

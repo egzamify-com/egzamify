@@ -39,21 +39,6 @@ export default function Friend({ friend }: { friend: FriendProps }) {
               friendId={friend.user._id}
               alreadyKnownStatus={status}
             />
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>View Profile</DropdownMenuItem>
-                <DropdownMenuItem>Block User</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
-                  <UserMinus className="h-4 w-4 mr-2" />
-                  Remove Friend
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
           </div>
         </div>
       </CardContent>
