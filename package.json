@@ -50,7 +50,6 @@
     "@tanstack/react-query-devtools": "^5.87.4",
     "@tanstack/react-store": "^0.7.5",
     "@tanstack/react-table": "^8.21.3",
-    "@tanstack/store": "^0.7.5",
     "@types/lodash": "^4.17.20",
     "@vercel/functions": "^3.1.0",
     "ai": "^5.0.44",

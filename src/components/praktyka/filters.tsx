@@ -1,20 +1,19 @@
-import { Filter, Search } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Search } from "lucide-react"
+import { Input } from "../ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../ui/select"
 
 export default function PracticalExamsFilters() {
   return (
     <div className="mb-8 rounded-lg">
       <div className="flex flex-col gap-4 lg:flex-row">
         {/* Search */}
-        <div className="flex-1">
+        <div className="w-2/4">
           <div className="relative">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
             <Input placeholder="Search exams..." className="pl-10" />
@@ -23,7 +22,7 @@ export default function PracticalExamsFilters() {
 
         {/* Category Filter */}
         <Select>
-          <SelectTrigger className="w-full lg:w-48">
+          <SelectTrigger className="w-1/4">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -36,23 +35,9 @@ export default function PracticalExamsFilters() {
           </SelectContent>
         </Select>
 
-        {/* Difficulty Filter */}
-        <Select>
-          <SelectTrigger className="w-full lg:w-48">
-            <SelectValue placeholder="Difficulty" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Levels</SelectItem>
-            <SelectItem value="beginner">Beginner</SelectItem>
-            <SelectItem value="intermediate">Intermediate</SelectItem>
-            <SelectItem value="advanced">Advanced</SelectItem>
-            <SelectItem value="expert">Expert</SelectItem>
-          </SelectContent>
-        </Select>
-
         {/* Sort */}
         <Select>
-          <SelectTrigger className="w-full lg:w-48">
+          <SelectTrigger className="w-1/4">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -62,13 +47,7 @@ export default function PracticalExamsFilters() {
             <SelectItem value="participants">Popularity</SelectItem>
           </SelectContent>
         </Select>
-
-        {/* Filter Button */}
-        <Button variant="outline" className="w-full bg-transparent lg:w-auto">
-          <Filter className="mr-2 h-4 w-4" />
-          More Filters
-        </Button>
       </div>
     </div>
-  );
+  )
 }
