@@ -1,5 +1,9 @@
 import { groq } from "@ai-sdk/groq"
 type AppConfig = {
+  landingPage: {
+    mainTitle: string
+    mainDescription: string
+  }
   practicalExamRating: {
     standardPrice: number
     completePrice: number
@@ -41,6 +45,12 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  landingPage: {
+    mainTitle: "Szybkie i przyjemne przygotowania do egzaminów zawodowych",
+    mainDescription: `Zapomnij o żmudnym kuciu! Z nami nauka staje się angażującą przygodą,
+    a wsparcie AI gwarantuje, że na egzamin pójdziesz z uśmiechem i pełnym
+    przygotowaniem.`,
+  },
   practicalExamRating: {
     standardPrice: 50,
     completePrice: 100,

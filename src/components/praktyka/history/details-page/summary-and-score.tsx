@@ -1,4 +1,5 @@
 import type { Doc } from "convex/_generated/dataModel"
+import { RotateCcw } from "lucide-react"
 import Link from "next/link"
 import { Button } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
@@ -25,11 +26,11 @@ export default function SummaryAndScore({
           )}
         </div>
         <div className="text-muted-foreground text-lg">
-          {aiRating?.score} / {baseExam.maxPoints} Points
+          {aiRating?.score} / {baseExam.maxPoints} Punktów
         </div>
         <Link href={`/dashboard/egzamin-praktyczny/egzamin/${baseExam?._id}`}>
           <Button className="mt-4 w-full max-w-[200px]">
-            Sprobój ponownie
+            <RotateCcw /> Sprobój ponownie
           </Button>
         </Link>
       </div>

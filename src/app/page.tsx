@@ -9,9 +9,9 @@ export default function Page() {
 
       <div className="mx-auto max-w-7xl">
         <FeatureShowcase
-          title="Lightning-fast performance"
-          description="Experience unparalleled speed with our optimized infrastructure. Built for scale, designed for developers. Deploy globally in seconds and deliver exceptional user experiences that keep your customers engaged."
-          imageUrl=""
+          title="Błyskawicznie sprawdź swój egzamin praktyczny"
+          description="Nasza sztuczna inteligencja błyskawicznie przeanalizuje Twoją pracę, wskazując mocne strony i obszary do poprawy. Już nigdy nie trać czasu na samodzielne ocenianie i szukanie błędów w swojej pracy, zostaw to nam!"
+          imageUrl="/ss-praktycznego.webp"
           reverse={false}
         />
 
