@@ -1,0 +1,157 @@
+"use client"
+
+import { api } from "convex/_generated/api"
+import { useMutation } from "convex/react"
+import { Minus, Plus } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
+import type Stripe from "stripe"
+import { createStripeCheckout } from "~/actions/stripe/create-stripe-checkout"
+import SpinnerLoading from "~/components/SpinnerLoading"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import useStripe from "~/hooks/use-stripe"
+import { tryCatch } from "~/lib/tryCatch"
+
+export default function Product({
+  product,
+}: {
+  product: Stripe.Product & {
+    price: Stripe.Price & {
+      transformed_amount: number
+    }
+  }
+}) {
+  console.log({ product })
+  const popular = product.metadata.popular
+  const [quantity, setQuantity] = useState(1)
+  const [mutationPending, setMutationPending] = useState(false)
+  const updateUserPendingCredits = useMutation(
+    api.payments.mutate.updatePendingCredits,
+  )
+  const stripePromise = useStripe()
+  async function handleCheckout() {
+    console.log("[STRIPE] Checkout handler started")
+    setMutationPending(true)
+    const [checkoutId, checkoutIdErr] = await tryCatch(
+      createStripeCheckout(product, quantity),
+    )
+    if (checkoutIdErr) {
+      console.error("[STRIPE] Error creating checkout session", checkoutIdErr)
+      toast.error("Failed to create checkout session, please try again")
+      return
+    }
+    const stripe = await stripePromise()
+    if (!stripe) {
+      console.error("[STRIPE] Stripe on client not initialized")
+      toast.error("Failed to create checkout session, please try again")
+      return
+    }
+
+    const [, err] = await tryCatch(
+      updateUserPendingCredits({
+        pendingCreditsToAdd: quantity * parseInt(product.name),
+      }),
+    )
+    if (err) {
+      console.error("[STRIPE] Error creating checkout session", err)
+      toast.error("Failed to create checkout session, please try again")
+      return
+    }
+    console.log("[STRIPE] storing pending credits")
+    await stripe.redirectToCheckout({
+      sessionId: checkoutId,
+    })
+    setMutationPending(false)
+    console.log("[STRIPE] redirected user to stripe checkout")
+  }
+  return (
+    <Card
+      key={crypto.randomUUID()}
+      className={`relative flex flex-col gap-0 transition-all duration-300 hover:shadow-lg ${
+        popular
+          ? "border-primary hover:border-muted-foreground scale-105 shadow-lg"
+          : "border-border hover:border-muted-foreground"
+      }`}
+    >
+      {popular && (
+        <Badge className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 transform">
+          Most Popular
+        </Badge>
+      )}
+
+      <CardHeader className="pb-4 text-center">
+        {/*<div className="mb-4 flex justify-center">
+          <Check className="h-6 w-6" />
+        </div>*/}
+        <CardTitle className="text-2xl font-bold">
+          <Badge variant={"outline"} className="text-lg font-bold">
+            {product.metadata.label}
+          </Badge>
+        </CardTitle>
+        <div className="mt-2 flex items-baseline justify-center gap-1">
+          <span className="text-primary text-4xl font-bold">
+            {parseInt(product.name) * quantity} credits
+            {/*${product.default_price. as string}*/}
+          </span>
+        </div>
+        <div className="text-accent-foreground mt-2 text-xl font-semibold">
+          {product.price.transformed_amount * quantity} PLN
+        </div>
+        {/*<CardDescription className="mt-3">*/}
+        {/*fdsjkl*/}
+        {/*{plan.description}*/}
+        {/*jfklds*/}
+        {/*</CardDescription>*/}
+      </CardHeader>
+
+      <CardContent className="flex-1">
+        <div className="bg-secondary/50 flex items-center justify-center gap-4 rounded-lg p-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setQuantity((prev) => (prev > 0 ? prev - 1 : prev))}
+            className="h-8 w-8 p-0"
+            disabled={quantity <= 1}
+          >
+            <Minus className="h-4 w-4" />
+          </Button>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-muted-foreground text-sm">Quantity</span>
+            <span className="min-w-[2ch] text-center text-xl font-semibold">
+              {/*{quantities[plan.name]}*/}
+              {quantity}
+            </span>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setQuantity((prev) => prev + 1)}
+            className="h-8 w-8 p-0"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+
+      <CardFooter className="pt-6">
+        <Button
+          variant={popular ? "default" : "outline"}
+          className={`h-14 w-full text-lg font-semibold`}
+          size="lg"
+          onClick={async () => await handleCheckout()}
+          disabled={mutationPending}
+        >
+          {mutationPending ? <SpinnerLoading /> : <p>Buy now</p>}
+        </Button>
+      </CardFooter>
+    </Card>
+  )
+}

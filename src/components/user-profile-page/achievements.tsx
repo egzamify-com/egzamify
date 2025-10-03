@@ -1,7 +1,7 @@
 import { Badge } from "../ui/badge";
 import { Card, CardContent, CardHeader } from "../ui/card";
 
-export default function Achievements({ userId }: { userId: string }) {
+export default function Achievements() {
   return (
     <Card>
       <CardHeader>

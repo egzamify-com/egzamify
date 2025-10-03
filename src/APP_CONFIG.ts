@@ -1,58 +1,95 @@
-import { groq } from "@ai-sdk/groq";
+import { groq } from "@ai-sdk/groq"
 type AppConfig = {
+  landingPage: {
+    mainTitle: string
+    mainDescription: string
+  }
   practicalExamRating: {
-    standardPrice: number;
-    completePrice: number;
-    model: any;
+    standardPrice: number
+    completePrice: number
+    model: any
     // model: "google/gemini-2.0-flash",
-    system: string;
-    schemaName: string;
-    schemaDescription: string;
-  };
+    system: string
+    schemaName: string
+    schemaDescription: string
+  }
   friends: {
-    maxSearchResults: number;
-  };
-  baseCreditPrice: number;
+    friendsPerPage: number
+  }
+  baseCreditPrice: number
   ai_wyjasnia: {
-    creditPricePerMessage: number;
-    maxOutputTokens: number;
-    model: any;
+    creditPricePerMessage: number
+    maxOutputTokens: number
+    model: any
     // model: "google/gemini-2.0-flash",
-    system: string;
+    system: string
     modes: [
       {
-        id: string;
-        title: string;
-        description: string;
+        id: string
+        title: string
+        description: string
       },
       {
-        id: string;
-        title: string;
-        description: string;
+        id: string
+        title: string
+        description: string
       },
 
       {
-        id: string;
-        title: string;
-        description: string;
+        id: string
+        title: string
+        description: string
       },
-    ];
-  };
-};
+    ]
+  }
+}
 
 export const APP_CONFIG: AppConfig = {
+  landingPage: {
+    mainTitle: "Szybkie i przyjemne przygotowania do egzaminów zawodowych",
+    mainDescription: `Zapomnij o żmudnym kuciu! Z nami nauka staje się angażującą przygodą,
+    a wsparcie AI gwarantuje, że na egzamin pójdziesz z uśmiechem i pełnym
+    przygotowaniem.`,
+  },
   practicalExamRating: {
     standardPrice: 50,
     completePrice: 100,
-    model: groq("llama-3.3-70b-versatile"),
     // model: "google/gemini-2.0-flash",
+    model: "google/gemini-2.5-flash",
     system: `
-    You are a assistant for young student learning for exams. You will be provided with a exam data like how to rate exam (every requirement is one point), also exam content, so actual exam tasks which user need to solve, and also you will be provided with exams attachments, which can be needed. This is only data for the base exam, next comes user data you will get. You will be provided with users files (in URL form), this is users solution for the exam. Your job is to understand base exam needs, and then compare the requirements to users work. You have to rate users exam, but the exam solution is in file format, can be multiple files. Also be aware that the studets are polish and are taking polish exams 'Egzamin Zawodowy'. You support two modes, first one 'standard', in this mode you only return summary, and points, you dont care about requrements(details). Second mode is complete, in this mode you return to user full output with details array.`,
+    You are an assistant evaluating Polish vocational exams ("Egzamin Zawodowy").
+    Your task is to rate the student’s solution based strictly on the provided exam data.
+
+    You will always receive the following information:
+    1. **<ratingData>** – the official scoring rubric. Each requirement is worth 1 point. Optional notes describe how to handle edge cases.
+    2. **<exam content>** – the exam objectives and tasks the student had to complete.
+    3. **<exam max points>** – the maximum possible score.
+    4. **<exam qualification>** – the qualification this exam belongs to.
+    5. **Base exam attachments** – reference materials given to the student (not created by them, not scored).
+    6. **User exam files** – the student’s own work (only these are rated).
+
+    ### Rules for evaluation
+    - Only award points when a requirement from <ratingData>' is **clearly met in the user’s files**.
+    - If a requirement is not met or cannot be verified, do **not** give the point.
+    - The **total score** must equal the number of requirements met. It cannot exceed '<exam max points>'.
+    - Always justify why points were were NOT given. If isCorrect=true for a requirement, dont explain it (if the mode is 'complete').
+    - Ignore base exam attachments when scoring (use them only as reference).
+    - Apply optional notes from '<ratingData>' carefully (e.g., handling screenshots, minor typos, or PHP errors).
+    - Output must always follow the required JSON schema.
+    - The score field must equal the number of requirements with isCorrect=true. Do not invent it, always count it using the requirements with isCorrect=true.
+
+    ### Modes
+    - **Standard mode** → return only summary and score (no details).
+    - **Complete mode** → return summary, score, and an array of details for each requirement (met or not met).
+
+    ### Language & Style
+    - Always respond in **Polish**, in a supportive and friendly tone (even for low scores).
+    - Never invent new requirements, and never deviate from '<ratingData>'.  `,
     schemaName: `User's exam rating data`,
     schemaDescription: `Result of rating user's exam files based on exam rating data and exam actual content`,
   },
   friends: {
-    maxSearchResults: 200,
+    friendsPerPage: 50,
   },
   baseCreditPrice: 0,
   ai_wyjasnia: {
@@ -60,7 +97,7 @@ export const APP_CONFIG: AppConfig = {
     maxOutputTokens: 500,
     model: groq("llama-3.3-70b-versatile"),
     // model: "google/gemini-2.0-flash",
-    system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly). Also you have to append the mode you generated response with just a text at the end of your response.
+    system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly).
     You also support modes of responses, which are:
 
     Normal:
@@ -77,23 +114,23 @@ export const APP_CONFIG: AppConfig = {
     modes: [
       {
         id: "normal",
-        title: "Normal" as const,
-        description: "Standard, balanced explanation",
+        title: "Normalny" as const,
+        description: "Domyślna, zbalansowana odpowiedź",
       },
       {
         id: "eli5",
         title: "ELI5" as const,
-        description: "Explain like I'm 5 (simplified, using analogies)",
+        description: "Wyjaśnienie jak dla 5 latka (uproszczone)",
       },
 
       {
         id: "detailed",
-        title: "Detailed" as const,
-        description: "Comprehensive explanation with technical details",
+        title: "Szczegółowy" as const,
+        description: "Wyczerpujące, techniczne wyjaśnienie",
       },
     ],
   },
-};
-type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes;
-type ModeObject = ModesArray[number];
-export type AiWyjasniaMode = ModeObject["title"];
+}
+type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes
+type ModeObject = ModesArray[number]
+export type AiWyjasniaMode = ModeObject["title"]

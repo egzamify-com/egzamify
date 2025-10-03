@@ -1,48 +1,32 @@
-import { useQuery } from "convex-helpers/react";
-import { api } from "convex/_generated/api";
-import { Badge } from "../ui/badge";
+import { useQuery } from "convex-helpers/react"
+import { api } from "convex/_generated/api"
+import { Badge } from "../ui/badge"
 
 export default function InvitesNavBadge() {
-  const { data: incomingRequests } = useQuery(
-    api.friends.query.getFriendsWithSearch,
-    {
-      filter: "incoming_requests",
-      search: "",
-    },
-  );
-  const incomingRequestsCount = incomingRequests?.length ?? 0;
-
-  const { data: outcomingRequests } = useQuery(
-    api.friends.query.getFriendsWithSearch,
-    {
-      filter: "outcoming_requests",
-      search: "",
-    },
-  );
-
-  const outcomingRequestsCount = outcomingRequests?.length ?? 0;
-
+  const { data } = useQuery(api.friends.query.getInvitesDataForSidebar)
+  if (!data) return null
+  const { incomingRequestsCount, outcomingRequestsCount } = data
   function render() {
     if (
       incomingRequestsCount === undefined ||
       outcomingRequestsCount === undefined
     ) {
-      return null;
+      return null
     }
 
     if (incomingRequestsCount + outcomingRequestsCount === 0) {
-      return null;
+      return null
     }
 
     if (incomingRequestsCount + outcomingRequestsCount > 20) {
-      return <Badge className="ml-1">20+</Badge>;
+      return <Badge className="ml-1">20+</Badge>
     } else {
       return (
         <Badge className="ml-1">
           {incomingRequestsCount + outcomingRequestsCount}
         </Badge>
-      );
+      )
     }
   }
-  return <>{render()}</>;
+  return <>{render()}</>
 }

@@ -1,30 +1,16 @@
-"use client";
+"use client"
 
-import { useQuery } from "convex-helpers/react";
-import { api } from "convex/_generated/api";
-import { Camera, Github, Mail, Upload, User } from "lucide-react";
-import { useTheme } from "next-themes";
-import FullScreenLoading from "~/components/full-screen-loading";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { Separator } from "~/components/ui/separator";
-import { Switch } from "~/components/ui/switch";
-import ActivityStatusAvatar from "~/components/users/activity-status-avatar";
+import { useQuery } from "convex-helpers/react"
+import { api } from "convex/_generated/api"
+import { Github, Mail } from "lucide-react"
+import { useTheme } from "next-themes"
+import FullScreenLoading from "~/components/full-screen-loading"
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme();
-  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser);
-  if (isPending) return <FullScreenLoading />;
-  if (!user) return null;
+  const { theme, setTheme } = useTheme()
+  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
+  if (isPending) return <FullScreenLoading />
+  if (!user) return null
 
   const connectedAccounts = [
     {
@@ -39,21 +25,21 @@ export default function SettingsPage() {
       icon: Mail,
       connected: true,
     },
-  ];
+  ]
 
   return (
     <div className="bg-background min-h-screen">
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">Settings</h1>
+            <h1 className="text-3xl font-bold">Ustawienia</h1>
             <p className="text-muted-foreground">
-              Manage your account settings and preferences.
+              Zarządzaj konfiguracją swojego konta.
             </p>
           </div>
 
           {/* Profile Section */}
-          <Card>
+          {/*<Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
@@ -65,7 +51,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Profile Picture */}
-              <div className="flex items-center gap-6">
+          {/*<div className="flex items-center gap-6">
                 <div className="relative">
                   <ActivityStatusAvatar />
                   <label
@@ -97,30 +83,30 @@ export default function SettingsPage() {
                     </Button>
                   </label>
                 </div>
-              </div>
+              </div>*/}
 
-              <Separator />
+          {/*<Separator />*/}
 
-              {/* Username and Email */}
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    placeholder="Enter your username"
-                    value={user.username}
-                  />
-                </div>
-              </div>
+          {/* Username and Email */}
+          {/*<div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                placeholder="Enter your username"
+                value={user.username}
+              />
+            </div>
+          </div>
 
-              <div className="flex justify-end">
-                <Button>Save Changes</Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex justify-end">
+            <Button>Save Changes</Button>
+          </div>*/}
+          {/*</CardContent>*/}
+          {/*</Card>*/}
 
           {/* Connected Accounts */}
-          <Card>
+          {/*<Card>
             <CardHeader>
               <CardTitle>Connected Accounts</CardTitle>
               <CardDescription>
@@ -162,10 +148,10 @@ export default function SettingsPage() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card>*/}
 
           {/* Preferences */}
-          <Card>
+          {/*<Card>
             <CardHeader>
               <CardTitle>Preferences</CardTitle>
               <CardDescription>Customize your app experience.</CardDescription>
@@ -194,10 +180,10 @@ export default function SettingsPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card>*/}
 
           {/* Danger Zone */}
-          <Card className="border-destructive/20">
+          {/*<Card className="border-destructive/20">
             <CardHeader>
               <CardTitle className="text-destructive">Danger Zone</CardTitle>
               <CardDescription>
@@ -219,9 +205,9 @@ export default function SettingsPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card>*/}
         </div>
       </div>
     </div>
-  );
+  )
 }

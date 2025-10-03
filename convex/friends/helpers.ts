@@ -1,168 +1,65 @@
-import { stream } from "convex-helpers/server/stream";
-import schema from "../schema";
-import { type FriendsQueryInfo } from "./query";
+import { stream } from "convex-helpers/server/stream"
+import type { Id } from "convex/_generated/dataModel"
+import type { QueryCtx } from "convex/_generated/server"
+import { v } from "convex/values"
+import schema from "../schema"
 
-export async function getUsersFriends({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const fromRequestsRecords = await ctx.db
+export const friendFilterValidator = v.union(
+  v.literal("not_friends"),
+  v.literal("accepted_friends"),
+  v.literal("incoming_requests"),
+  v.literal("outcoming_requests"),
+)
+
+export async function getFriendIds(ctx: QueryCtx, userId: Id<"users">) {
+  const friendsFromRequests = await ctx.db
     .query("friends")
     .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId))
-    .collect();
+    .filter((q) => q.eq(q.field("status"), "accepted"))
+    .collect()
 
-  const fromOthersRecords = await ctx.db
+  const friendsFromIncoming = await ctx.db
     .query("friends")
     .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
-    .collect();
+    .filter((q) => q.eq(q.field("status"), "accepted"))
+    .collect()
 
-  const usersFromReq = fromRequestsRecords
-    .filter((friendRecord) => {
-      if (friendRecord.status === "accepted") return true;
-    })
-    .map((friendRecord) => {
-      const user = ctx.db.get(friendRecord.receivingUserId);
-      return user;
-    });
+  const friendIds = new Set()
 
-  const usersFromOthers = fromOthersRecords
-    .filter((friendRecord) => {
-      if (friendRecord.status === "accepted") return true;
-    })
-    .map((friendRecord) => {
-      const user = ctx.db.get(friendRecord.requestingUserId);
-      return user;
-    });
+  friendsFromRequests.forEach((friend) => {
+    friendIds.add(friend.receivingUserId)
+  })
 
-  const usersPromises = [...usersFromReq, ...usersFromOthers];
-  const users = await Promise.all(usersPromises);
-
-  const filtered = users.filter((user) => {
-    if (!user) return false;
-    if (!searchRan) return true;
-
-    if (searchedUsers.length === 0) return false;
-
-    if (
-      searchRan &&
-      searchedUsers.map((user) => user.username).includes(user.username)
-    ) {
-      console.log(`FOUND MATCH for ${user.username}`);
-      return true;
-    }
-
-    return false;
-  });
-  return filtered;
+  friendsFromIncoming.forEach((friend) => {
+    friendIds.add(friend.requestingUserId)
+  })
+  return friendIds
 }
 
-export async function getUsersOutcomingRequests({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const ids = stream(ctx.db, schema)
+export async function getRequestingUserIds(ctx: QueryCtx, userId: Id<"users">) {
+  const requests = await ctx.db
     .query("friends")
-    .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId));
+    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
+    .filter((q) => q.eq(q.field("status"), "request_sent"))
+    .collect()
 
-  const onlyRequests = ids.filterWith(async (id) => {
-    if (id.status === "request_sent") return true;
-    return false;
-  });
-
-  const users = onlyRequests.flatMap(
-    async (requestRecord) =>
-      stream(ctx.db, schema)
-        .query("users")
-        .withIndex("by_id", (q) => q.eq("_id", requestRecord.receivingUserId))
-        .filterWith(async (user) => {
-          if (!searchRan) return true;
-
-          if (searchedUsers.length === 0) return false;
-
-          if (
-            searchRan &&
-            searchedUsers.map((user) => user.username).includes(user.username)
-          ) {
-            console.log(`FOUND MATCH for ${user.username}`);
-            return true;
-          }
-
-          return false;
-        }),
-    ["_id"],
-  );
-
-  return users.collect();
+  return new Set(requests.map((r) => r.requestingUserId))
 }
-export async function getUsersIncomingRequests({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const ids = stream(ctx.db, schema)
-    .query("friends")
-    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId));
-
-  const onlyRequests = ids.filterWith(async (id) => {
-    if (id.status === "request_sent") return true;
-    return false;
-  });
-
-  const users = onlyRequests.flatMap(
-    async (requestRecord) =>
-      stream(ctx.db, schema)
-        .query("users")
-        .withIndex("by_id", (q) => q.eq("_id", requestRecord.requestingUserId))
-        .filterWith(async (user) => {
-          if (!searchRan) return true;
-
-          if (searchedUsers.length === 0) return false;
-
-          if (
-            searchRan &&
-            searchedUsers.map((user) => user.username).includes(user.username)
-          ) {
-            console.log(`FOUND MATCH for ${user.username}`);
-            return true;
-          }
-
-          return false;
-        }),
-    ["_id"],
-  );
-  return users.collect();
-}
-
-export async function getNotFriends({
-  ctx,
-  userId,
-  searchedUsers,
-  searchRan,
-}: FriendsQueryInfo) {
-  const sent = await ctx.db
+export async function getReceivingUserIds(ctx: QueryCtx, userId: Id<"users">) {
+  const requests = await ctx.db
     .query("friends")
     .withIndex("requestingUserId", (q) => q.eq("requestingUserId", userId))
-    .collect();
-  const received = await ctx.db
-    .query("friends")
-    .withIndex("receivingUserId", (q) => q.eq("receivingUserId", userId))
-    .collect();
+    .filter((q) => q.eq(q.field("status"), "request_sent"))
+    .collect()
 
-  // 2. Collect all friend user IDs
-  const friendIds = new Set([
-    ...sent.map((f) => f.receivingUserId),
-    ...received.map((f) => f.requestingUserId),
-    userId,
-  ]);
-
-  if (searchRan) {
-    return searchedUsers.filter((u) => u._id && !friendIds.has(u._id));
-  }
-  const allUsers = await ctx.db.query("users").collect();
-  return allUsers.filter((u) => u._id && !friendIds.has(u._id));
+  return new Set(requests.map((r) => r.receivingUserId))
+}
+export async function getUsersFromFriendIds(
+  ctx: QueryCtx,
+  userId: Id<"users">,
+  ids: Set<Id<"users">>,
+) {
+  return stream(ctx.db, schema)
+    .query("users")
+    .filterWith(async (user) => ids.has(user._id) && user._id !== userId)
 }

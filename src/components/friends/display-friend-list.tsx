@@ -1,27 +1,26 @@
-import { api } from "convex/_generated/api";
-import { useQuery } from "convex/custom_helpers";
-import type { Infer } from "convex/values";
-import { Search } from "lucide-react";
-import { type ReactNode } from "react";
-import useDebouncedSearch from "~/hooks/use-debounced-search";
-import { cn } from "~/lib/utils";
-import { type friendFilterValidator } from "../../../convex/friends/query";
-import { Card, CardContent } from "../ui/card";
-import { Input } from "../ui/input";
-import { Skeleton } from "../ui/skeleton";
-import Friend from "./friend";
+import { usePaginatedQuery } from "convex-helpers/react/cache"
+import { api } from "convex/_generated/api"
+import type { friendFilterValidator } from "convex/friends/helpers"
+import type { Infer } from "convex/values"
+import { Search } from "lucide-react"
+import { type ReactNode } from "react"
+import { APP_CONFIG } from "~/APP_CONFIG"
+import useDebouncedSearch from "~/hooks/use-debounced-search"
+import { cn } from "~/lib/utils"
+import LoadMoreBtn from "../load-more"
+import { Input } from "../ui/input"
+import Friend from "./friend"
+import FriendsSkeleton from "./friend-list-skeleton"
 
 export default function DisplayFriendList({
   filter,
   notFoundComponent,
-  errorComponent,
 }: {
-  filter: Infer<typeof friendFilterValidator>;
-  notFoundComponent: ReactNode;
-  errorComponent: ReactNode;
+  filter: Infer<typeof friendFilterValidator>
+  notFoundComponent: ReactNode
 }) {
   const { isPending, debouncedSearch, inputOnChange, search } =
-    useDebouncedSearch({ time: 250 });
+    useDebouncedSearch({ time: 250 })
   return (
     <div className={cn(`container mx-auto`)}>
       <div className="relative mb-6">
@@ -29,7 +28,7 @@ export default function DisplayFriendList({
         <Input
           value={search}
           onChange={inputOnChange}
-          placeholder="Search for friends..."
+          placeholder="Wyszukaj znajomego..."
           className="max-w-1/2 pl-10"
         />
       </div>
@@ -39,44 +38,62 @@ export default function DisplayFriendList({
           search={debouncedSearch}
           filter={filter}
           notFoundComponent={notFoundComponent}
-          errorComponent={errorComponent}
         />
       )}
     </div>
-  );
+  )
 }
+
 function Render({
   search,
   filter,
   notFoundComponent,
-  errorComponent,
 }: {
-  search: string;
-  filter: Infer<typeof friendFilterValidator>;
-  notFoundComponent: ReactNode;
-  errorComponent: ReactNode;
+  search: string
+  filter: Infer<typeof friendFilterValidator>
+  notFoundComponent: ReactNode
 }) {
-  const {
-    data: friendList,
-    error,
-    isPending,
-  } = useQuery(api.friends.query.getFriendsWithSearch, {
-    filter,
-    search,
-  });
-
-  if (error) {
-    return <>{errorComponent}</>;
+  let query = api.friends.query.getPaginatedFriends
+  switch (filter) {
+    case "not_friends":
+      console.log("[FRIENDS] not friends query ran")
+      query = api.friends.query.getPaginatedNotFriends
+      break
+    case "accepted_friends":
+      console.log("[FRIENDS] user friends query ran")
+      query = api.friends.query.getPaginatedFriends
+      break
+    case "outcoming_requests":
+      console.log("[FRIENDS] outcoming requests query ran")
+      query = api.friends.query.getPaginatedOutgoingRequests
+      break
+    case "incoming_requests":
+      console.log("[FRIENDS] incoming req query ran")
+      query = api.friends.query.getPaginatedIncomingRequests
+      break
   }
 
-  if (isPending) {
-    return <FriendsSkeleton countOfSkeletons={5} />;
+  const {
+    results: friendList,
+    status,
+    loadMore,
+  } = usePaginatedQuery(
+    query,
+    {
+      search,
+    },
+    { initialNumItems: APP_CONFIG.friends.friendsPerPage },
+  )
+
+  if (status === "LoadingFirstPage") {
+    return <FriendsSkeleton countOfSkeletons={10} />
   }
 
   if (friendList.length === 0) {
-    return <>{notFoundComponent}</>;
+    return <>{notFoundComponent}</>
   }
 
+  // console.log({ friendList })
   return (
     <div className="space-y-3">
       {friendList.map((friend) => (
@@ -85,48 +102,16 @@ function Render({
             <Friend
               friend={{
                 user: friend,
-                status: filter,
               }}
             />
           )}
         </div>
       ))}
+      {status === "LoadingMore" && <FriendsSkeleton countOfSkeletons={3} />}
+      <LoadMoreBtn
+        onClick={() => loadMore(APP_CONFIG.friends.friendsPerPage)}
+        canLoadMore={status === "CanLoadMore"}
+      />
     </div>
-  );
-}
-
-function FriendsSkeleton({ countOfSkeletons }: { countOfSkeletons: number }) {
-  return (
-    <>
-      {Array.from({ length: countOfSkeletons }).map((_, index) => (
-        <Card key={index} className="my-3 animate-pulse">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                {/* Profile Picture Skeleton */}
-                <div className="relative">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="border-background absolute right-0 bottom-0 h-3 w-3 rounded-full border-2">
-                    <Skeleton className="h-full w-full rounded-full" />
-                  </div>
-                </div>
-
-                {/* Friend Info Skeleton */}
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-3 w-16" />
-                </div>
-              </div>
-
-              {/* Action Buttons Skeleton */}
-              <div className="flex items-center space-x-2">
-                <Skeleton className="h-8 w-20" />
-                <Skeleton className="h-8 w-8" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </>
-  );
+  )
 }

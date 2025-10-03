@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import { ChevronDown, Download } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react"
 
-import type { practicalExamAttachmentValidator } from "convex/praktyka/helpers";
-import type { Infer } from "convex/values";
-import { useState } from "react";
-import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
-import AttachmentItem from "./attachment-item";
+import type { practicalExamAttachmentValidator } from "convex/praktyka/helpers"
+import type { Infer } from "convex/values"
+import { useState } from "react"
+import { Button } from "~/components/ui/button"
+import { cn } from "~/lib/utils"
+import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card"
+import AttachmentItem from "./attachment-item"
 
 export default function AttachmentsCard({
   attachmentList,
   customTitle,
 }: {
-  attachmentList: Infer<typeof practicalExamAttachmentValidator>;
-  customTitle?: string;
+  attachmentList: Infer<typeof practicalExamAttachmentValidator>
+  customTitle?: string
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false)
   return (
     <>
       <Card
@@ -28,7 +28,7 @@ export default function AttachmentsCard({
           <CardTitle className="flex flex-row items-center justify-between">
             <div className="flex flex-row items-end justify-center gap-1">
               <Download className="mr-2 h-5 w-5" />
-              {customTitle ?? "Reference Materials & Attachments "}
+              {customTitle ?? "Pliki egzaminacyjne"}
             </div>
             <Button variant={"ghost"}>
               <ChevronDown
@@ -50,10 +50,10 @@ export default function AttachmentsCard({
                 attachmentId={attachment.attachmentId}
                 attachmentName={attachment.attachmentName}
               />
-            );
+            )
           })}
         </CardContent>
       )}
     </>
-  );
+  )
 }

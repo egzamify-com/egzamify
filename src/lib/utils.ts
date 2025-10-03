@@ -10,16 +10,13 @@ export function cn(...inputs: ClassValue[]) {
 export function getFileUrl(
   storageId: Id<"_storage"> | undefined,
   filename: string,
-  type?: { raw: boolean },
 ) {
   if (!storageId) return undefined;
-  let imageUrl;
-  if (type?.raw) {
-    imageUrl = new URL(`${env.NEXT_PUBLIC_CONVEX_SITE_URL}/getRawImage`);
-  } else {
-    imageUrl = new URL(`${env.NEXT_PUBLIC_CONVEX_SITE_URL}/getImage`);
-  }
-  imageUrl.searchParams.set("storageId", storageId);
-  imageUrl.searchParams.set("filename", filename);
-  return imageUrl.href;
+  const raw = new URL(`${env.NEXT_PUBLIC_CONVEX_SITE_URL}/getRawImage`);
+  raw.searchParams.set("storageId", storageId);
+  raw.searchParams.set("filename", filename);
+  const normal = new URL(`${env.NEXT_PUBLIC_CONVEX_SITE_URL}/getImage`);
+  normal.searchParams.set("storageId", storageId);
+  normal.searchParams.set("filename", filename);
+  return { raw, normal };
 }

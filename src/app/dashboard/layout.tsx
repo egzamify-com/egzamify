@@ -1,12 +1,9 @@
-"use client";
+"use client"
 
-import { usePathname } from "next/navigation";
-import type React from "react";
-import { Suspense, useEffect } from "react";
-import { AppSidebar } from "~/components/dashboard-sidebar/app-sidebar";
-import { SiteHeader } from "~/components/dashboard-sidebar/site-header";
-import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
-import { updateDashboardBreadcrumbs } from "~/lib/stores/breadcrumbsStore";
+import type React from "react"
+import { AppSidebar } from "~/components/dashboard-sidebar/app-sidebar"
+import { SiteHeader } from "~/components/dashboard-sidebar/site-header"
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
 
 export default function LayoutDashboard({
   children,
@@ -22,34 +19,11 @@ export default function LayoutDashboard({
     >
       <AppSidebar />
       <SidebarInset>
-        {/* <div className="flex flex-1 flex-col">{children}</div> */}
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex flex-1 flex-col">{children}</main>
         </div>
-        <Suspense fallback={null}>
-          <DashbboardBreadcrumbs />
-        </Suspense>
       </SidebarInset>
     </SidebarProvider>
-  );
-}
-function DashbboardBreadcrumbs() {
-  const pathname = usePathname();
-  useEffect(() => {
-    switch (pathname) {
-      case "/dashboard/teoria":
-        updateDashboardBreadcrumbs("Egzamin Teoretyczny");
-        break;
-      case "/dashboard/praktyka":
-        updateDashboardBreadcrumbs("Egzamin Praktyczny");
-        break;
-      case "/dashboard":
-        updateDashboardBreadcrumbs("Witaj!");
-      case "/dashboard/ai-wyjasnia":
-        updateDashboardBreadcrumbs("AI Wyjaśnienia");
-        break;
-    }
-  }, [pathname]);
-  return null;
+  )
 }

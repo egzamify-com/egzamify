@@ -1,10 +1,10 @@
-import { authTables } from "@convex-dev/auth/server";
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server"
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
 import {
   practicalExamAttachmentValidator,
   requirementsValidator,
-} from "./praktyka/helpers";
+} from "./praktyka/helpers"
 
 const schema = defineSchema({
   ...authTables,
@@ -22,7 +22,10 @@ const schema = defineSchema({
     isActive: v.optional(v.boolean()),
     credits: v.optional(v.number()),
     pendingCredits: v.optional(v.number()),
+
     daily_streak: v.optional(v.number()),
+
+
   })
     .index("username", ["username"])
     .index("email", ["email"])
@@ -125,7 +128,7 @@ const schema = defineSchema({
     aiRating: v.optional(
       v.object({
         score: v.number(),
-        // percantageScore: v.number(),
+
         summary: v.string(),
         details: v.optional(requirementsValidator),
       }),
@@ -133,6 +136,21 @@ const schema = defineSchema({
   })
     .index("by_user_id", ["userId"])
     .index("by_userId_examId", ["userId", "examId"]),
-});
 
-export default schema;
+  kv: defineTable({
+    key: v.string(),
+    value: v.string(),
+  }).index("by_key", ["key"]),
+
+  feedbackTable: defineTable({
+    userId: v.id("users"),
+    content: v.string(),
+    type: v.union(
+      v.literal("Błąd"),
+      v.literal("Propozycja funkcji"),
+      v.literal("Opinia"),
+    ),
+  }).index("by_user_id", ["userId"]),
+})
+
+export default schema

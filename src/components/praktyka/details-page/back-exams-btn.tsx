@@ -1,5 +1,5 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 export default function BackToExams() {
   return (
@@ -8,7 +8,7 @@ export default function BackToExams() {
       className="mb-6 inline-flex items-center hover:underline"
     >
       <ArrowLeft className="mr-2 h-4 w-4" />
-      Back to Exams
+      Powrót do egzaminów
     </Link>
-  );
+  )
 }

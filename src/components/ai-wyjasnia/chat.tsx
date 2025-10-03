@@ -1,56 +1,56 @@
-"use client";
+"use client"
 
-import { useChat } from "@ai-sdk/react";
-import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { useEffect, useRef, useState } from "react";
-import type { MyUIMessage } from "~/app/api/chat/route";
-import { type AiWyjasniaMode } from "~/APP_CONFIG";
-import ChatMessages from "~/components/ai-wyjasnia/chat-messages";
-import NoMessages from "~/components/ai-wyjasnia/no-messages-info";
-import SpinnerLoading from "../SpinnerLoading";
-import { ChatInputWithModeSelection } from "./chat-input";
+import { useChat } from "@ai-sdk/react"
+import { api } from "convex/_generated/api"
+import type { Id } from "convex/_generated/dataModel"
+import { useMutation } from "convex/react"
+import { useEffect, useRef, useState } from "react"
+import type { MyUIMessage } from "~/app/api/chat/route"
+import { type AiWyjasniaMode } from "~/APP_CONFIG"
+import ChatMessages from "~/components/ai-wyjasnia/chat-messages"
+import NoMessages from "~/components/ai-wyjasnia/no-messages-info"
+import SpinnerLoading from "../SpinnerLoading"
+import { ChatInputWithModeSelection } from "./chat-input"
 
 export default function Chat({
   id,
   initialMessages,
 }: {
-  id?: string | undefined;
-  initialMessages?: MyUIMessage[];
+  id?: string | undefined
+  initialMessages?: MyUIMessage[]
 } = {}) {
-  const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat);
-  const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal");
+  const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat)
+  const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal")
   const { sendMessage, messages, status, error } = useChat<MyUIMessage>({
     id,
     messages: initialMessages,
     onError: (error) => {
-      console.error("Error:", error);
+      console.error("Error:", error)
     },
-  });
+  })
 
   // handle empty chats, delete if user left with no messages (useEffect and ref)
-  const latestMessagesRef = useRef(messages);
+  const latestMessagesRef = useRef(messages)
   useEffect(() => {
     // scroll to latest message on bottom
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: "smooth",
-    });
-    latestMessagesRef.current = messages;
-  }, [messages]);
+    })
+    latestMessagesRef.current = messages
+  }, [messages])
 
   useEffect(() => {
     return () => {
-      const currentMessages = latestMessagesRef.current;
+      const currentMessages = latestMessagesRef.current
 
       if (currentMessages.length === 0) {
-        (async () => {
-          await deleteThread({ chatId: id as Id<"explanations"> });
-        })();
+        ;(async () => {
+          await deleteThread({ chatId: id as Id<"explanations"> })
+        })()
       }
-    };
-  }, [id, deleteThread]);
+    }
+  }, [id, deleteThread])
 
   return (
     <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
@@ -64,7 +64,7 @@ export default function Chat({
           </>
         )}
         {error && (
-          <div className="text-destructive text-xl">An error occurred.</div>
+          <div className="text-destructive text-xl">Nieoczekiwany błąd.</div>
         )}
       </div>
 
@@ -72,5 +72,5 @@ export default function Chat({
         {...{ selectedMode, setSelectedMode, sendMessage }}
       />
     </div>
-  );
+  )
 }

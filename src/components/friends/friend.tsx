@@ -1,18 +1,18 @@
-import type { Infer } from "convex/values";
-import Link from "next/link";
-import { type Doc } from "~/../convex/_generated/dataModel";
-import { Card, CardContent } from "~/components/ui/card";
-import { friendFilterValidator } from "../../../convex/friends/query";
-import ActivityStatusAvatar from "../users/activity-status-avatar";
-import FriendButton from "./friend-button";
+import type { friendFilterValidator } from "convex/friends/helpers"
+import type { Infer } from "convex/values"
+import Link from "next/link"
+import { type Doc } from "~/../convex/_generated/dataModel"
+import { Card, CardContent } from "~/components/ui/card"
+import ActivityStatusAvatar from "../users/activity-status-avatar"
+import FriendButton from "./friend-button"
 type FriendProps = {
-  user: Doc<"users">;
-  status?: Infer<typeof friendFilterValidator>;
-  updated_at?: Date;
-  created_at?: Date;
-};
+  user: Doc<"users">
+  status?: Infer<typeof friendFilterValidator>
+  updated_at?: Date
+  created_at?: Date
+}
 export default function Friend({ friend }: { friend: FriendProps }) {
-  const { user, status } = friend;
+  const { user, status } = friend
 
   return (
     <Card
@@ -39,24 +39,9 @@ export default function Friend({ friend }: { friend: FriendProps }) {
               friendId={friend.user._id}
               alreadyKnownStatus={status}
             />
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>View Profile</DropdownMenuItem>
-                <DropdownMenuItem>Block User</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
-                  <UserMinus className="h-4 w-4 mr-2" />
-                  Remove Friend
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
           </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
