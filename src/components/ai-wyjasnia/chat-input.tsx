@@ -1,15 +1,16 @@
 import type { ChatRequestOptions, CreateUIMessage } from "ai"
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
-import { CheckCircle, Send } from "lucide-react"
-import Link from "next/link"
 import { useState } from "react"
 import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG"
-import { Button } from "../ui/button"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupTextarea,
+} from "../ui/input-group"
 import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
-import { Textarea } from "../ui/textarea"
-
 export function ChatInputWithModeSelection({
   selectedMode,
   setSelectedMode,
@@ -28,7 +29,7 @@ export function ChatInputWithModeSelection({
 
   return (
     <>
-      <div className="bg-card sticky bottom-0 w-full space-y-4 rounded-t-xl border p-4">
+      <div className="bg-card sticky bottom-0 max-w-4/5 space-y-4 rounded-t-xl border p-4">
         <div className="space-y-3">
           <Label className="text-sm font-medium">Tryb odpowiedzi AI</Label>
           <RadioGroup
@@ -66,34 +67,28 @@ export function ChatInputWithModeSelection({
           }}
           className="flex flex-col gap-2"
         >
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={`Zapytaj o cokolwiek ...`}
-            className="flex min-h-[20px] whitespace-pre-wrap"
-          />
-          <div className="flex w-full items-center justify-end">
-            <Button
-              type="submit"
-              className="w-1/5"
-              disabled={
-                !input.trim() ||
-                (user?.credits ?? 0) <
-                  APP_CONFIG.ai_wyjasnia.creditPricePerMessage
-              }
-            >
-              <Send className="h-4 w-4" />
-              {APP_CONFIG.ai_wyjasnia.creditPricePerMessage}
-              <CheckCircle />
-            </Button>
-
-            {(user?.credits ?? 0) <
-              APP_CONFIG.ai_wyjasnia.creditPricePerMessage && (
-              <Link href="/credits">
-                <Button>Zdobądź kredyty</Button>
-              </Link>
-            )}
-          </div>
+          <InputGroup>
+            <InputGroupTextarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={`Zapytaj o cokolwiek ...`}
+            />
+            <InputGroupAddon align="block-end">
+              <InputGroupButton
+                type="submit"
+                className="ml-auto"
+                size="sm"
+                variant="default"
+                disabled={
+                  !input.trim() ||
+                  (user?.credits ?? 0) <
+                    APP_CONFIG.ai_wyjasnia.creditPricePerMessage
+                }
+              >
+                Submit
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
         </form>
       </div>
     </>
