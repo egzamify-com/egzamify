@@ -1,11 +1,11 @@
-"use node";
+"use node"
 
-import { groq } from "@ai-sdk/groq";
-import { getAuthUserId } from "@convex-dev/auth/server";
-import { generateText } from "ai";
-import { v } from "convex/values";
-import { api } from "../_generated/api";
-import { action } from "../_generated/server";
+import { groq } from "@ai-sdk/groq"
+import { getAuthUserId } from "@convex-dev/auth/server"
+import { generateText } from "ai"
+import { v } from "convex/values"
+import { api } from "../_generated/api"
+import { action } from "../_generated/server"
 
 export const generateExplanation = action({
   args: {
@@ -16,11 +16,11 @@ export const generateExplanation = action({
     answerLabels: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    console.log("ACTION generateExplanation WYWOŁANA!");
+    console.log("ACTION generateExplanation WYWOŁANA!")
 
-    const userId = await getAuthUserId(ctx);
+    const userId = await getAuthUserId(ctx)
     if (!userId)
-      throw new Error("Musisz być zalogowany aby generować wyjaśnienia");
+      throw new Error("Musisz być zalogowany aby generować wyjaśnienia")
 
     const {
       questionId,
@@ -28,35 +28,35 @@ export const generateExplanation = action({
       answers,
       correctAnswerIndex,
       answerLabels,
-    } = args;
+    } = args
 
-    console.log("📝 Dane wejściowe:");
-    console.log("- Pytanie:", questionContent);
-    console.log("- Odpowiedzi:", answers);
-    console.log("- Poprawna odpowiedź:", answers[correctAnswerIndex]);
+    console.log("📝 Dane wejściowe:")
+    console.log("- Pytanie:", questionContent)
+    console.log("- Odpowiedzi:", answers)
+    console.log("- Poprawna odpowiedź:", answers[correctAnswerIndex])
 
-    const groqApiKey = process.env.GROQ_API_KEY;
-    console.log("GROQ_API_KEY dostępny:", groqApiKey ? "TAK" : "NIE");
+    const groqApiKey = process.env.GROQ_API_KEY
+    console.log("GROQ_API_KEY dostępny:", groqApiKey ? "TAK" : "NIE")
 
     if (!groqApiKey) {
       throw new Error(
         "GROQ_API_KEY nie jest ustawiony w zmiennych środowiskowych Convex",
-      );
+      )
     }
 
-    const correctAnswer = answers[correctAnswerIndex];
+    const correctAnswer = answers[correctAnswerIndex]
     const correctLabel =
       answerLabels?.[correctAnswerIndex] ||
-      String.fromCharCode(65 + correctAnswerIndex);
+      String.fromCharCode(65 + correctAnswerIndex)
 
     const allAnswers = answers
       .map((answer, index) => {
-        const label = answerLabels?.[index] || String.fromCharCode(65 + index);
-        return `${label}. ${answer}`;
+        const label = answerLabels?.[index] || String.fromCharCode(65 + index)
+        return `${label}. ${answer}`
       })
-      .join("\n");
+      .join("\n")
 
-    const systemPrompt = `Jesteś ekspertem edukacyjnym specjalizującym się w wyjaśnianiu pytań egzaminacyjnych. 
+    const systemPrompt = `Jesteś ekspertem edukacyjnym specjalizującym się w wyjaśnianiu pytań egzaminacyjnych.
 
 Twoim zadaniem jest wygenerowanie jasnego, zwięzłego wyjaśnienia dla podanego pytania egzaminacyjnego.
 
@@ -65,9 +65,9 @@ Wyjaśnienie powinno:
 2. Krótko wyjaśnić dlaczego inne odpowiedzi są niepoprawne (jeśli to pomocne)
 3. Podać dodatkowy kontekst lub informacje pomocne w zrozumieniu tematu
 4. Być napisane w języku polskim
-5. Być krótkie i zwięzłe 
+5. Być krótkie i zwięzłe
 
-Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia.`;
+Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia.`
 
     const prompt = `Pytanie: ${questionContent}
 
@@ -76,9 +76,9 @@ ${allAnswers}
 
 Poprawna odpowiedź: ${correctLabel}. ${correctAnswer}
 
-Wygeneruj wyjaśnienie dla tego pytania.`;
+Wygeneruj wyjaśnienie dla tego pytania.`
 
-    console.log("Wysyłam zapytanie do Groq...");
+    console.log("Wysyłam zapytanie do Groq...")
 
     try {
       const result = await generateText({
@@ -86,26 +86,27 @@ Wygeneruj wyjaśnienie dla tego pytania.`;
         system: systemPrompt,
         maxOutputTokens: 400,
         prompt: prompt,
-      });
+      })
 
-      console.log("Otrzymano odpowiedź z Groq:", result.text);
-
+      console.log("Otrzymano odpowiedź z Groq:", result.text)
+      console.log(result.totalUsage)
+      console.log(result.usage)
       try {
         await ctx.runMutation(api.teoria.mutate.saveExplanation, {
           questionId,
           explanation: result.text,
-        });
-        console.log("Wyjaśnienie zapisane do bazy danych");
+        })
+        console.log("Wyjaśnienie zapisane do bazy danych")
       } catch (error) {
-        console.error("Błąd podczas zapisywania wyjaśnienia:", error);
+        console.error("Błąd podczas zapisywania wyjaśnienia:", error)
       }
 
       return {
         explanation: result.text,
-      };
+      }
     } catch (error) {
-      console.error("❌ Błąd podczas generowania wyjaśnienia z Groq:", error);
-      throw new Error("Wystąpił błąd podczas generowania wyjaśnienia");
+      console.error("❌ Błąd podczas generowania wyjaśnienia z Groq:", error)
+      throw new Error("Wystąpił błąd podczas generowania wyjaśnienia")
     }
   },
-});
+})

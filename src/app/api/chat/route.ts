@@ -49,7 +49,9 @@ export async function POST(req: Request) {
           }
         }
       },
-      onFinish: ({ messages }) => {
+      onFinish: async ({ messages }) => {
+        console.log(await result.totalUsage)
+        console.log(await result.finishReason)
         saveChat({
           id: id as string,
           messages: toOriginalMessagesWithoutMode(messages) as MyUIMessage[],

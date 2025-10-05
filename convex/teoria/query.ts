@@ -25,7 +25,6 @@ export const getQualificationsList = query({
 
     const qualificationsWithQuestions = await Promise.all(
       qualifications.map(async (qualification) => {
-        // moze byc nie wydajne, raczej do poprawy /antek
         const questions = await ctx.db
           .query("questions")
           .withIndex("by_qualification", (q) =>
