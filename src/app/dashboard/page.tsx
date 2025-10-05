@@ -72,8 +72,6 @@ export default function DashboardPage() {
               <StatsChart weeklyData={weeklyProgress} totalStats={userStats} />
             </CardContent>
           </Card>
-
-          {/* @ts-ignore - Next.js typedRoutes issue */}
           <Link href="/dashboard/teoria" className="group">
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
@@ -92,7 +90,6 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          {/* @ts-ignore - Next.js typedRoutes issue */}
           <Link href="/dashboard/ai-wyjasnia" className="group">
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
@@ -113,7 +110,6 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          {/* @ts-ignore - Next.js typedRoutes issue */}
           <Link href="/dashboard/friends" className="group">
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
@@ -134,7 +130,6 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          {/* @ts-ignore - Next.js typedRoutes issue */}
           <Link href="/dashboard/konto" className="group">
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
