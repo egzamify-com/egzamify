@@ -1,14 +1,9 @@
-import type { api } from "convex/_generated/api"
-import type { PaginatedQueryItem } from "convex/react"
+import type { BaseExam } from "convex/praktyka/helpers"
 import { Box, Calendar, Award as IdCard } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader } from "../ui/card"
 
-export default function ExamItem({
-  exam,
-}: {
-  exam: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>
-}) {
+export default function ExamItem({ exam }: { exam: BaseExam }) {
   return (
     <Link
       href={`/dashboard/egzamin-praktyczny/egzamin/${exam._id}`}

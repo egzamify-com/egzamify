@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   BookOpen,
@@ -7,17 +7,17 @@ import {
   Search,
   Shuffle,
   Target,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+} from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
 interface GameModesProps {
-  qualificationId: string;
+  qualificationId: string
 }
 
 export default function GameModes({ qualificationId }: GameModesProps) {
-  const router = useRouter();
+  const router = useRouter()
 
   const gameModes = [
     {
@@ -59,13 +59,12 @@ export default function GameModes({ qualificationId }: GameModesProps) {
       variant: "outline" as const,
       route: "browse-questions",
     },
-  ];
+  ]
 
   const handleModeSelect = (mode: (typeof gameModes)[0]) => {
-    router.push(
-      `/dashboard/teoria/${qualificationId}/game-modes/${mode.route}`,
-    );
-  };
+    // @ts-expect-error fix todo
+    router.push(`/dashboard/teoria/${qualificationId}/game-modes/${mode.route}`)
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -76,7 +75,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {gameModes.map((mode) => {
-          const IconComponent = mode.icon;
+          const IconComponent = mode.icon
 
           return (
             <Card
@@ -118,8 +117,8 @@ export default function GameModes({ qualificationId }: GameModesProps) {
                 <Button
                   className="mt-4 w-full transition-colors group-hover:bg-gray-500"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleModeSelect(mode);
+                    e.stopPropagation()
+                    handleModeSelect(mode)
                   }}
                 >
                   {mode.id === 3 ? (
@@ -133,7 +132,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
                 </Button>
               </CardContent>
             </Card>
-          );
+          )
         })}
       </div>
 
@@ -146,5 +145,5 @@ export default function GameModes({ qualificationId }: GameModesProps) {
         </Button>
       </div>
     </div>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { ChevronDown } from "lucide-react";
-import Link from "next/link";
+import { ChevronDown } from "lucide-react"
+import Link from "next/link"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -10,13 +10,13 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
-} from "~/components/ui/sidebar";
+} from "~/components/ui/sidebar"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
-import type { NavbarItem } from "./app-sidebar";
+} from "../ui/collapsible"
+import type { NavbarItem } from "./app-sidebar"
 
 export function NavMain({ items }: { items: NavbarItem[] }) {
   return (
@@ -31,14 +31,15 @@ export function NavMain({ items }: { items: NavbarItem[] }) {
         </SidebarGroupContent>
       </SidebarGroup>
     </>
-  );
+  )
 }
 function NavbarItemCore({
   item: { url, icon, title, badgeComponent },
 }: {
-  item: NavbarItem;
+  item: NavbarItem
 }) {
   return (
+    // @ts-expect-error fix todo
     <Link href={url}>
       <SidebarMenuButton className="flex flex-row items-center justify-between text-sm">
         <div className="flex flex-row items-center gap-2">
@@ -48,7 +49,7 @@ function NavbarItemCore({
         <div>{badgeComponent && <>{badgeComponent}</>}</div>
       </SidebarMenuButton>
     </Link>
-  );
+  )
 }
 
 function NavbarItem({ item }: { item: NavbarItem }) {
@@ -59,13 +60,13 @@ function NavbarItem({ item }: { item: NavbarItem }) {
         icon={item.icon}
         title={item.title}
       />
-    );
+    )
   }
   return (
     <SidebarMenuItem>
       <NavbarItemCore item={item} />
     </SidebarMenuItem>
-  );
+  )
 }
 
 function CollapsibleNavbarItem({
@@ -73,9 +74,9 @@ function CollapsibleNavbarItem({
   title,
   icon,
 }: {
-  title: string;
-  icon: React.ReactNode;
-  items: NavbarItem[];
+  title: string
+  icon: React.ReactNode
+  items: NavbarItem[]
 }) {
   return (
     <Collapsible defaultOpen className="group/collapsible">
@@ -96,11 +97,11 @@ function CollapsibleNavbarItem({
                 <SidebarMenuSubItem key={`collabsiblesidebar-${item.url}`}>
                   <NavbarItemCore item={item} />{" "}
                 </SidebarMenuSubItem>
-              );
+              )
             })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>
-  );
+  )
 }

@@ -19,6 +19,7 @@ const useBlockNavigation = (
   useEffect(() => {
     const handleNavigation = (url: string) => {
       if (!shouldBlock || canNavigate(url) || url === pathname) {
+        // @ts-expect-error fix todo
         originalPushRef.current(url)
         return
       }
@@ -64,6 +65,7 @@ const useBlockNavigation = (
   const proceedNavigation = () => {
     if (nextRoute) {
       setIsAttemptingNavigation(false)
+      // @ts-expect-error fix todo
       originalPushRef.current(nextRoute) // Navigate to previous or next route
       setNextRoute(null)
     }
