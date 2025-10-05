@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/dropdown-menu"
 import Feedbackbtn from "./feedback-btn"
 import { ModeToggle } from "./theme/theme-toggle"
+import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { Skeleton } from "./ui/skeleton"
 import ActivityStatusAvatar from "./users/activity-status-avatar"
@@ -30,8 +31,11 @@ export default function Navbar() {
     <nav
       className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between gap-4 border-b px-4`}
     >
-      <div>
+      <div className="flex flex-row justify-start gap-2">
         <h1 className="text-3xl font-extrabold">Egzamify</h1>
+        <Badge variant={"outline"} className="rounded-xl">
+          <p className="m-0 p-0 text-xs">Beta</p>
+        </Badge>
       </div>
       <div className="flex gap-4">
         <AuthLoading>

@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
 import InvitesNavBadge from "../friends/invites-nav-badge"
+import { Badge } from "../ui/badge"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 
@@ -119,7 +120,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href={"/"}>
-                <h1 className="text-xl font-extrabold">Egzamify</h1>
+                <div className="flex flex-row justify-start gap-2">
+                  <h1 className="text-xl font-extrabold">Egzamify</h1>
+                  <Badge variant={"outline"} className="rounded-xl">
+                    <p className="m-0 p-0 text-xs">Beta</p>
+                  </Badge>
+                </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
