@@ -31,7 +31,7 @@ export default function PraktykaPage() {
         sort: selectedSort,
       },
     },
-    { initialNumItems: 1 },
+    { initialNumItems: 40 },
   )
 
   return (
