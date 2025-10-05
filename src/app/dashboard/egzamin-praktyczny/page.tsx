@@ -2,73 +2,69 @@
 
 import { usePaginatedQuery } from "convex-helpers/react/cache"
 import { api } from "convex/_generated/api"
-import { type PaginatedQueryItem } from "convex/react"
-import _ from "lodash"
-import { ErrorBoundary } from "react-error-boundary"
-import FullScreenError from "~/components/full-screen-error"
+import type { ListPracticalExamsFilter } from "convex/praktyka/query"
+import { useState } from "react"
 import LoadMoreBtn from "~/components/load-more"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
 import ExamGroup from "~/components/praktyka/exam-group"
 import PracticalExamsFilters from "~/components/praktyka/filters"
-import ExamPageSkeleton, { LoadingMore } from "~/components/praktyka/loadings"
-import { Button } from "~/components/ui/button"
-export type ConvertedExams = {
-  qualificationId: string
-  count: number
-  exams: PaginatedQueryItem<typeof api.praktyka.query.listPracticalExams>[]
-}
-export default function Page() {
-  return (
-    <ErrorBoundary
-      fallbackRender={({ error, resetErrorBoundary }) => {
-        return (
-          <FullScreenError
-            errorDetail={error.message}
-            errorMessage="Failed to load exams"
-            actionButton={<Button onClick={resetErrorBoundary}>Retry</Button>}
-          />
-        )
-      }}
-    >
-      <PraktykaPage />
-    </ErrorBoundary>
-  )
-}
-function PraktykaPage() {
+import EnhancedExamSkeleton, {
+  LoadingMore,
+} from "~/components/praktyka/loadings"
+
+export default function PraktykaPage() {
+  const [searchInput, setSearchInput] = useState<string>("")
+  const [selectedQualificationId, setSelectedQualificationId] =
+    useState<ListPracticalExamsFilter["qualificationId"]>("wszystkie")
+  const [selectedSort, setSelectedSort] =
+    useState<ListPracticalExamsFilter["sort"]>("asc")
   const {
-    results: exams,
+    results: qualifications,
     status,
     loadMore,
   } = usePaginatedQuery(
     api.praktyka.query.listPracticalExams,
-    {},
-    { initialNumItems: 40 },
+    {
+      filters: {
+        qualificationId: selectedQualificationId,
+        search: searchInput,
+        sort: selectedSort,
+      },
+    },
+    { initialNumItems: 1 },
   )
-
-  if (status === "LoadingFirstPage") return <ExamPageSkeleton />
-  if (exams.length === 0)
-    return <FullScreenError type="warning" errorMessage="No exams found" />
-
-  function convertExams() {
-    const grouped = _.groupBy(exams, "qualificationId")
-    return Object.entries(grouped).map(([qualificationId, examsInGroup]) => ({
-      qualificationId: qualificationId,
-      count: examsInGroup.length,
-      exams: examsInGroup,
-    }))
-  }
 
   return (
     <PageHeaderWrapper
       title="Egzamin praktyczny"
       description="Przeglądaj dostępne egzaminy praktyczne. Prześlij swoją pracę, błyskawicznie otrzymaj wyniki."
     >
-      <PracticalExamsFilters />
-      <div className="flex flex-col gap-4">
-        {convertExams().map((group) => (
-          <ExamGroup key={group.qualificationId} group={group} />
-        ))}
-      </div>
+      <PracticalExamsFilters
+        {...{ setSearchInput, setSelectedQualificationId, setSelectedSort }}
+      />
+      {status === "LoadingFirstPage" && <EnhancedExamSkeleton />}
+      {qualifications.length === 0 && (
+        <p className="text-muted-foreground">Brak wyników.</p>
+      )}
+      {qualifications.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {qualifications.map((exams) => (
+            <ExamGroup
+              key={crypto.randomUUID()}
+              group={{
+                exams: exams.baseExams.map((exam) => {
+                  return {
+                    ...exam,
+                    qualification: exams.qualification,
+                  }
+                }),
+                count: exams.baseExams.length,
+                qualificationId: exams.qualification._id,
+              }}
+            />
+          ))}
+        </div>
+      )}
       <LoadingMore isLoading={status === "LoadingMore"} />
       <LoadMoreBtn
         onClick={() => loadMore(40)}

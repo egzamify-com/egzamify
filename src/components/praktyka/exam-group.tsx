@@ -1,11 +1,19 @@
+import type { BaseExam } from "convex/praktyka/helpers"
 import { Box, Calendar, ChevronDown } from "lucide-react"
 import { useState } from "react"
-import type { ConvertedExams } from "~/app/dashboard/egzamin-praktyczny/page"
 import { cn } from "~/lib/utils"
 import ExamBadge from "./exam-badge"
 import ExamItem from "./exam-item"
 
-export default function ExamGroup({ group }: { group: ConvertedExams }) {
+export default function ExamGroup({
+  group,
+}: {
+  group: {
+    qualificationId: string
+    count: number
+    exams: BaseExam[]
+  }
+}) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (

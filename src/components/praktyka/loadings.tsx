@@ -1,8 +1,55 @@
-"use client";
+"use client"
 
-import { BookOpen, Calendar, Search } from "lucide-react";
-import { Card, CardAction, CardDescription } from "../ui/card";
-import { Skeleton } from "../ui/skeleton";
+import {
+  ArrowLeft,
+  BookOpen,
+  Calendar,
+  Download,
+  FileText,
+  Search,
+} from "lucide-react"
+import { CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Card, CardAction, CardDescription } from "../ui/card"
+import { Skeleton } from "../ui/skeleton"
+export function FiltersSkeleton() {
+  return (
+    <div className="mx-auto max-w-7xl px-2 py-4 sm:px-6 lg:px-8">
+      <div className="mb-8 rounded-lg border">
+        <div className="flex flex-col gap-4 lg:flex-row">
+          {/* Search Skeleton */}
+          <div className="relative flex-1">
+            <Search className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 transform" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* Filter Dropdowns Skeleton */}
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="w-full lg:w-48">
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ))}
+
+          {/* Filter Button Skeleton */}
+          <div className="w-full lg:w-auto">
+            <Skeleton className="h-10 w-32" />
+          </div>
+        </div>
+      </div>
+
+      {/* Exam Groups Skeleton */}
+      <div className="space-y-6">
+        {[1, 2, 3, 4, 5].map((index) => (
+          <ExamGroupSkeleton key={index} />
+        ))}
+      </div>
+
+      {/* Load More Button Skeleton */}
+      <div className="mt-12 text-center">
+        <Skeleton className="mx-auto h-12 w-40" />
+      </div>
+    </div>
+  )
+}
 
 export default function EnhancedExamSkeleton() {
   return (
@@ -25,45 +72,8 @@ export default function EnhancedExamSkeleton() {
           </div>
         </div>
       </div>
-
-      {/* Filters Skeleton */}
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-8 rounded-lg border">
-          <div className="flex flex-col gap-4 lg:flex-row">
-            {/* Search Skeleton */}
-            <div className="relative flex-1">
-              <Search className="absolute top-1/2 left-3 z-10 h-4 w-4 -translate-y-1/2 transform" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-
-            {/* Filter Dropdowns Skeleton */}
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-full lg:w-48">
-                <Skeleton className="h-10 w-full" />
-              </div>
-            ))}
-
-            {/* Filter Button Skeleton */}
-            <div className="w-full lg:w-auto">
-              <Skeleton className="h-10 w-32" />
-            </div>
-          </div>
-        </div>
-
-        {/* Exam Groups Skeleton */}
-        <div className="space-y-6">
-          {[1, 2, 3, 4, 5].map((index) => (
-            <ExamGroupSkeleton key={index} />
-          ))}
-        </div>
-
-        {/* Load More Button Skeleton */}
-        <div className="mt-12 text-center">
-          <Skeleton className="mx-auto h-12 w-40" />
-        </div>
-      </div>
     </div>
-  );
+  )
 }
 
 export function ExamGroupSkeleton() {
@@ -99,24 +109,21 @@ export function ExamGroupSkeleton() {
         </div>
       </div>
     </Card>
-  );
+  )
 }
 export function LoadingMore({ isLoading }: { isLoading: boolean }) {
   return (
     <>
       {isLoading && (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-6">
           {[1, 2, 3].map((index) => (
             <ExamGroupSkeleton key={index} />
           ))}
         </div>
       )}
     </>
-  );
+  )
 }
-
-import { ArrowLeft, Download, FileText } from "lucide-react";
-import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 export function ExamDetailSkeleton() {
   return (
@@ -157,7 +164,7 @@ export function ExamDetailSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 export function ExamAttachmentsSkeleton() {
   return (
@@ -190,7 +197,7 @@ export function ExamAttachmentsSkeleton() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 export function ExamHeaderSkeleton() {
   return (
@@ -220,7 +227,7 @@ export function ExamHeaderSkeleton() {
         ))}
       </div>
     </Card>
-  );
+  )
 }
 export function ExamInstructionsSkeleton() {
   return (
@@ -232,7 +239,7 @@ export function ExamInstructionsSkeleton() {
         </CardTitle>
       </CardHeader>
     </Card>
-  );
+  )
 }
 export function SelectSourceSkeleton() {
   return (
@@ -278,7 +285,7 @@ export function SelectSourceSkeleton() {
         </CardAction>
       </CardContent>
     </Card>
-  );
+  )
 }
 export function MainContentLoading({ title }: { title?: string }) {
   return (
@@ -310,7 +317,7 @@ export function MainContentLoading({ title }: { title?: string }) {
       <ExamInstructionsSkeleton />
       <ExamAttachmentsSkeleton />
     </>
-  );
+  )
 }
 export function UserExamItemSkeleton() {
   return (
@@ -325,5 +332,5 @@ export function UserExamItemSkeleton() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

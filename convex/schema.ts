@@ -24,8 +24,6 @@ const schema = defineSchema({
     pendingCredits: v.optional(v.number()),
 
     daily_streak: v.optional(v.number()),
-
-
   })
     .index("username", ["username"])
     .index("email", ["email"])
@@ -58,10 +56,15 @@ const schema = defineSchema({
   qualifications: defineTable({
     name: v.string(),
     label: v.string(),
+    nameLabelCombined: v.optional(v.string()),
     created_at: v.optional(v.number()),
   })
     .index("by_name", ["name"])
-    .index("by_label", ["label"]),
+    .index("by_label", ["label"])
+    .searchIndex("combined_search", {
+      searchField: "nameLabelCombined",
+      filterFields: ["label", "name", "nameLabelCombined"],
+    }),
 
   questions: defineTable({
     qualification_id: v.id("qualifications"),
