@@ -2,9 +2,11 @@
 
 import { useQuery } from "convex-helpers/react"
 import { api } from "convex/_generated/api"
-import { Clock, UserPlus } from "lucide-react"
+import { Clock, Mail, UserPlus } from "lucide-react"
 import DisplayFriendList from "~/components/friends/display-friend-list"
-import PageHeaderWrapper from "~/components/page-header-wrapper"
+import PageHeaderWrapper, {
+  pageHeaderWrapperIconSize,
+} from "~/components/page-header-wrapper"
 import { Badge } from "~/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs"
 
@@ -16,6 +18,7 @@ export default function Page() {
     <PageHeaderWrapper
       title="Zaproszenia"
       description="Zarządzaj swoimi zaproszeniami oraz od innych użytkowników"
+      icon={<Mail size={pageHeaderWrapperIconSize} />}
     >
       <Tabs defaultValue="incoming" className="w-full">
         <TabsList className="mb-6 grid w-full grid-cols-2">

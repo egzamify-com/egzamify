@@ -1,9 +1,11 @@
 "use client"
 
-import { Search } from "lucide-react"
+import { Search, Users } from "lucide-react"
 import Link from "next/link"
 import DisplayFriendList from "~/components/friends/display-friend-list"
-import PageHeaderWrapper from "~/components/page-header-wrapper"
+import PageHeaderWrapper, {
+  pageHeaderWrapperIconSize,
+} from "~/components/page-header-wrapper"
 import { Button } from "~/components/ui/button"
 
 export default function Page() {
@@ -11,6 +13,7 @@ export default function Page() {
     <PageHeaderWrapper
       title="Moi znajomi"
       description="Zarządzaj swoimi kontaktami i pozostań w kontakcie"
+      icon={<Users size={pageHeaderWrapperIconSize} />}
     >
       <DisplayFriendList
         filter="accepted_friends"

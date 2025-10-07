@@ -2,11 +2,13 @@
 
 import { usePaginatedQuery } from "convex-helpers/react/cache"
 import { api } from "convex/_generated/api"
-import { List } from "lucide-react"
+import { History, List } from "lucide-react"
 import Link from "next/link"
 import FullScreenError from "~/components/full-screen-error"
 import LoadMoreBtn from "~/components/load-more"
-import PageHeaderWrapper from "~/components/page-header-wrapper"
+import PageHeaderWrapper, {
+  pageHeaderWrapperIconSize,
+} from "~/components/page-header-wrapper"
 import UserExamCard from "~/components/praktyka/history/user-exam-card"
 import { UserExamItemSkeleton } from "~/components/praktyka/loadings"
 import { Button } from "~/components/ui/button"
@@ -47,7 +49,10 @@ export default function Page() {
       />
     )
   return (
-    <PageHeaderWrapper {...{ title, description }}>
+    <PageHeaderWrapper
+      {...{ title, description }}
+      icon={<History size={pageHeaderWrapperIconSize} />}
+    >
       <div className="flex flex-col gap-6">
         {results.map((userExam) => (
           <UserExamCard

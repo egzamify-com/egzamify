@@ -3,9 +3,12 @@
 import { usePaginatedQuery } from "convex-helpers/react/cache"
 import { api } from "convex/_generated/api"
 import type { ListPracticalExamsFilter } from "convex/praktyka/query"
+import { Cpu } from "lucide-react"
 import { useState } from "react"
 import LoadMoreBtn from "~/components/load-more"
-import PageHeaderWrapper from "~/components/page-header-wrapper"
+import PageHeaderWrapper, {
+  pageHeaderWrapperIconSize,
+} from "~/components/page-header-wrapper"
 import ExamGroup from "~/components/praktyka/exam-group"
 import PracticalExamsFilters from "~/components/praktyka/filters"
 import EnhancedExamSkeleton, {
@@ -38,6 +41,7 @@ export default function PraktykaPage() {
     <PageHeaderWrapper
       title="Egzamin praktyczny"
       description="Przeglądaj dostępne egzaminy praktyczne. Prześlij swoją pracę, błyskawicznie otrzymaj wyniki."
+      icon={<Cpu size={pageHeaderWrapperIconSize} />}
     >
       <PracticalExamsFilters
         {...{ setSearchInput, setSelectedQualificationId, setSelectedSort }}
