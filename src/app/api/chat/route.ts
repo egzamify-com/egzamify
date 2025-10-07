@@ -4,10 +4,10 @@ import { convertToModelMessages, streamText, type UIMessage } from "ai"
 import { api } from "convex/_generated/api"
 import { fetchMutation } from "convex/nextjs"
 import { chargeCredits, refundCredits } from "~/actions/actions"
-import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG"
+import { APP_CONFIG } from "~/APP_CONFIG"
 
 type MyMessageMetadata = {
-  mode: AiWyjasniaMode
+  mode: string
   createdAt: number
 }
 
