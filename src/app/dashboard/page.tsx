@@ -1,13 +1,12 @@
 "use client"
 
 import { api } from "convex/_generated/api"
-import { useQuery } from "convex/react"
+import { useQuery } from "convex/custom_helpers"
 import {
   Award,
   BookOpen,
   Clock,
   Flame,
-  Loader2,
   MessageSquare,
   Target,
   TrendingUp,
@@ -17,6 +16,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { RecentActivity } from "~/components/dashboard/recent-activity"
 import { StatsChart } from "~/components/dashboard/stats-chart"
+import FullScreenLoading from "~/components/full-screen-loading"
 import { Button } from "~/components/ui/button"
 import {
   Card,
@@ -26,26 +26,31 @@ import {
   CardTitle,
 } from "~/components/ui/card"
 
+// przydalo by sie rozbic to na komponenty, tylko jeden duzy chart potrzebuje
+// faktycznie info z bazy, reszta to tylko linki, wiec nie powinny czekac na render charta,
+// dzieki temu tez, przejscie z homepage na dashboard bedzie szybsze, teraz nawigacja nie jest instant,
+// imo jest jakies (500ms delay, potem na ulamek sekundy jest loading, i potem reszta),
+// najlepiej, przywitanie usera to oddzielny komponent, ktory w srodku pobirze sobie info o userze, a jak laduje to skeleton loading
+// tak samo ten duzy chart, w srodku oddzielnego komponentu pobiera sobie to co potrzebuke a tak to pokazuje swoj loading
+
 export default function DashboardPage() {
-  const user = useQuery(api.users.query.getCurrentUser)
-  const userStats = useQuery(api.statistics.query.getUserStatistics)
-  const weeklyProgress = useQuery(api.statistics.query.getWeeklyProgress)
+  const { data: user } = useQuery(api.users.query.getCurrentUser)
+  const { data: userStats } = useQuery(api.statistics.query.getUserStatistics)
+  const { data: weeklyProgress } = useQuery(
+    api.statistics.query.getWeeklyProgress,
+  )
 
   if (
     user === undefined ||
     userStats === undefined ||
     weeklyProgress === undefined
   ) {
-    return (
-      <div className="flex h-full w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
+    return <FullScreenLoading />
   }
 
   if (!user) return redirect("/sign-in")
 
-  const currentStreak = user.daily_streak || 0
+  const currentStreak = user.daily_streak ?? 0
 
   return (
     <div className="bg-background min-h-screen p-4 md:p-6">
