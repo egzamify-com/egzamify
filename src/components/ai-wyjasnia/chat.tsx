@@ -6,7 +6,6 @@ import type { Id } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
 import { useEffect, useRef, useState } from "react"
 import type { MyUIMessage } from "~/app/api/chat/route"
-import { type AiWyjasniaMode } from "~/APP_CONFIG"
 import ChatMessages from "~/components/ai-wyjasnia/chat-messages"
 import NoMessages from "~/components/ai-wyjasnia/no-messages-info"
 import SpinnerLoading from "../SpinnerLoading"
@@ -20,7 +19,7 @@ export default function Chat({
   initialMessages?: MyUIMessage[]
 } = {}) {
   const deleteThread = useMutation(api.ai_wyjasnia.mutate.deleteChat)
-  const [selectedMode, setSelectedMode] = useState<AiWyjasniaMode>("Normal")
+  const [selectedMode, setSelectedMode] = useState("Normalny")
   const { sendMessage, messages, status, error } = useChat<MyUIMessage>({
     id,
     messages: initialMessages,
@@ -69,7 +68,7 @@ export default function Chat({
       </div>
 
       <ChatInputWithModeSelection
-        {...{ selectedMode, setSelectedMode, sendMessage }}
+        {...{ selectedMode, setSelectedMode, sendMessage, messages }}
       />
     </div>
   )

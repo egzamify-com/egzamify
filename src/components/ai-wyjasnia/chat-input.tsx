@@ -1,8 +1,14 @@
 import type { ChatRequestOptions, CreateUIMessage } from "ai"
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
-import { useState } from "react"
-import { APP_CONFIG, type AiWyjasniaMode } from "~/APP_CONFIG"
+import { OctagonX, Plus } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import type { MyUIMessage } from "~/app/api/chat/route"
+import { APP_CONFIG } from "~/APP_CONFIG"
+import { cn } from "~/lib/utils"
+import { Button } from "../ui/button"
 import {
   InputGroup,
   InputGroupAddon,
@@ -15,24 +21,63 @@ export function ChatInputWithModeSelection({
   selectedMode,
   setSelectedMode,
   sendMessage,
+  messages,
 }: {
-  selectedMode: AiWyjasniaMode
-  setSelectedMode: (mode: AiWyjasniaMode) => void
+  selectedMode: string
+  setSelectedMode: (mode: string) => void
   sendMessage: (
     // @ts-expect-error idk, this works
     message: CreateUIMessage,
     options?: ChatRequestOptions,
   ) => Promise<void>
+  messages: MyUIMessage[]
 }) {
+  const [isMessageLimitReached, setIsMessageLimitReached] = useState(false)
   const [input, setInput] = useState("")
   const { data: user } = useQuery(api.users.query.getCurrentUser)
 
+  useEffect(() => {
+    if (
+      messages.length > APP_CONFIG.ai_wyjasnia.maxMessagesPerChat &&
+      messages.length % 2 === 0
+    ) {
+      setIsMessageLimitReached(true)
+      toast.error("Limit wiadomości na czat został przekroczony", {
+        description: "Stwórz nowy czat aby kontynuować nauke",
+        duration: 5000,
+      })
+      return
+    }
+  }, [messages.length])
+
   return (
     <>
-      <div className="bg-card sticky bottom-0 max-w-4/5 space-y-4 rounded-t-xl border p-4">
+      {isMessageLimitReached && (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="flex flex-row gap-2">
+            <OctagonX className="text-destructive" />
+            <p className="text-destructive">
+              Przekroczono limit wiadomości na czat
+            </p>
+          </div>
+          <Link href={"/dashboard/ai-wyjasnia"}>
+            <Button variant={"outline"}>
+              <Plus /> Stwórz nowy czat
+            </Button>
+          </Link>
+        </div>
+      )}
+      <div
+        className={cn(
+          `bg-card sticky bottom-0 w-full space-y-4 rounded-t-xl border p-4`,
+          isMessageLimitReached &&
+            "border-t-destructive border-l-destructive border-r-destructive",
+        )}
+      >
         <div className="space-y-3">
           <Label className="text-sm font-medium">Tryb odpowiedzi AI</Label>
           <RadioGroup
+            disabled={isMessageLimitReached}
             value={selectedMode}
             onValueChange={(value) => setSelectedMode(value)}
             className="flex flex-wrap gap-4"
@@ -56,6 +101,16 @@ export function ChatInputWithModeSelection({
         <form
           onSubmit={(e) => {
             e.preventDefault()
+
+            if (
+              input.length > APP_CONFIG.ai_wyjasnia.maxUserMessageCharacters
+            ) {
+              toast.error("Nie udało się wysłać wiadomości", {
+                description: "Wiadomość jest za długa",
+              })
+              return
+            }
+
             sendMessage({
               text: input,
               metadata: {
@@ -67,8 +122,11 @@ export function ChatInputWithModeSelection({
           }}
           className="flex flex-col gap-2"
         >
-          <InputGroup>
+          <InputGroup
+            className={cn(isMessageLimitReached && "border-destructive border")}
+          >
             <InputGroupTextarea
+              disabled={isMessageLimitReached}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={`Zapytaj o cokolwiek ...`}
@@ -85,7 +143,7 @@ export function ChatInputWithModeSelection({
                     APP_CONFIG.ai_wyjasnia.creditPricePerMessage
                 }
               >
-                Submit
+                Wyślij
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>

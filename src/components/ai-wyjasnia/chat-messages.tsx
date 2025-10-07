@@ -36,7 +36,7 @@ function ChatMessage({ message }: { message: MyUIMessage }) {
           {message.role === "user" ? (
             <ActivityStatusAvatar />
           ) : (
-            <Bot className="h-4 w-4" />
+            <Bot className="h-6 w-6" />
           )}
         </div>
         <Card className={`relative flex items-center justify-center py-2`}>

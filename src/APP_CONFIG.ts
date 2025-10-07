@@ -18,6 +18,8 @@ type AppConfig = {
   }
   baseCreditPrice: number
   ai_wyjasnia: {
+    maxMessagesPerChat: number
+    maxUserMessageCharacters: number
     creditPricePerMessage: number
     maxOutputTokens: number
     model: any
@@ -93,6 +95,8 @@ export const APP_CONFIG: AppConfig = {
   },
   baseCreditPrice: 0,
   ai_wyjasnia: {
+    maxMessagesPerChat: 100,
+    maxUserMessageCharacters: 600,
     creditPricePerMessage: 2,
     maxOutputTokens: 500,
     model: groq("llama-3.3-70b-versatile"),
@@ -131,6 +135,3 @@ export const APP_CONFIG: AppConfig = {
     ],
   },
 }
-type ModesArray = typeof APP_CONFIG.ai_wyjasnia.modes
-type ModeObject = ModesArray[number]
-export type AiWyjasniaMode = ModeObject["title"]
