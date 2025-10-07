@@ -2,212 +2,109 @@
 
 import { useQuery } from "convex-helpers/react"
 import { api } from "convex/_generated/api"
-import { Github, Mail } from "lucide-react"
-import { useTheme } from "next-themes"
+import type { Doc } from "convex/_generated/dataModel"
+import { useMutation } from "convex/react"
+import { RotateCcw, Save, Settings, User } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
+import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
+import PageHeaderWrapper, {
+  pageHeaderWrapperIconSize,
+} from "~/components/page-header-wrapper"
+import SpinnerLoading from "~/components/SpinnerLoading"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "~/components/ui/input-group"
+import { Label } from "~/components/ui/label"
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme()
   const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
   if (isPending) return <FullScreenLoading />
-  if (!user) return null
-
-  const connectedAccounts = [
-    {
-      id: "github",
-      name: "GitHub",
-      icon: Github,
-      connected: true,
-    },
-    {
-      id: "google",
-      name: "Google",
-      icon: Mail,
-      connected: true,
-    },
-  ]
+  if (!user)
+    return <FullScreenError errorMessage="Nie znaleziono użytkownika" />
 
   return (
-    <div className="bg-background min-h-screen">
-      <div className="container mx-auto max-w-4xl px-4 py-8">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">Ustawienia</h1>
-            <p className="text-muted-foreground">
-              Zarządzaj konfiguracją swojego konta.
-            </p>
-          </div>
-
+    <PageHeaderWrapper
+      title="Ustawienia"
+      description="Zarządzaj konfiguracją swojego konta."
+      icon={<Settings size={pageHeaderWrapperIconSize} />}
+    >
+      <div className="bg-background min-h-screen">
+        <div className="container mx-auto max-w-4xl px-4">
           {/* Profile Section */}
-          {/*<Card>
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                Profile
+                Profil
               </CardTitle>
               <CardDescription>
-                Update your profile information and photo.
+                Zaktualizuj informacje w swoim profilu.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Profile Picture */}
-          {/*<div className="flex items-center gap-6">
-                <div className="relative">
-                  <ActivityStatusAvatar />
-                  <label
-                    htmlFor="profile-upload"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 absolute -right-2 -bottom-2 cursor-pointer rounded-full p-2 transition-colors"
-                  >
-                    <Camera className="h-4 w-4" />
-                    <input
-                      id="profile-upload"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-medium">Profile Photo</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Upload a new profile photo. Recommended size: 400x400px.
-                  </p>
-                  <label htmlFor="profile-upload">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="cursor-pointer bg-transparent"
-                    >
-                      <Upload className="mr-2 h-4 w-4" />
-                      Upload Photo
-                    </Button>
-                  </label>
-                </div>
-              </div>*/}
-
-          {/*<Separator />*/}
-
-          {/* Username and Email */}
-          {/*<div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                placeholder="Enter your username"
-                value={user.username}
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end">
-            <Button>Save Changes</Button>
-          </div>*/}
-          {/*</CardContent>*/}
-          {/*</Card>*/}
-
-          {/* Connected Accounts */}
-          {/*<Card>
-            <CardHeader>
-              <CardTitle>Connected Accounts</CardTitle>
-              <CardDescription>
-                Manage your connected social accounts and integrations.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {connectedAccounts.map((account) => (
-                  <div
-                    key={account.id}
-                    className="flex items-center justify-between rounded-lg border p-4"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="bg-muted rounded-lg p-2">
-                        <account.icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{account.name}</span>
-                          {account.connected && (
-                            <Badge variant="secondary" className="text-xs">
-                              Connected
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-muted-foreground text-sm">
-                          {user.username}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant={account.connected ? "outline" : "default"}
-                      size="sm"
-                    >
-                      {account.connected ? "Disconnect" : "Connect"}
-                    </Button>
-                  </div>
-                ))}
-              </div>
+              <UpdateUsername {...{ user }} />
             </CardContent>
-          </Card>*/}
-
-          {/* Preferences */}
-          {/*<Card>
-            <CardHeader>
-              <CardTitle>Preferences</CardTitle>
-              <CardDescription>Customize your app experience.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label
-                      htmlFor="dark-mode"
-                      className="text-base font-medium"
-                    >
-                      Dark Mode
-                    </Label>
-                    <p className="text-muted-foreground text-sm">
-                      Switch between light and dark themes.
-                    </p>
-                  </div>
-                  <Switch
-                    className="cursor-pointer"
-                    id="dark-mode"
-                    onCheckedChange={() =>
-                      setTheme(theme === "light" ? "dark" : "light")
-                    }
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>*/}
-
-          {/* Danger Zone */}
-          {/*<Card className="border-destructive/20">
-            <CardHeader>
-              <CardTitle className="text-destructive">Danger Zone</CardTitle>
-              <CardDescription>
-                Irreversible and destructive actions.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="border-destructive/20 flex items-center justify-between rounded-lg border p-4">
-                  <div>
-                    <h4 className="font-medium">Delete Account</h4>
-                    <p className="text-muted-foreground text-sm">
-                      Permanently delete your account and all associated data.
-                    </p>
-                  </div>
-                  <Button variant="destructive" size="sm">
-                    Delete Account
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>*/}
+          </Card>
         </div>
       </div>
-    </div>
+    </PageHeaderWrapper>
+  )
+}
+function UpdateUsername({ user }: { user: Doc<"users"> }) {
+  const updateProfile = useMutation(api.users.mutate.updateUserProfile)
+  const [isMutating, setIsMutating] = useState(false)
+  const [newUsername, setNewUsername] = useState(user.username)
+  return (
+    <InputGroup>
+      <InputGroupAddon align={"inline-start"}>
+        <Label>Nazwa użytkownika</Label>
+      </InputGroupAddon>
+      <InputGroupInput
+        placeholder=""
+        value={newUsername}
+        onChange={(e) => setNewUsername(e.target.value)}
+      />
+      <InputGroupAddon align="inline-end">
+        <InputGroupButton onClick={() => setNewUsername(user.username)}>
+          <RotateCcw /> Reset
+        </InputGroupButton>
+        <InputGroupButton
+          variant={"default"}
+          disabled={newUsername === user.username}
+          onClick={async () => {
+            try {
+              setIsMutating(true)
+              await updateProfile({
+                newFields: { ...user, username: newUsername },
+              })
+              setIsMutating(false)
+              toast.success("Zmieniono nazwę użytkownika")
+            } catch (e) {
+              toast.error("Nie udało się zmienić nazwy użytkownika")
+            }
+          }}
+        >
+          {isMutating ? (
+            <SpinnerLoading />
+          ) : (
+            <>
+              <Save /> Zapisz
+            </>
+          )}
+        </InputGroupButton>
+      </InputGroupAddon>
+    </InputGroup>
   )
 }
