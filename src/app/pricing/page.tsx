@@ -1,4 +1,5 @@
 import FullScreenError from "~/components/full-screen-error"
+import { env } from "~/env"
 import { tryCatch } from "~/lib/tryCatch"
 import type { GetProductsResponse } from "../api/stripe/get-stripe-products/route"
 import Product from "./product"
@@ -46,9 +47,10 @@ export default async function PricingPage() {
   )
 }
 async function getProducts() {
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+  const baseUrl = env.BASE_SERVER_URL
+    ? `${env.BASE_SERVER_URL}`
     : "http://localhost:3000"
+  console.log("fetchinf products from this url")
   console.log({ baseUrl })
 
   const res = await fetch(`${baseUrl}/api/stripe/get-stripe-products`, {
