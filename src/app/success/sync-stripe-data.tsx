@@ -5,7 +5,7 @@ import { fetchMutation, fetchQuery } from "convex/nextjs"
 // import { toast } from "sonner"
 import { Suspense } from "react"
 import FullScreenError from "~/components/full-screen-error"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import FullScreenLoading from "~/components/full-screen-loading"
 import { syncStripeDataToKV } from "~/lib/stripe-utils"
 import SyncEnd from "./end"
 
@@ -60,11 +60,11 @@ export default async function SyncData({
     }
   }
   return (
-    <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
-      <Suspense fallback={<SpinnerLoading />}>
+    <Suspense fallback={<FullScreenLoading />}>
+      <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
         <SyncEnd {...{ sessionId }} />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   )
 }
 async function clearPendingsAndSkipRealCredits() {

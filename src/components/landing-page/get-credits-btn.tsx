@@ -5,7 +5,7 @@ import { Button } from "../ui/button"
 export default function GetCreditsBtn() {
   return (
     <Link href={"/pricing"}>
-      <Button variant={"outline"} size={"lg"}>
+      <Button variant={"outline"}>
         <Wallet />
         Zdobądź kredyty
       </Button>

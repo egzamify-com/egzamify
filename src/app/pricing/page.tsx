@@ -21,7 +21,6 @@ export function PricingPage() {
     queryFn: getProducts,
     queryKey: ["stripe-products"],
   })
-  // const [products, error] = await tryCatch(getProducts())
   if (error) {
     console.error("[STRIPE] Error fetching stripe products - ", error)
     return (
@@ -47,11 +46,12 @@ export function PricingPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <h1 className="text-foreground mb-4 text-4xl font-bold text-balance">
-            Choose Your Credit Package
+            {`Wybierz swój pakiet kredytów`}
           </h1>
           <p className="text-muted-foreground mx-auto max-w-2xl text-xl text-pretty">
-            Get AI learning credits with one-time purchases. No subscriptions,
-            no recurring fees - just pay once and learn at your own pace
+            {`Zdobądź kredyty do nauki z AI dzięki jednorazowym zakupom. Bez
+            subskrypcji, bez cyklicznych opłat – zakup kredyty i ucz się
+            we własnym tempie.`}
           </p>
         </div>
         <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">

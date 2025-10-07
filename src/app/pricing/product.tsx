@@ -2,7 +2,7 @@
 
 import { api } from "convex/_generated/api"
 import { useMutation } from "convex/react"
-import { Minus, Plus } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import type Stripe from "stripe"
@@ -10,13 +10,7 @@ import { createStripeCheckout } from "~/actions/stripe/create-stripe-checkout"
 import SpinnerLoading from "~/components/SpinnerLoading"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card"
+import { Card, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import useStripe from "~/hooks/use-stripe"
 import { tryCatch } from "~/lib/tryCatch"
 
@@ -29,7 +23,6 @@ export default function Product({
     }
   }
 }) {
-  console.log({ product })
   const popular = product.metadata.popular
   const [quantity, setQuantity] = useState(1)
   const [mutationPending, setMutationPending] = useState(false)
@@ -83,14 +76,11 @@ export default function Product({
     >
       {popular && (
         <Badge className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 transform">
-          Most Popular
+          Popularne
         </Badge>
       )}
 
-      <CardHeader className="pb-4 text-center">
-        {/*<div className="mb-4 flex justify-center">
-          <Check className="h-6 w-6" />
-        </div>*/}
+      <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">
           <Badge variant={"outline"} className="text-lg font-bold">
             {product.metadata.label}
@@ -98,48 +88,13 @@ export default function Product({
         </CardTitle>
         <div className="mt-2 flex items-baseline justify-center gap-1">
           <span className="text-primary text-4xl font-bold">
-            {parseInt(product.name) * quantity} credits
-            {/*${product.default_price. as string}*/}
+            {parseInt(product.name) * quantity} kredytów
           </span>
         </div>
         <div className="text-accent-foreground mt-2 text-xl font-semibold">
           {product.price.transformed_amount * quantity} PLN
         </div>
-        {/*<CardDescription className="mt-3">*/}
-        {/*fdsjkl*/}
-        {/*{plan.description}*/}
-        {/*jfklds*/}
-        {/*</CardDescription>*/}
       </CardHeader>
-
-      <CardContent className="flex-1">
-        <div className="bg-secondary/50 flex items-center justify-center gap-4 rounded-lg p-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setQuantity((prev) => (prev > 0 ? prev - 1 : prev))}
-            className="h-8 w-8 p-0"
-            disabled={quantity <= 1}
-          >
-            <Minus className="h-4 w-4" />
-          </Button>
-          <div className="flex flex-col items-center gap-1">
-            <span className="text-muted-foreground text-sm">Quantity</span>
-            <span className="min-w-[2ch] text-center text-xl font-semibold">
-              {/*{quantities[plan.name]}*/}
-              {quantity}
-            </span>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setQuantity((prev) => prev + 1)}
-            className="h-8 w-8 p-0"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
 
       <CardFooter className="pt-6">
         <Button
@@ -149,7 +104,13 @@ export default function Product({
           onClick={async () => await handleCheckout()}
           disabled={mutationPending}
         >
-          {mutationPending ? <SpinnerLoading /> : <p>Buy now</p>}
+          {mutationPending ? (
+            <SpinnerLoading />
+          ) : (
+            <>
+              <ShoppingCart /> Zakup
+            </>
+          )}
         </Button>
       </CardFooter>
     </Card>

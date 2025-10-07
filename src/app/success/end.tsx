@@ -2,10 +2,9 @@
 
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
-import Link from "next/link"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
-import { Button } from "~/components/ui/button"
+import DashboardBtn from "~/components/landing-page/dashboard-btn"
 import useBlockNavigation from "~/hooks/use-block-navigation"
 import RenderToast from "./render-toast"
 
@@ -43,11 +42,9 @@ export default function SyncEnd({ sessionId }: { sessionId: string }) {
     <>
       {transaction && user && (
         <>
-          <h1 className="text-3xl font-bold">{`Thank you!`}</h1>
-          <h1 className="text-xl font-bold">{`You purchased ${transaction.creditsPurchased} credits!`}</h1>
-          <Link href={"/dashboard"}>
-            <Button>Back to the app</Button>
-          </Link>
+          <h1 className="text-3xl font-bold">{`Dziękujemy za zakup!`}</h1>
+          <h1 className="text-xl font-bold">{`Zakupiono ${transaction.creditsPurchased} kredytów!`}</h1>
+          <DashboardBtn />
           <RenderToast
             transactionStatus={transaction.status}
             purchasedCredits={transaction.creditsPurchased}

@@ -18,9 +18,9 @@ export default function RenderToast({
   }
 
   if (transactionStatus === "succeded") {
-    toast.success("Payment succeeded", {
+    toast.success("Płatność zakończona sukcesem", {
       description: purchasedCredits
-        ? `Added ${purchasedCredits} credits to your account`
+        ? `Dodano ${purchasedCredits} kredytów do konta`
         : null,
       action: (
         <>
@@ -34,12 +34,11 @@ export default function RenderToast({
   }
 
   if (transactionStatus === "canceled") {
-    toast.warning("Payment canceled", {
-      description: `You canceled the payment`,
+    toast.warning("Anulowano płatność", {
       action: (
         <>
           <Link href={"/pricing"}>
-            <Button>Try again</Button>
+            <Button>Spróbuj ponownie</Button>
           </Link>
         </>
       ),
@@ -48,12 +47,12 @@ export default function RenderToast({
   }
 
   if (transactionStatus === "requires_payment_method") {
-    toast.error("Payment failed", {
-      description: `Please try again`,
+    toast.error("Płatność nie powiodła się", {
+      description: `Spróbuj ponownie`,
       action: (
         <>
           <Link href={"/pricing"}>
-            <Button>Try again</Button>
+            <Button>Spróbuj ponownie</Button>
           </Link>
         </>
       ),

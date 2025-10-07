@@ -39,8 +39,8 @@ export default async function SuccessPage({
       <Suspense
         fallback={
           <FullScreenLoading
-            loadingMessage="Thank you, we received your payment!"
-            loadingDetail="Finalizing transaction"
+            loadingMessage="Dziękujemy, otrzymaliśmy twoją płatność!"
+            loadingDetail="Finalizujemy transakcję"
           />
         }
       >
