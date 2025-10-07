@@ -9,7 +9,12 @@ import { toast } from "sonner"
 import FullScreenError from "~/components/full-screen-error"
 import LogInBtn from "~/components/landing-page/log-in-btn"
 import SpinnerLoading from "~/components/SpinnerLoading"
-import { Button } from "~/components/ui/button"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupTextarea,
+} from "~/components/ui/input-group"
 import {
   Select,
   SelectContent,
@@ -17,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import { Textarea } from "~/components/ui/textarea"
 import { cn } from "~/lib/utils"
 
 const items: FeedbackType[] = ["Błąd", "Propozycja funkcji", "Opinia"]
@@ -35,7 +39,7 @@ export default function Page() {
     <>
       <Authenticated>
         <div className="flex flex-1 flex-col items-center justify-start pt-10">
-          <div className="flex flex-col items-center justify-center gap-2 p-40">
+          <div className="flex flex-col items-center justify-center gap-4 p-40">
             <div>
               <h1 className="text-center text-3xl font-bold">
                 Podziel się swoją opinią!
@@ -47,67 +51,84 @@ export default function Page() {
             </div>
             <div className="flex w-full flex-col gap-2">
               <div className="flex w-full flex-col gap-2">
-                <Textarea
-                  placeholder="Opisz napotkany problem lub sugestię..."
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                <InputGroup
+                  onFocus={() => setDidMutationFail(false)}
                   className={cn(didMutationFail && "border-destructive border")}
-                />
-              </div>
-              <div className="flex w-full flex-row items-center justify-end gap-2">
-                <Select
-                  onValueChange={(e: FeedbackType) => setSelectedType(e)}
-                  defaultValue={defaultType}
                 >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {items.map((item) => {
-                      return (
-                        <SelectItem key={crypto.randomUUID()} value={item}>
-                          {item}
-                        </SelectItem>
-                      )
-                    })}
-                  </SelectContent>
-                </Select>
-                <Button
-                  onClick={async () => {
-                    console.log({ content })
-                    console.log({ selectedType })
-                    setIsActionPending(true)
-                    try {
-                      await sendFeedback({ content, type: selectedType })
-                      setIsActionPending(false)
-                      setDidMutationFail(false)
-                      setContent("")
-                      toast.success("Feedback sent successfully.", {
-                        description: "Thank you for your feedback!",
-                      })
-                    } catch (e) {
-                      setIsActionPending(false)
-                      setDidMutationFail(true)
-                      console.error(
-                        "[FEEDBACK] Error while sending feedback: ",
-                        e,
-                      )
-                      toast.error("Sorry, failed to send feedback.", {
-                        description:
-                          "You may have reached the limit of sent reports for an hour. Please try again later.",
-                      })
-                    }
-                  }}
-                >
-                  {isActionPending ? (
-                    <SpinnerLoading />
-                  ) : (
-                    <>
-                      <Send />
-                      <p>Send</p>
-                    </>
-                  )}
-                </Button>
+                  <InputGroupTextarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder={`Zapytaj o cokolwiek ...`}
+                  />
+                  <InputGroupAddon align="block-end">
+                    <Select
+                      onValueChange={(e: FeedbackType) => setSelectedType(e)}
+                      defaultValue={defaultType}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {items.map((item) => {
+                          return (
+                            <SelectItem key={crypto.randomUUID()} value={item}>
+                              {item}
+                            </SelectItem>
+                          )
+                        })}
+                      </SelectContent>
+                    </Select>
+                    <InputGroupButton
+                      type="submit"
+                      className="ml-auto"
+                      size="sm"
+                      variant="default"
+                      onClick={async () => {
+                        console.log({ content })
+                        console.log({ selectedType })
+                        setIsActionPending(true)
+                        try {
+                          if (!content) {
+                            toast.error("Proszę wpisać treść zgłoszenia.")
+                            setIsActionPending(false)
+                            setDidMutationFail(true)
+                            return
+                          }
+                          await sendFeedback({ content, type: selectedType })
+                          setIsActionPending(false)
+                          setDidMutationFail(false)
+                          setContent("")
+                          toast.success("Przesłano zgłoszenie.", {
+                            description: "Dziękujemy za twoją opinię!",
+                          })
+                        } catch (e) {
+                          setIsActionPending(false)
+                          setDidMutationFail(true)
+                          console.error(
+                            "[FEEDBACK] Error while sending feedback: ",
+                            e,
+                          )
+                          toast.error(
+                            "Przepraszamy, nie udało się wysłąć twojego zgłoszenia.",
+                            {
+                              description:
+                                "Możliwe że przekroczyłeś limit możliwych zgłoszeń na godzinę. Prosimy sprobować ponownie później.",
+                            },
+                          )
+                        }
+                      }}
+                    >
+                      {isActionPending ? (
+                        <SpinnerLoading />
+                      ) : (
+                        <>
+                          <Send />
+                          <p>Wyślij</p>
+                        </>
+                      )}
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
               </div>
             </div>
           </div>
