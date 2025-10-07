@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { stripe } from "~/actions/stripe/init-stripe"
 
-export const dynamic = "force-static"
+// export const dynamic = "force-static"
 
 export async function GET() {
   const stripeProducts = await stripe.products.list({ active: true })

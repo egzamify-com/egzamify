@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import Feedbackbtn from "./feedback-btn"
+import DashboardBtn from "./landing-page/dashboard-btn"
+import GetCreditsBtn from "./landing-page/get-credits-btn"
 import { ModeToggle } from "./theme/theme-toggle"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
@@ -31,12 +33,14 @@ export default function Navbar() {
     <nav
       className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between gap-4 border-b px-4`}
     >
-      <div className="flex flex-row justify-start gap-2">
-        <h1 className="text-3xl font-extrabold">Egzamify</h1>
-        <Badge variant={"outline"} className="rounded-xl">
-          <p className="m-0 p-0 text-xs">Beta</p>
-        </Badge>
-      </div>
+      <Link href={"/"}>
+        <div className="flex flex-row justify-start gap-2">
+          <h1 className="text-3xl font-extrabold">Egzamify</h1>
+          <Badge variant={"outline"} className="rounded-xl">
+            <p className="m-0 p-0 text-xs">Beta</p>
+          </Badge>
+        </div>
+      </Link>
       <div className="flex gap-4">
         <AuthLoading>
           <AuthSkeleton />
@@ -73,10 +77,9 @@ export function NavSignedIn() {
   }
   if (!user) return null
   return (
-    <div className="flex gap-4">
-      <Link href={"/dashboard"}>
-        <Button>Dashboard</Button>
-      </Link>
+    <div className="flex items-center justify-center gap-4">
+      <GetCreditsBtn />
+      <DashboardBtn />
       <DropdownMenu>
         <DropdownMenuTrigger>
           <ActivityStatusAvatar userToShow={user} />
@@ -102,6 +105,7 @@ export function NavSignedIn() {
 function AuthSkeleton() {
   return (
     <>
+      <Skeleton className="h-10 w-26" />
       <Skeleton className="h-10 w-26" />
       <Skeleton className="h-10 w-10 rounded-full" />
     </>

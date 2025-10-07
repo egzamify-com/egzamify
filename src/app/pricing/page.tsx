@@ -1,10 +1,27 @@
+"use client"
+
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { Suspense } from "react"
 import FullScreenError from "~/components/full-screen-error"
+import FullScreenLoading from "~/components/full-screen-loading"
 import { env } from "~/env"
-import { tryCatch } from "~/lib/tryCatch"
 import type { GetProductsResponse } from "../api/stripe/get-stripe-products/route"
 import Product from "./product"
-export default async function PricingPage() {
-  const [products, error] = await tryCatch(getProducts())
+
+export default function Page() {
+  return (
+    <Suspense fallback={<FullScreenLoading />}>
+      <PricingPage />
+    </Suspense>
+  )
+}
+
+export function PricingPage() {
+  const { data: products, error } = useSuspenseQuery({
+    queryFn: getProducts,
+    queryKey: ["stripe-products"],
+  })
+  // const [products, error] = await tryCatch(getProducts())
   if (error) {
     console.error("[STRIPE] Error fetching stripe products - ", error)
     return (
@@ -47,15 +64,13 @@ export default async function PricingPage() {
   )
 }
 async function getProducts() {
-  const baseUrl = env.BASE_SERVER_URL
-    ? `${env.BASE_SERVER_URL}`
+  const baseUrl = env.NEXT_PUBLIC_BASE_SERVER_URL
+    ? `${env.NEXT_PUBLIC_BASE_SERVER_URL}`
     : "http://localhost:3000"
   console.log("fetchinf products from this url")
   console.log({ baseUrl })
 
-  const res = await fetch(`${baseUrl}/api/stripe/get-stripe-products`, {
-    next: { revalidate: 3600, tags: ["stripe-products"] },
-  })
+  const res = await fetch(`${baseUrl}/api/stripe/get-stripe-products`)
   if (!res.ok) {
     console.error(res)
     throw new Error("Failed to fetch products")
