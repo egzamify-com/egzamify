@@ -1,6 +1,7 @@
 "use server"
 
 import type Stripe from "stripe"
+import { env } from "~/env"
 import { getStripeCustomerId, storeStripeCustomerId } from "~/lib/stripe-utils"
 import { getNextjsUserOrThrow } from "../actions"
 import { stripe } from "./init-stripe"
@@ -53,7 +54,7 @@ export async function createStripeCheckout(
       metadata: { ...checkoutMetadata },
     },
     customer: stripeCustomerId,
-    success_url: `http://localhost:3000/success?sessionId=${randomUUID}`,
+    success_url: `${env.NEXT_PUBLIC_BASE_SERVER_URL}/success?sessionId=${randomUUID}`,
     mode: "payment",
     line_items: [
       {
