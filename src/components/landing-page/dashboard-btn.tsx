@@ -5,7 +5,7 @@ import { Button } from "../ui/button"
 export default function DashboardBtn() {
   return (
     <Link href={"/dashboard"}>
-      <Button variant="default" className="min-w-[160px] text-base">
+      <Button variant="default">
         <LayoutDashboard />
         Dashboard
       </Button>

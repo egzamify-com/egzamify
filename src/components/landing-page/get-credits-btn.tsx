@@ -4,10 +4,10 @@ import { Button } from "../ui/button"
 
 export default function GetCreditsBtn() {
   return (
-    <Link href={"/pricing"}>
+    <Link href={"/pricing"} prefetch={true}>
       <Button variant={"outline"}>
+        Zdobądź
         <Wallet />
-        Zdobądź kredyty
       </Button>
     </Link>
   )

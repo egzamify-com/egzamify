@@ -3,9 +3,15 @@
 import { useAuthActions } from "@convex-dev/auth/react"
 import { useQuery } from "convex-helpers/react"
 import { api } from "convex/_generated/api"
-import type { Doc } from "convex/_generated/dataModel"
-import { useMutation } from "convex/react"
-import { Bug, LogOut, Moon, Settings, Sun, User } from "lucide-react"
+import {
+  Bug,
+  CircleDollarSign,
+  LogOut,
+  Moon,
+  Settings,
+  Sun,
+  User,
+} from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -24,7 +30,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar"
-import { Button } from "../ui/button"
+import GetCreditsBtn from "../landing-page/get-credits-btn"
+import { Card, CardContent, CardHeader } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
 import ActivityStatusAvatar from "../users/activity-status-avatar"
 
@@ -33,39 +40,36 @@ export function NavUser() {
   const { signOut } = useAuthActions()
   const { isMobile } = useSidebar()
   const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
-
   const { setTheme, theme } = useTheme()
   if (isPending) return <Loading />
   if (!user) return null
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <Credits {...{ user }} />
-      </SidebarMenuItem>
-      <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              {isPending ? (
-                <>kfjdls</>
-              ) : (
-                <>
-                  <ActivityStatusAvatar userToShow={user} />
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">
-                      {user.username}
-                    </span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      {user.email}
-                    </span>
-                  </div>
-                </>
-              )}
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
+          <Card className="gap-2 p-2">
+            <Credits {...{ userCredits: user.credits }} />
+            <CardContent className="w-full p-0">
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-"
+                >
+                  <>
+                    <ActivityStatusAvatar userToShow={user} />
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">
+                        {user.username}
+                      </span>
+                      <span className="text-muted-foreground truncate text-xs">
+                        {user.email}
+                      </span>
+                    </div>
+                  </>
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+            </CardContent>
+          </Card>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
@@ -151,19 +155,16 @@ function Loading() {
     </div>
   )
 }
-function Credits({ user }: { user: Doc<"users"> }) {
-  const addCredits = useMutation(api.users.mutate.updateUserCredits)
+function Credits({ userCredits }: { userCredits: number | undefined }) {
   return (
-    <div className="flex items-center justify-between">
-      <h1>{user.credits ?? 0} credits</h1>
-      <Button
-        onClick={async () => {
-          console.log("clicked")
-          await addCredits({ creditsToAdd: 10 })
-        }}
-      >
-        Buy credits
-      </Button>
-    </div>
+    <CardHeader className="flex flex-row items-center justify-between p-0">
+      {userCredits !== undefined && (
+        <div className="flex flex-row items-center gap-1">
+          <CircleDollarSign size={20} />
+          <p>{userCredits}</p>
+        </div>
+      )}
+      <GetCreditsBtn />
+    </CardHeader>
   )
 }
