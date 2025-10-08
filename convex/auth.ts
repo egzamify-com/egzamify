@@ -1,4 +1,5 @@
 import GitHub from "@auth/core/providers/github"
+import Google from "@auth/core/providers/google"
 import { convexAuth } from "@convex-dev/auth/server"
 import { type Doc } from "./_generated/dataModel"
 
@@ -13,6 +14,16 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           image: githubProfile.avatar_url,
           githubId: githubProfile.id,
           githubAccessToken: tokens.access_token,
+        }
+      },
+    }),
+    Google({
+      profile(googleProfile) {
+        return {
+          id: googleProfile.sub,
+          name: googleProfile.name,
+          email: googleProfile.email,
+          image: googleProfile.picture,
         }
       },
     }),

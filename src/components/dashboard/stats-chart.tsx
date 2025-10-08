@@ -52,17 +52,11 @@ export function StatsChart({ weeklyData, totalStats }: StatsChartProps) {
         <BarChart data={weeklyData}>
           <XAxis
             dataKey="day"
-            stroke="hsl(var(--muted-foreground))"
             fontSize={12}
             tickLine={false}
             axisLine={false}
           />
-          <YAxis
-            stroke="hsl(var(--muted-foreground))"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-          />
+          <YAxis fontSize={12} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
               backgroundColor: "hsl(var(--card))",

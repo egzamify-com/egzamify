@@ -8,7 +8,6 @@ import {
   Clock,
   Flame,
   MessageSquare,
-  Target,
   TrendingUp,
   Users,
 } from "lucide-react"
@@ -68,7 +67,7 @@ export default function DashboardPage() {
           <Card className="md:col-span-2 lg:col-span-2 lg:row-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-blue-500" />
+                <TrendingUp className="h-5 w-5" />
                 Twoje postępy
               </CardTitle>
               <CardDescription>Statystyki z ostatnich 7 dni</CardDescription>
@@ -81,8 +80,7 @@ export default function DashboardPage() {
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <BookOpen className="h-8 w-8 text-blue-500" />
-                  <Target className="text-muted-foreground h-6 w-6" />
+                  <BookOpen className="h-8 w-8" />
                 </div>
                 <CardTitle className="group-hover:text-primary transition-colors">
                   Egzamin Teoretyczny
@@ -99,10 +97,7 @@ export default function DashboardPage() {
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <MessageSquare className="h-8 w-8 text-purple-500" />
-                  <span className="text-muted-foreground text-xs font-semibold">
-                    AI
-                  </span>
+                  <MessageSquare className="h-8 w-8" />
                 </div>
                 <CardTitle className="group-hover:text-primary transition-colors">
                   AI Wyjaśnia
@@ -119,10 +114,7 @@ export default function DashboardPage() {
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <Users className="h-8 w-8 text-green-500" />
-                  <span className="bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs font-bold">
-                    Nowe
-                  </span>
+                  <Users className="h-8 w-8" />
                 </div>
                 <CardTitle className="group-hover:text-primary transition-colors">
                   Znajomi
@@ -139,10 +131,7 @@ export default function DashboardPage() {
             <Card className="hover:border-primary h-fit transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <Award className="h-8 w-8 text-orange-500" />
-                  <span className="text-muted-foreground text-sm font-semibold">
-                    STATS
-                  </span>
+                  <Award className="h-8 w-8" />
                 </div>
                 <CardTitle className="group-hover:text-primary transition-colors">
                   Statystyki
