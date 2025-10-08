@@ -30,7 +30,7 @@ export default function SummaryAndScore({
         </div>
         <Link href={`/dashboard/egzamin-praktyczny/egzamin/${baseExam?._id}`}>
           <Button className="mt-4 w-full max-w-[200px]">
-            <RotateCcw /> Sprobój ponownie
+            <RotateCcw /> Spróbuj ponownie
           </Button>
         </Link>
       </div>
