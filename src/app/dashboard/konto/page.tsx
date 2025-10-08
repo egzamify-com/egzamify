@@ -115,7 +115,7 @@ export default function StatisticsPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-muted-foreground text-sm font-medium">
                       Rozwiązane pytania
                     </p>
                     <p className="text-2xl font-bold">
@@ -131,7 +131,7 @@ export default function StatisticsPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-muted-foreground text-sm font-medium">
                       Skuteczność
                     </p>
                     <p className="text-2xl font-bold">
@@ -147,7 +147,7 @@ export default function StatisticsPage() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-muted-foreground text-sm font-medium">
                       Czas nauki
                     </p>
                     <p className="text-2xl font-bold">
@@ -355,7 +355,7 @@ export default function StatisticsPage() {
                   <CheckCircle className="h-5 w-5 text-green-500" />
                   <div>
                     <p className="text-sm font-medium">Poprawne odpowiedzi</p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-muted-foreground text-xs">
                       {userStats.correctAnswers}
                     </p>
                   </div>
@@ -364,7 +364,7 @@ export default function StatisticsPage() {
                   <XCircle className="h-5 w-5 text-red-500" />
                   <div>
                     <p className="text-sm font-medium">Błędne odpowiedzi</p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-muted-foreground text-xs">
                       {userStats.totalQuestions - userStats.correctAnswers}
                     </p>
                   </div>
@@ -373,7 +373,7 @@ export default function StatisticsPage() {
                   <Lightbulb className="h-5 w-5 text-blue-500" />
                   <div>
                     <p className="text-sm font-medium">Użyte wyjaśnienia</p>
-                    <p className="text-xs text-gray-600">
+                    <p className="text-muted-foreground text-xs">
                       {userStats.aiExplanationsUsed}
                     </p>
                   </div>
@@ -385,7 +385,7 @@ export default function StatisticsPage() {
       ) : (
         <Card className="w-full">
           <CardContent className="py-12 text-center">
-            <p className="text-lg text-gray-500">
+            <p className="text-muted-foreground text-lg">
               Brak danych statystycznych. Zacznij rozwiązywać pytania!
             </p>
           </CardContent>

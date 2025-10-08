@@ -1,8 +1,16 @@
 "use client"
 
-import { Card, CardContent, CardFooter } from "~/components/ui/card"
+import {
+  Brain,
+  Calendar,
+  Code,
+  Database,
+  HelpCircle,
+  LineChart,
+  Network,
+} from "lucide-react"
 import { Badge } from "~/components/ui/badge"
-import { Brain, Code, Database, LineChart, Network, Calendar, HelpCircle } from "lucide-react"
+import { Card, CardContent, CardFooter } from "~/components/ui/card"
 
 interface Qualification {
   id: number
@@ -20,7 +28,9 @@ interface QualificationsIconGridProps {
   qualifications: Qualification[]
 }
 
-export default function QualificationsIconGrid({ qualifications }: QualificationsIconGridProps) {
+export default function QualificationsIconGrid({
+  qualifications,
+}: QualificationsIconGridProps) {
   const getIcon = (category: string) => {
     switch (category) {
       case "Machine Learning":
@@ -45,18 +55,22 @@ export default function QualificationsIconGrid({ qualifications }: Qualification
 
   if (qualifications.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">No qualifications found matching your criteria.</p>
+      <div className="py-12 text-center">
+        <p className="text-muted-foreground text-lg">
+          No qualifications found matching your criteria.
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {qualifications.map((qualification) => (
-        <Card key={qualification.id} className="overflow-hidden flex flex-col">
-          <div className="h-32 bg-gradient-to-br from-gray-50 to-gray-100 relative flex items-center justify-center">
-            <div className="text-gray-600">{getIcon(qualification.category)}</div>
+        <Card key={qualification.id} className="flex flex-col overflow-hidden">
+          <div className="relative flex h-32 items-center justify-center">
+            <div className="text-muted-foreground">
+              {getIcon(qualification.category)}
+            </div>
             <Badge
               className="absolute top-2 right-2"
               variant={
@@ -72,11 +86,13 @@ export default function QualificationsIconGrid({ qualifications }: Qualification
               {qualification.level}
             </Badge>
           </div>
-          <CardContent className="pt-4 flex-grow">
+          <CardContent className="flex-grow pt-4">
             <h3 className="text-lg font-semibold">{qualification.title}</h3>
-            <p className="text-sm text-gray-500 mt-1">{qualification.description}</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {qualification.description}
+            </p>
 
-            <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+            <div className="text-muted-foreground mt-3 flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1">
                 <HelpCircle className="h-4 w-4" />
                 <span>{qualification.questionsCount} questions</span>
@@ -94,7 +110,11 @@ export default function QualificationsIconGrid({ qualifications }: Qualification
                 {skill}
               </Badge>
             ))}
-            {qualification.skills.length > 2 && <Badge variant="secondary">+{qualification.skills.length - 2}</Badge>}
+            {qualification.skills.length > 2 && (
+              <Badge variant="secondary">
+                +{qualification.skills.length - 2}
+              </Badge>
+            )}
           </CardFooter>
         </Card>
       ))}

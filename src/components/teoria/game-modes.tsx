@@ -29,7 +29,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
       difficulty: "Trudny",
       duration: "60 min",
       questions: 40,
-      color: "bg-blue-500",
+
       variant: "default" as const,
       route: "full-test",
     },
@@ -42,7 +42,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
       difficulty: "Łatwy",
       duration: "2 min",
       questions: 1,
-      color: "bg-green-500",
+
       variant: "secondary" as const,
       route: "random-question",
     },
@@ -55,7 +55,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
       difficulty: "Dowolny",
       duration: "Bez limitu",
       questions: "Wszystkie",
-      color: "bg-purple-500",
+
       variant: "outline" as const,
       route: "browse-questions",
     },
@@ -70,7 +70,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="mb-2 text-3xl font-bold">Wybierz tryb gry</h1>
-        <p className="text-gray-600">Kwalifikacja: {qualificationId}</p>
+        <p className="text-muted-foreground">Kwalifikacja: {qualificationId}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -83,27 +83,25 @@ export default function GameModes({ qualificationId }: GameModesProps) {
               className="group relative cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-lg"
               onClick={() => handleModeSelect(mode)}
             >
-              <div
-                className={`absolute top-0 right-0 left-0 h-1 ${mode.color}`}
-              />
+              <div className={`absolute top-0 right-0 left-0 h-1`} />
 
               <CardHeader className="pb-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className={`rounded-lg p-3 ${mode.color} bg-opacity-10`}>
+                  <div className={`bg-opacity-10 rounded-lg p-3`}>
                     <IconComponent className="h-6 w-6" />
                   </div>
                 </div>
-                <CardTitle className="text-xl transition-colors group-hover:text-gray-500">
+                <CardTitle className="group-hover:text-muted-foreground text-xl transition-colors">
                   {mode.title}
                 </CardTitle>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <p className="text-sm leading-relaxed text-gray-600">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {mode.description}
                 </p>
 
-                <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="text-muted-foreground flex items-center justify-between text-sm">
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
                     <span>{mode.duration}</span>
@@ -115,7 +113,7 @@ export default function GameModes({ qualificationId }: GameModesProps) {
                 </div>
 
                 <Button
-                  className="mt-4 w-full transition-colors group-hover:bg-gray-500"
+                  className="group-hover:text-muted-foreground mt-4 w-full transition-colors"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleModeSelect(mode)

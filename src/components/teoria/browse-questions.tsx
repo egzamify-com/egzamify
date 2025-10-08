@@ -1,27 +1,27 @@
-"use client";
+"use client"
 
-import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { ChevronDown, ChevronUp, Filter, Loader2, Search } from "lucide-react";
-import { useState } from "react";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
+import { api } from "convex/_generated/api"
+import type { Id } from "convex/_generated/dataModel"
+import { useQuery } from "convex/react"
+import { ChevronDown, ChevronUp, Filter, Loader2, Search } from "lucide-react"
+import { useState } from "react"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Input } from "~/components/ui/input"
 
 interface BrowseQuestionsProps {
-  qualificationId: string;
+  qualificationId: string
 }
 
 export default function BrowseQuestions({
   qualificationId,
 }: BrowseQuestionsProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("")
   const [selectedYear, setSelectedYear] = useState<number | undefined>(
     undefined,
-  );
-  const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
+  )
+  const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
 
   // Pobieranie pytań z Convex
   const questionsData = useQuery(api.teoria.query.getBrowseQuestions, {
@@ -29,19 +29,19 @@ export default function BrowseQuestions({
     search: searchTerm || undefined,
     year: selectedYear,
     limit: 100,
-  });
+  })
 
   // Pobieranie statystyk
   const statsData = useQuery(api.teoria.query.getQuestionsStats, {
     qualificationId: qualificationId as Id<"qualifications">,
-  });
+  })
 
-  const questions = questionsData?.questions || [];
-  const stats = statsData || { total: 0, years: [] };
+  const questions = questionsData?.questions || []
+  const stats = statsData || { total: 0, years: [] }
 
   const toggleQuestion = (questionId: string) => {
-    setExpandedQuestion(expandedQuestion === questionId ? null : questionId);
-  };
+    setExpandedQuestion(expandedQuestion === questionId ? null : questionId)
+  }
 
   if (!questionsData || !statsData) {
     return (
@@ -50,11 +50,13 @@ export default function BrowseQuestions({
           <CardContent className="py-12 text-center">
             <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
             <h1 className="mb-4 text-2xl font-bold">Ładowanie pytań...</h1>
-            <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
+            <p className="text-muted-foreground">
+              Pobieranie pytań z bazy danych
+            </p>
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
@@ -62,7 +64,7 @@ export default function BrowseQuestions({
       {/* Header */}
       <div className="mb-6">
         <h1 className="mb-2 text-2xl font-bold">Baza pytań</h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Przeglądaj wszystkie dostępne pytania i odpowiedzi
         </p>
       </div>
@@ -116,7 +118,7 @@ export default function BrowseQuestions({
 
       {/* Statystyki */}
       <div className="mb-6">
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+        <div className="text-muted-foreground flex items-center gap-4 text-sm">
           <span>
             Znaleziono: <strong>{questions.length}</strong> pytań
           </span>
@@ -143,7 +145,7 @@ export default function BrowseQuestions({
         {questions.map((question) => (
           <Card key={question.id} className="overflow-hidden">
             <CardHeader
-              className="cursor-pointer transition-colors hover:bg-gray-50"
+              className="cursor-pointer transition-colors"
               onClick={() => toggleQuestion(question.id)}
             >
               <div className="flex items-center justify-between">
@@ -160,9 +162,9 @@ export default function BrowseQuestions({
                 </div>
                 <div className="ml-4">
                   {expandedQuestion === question.id ? (
-                    <ChevronUp className="h-5 w-5 text-gray-400" />
+                    <ChevronUp className="text-muted-foreground h-5 w-5" />
                   ) : (
-                    <ChevronDown className="h-5 w-5 text-gray-400" />
+                    <ChevronDown className="text-muted-foreground h-5 w-5" />
                   )}
                 </div>
               </div>
@@ -189,8 +191,8 @@ export default function BrowseQuestions({
                           key={index}
                           className={`rounded-lg border p-3 ${
                             index === question.correctAnswer
-                              ? "border-green-500 bg-green-50 text-green-800"
-                              : "border-gray-200 bg-gray-50"
+                              ? "border-green-500"
+                              : "border-muted-foreground"
                           }`}
                         >
                           <div className="flex items-center gap-2">
@@ -227,8 +229,8 @@ export default function BrowseQuestions({
             {(searchTerm || selectedYear) && (
               <Button
                 onClick={() => {
-                  setSearchTerm("");
-                  setSelectedYear(undefined);
+                  setSearchTerm("")
+                  setSelectedYear(undefined)
                 }}
                 variant="outline"
                 className="mt-4"
@@ -247,5 +249,5 @@ export default function BrowseQuestions({
         </Button>
       </div>
     </div>
-  );
+  )
 }

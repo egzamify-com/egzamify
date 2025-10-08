@@ -1,41 +1,43 @@
-"use client";
+"use client"
 
-import { api } from "convex/_generated/api";
-import { useQuery } from "convex/react";
-import { Calendar, HelpCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Card, CardContent } from "~/components/ui/card";
+import { api } from "convex/_generated/api"
+import { useQuery } from "convex/react"
+import { Calendar, HelpCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Card, CardContent } from "~/components/ui/card"
 
 export default function AllQualificationsList() {
-  const router = useRouter();
-  const qualificationsData = useQuery(api.teoria.query.getQualificationsList);
+  const router = useRouter()
+  const qualificationsData = useQuery(api.teoria.query.getQualificationsList)
 
   const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
+    const date = new Date(timestamp)
     return date.toLocaleDateString("pl-PL", {
       year: "numeric",
       month: "short",
-    });
-  };
+    })
+  }
 
   const handleCardClick = (qualification: any) => {
-    router.push(`/dashboard/teoria/${qualification.id}/game-modes`);
-  };
+    router.push(`/dashboard/teoria/${qualification.id}/game-modes`)
+  }
 
   if (!qualificationsData) {
     return (
       <div className="py-12 text-center">
         <p className="text-lg text-gray-500">Ładowanie kwalifikacji...</p>
       </div>
-    );
+    )
   }
 
   if (qualificationsData.qualifications.length === 0) {
     return (
       <div className="py-12 text-center">
-        <p className="text-lg text-gray-500">Brak dostępnych kwalifikacji.</p>
+        <p className="text-muted-foreground text-lg">
+          Brak dostępnych kwalifikacji.
+        </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -54,12 +56,14 @@ export default function AllQualificationsList() {
             />
           </div>
           <CardContent className="flex-grow pt-4">
-            <h3 className="text-lg font-semibold transition-colors hover:text-blue-600">
+            <h3 className="hover:text-muted-foreground text-lg font-semibold transition-colors">
               {qualification.name}
             </h3>
-            <p className="mt-1 text-sm text-gray-500">{qualification.label}</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {qualification.label}
+            </p>
 
-            <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+            <div className="text-muted-foreground mt-3 flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1">
                 <HelpCircle className="h-4 w-4" />
                 <span>{qualification.questionsCount} pytań</span>
@@ -73,5 +77,5 @@ export default function AllQualificationsList() {
         </Card>
       ))}
     </div>
-  );
+  )
 }
