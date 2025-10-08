@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server"
 import { stripe } from "~/actions/stripe/init-stripe"
 
-// export const dynamic = "force-static"
-
 export async function GET() {
   const stripeProducts = await stripe.products.list({ active: true })
   const productsPromises = stripeProducts.data
@@ -25,7 +23,11 @@ export async function GET() {
     "[STIRPE] Stripe products fetched - ",
     products.map((product) => product.name),
   )
-  return NextResponse.json(products)
+
+  const sortedProducts = products.sort(
+    (a, b) => a.price.transformed_amount - b.price.transformed_amount,
+  )
+  return NextResponse.json(sortedProducts)
 }
 export type GetProductsResponse =
   Awaited<ReturnType<typeof GET>> extends NextResponse<infer T> ? T : never

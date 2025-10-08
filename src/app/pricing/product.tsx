@@ -13,6 +13,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import useStripe from "~/hooks/use-stripe"
 import { tryCatch } from "~/lib/tryCatch"
+import { cn } from "~/lib/utils"
 
 export default function Product({
   product,
@@ -68,11 +69,12 @@ export default function Product({
   return (
     <Card
       key={crypto.randomUUID()}
-      className={`relative flex flex-col gap-0 transition-all duration-300 hover:shadow-lg ${
+      className={cn(
+        `relative flex flex-col gap-0 transition-all duration-300 hover:shadow-lg`,
         popular
           ? "border-primary hover:border-muted-foreground scale-105 shadow-lg"
-          : "border-border hover:border-muted-foreground"
-      }`}
+          : "border-border hover:border-muted-foreground",
+      )}
     >
       {popular && (
         <Badge className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 transform">
@@ -82,9 +84,11 @@ export default function Product({
 
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">
-          <Badge variant={"outline"} className="text-lg font-bold">
-            {product.metadata.label}
-          </Badge>
+          {product.metadata.label && (
+            <Badge variant={"outline"} className="text-lg font-bold">
+              {product.metadata.label}
+            </Badge>
+          )}
         </CardTitle>
         <div className="mt-2 flex items-baseline justify-center gap-1">
           <span className="text-primary text-4xl font-bold">
