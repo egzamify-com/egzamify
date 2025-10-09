@@ -2,10 +2,11 @@
 
 import { api } from "convex/_generated/api"
 import type { Id } from "convex/_generated/dataModel"
-import { useAction, useMutation, useQuery } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import {
   CheckCircle,
   Clock,
+  Coins,
   Flame,
   Lightbulb,
   Loader2,
@@ -13,6 +14,8 @@ import {
   XCircle,
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
+import { generateExplanationWithCharge } from "src/actions/theory/actions"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
@@ -47,34 +50,31 @@ export default function RandomQuestionGame({
     _refreshKey: refreshKey,
   })
 
+  const user = useQuery(api.users.query.getCurrentUser)
   const currentQuestion = questionData?.question
 
-  const generateExplanation = useAction(api.teoria.actions.generateExplanation)
   const saveUserAnswer = useMutation(api.statistics.mutations.saveUserAnswer)
   const startStudySession = useMutation(
     api.statistics.mutations.startStudySession,
   )
   const endStudySession = useMutation(api.statistics.mutations.endStudySession)
 
-  // POPRAWIONE: Sesja nauki - start i cleanup
   useEffect(() => {
     let currentSessionId: Id<"userActivityHistory"> | null = null
 
-    // Start sesji
     startStudySession().then((result) => {
       currentSessionId = result.sessionId
       setSessionId(result.sessionId)
       console.log("📚 Sesja nauki rozpoczęta:", result.sessionId)
     })
 
-    // Cleanup - zakończ sesję przy odmontowaniu
     return () => {
       if (currentSessionId) {
         console.log("🛑 Kończenie sesji nauki:", currentSessionId)
         endStudySession({ sessionId: currentSessionId })
       }
     }
-  }, []) // Pusty deps array - tylko raz przy montowaniu
+  }, [])
 
   const getStreakFromStorage = (): number => {
     if (typeof window === "undefined") return 0
@@ -195,13 +195,23 @@ export default function RandomQuestionGame({
   const handleGenerateExplanation = async () => {
     if (!currentQuestion || isLoadingExplanation) return
 
+    // Sprawdź czy użytkownik ma wystarczające kredyty
+    const userCredits = user?.credits ?? 0
+    if (userCredits < 0.25) {
+      toast.error("Nie masz wystarczających kredytów!", {
+        description: "Potrzebujesz 0.25 kredyta aby wygenerować wyjaśnienie.",
+      })
+      return
+    }
+
     isGeneratingRef.current = true
     setIsLoadingExplanation(true)
     setShowExplanation(true)
     setDisplayedExplanation("")
 
     try {
-      const result = await generateExplanation({
+      // Wywołaj server action z pobraniem kredytów
+      const result = await generateExplanationWithCharge({
         questionId: currentQuestion.id,
         questionContent: currentQuestion.question,
         answers: currentQuestion.answers,
@@ -209,21 +219,36 @@ export default function RandomQuestionGame({
         answerLabels: currentQuestion.answerLabels,
       })
 
+      if (!result.success) {
+        // Błąd - pokaż komunikat
+        toast.error("Błąd", {
+          description: result.error || "Nie udało się wygenerować wyjaśnienia",
+        })
+        setShowExplanation(false)
+        return
+      }
+
+      // Sukces - pokaż wyjaśnienie z efektem pisania
       setAiExplanation(result.explanation)
       typeWriterEffect(result.explanation, 25)
+
+      // Pokaż toast z informacją o pobranych kredytach
+      toast.success("Wyjaśnienie wygenerowane! 🎉", {
+        description: "Pobrano 0.25 kredyta z Twojego konta.",
+      })
     } catch (error) {
       console.error("❌ Błąd podczas generowania wyjaśnienia:", error)
-      const errorMessage =
-        "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia."
-      setAiExplanation(errorMessage)
-      typeWriterEffect(errorMessage, 25)
+      toast.error("Wystąpił nieoczekiwany błąd", {
+        description: "Spróbuj ponownie później.",
+      })
+      setShowExplanation(false)
     } finally {
       setIsLoadingExplanation(false)
       isGeneratingRef.current = false
     }
   }
 
-  if (questionData === undefined) {
+  if (questionData === undefined || user === undefined) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <Card className="mx-auto max-w-2xl">
@@ -259,23 +284,33 @@ export default function RandomQuestionGame({
     )
   }
 
+  const userCredits = user?.credits ?? 0
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
-          <div className="flex">
+          <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold">Losowe pytanie</h1>
             <Badge variant="secondary">
-              Pytanie #{currentQuestion.id.slice(-8)}
+              #{currentQuestion.id.slice(-8)}
               {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
             </Badge>
           </div>
-
           <div className="flex items-center gap-4">
+            {/* Wyświetlanie kredytów */}
+            <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2">
+              <Coins className="h-5 w-5 text-blue-500" />
+              <span className="font-bold text-blue-700">
+                {userCredits.toFixed(2)}
+              </span>
+              <span className="text-sm text-blue-600">kredytów</span>
+            </div>
+
             <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
               <Flame className="h-5 w-5 text-orange-500" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
-              <span className="text-sm text-orange-600">seria odpowiedzi</span>
+              <span className="text-sm text-orange-600">seria</span>
             </div>
 
             <div className="flex items-center gap-2 text-lg font-semibold">
@@ -392,9 +427,8 @@ export default function RandomQuestionGame({
                     <div className="flex items-center justify-center gap-2 text-orange-600">
                       <Flame className="h-6 w-6" />
                       <span className="text-lg font-semibold">
-                        Seria {answerStreak} poprawnych odpowiedzi!
+                        Seria {answerStreak} poprawnych odpowiedzi! 🔥
                       </span>
-                      <Flame className="h-6 w-6" />
                     </div>
                   )}
                 </div>
@@ -407,7 +441,7 @@ export default function RandomQuestionGame({
                     </span>
                   </div>
                   {answerStreak > 0 && (
-                    <div className="text-muted-foreground">
+                    <div className="text-gray-600">
                       <span className="text-sm">
                         Seria odpowiedzi została przerwana na {answerStreak}
                       </span>
@@ -421,7 +455,7 @@ export default function RandomQuestionGame({
               <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 transition-all duration-300">
                 <h3 className="mb-3 flex items-center gap-2 font-medium text-blue-800">
                   <Lightbulb className="h-5 w-5" />
-                  Wyjaśnienie AI:
+                  Wyjaśnienie AI (0.25 kredyta):
                   {isLoadingExplanation && (
                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                   )}
@@ -447,7 +481,7 @@ export default function RandomQuestionGame({
                 )}
 
                 {displayedExplanation && (
-                  <div className="leading-relaxed text-black">
+                  <div className="leading-relaxed text-gray-700">
                     <p className="whitespace-pre-wrap">
                       {displayedExplanation}
                       {isTyping && (
@@ -479,10 +513,13 @@ export default function RandomQuestionGame({
                   }
                   variant="outline"
                   className="flex items-center gap-2 bg-transparent"
-                  disabled={isLoadingExplanation}
+                  disabled={isLoadingExplanation || userCredits < 0.25}
                 >
                   <Lightbulb className="h-4 w-4" />
-                  {aiExplanation ? "Pokaż wyjaśnienie" : "Objaśnij z AI (Groq)"}
+                  <Coins className="h-4 w-4" />
+                  {aiExplanation
+                    ? "Pokaż wyjaśnienie"
+                    : "Objaśnij z AI (0.25 kredyta)"}
                 </Button>
               )}
 
