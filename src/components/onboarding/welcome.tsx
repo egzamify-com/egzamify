@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react"
 import type { Dispatch, SetStateAction } from "react"
 import type { OnboardingState } from "~/app/welcome/page"
 import { Button } from "../ui/button"
@@ -9,10 +10,13 @@ export default function Welcome({
 }) {
   return (
     <div>
-      welcome{" "}
-      <Button onClick={() => setCurrentStep("user-personal-details")}>
-        go next
-      </Button>{" "}
+      <Button
+        onClick={() => setCurrentStep("user-personal-details")}
+        variant={"outline"}
+      >
+        <ArrowRight />
+        Skonfiguruj moje konto
+      </Button>
     </div>
   )
 }

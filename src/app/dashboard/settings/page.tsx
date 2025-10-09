@@ -63,7 +63,7 @@ export default function SettingsPage() {
     </PageHeaderWrapper>
   )
 }
-function UpdateUsername({ user }: { user: Doc<"users"> }) {
+export function UpdateUsername({ user }: { user: Doc<"users"> }) {
   const updateProfile = useMutation(api.users.mutate.updateUsername)
   const [isMutating, setIsMutating] = useState(false)
   const [newUsername, setNewUsername] = useState(user.username)

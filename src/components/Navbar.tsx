@@ -6,7 +6,7 @@ import { api } from "convex/_generated/api"
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react"
 import { LogOut } from "lucide-react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { redirect, usePathname, useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
   DropdownMenu,
@@ -72,10 +72,16 @@ export function NavSignedIn() {
   const { signOut } = useAuthActions()
   const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
   const router = useRouter()
+  const pathname = usePathname()
   if (isPending) {
     return <AuthSkeleton />
   }
   if (!user) return null
+
+  if (!user.onBoarded && !pathname.includes("/welcome")) {
+    return redirect("/welcome")
+  }
+
   return (
     <div className="flex items-center justify-center gap-4">
       <GetCreditsBtn />

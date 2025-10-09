@@ -2,8 +2,10 @@
 
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
+import { redirect } from "next/navigation"
 import { useState } from "react"
 import FullScreenError from "~/components/full-screen-error"
+import FullScreenLoading from "~/components/full-screen-loading"
 import OnBoardingCompleted from "~/components/onboarding/on-boarding-completed"
 import PersonalDetails from "~/components/onboarding/personal-details"
 import UserQualifications from "~/components/onboarding/user-qualifications"
@@ -17,34 +19,42 @@ export type OnboardingState =
 
 export default function Page() {
   const [currentStep, setCurrentStep] = useState<OnboardingState>("welcome")
-
   const {
     data: user,
-    isPending: isPendingUser,
-    error: userError,
+    isPending,
+    error,
   } = useQuery(api.users.query.getCurrentUser)
 
-  if (userError)
+  if (isPending) return <FullScreenLoading />
+
+  if (error || !user)
     return (
       <FullScreenError errorMessage="Nie udało się pobrać twoich danych." />
     )
 
+  if (user.onBoarded) {
+    return redirect("/")
+  }
+
   function render() {
+    if (!user) return null
     switch (currentStep) {
       case "welcome":
         return <Welcome {...{ setCurrentStep }} />
       case "user-personal-details":
-        return <PersonalDetails {...{ setCurrentStep }} />
+        return <PersonalDetails {...{ setCurrentStep, user: user }} />
       case "user-qualifications":
-        return <UserQualifications {...{ setCurrentStep }} />
+        return <UserQualifications {...{ setCurrentStep, user }} />
       case "completed":
-        return <OnBoardingCompleted {...{ setCurrentStep }} />
+        return <OnBoardingCompleted {...{ user }} />
     }
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center border border-red-500">
-      <h1 className="text-5xl font-bold">Witamy w Egzamify!</h1>
+    <div className="relative flex flex-1 flex-col items-center justify-center">
+      <div className="absolute top-20">
+        <h1 className="text-5xl font-bold">Witamy w Egzamify!</h1>
+      </div>
       {render()}
     </div>
   )

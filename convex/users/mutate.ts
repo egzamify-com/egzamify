@@ -44,14 +44,12 @@ export const chargeCreditsOrThrow = mutation({
     return { ok: false, message: "no if hit?" } as const
   },
 })
+
+// do not change username with this, this lacks the unique username check
 export const updateUserProfile = mutation({
   args: { newFields: vv.doc("users") },
   handler: async (ctx, { newFields }) => {
     const userId = await getUserIdOrThrow(ctx)
-
-    if (newFields.username) {
-      throw new ConvexError("Use appropriate query to update unique username")
-    }
 
     await ctx.db.patch(userId, { ...newFields })
   },
