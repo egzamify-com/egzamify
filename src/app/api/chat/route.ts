@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         })
       },
     })
-  } catch {
+  } catch (e) {
     console.log("Error while generating response in ai chat, refunding credits")
     await refundCredits(APP_CONFIG.ai_wyjasnia.creditPricePerMessage)
   }

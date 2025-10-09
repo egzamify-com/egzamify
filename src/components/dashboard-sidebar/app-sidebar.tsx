@@ -26,7 +26,7 @@ import {
 import InvitesNavBadge from "../friends/invites-nav-badge"
 import { Badge } from "../ui/badge"
 import { NavMain } from "./nav-main"
-import { NavUser } from "./nav-user"
+import { NavUser } from "./nav-user/nav-user"
 
 const SIDEBAR_ICON_SIZE = 18
 

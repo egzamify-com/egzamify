@@ -11,6 +11,7 @@ import AttachmentsCard from "~/components/praktyka/details-page/attachments/atta
 import { Instructions } from "~/components/praktyka/details-page/instructions"
 import UserExamCheckHeader from "~/components/praktyka/history/details-page/header"
 import { ExamRating } from "~/components/praktyka/history/details-page/rating"
+import { ExamLoadingScreen } from "~/components/praktyka/history/details-page/wait-for-generated-check"
 import { MainContentLoading } from "~/components/praktyka/loadings"
 import { Button } from "~/components/ui/button"
 
@@ -29,9 +30,17 @@ export default function PraktykaPage({
     userExamId,
   })
   const updateStatus = useMutation(api.praktyka.mutate.updateUserExamStatus)
-  if (isError) return <FullScreenError errorDetail={error.message} />
 
-  if (!isPending && !userExam) return <FullScreenError />
+  if (isError)
+    return (
+      <FullScreenError
+        errorMessage="Wystąpił nieoczekiwany problem."
+        errorDetail={error.message}
+      />
+    )
+
+  if (!isPending && !userExam)
+    return <FullScreenError errorMessage="Nie udało się pobrać wyników." />
 
   if (userExam?.status === "not_enough_credits_error")
     return (
@@ -64,7 +73,6 @@ export default function PraktykaPage({
     return (
       <FullScreenError
         errorMessage="Wystąpił problem podczas sprawdzania twojego egzaminu"
-        // errorDetail="Please don't worry, your credits have been refunded!"
         errorDetail="Nie martw się, twoje kredyty zostały zwrócone!"
         actionButton={
           <div className="flex flex-col gap-3">
@@ -91,9 +99,11 @@ export default function PraktykaPage({
     <main className="flex min-h-screen flex-col items-center justify-start py-6">
       <div className="flex w-full max-w-4xl flex-col gap-6">
         {isPending && <MainContentLoading />}
-        {!isPending && userExam?.status === "ai_pending" && (
-          <MainContentLoading title="AI sprawdza twój egzamin ..." />
-        )}
+        {!isPending &&
+          (userExam?.status === "ai_pending" ||
+            userExam?.status === "parsing_exam") && (
+            <ExamLoadingScreen status={userExam.status} />
+          )}
         {!isPending && userExam?.status == "done" && (
           <>
             <UserExamCheckHeader {...{ userExam }} />

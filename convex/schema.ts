@@ -123,10 +123,11 @@ const schema = defineSchema({
     attachments: v.optional(practicalExamAttachmentValidator),
     status: v.union(
       v.literal("user_pending"),
+      v.literal("parsing_exam"),
       v.literal("ai_pending"),
+      v.literal("done"),
       v.literal("not_enough_credits_error"),
       v.literal("unknown_error_credits_refunded"),
-      v.literal("done"),
     ),
     aiRating: v.optional(
       v.object({

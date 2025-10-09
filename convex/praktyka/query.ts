@@ -183,3 +183,26 @@ export const listUserExams = query({
     }
   },
 })
+export const getLatestUserPendingExam = query({
+  handler: async (ctx) => {
+    const userId = await getUserIdOrThrow(ctx)
+
+    const latestPendingUserExam = await ctx.db
+      .query("usersPracticalExams")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("status"), "ai_pending"))
+      .order("desc")
+      .collect()
+
+    const exams = await asyncMap(latestPendingUserExam, async (userExam) => {
+      const baseExam = await getExamDetailsFunc(userExam.examId, ctx)
+
+      return {
+        ...userExam,
+        baseExam,
+      }
+    })
+
+    return exams
+  },
+})

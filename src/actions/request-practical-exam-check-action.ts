@@ -1,40 +1,39 @@
-"use server";
+"use server"
 
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import { generateObject, type FilePart, type ModelMessage } from "ai";
-import { asyncMap } from "convex-helpers";
-import { api } from "convex/_generated/api";
-import type { Doc, Id } from "convex/_generated/dataModel";
-import { fetchMutation, fetchQuery } from "convex/nextjs";
-import { type practicalExamAttachmentValidator } from "convex/praktyka/helpers";
-import type { Infer } from "convex/values";
-import mime from "mime";
-import { z } from "zod/v4";
-import { APP_CONFIG } from "~/APP_CONFIG";
-import { getFileUrl } from "~/lib/utils";
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
+import { generateObject, type FilePart, type ModelMessage } from "ai"
+import { asyncMap } from "convex-helpers"
+import { api } from "convex/_generated/api"
+import type { Doc, Id } from "convex/_generated/dataModel"
+import { fetchMutation, fetchQuery } from "convex/nextjs"
+import { type practicalExamAttachmentValidator } from "convex/praktyka/helpers"
+import type { Infer } from "convex/values"
+import mime from "mime"
+import { z } from "zod/v4"
+import { APP_CONFIG } from "~/APP_CONFIG"
+import { getFileUrl } from "~/lib/utils"
 
-import { chargeCredits, refundCredits } from "./actions";
+import { chargeCredits, refundCredits } from "./actions"
 
-export type PracticalExamCheckMode = "standard" | "complete";
+export type PracticalExamCheckMode = "standard" | "complete"
 
 export async function requestPracticalExamCheck(
   userExamId: Id<"usersPracticalExams">,
   mode: "standard" | "complete",
 ) {
-  const gotCharged = await chargeCredits(getModePrice(mode));
+  const gotCharged = await chargeCredits(getModePrice(mode))
   if (!gotCharged) {
-    await updateUserExamStatus(userExamId, "not_enough_credits_error");
-    return;
+    await updateUserExamStatus(userExamId, "not_enough_credits_error")
+    return
   }
   try {
-    await updateUserExamStatus(userExamId, "ai_pending");
+    await updateUserExamStatus(userExamId, "parsing_exam")
+    const userExam = await getUserExamDetails(userExamId)
+    const realExam = await getRealExamDetails(userExam.examId)
+    console.log("check for  - ", userExamId)
 
-    const userExam = await getUserExamDetails(userExamId);
-    const realExam = await getRealExamDetails(userExam.examId);
-    console.log("check for  - ", userExamId);
-
-    const userAttachments = transformAttachments(userExam.attachments);
-    const examAttachments = transformAttachments(realExam.examAttachments);
+    const userAttachments = transformAttachments(userExam.attachments)
+    const examAttachments = transformAttachments(realExam.examAttachments)
 
     // feed the ai all the context it needs
     const resources: ModelMessage[] = [
@@ -86,23 +85,24 @@ export async function requestPracticalExamCheck(
           ...userAttachments,
         ],
       },
-    ];
-    console.dir(resources, { depth: null });
-    const generatedRating = await generateAiCheck(mode, resources);
-    await saveRatingData(userExamId, generatedRating);
-    await updateUserExamStatus(userExamId, "done");
+    ]
+    console.dir(resources, { depth: null })
+    await updateUserExamStatus(userExamId, "ai_pending")
+    const generatedRating = await generateAiCheck(mode, resources)
+    await saveRatingData(userExamId, generatedRating)
+    await updateUserExamStatus(userExamId, "done")
   } catch (e) {
-    console.error("[PRACTICAL EXAM] Error - ", e);
-    await refundCredits(getModePrice(mode));
-    await updateUserExamStatus(userExamId, "unknown_error_credits_refunded");
+    console.error("[PRACTICAL EXAM] Error - ", e)
+    await refundCredits(getModePrice(mode))
+    await updateUserExamStatus(userExamId, "unknown_error_credits_refunded")
   }
 }
 function getModePrice(mode: PracticalExamCheckMode) {
   switch (mode) {
     case "standard":
-      return APP_CONFIG.practicalExamRating.standardPrice;
+      return APP_CONFIG.practicalExamRating.standardPrice
     case "complete":
-      return APP_CONFIG.practicalExamRating.completePrice;
+      return APP_CONFIG.practicalExamRating.completePrice
   }
 }
 
@@ -119,7 +119,7 @@ async function updateUserExamStatus(
     {
       token: await convexAuthNextjsToken(),
     },
-  );
+  )
 }
 async function getUserExamDetails(userExamId: Id<"usersPracticalExams">) {
   const userExam = await fetchQuery(
@@ -128,15 +128,15 @@ async function getUserExamDetails(userExamId: Id<"usersPracticalExams">) {
       userExamId,
     },
     { token: await convexAuthNextjsToken() },
-  );
-  if (!userExam) throw new Error("User exam not found");
-  if (!userExam.attachments) throw new Error("User exam attachments not found");
-  const urls = await getAttachmentsUrls(userExam.attachments);
-  if (!userExam.attachments) throw new Error("No attachments found");
+  )
+  if (!userExam) throw new Error("User exam not found")
+  if (!userExam.attachments) throw new Error("User exam attachments not found")
+  const urls = await getAttachmentsUrls(userExam.attachments)
+  if (!userExam.attachments) throw new Error("No attachments found")
   return {
     ...userExam,
     attachments: urls,
-  };
+  }
 }
 
 async function getRealExamDetails(examId: Id<"basePracticalExams">) {
@@ -146,42 +146,42 @@ async function getRealExamDetails(examId: Id<"basePracticalExams">) {
       examId,
     },
     { token: await convexAuthNextjsToken() },
-  );
-  if (!exam) throw new Error("Exam not found");
-  const urls = await getAttachmentsUrls(exam.examAttachments);
+  )
+  if (!exam) throw new Error("Exam not found")
+  const urls = await getAttachmentsUrls(exam.examAttachments)
 
-  return { ...exam, examAttachments: urls };
+  return { ...exam, examAttachments: urls }
 }
 
 async function getAttachmentsUrls(
   attachments: Infer<typeof practicalExamAttachmentValidator>,
 ) {
   return await asyncMap(attachments, async (attachment) => {
-    const urls = getFileUrl(attachment.attachmentId, attachment.attachmentName);
-    if (!urls) throw new Error("Attachment URL not found");
+    const urls = getFileUrl(attachment.attachmentId, attachment.attachmentName)
+    if (!urls) throw new Error("Attachment URL not found")
     return {
       ...attachment,
       url: urls.normal.toString(),
-    };
-  });
+    }
+  })
 }
 function transformAttachments(
   attachments: {
-    url: string | undefined;
-    attachmentName: string;
-    attachmentId: Id<"_storage">;
+    url: string | undefined
+    attachmentName: string
+    attachmentId: Id<"_storage">
   }[],
 ) {
   return attachments.map((attachment) => {
-    const mimetype = mime.getType(attachment.url!);
+    const mimetype = mime.getType(attachment.url!)
     return {
       type: "file",
       data: new URL(attachment.url!),
       // skip sql because it errors ("not supported type")
       mediaType: `${(mimetype?.includes("application/") ? "text/plain" : mimetype) ?? "text/plain"}`,
       filename: attachment.attachmentName,
-    } as FilePart;
-  });
+    } as FilePart
+  })
 }
 function getSchema(mode: PracticalExamCheckMode) {
   const ratingSchema = z
@@ -226,7 +226,7 @@ function getSchema(mode: PracticalExamCheckMode) {
     )
     .describe(
       "Detailed information about each requirement and its answer, including the explanation for answers that were incorrect, its actually a copy of the input value for the rating data, just added place for storing users answers",
-    );
+    )
 
   const examCheckOutputSchema = z.object({
     score: z
@@ -237,16 +237,16 @@ function getSchema(mode: PracticalExamCheckMode) {
       .describe(
         "Summary in few sentances, it should tell user how he did, if there were same mistakes, if you detected any major errors in users thinking. General thought on the results and provided exam by user",
       ),
-  });
+  })
 
   if (mode === "complete") {
-    console.log("got to extending schema");
+    console.log("got to extending schema")
     return examCheckOutputSchema.extend({
       details: ratingSchema,
-    });
+    })
   }
-  console.log("used base schema");
-  return examCheckOutputSchema;
+  console.log("used base schema")
+  return examCheckOutputSchema
 }
 async function saveRatingData(
   userExamId: Id<"usersPracticalExams">,
@@ -259,7 +259,7 @@ async function saveRatingData(
       ratingData,
     },
     { token: await convexAuthNextjsToken() },
-  );
+  )
 }
 async function generateAiCheck(
   mode: PracticalExamCheckMode,
@@ -271,9 +271,9 @@ async function generateAiCheck(
     schemaName: APP_CONFIG.practicalExamRating.schemaName,
     schemaDescription: APP_CONFIG.practicalExamRating.schemaDescription,
     messages: resources,
-  });
-  console.dir(response, { depth: null });
-  return object;
+  })
+  console.dir(response, { depth: null })
+  return object
 }
 
 function minimizeRatingDataJsonSize(
@@ -283,15 +283,15 @@ function minimizeRatingDataJsonSize(
     .map((item) => {
       const requirements = item.requirements
         .map((req) => `${req.symbol}:${req.description}`)
-        .join("; ");
+        .join("; ")
 
-      return `${item.symbol}|${item.title}|${requirements}|${item.note ?? ""}`;
+      return `${item.symbol}|${item.title}|${requirements}|${item.note ?? ""}`
     })
-    .join("\n");
+    .join("\n")
 
-  const headerLine = `symbol|title|requirements(symbol:description;...)|optionalNote`;
+  const headerLine = `symbol|title|requirements(symbol:description;...)|optionalNote`
 
-  return headerLine + "\n" + formatted;
+  return headerLine + "\n" + formatted
 }
 function cleanExamMarkdown(md: string): string {
   return (
@@ -316,5 +316,5 @@ function cleanExamMarkdown(md: string): string {
       .replace(/\n{3,}/g, "\n\n")
       // trim
       .trim()
-  );
+  )
 }
