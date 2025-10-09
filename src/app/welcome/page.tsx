@@ -2,7 +2,7 @@
 
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
@@ -24,6 +24,7 @@ export default function Page() {
     isPending,
     error,
   } = useQuery(api.users.query.getCurrentUser)
+  const router = useRouter()
 
   if (isPending) return <FullScreenLoading />
 
@@ -33,7 +34,8 @@ export default function Page() {
     )
 
   if (user.onBoarded) {
-    return redirect("/")
+    router.push("/")
+    return <FullScreenLoading />
   }
 
   function render() {
