@@ -24,11 +24,13 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       const user: Doc<"users"> = await ctx.db.get(userId)
       console.log("freshly signed up user -", user)
       const defaultUsername = createDefaultUsername(user.email!)
-
-      await ctx.db.patch(userId, {
+      const newData: Doc<"users"> = {
+        ...user,
+        onBoarded: false,
         username: `${defaultUsername}`,
         name: user.name === "null" ? defaultUsername : user.name,
-      })
+      }
+      await ctx.db.patch(userId, newData)
     },
   },
 })

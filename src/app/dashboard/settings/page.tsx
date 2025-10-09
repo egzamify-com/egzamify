@@ -27,6 +27,7 @@ import {
   InputGroupInput,
 } from "~/components/ui/input-group"
 import { Label } from "~/components/ui/label"
+import { parseConvexError } from "~/lib/utils"
 
 export default function SettingsPage() {
   const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
@@ -63,7 +64,7 @@ export default function SettingsPage() {
   )
 }
 function UpdateUsername({ user }: { user: Doc<"users"> }) {
-  const updateProfile = useMutation(api.users.mutate.updateUserProfile)
+  const updateProfile = useMutation(api.users.mutate.updateUsername)
   const [isMutating, setIsMutating] = useState(false)
   const [newUsername, setNewUsername] = useState(user.username)
   return (
@@ -85,14 +86,18 @@ function UpdateUsername({ user }: { user: Doc<"users"> }) {
           disabled={newUsername === user.username}
           onClick={async () => {
             try {
+              if (!newUsername) throw new Error("Podaj nazwę użytkownika")
               setIsMutating(true)
-              await updateProfile({
-                newFields: { ...user, username: newUsername },
-              })
+              await updateProfile({ newUsername })
               setIsMutating(false)
               toast.success("Zmieniono nazwę użytkownika")
-            } catch (e) {
-              toast.error("Nie udało się zmienić nazwy użytkownika")
+            } catch (error) {
+              setIsMutating(false)
+              const errMess = parseConvexError(error)
+              console.error(`[ERROR] Failed to change username -  ${errMess}`)
+              toast.error("Nie udało się zmienić nazwy użytkownika", {
+                description: errMess,
+              })
             }
           }}
         >

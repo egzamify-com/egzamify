@@ -22,8 +22,8 @@ const schema = defineSchema({
     isActive: v.optional(v.boolean()),
     credits: v.optional(v.number()),
     pendingCredits: v.optional(v.number()),
-
     daily_streak: v.optional(v.number()),
+    onBoarded: v.optional(v.boolean()),
   })
     .index("username", ["username"])
     .index("email", ["email"])

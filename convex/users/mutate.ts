@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow, vv } from "../custom_helpers"
 
@@ -49,6 +49,28 @@ export const updateUserProfile = mutation({
   handler: async (ctx, { newFields }) => {
     const userId = await getUserIdOrThrow(ctx)
 
+    if (newFields.username) {
+      throw new ConvexError("Use appropriate query to update unique username")
+    }
+
     await ctx.db.patch(userId, { ...newFields })
+  },
+})
+export const updateUsername = mutation({
+  args: { newUsername: v.string() },
+  handler: async (ctx, { newUsername }) => {
+    const userId = await getUserIdOrThrow(ctx)
+
+    const usersWithThatUsername = await ctx.db
+      .query("users")
+      .withIndex("username", (q) => q.eq("username", newUsername))
+      .collect()
+
+    if (usersWithThatUsername.length > 0) {
+      console.error("[USERS] Username ", newUsername, " is taken")
+      throw new ConvexError("Nazwa użytkownika jest zajęta")
+    }
+
+    return await ctx.db.patch(userId, { username: newUsername })
   },
 })
