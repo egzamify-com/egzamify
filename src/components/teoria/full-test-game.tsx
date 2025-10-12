@@ -142,17 +142,17 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
               </div>
               <div className="text-muted-foreground text-xl">{percentage}%</div>
               <Badge
-                variant={percentage >= 70 ? "default" : "destructive"}
+                variant={percentage >= 50 ? "default" : "destructive"}
                 className="mt-2"
               >
-                {percentage >= 70 ? "Zaliczony" : "Niezaliczony"}
+                {percentage >= 50 ? "Zaliczony" : "Niezaliczony"}
               </Badge>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Poprawne odpowiedzi:</span>
-                <span className="font-semibold text-green-600">{score}</span>
+                <span className="font-semibold text-green-500">{score}</span>
               </div>
               <div className="flex justify-between">
                 <span>Błędne odpowiedzi:</span>
@@ -179,6 +179,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
               <Button
                 onClick={() => window.location.reload()}
                 className="flex-1"
+                variant={"outline"}
               >
                 Spróbuj ponownie
               </Button>
@@ -252,8 +253,8 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
                 onClick={() => handleAnswerSelect(index)}
                 className={`w-full rounded-lg border p-4 text-left transition-colors ${
                   selectedAnswers[currentQuestion] === index
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    ? "border-blue-500"
+                    : "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -295,13 +296,13 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
           {currentQuestion === questions.length - 1 ? (
             <Button
               onClick={handleFinishTest}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-600"
             >
               <Flag className="mr-2 h-4 w-4" />
               Zakończ test
             </Button>
           ) : (
-            <Button onClick={handleNextQuestion}>
+            <Button onClick={handleNextQuestion} variant={"outline"}>
               Następne
               <SkipForward className="ml-2 h-4 w-4" />
             </Button>
@@ -320,12 +321,12 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
               <button
                 key={index}
                 onClick={() => setCurrentQuestion(index)}
-                className={`h-8 w-8 rounded border text-xs ${
+                className={`hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 w-8 cursor-pointer rounded border text-xs ${
                   index === currentQuestion
-                    ? "border-blue-500 bg-blue-500 text-white"
+                    ? "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer border-blue-500 text-white"
                     : selectedAnswers[index] !== null
-                      ? "border-green-500 bg-green-100 text-green-500"
-                      : "border-gray-300 hover:border-gray-400"
+                      ? "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 border-green-500 text-green-500"
+                      : ""
                 }`}
               >
                 {index + 1}
