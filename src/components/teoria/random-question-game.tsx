@@ -18,7 +18,7 @@ import { toast } from "sonner"
 import { generateExplanationWithCharge } from "src/actions/theory/actions"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Card, CardContent } from "~/components/ui/card"
 
 interface RandomQuestionGameProps {
   qualificationId: string
@@ -250,7 +250,9 @@ export default function RandomQuestionGame({
           <CardContent className="py-12 text-center">
             <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
             <h1 className="mb-4 text-2xl font-bold">Ładowanie pytania...</h1>
-            <p className="text-gray-500">Losowanie pytania z bazy danych</p>
+            <p className="text-muted-foreground">
+              Losowanie pytania z bazy danych
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -263,7 +265,7 @@ export default function RandomQuestionGame({
         <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
             <h1 className="mb-4 text-2xl font-bold">Losowe pytanie</h1>
-            <p className="text-lg text-gray-500">
+            <p className="text-muted-foreground text-lg">
               Brak pytań dla tej kwalifikacji.
             </p>
             <Button
@@ -294,16 +296,9 @@ export default function RandomQuestionGame({
           </div>
           <div className="flex items-center gap-4">
             {/* Wyświetlanie kredytów */}
-            <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2">
-              <Coins className="h-5 w-5 text-blue-500" />
-              <span className="font-bold text-blue-700">
-                {userCredits.toFixed(2)}
-              </span>
-              <span className="text-sm text-blue-600">kredytów</span>
-            </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
-              <Flame className="h-5 w-5 text-orange-500" />
+            <div className="flex items-center gap-2 rounded-lg border border-orange-600 px-3 py-2">
+              <Flame className="h-5 w-5 text-orange-600" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
               <span className="text-sm text-orange-600">seria</span>
             </div>
@@ -319,9 +314,6 @@ export default function RandomQuestionGame({
       </div>
 
       <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-lg">Pytanie</CardTitle>
-        </CardHeader>
         <CardContent>
           <p className="mb-6 text-lg">{currentQuestion.question}</p>
 
@@ -342,21 +334,21 @@ export default function RandomQuestionGame({
 
               if (showResult) {
                 if (index === currentQuestion.correctAnswer) {
-                  buttonClass += "border-green-500 bg-green-50 text-green-800"
+                  buttonClass += "border-green-500  text-green-500"
                 } else if (
                   index === selectedAnswer &&
                   selectedAnswer !== currentQuestion.correctAnswer
                 ) {
-                  buttonClass += "border-red-500 bg-red-50 text-red-800"
+                  buttonClass += "border-red-500  text-red-500"
                 } else {
-                  buttonClass += "border-gray-200 bg-gray-50 text-gray-600"
+                  buttonClass += "border-gray-200 "
                 }
               } else {
                 if (selectedAnswer === index) {
                   buttonClass += "border-blue-500 bg-blue-50"
                 } else {
                   buttonClass +=
-                    "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    "border-gray-200 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
                 }
               }
 
@@ -371,7 +363,7 @@ export default function RandomQuestionGame({
                     <div className="flex h-6 w-6 items-center justify-center">
                       {showResult &&
                         index === currentQuestion.correctAnswer && (
-                          <CheckCircle className="h-5 w-5 text-green-600" />
+                          <CheckCircle className="h-5 w-5 text-green-500" />
                         )}
                       {showResult &&
                         index === selectedAnswer &&
@@ -387,7 +379,7 @@ export default function RandomQuestionGame({
                           }`}
                         >
                           {selectedAnswer === index && (
-                            <div className="h-full w-full scale-50 rounded-full bg-white"></div>
+                            <div className="h-full w-full scale-50 rounded-full"></div>
                           )}
                         </div>
                       )}
@@ -412,7 +404,7 @@ export default function RandomQuestionGame({
             <div className="mb-4 text-center">
               {isCorrect ? (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-green-600">
+                  <div className="flex items-center justify-center gap-2 text-green-500">
                     <CheckCircle className="h-8 w-8" />
                     <span className="text-2xl font-bold">
                       Poprawna odpowiedź!
@@ -422,8 +414,9 @@ export default function RandomQuestionGame({
                     <div className="flex items-center justify-center gap-2 text-orange-600">
                       <Flame className="h-6 w-6" />
                       <span className="text-lg font-semibold">
-                        Seria {answerStreak} poprawnych odpowiedzi! 🔥
+                        Seria {answerStreak} poprawnych odpowiedzi!
                       </span>
+                      <Flame className="h-6 w-6" />
                     </div>
                   )}
                 </div>
@@ -436,7 +429,7 @@ export default function RandomQuestionGame({
                     </span>
                   </div>
                   {answerStreak > 0 && (
-                    <div className="text-gray-600">
+                    <div className="text-muted-foreground">
                       <span className="text-sm">
                         Seria odpowiedzi została przerwana na {answerStreak}
                       </span>
@@ -447,8 +440,8 @@ export default function RandomQuestionGame({
             </div>
 
             {showExplanation && (
-              <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 transition-all duration-300">
-                <h3 className="mb-3 flex items-center gap-2 font-medium text-blue-800">
+              <div className="border-muted-foreground mt-6 rounded-lg border p-4 transition-all duration-300">
+                <h3 className="mb-3 flex items-center gap-2 font-medium">
                   <Lightbulb className="h-5 w-5" />
                   Wyjaśnienie AI (0.25 kredyta):
                   {isLoadingExplanation && (
@@ -476,7 +469,7 @@ export default function RandomQuestionGame({
                 )}
 
                 {displayedExplanation && (
-                  <div className="leading-relaxed text-gray-700">
+                  <div className="leading-relaxed">
                     <p className="whitespace-pre-wrap">
                       {displayedExplanation}
                       {isTyping && (
@@ -520,7 +513,7 @@ export default function RandomQuestionGame({
 
               <Button
                 onClick={handleNewQuestion}
-                className="bg-blue-600 hover:bg-blue-700"
+                variant="outline"
                 disabled={isLoadingExplanation}
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
