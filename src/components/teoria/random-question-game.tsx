@@ -341,14 +341,14 @@ export default function RandomQuestionGame({
                 ) {
                   buttonClass += "border-red-500  text-red-500"
                 } else {
-                  buttonClass += "border-gray-200 "
+                  buttonClass += " "
                 }
               } else {
                 if (selectedAnswer === index) {
                   buttonClass += "border-blue-500 bg-blue-50"
                 } else {
                   buttonClass +=
-                    "border-gray-200 hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
+                    " hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
                 }
               }
 
