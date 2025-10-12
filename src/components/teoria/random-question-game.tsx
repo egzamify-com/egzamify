@@ -195,7 +195,6 @@ export default function RandomQuestionGame({
   const handleGenerateExplanation = async () => {
     if (!currentQuestion || isLoadingExplanation) return
 
-    // Sprawdź czy użytkownik ma wystarczające kredyty
     const userCredits = user?.credits ?? 0
     if (userCredits < 0.25) {
       toast.error("Nie masz wystarczających kredytów!", {
@@ -210,7 +209,6 @@ export default function RandomQuestionGame({
     setDisplayedExplanation("")
 
     try {
-      // Wywołaj server action z pobraniem kredytów
       const result = await generateExplanationWithCharge({
         questionId: currentQuestion.id,
         questionContent: currentQuestion.question,
@@ -220,7 +218,6 @@ export default function RandomQuestionGame({
       })
 
       if (!result.success) {
-        // Błąd - pokaż komunikat
         toast.error("Błąd", {
           description: result.error || "Nie udało się wygenerować wyjaśnienia",
         })
@@ -228,11 +225,9 @@ export default function RandomQuestionGame({
         return
       }
 
-      // Sukces - pokaż wyjaśnienie z efektem pisania
       setAiExplanation(result.explanation)
       typeWriterEffect(result.explanation, 25)
 
-      // Pokaż toast z informacją o pobranych kredytach
       toast.success("Wyjaśnienie wygenerowane! 🎉", {
         description: "Pobrano 0.25 kredyta z Twojego konta.",
       })
