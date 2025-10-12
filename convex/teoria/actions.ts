@@ -105,7 +105,7 @@ Wygeneruj wyjaśnienie dla tego pytania.`
         explanation: result.text,
       }
     } catch (error) {
-      console.error("❌ Błąd podczas generowania wyjaśnienia z Groq:", error)
+      console.error(" Błąd podczas generowania wyjaśnienia z Groq:", error)
       throw new Error("Wystąpił błąd podczas generowania wyjaśnienia")
     }
   },

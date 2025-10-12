@@ -78,7 +78,7 @@ export async function showExplanationWithCharge(
 
   const gotCharged = await chargeCredits(EXPLANATION_COST)
   if (!gotCharged) {
-    console.log("❌ Brak wystarczających kredytów")
+    console.log("Brak wystarczających kredytów")
     return {
       success: false,
       error:
