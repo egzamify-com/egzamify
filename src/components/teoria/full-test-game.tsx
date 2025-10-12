@@ -17,25 +17,22 @@ interface FullTestGameProps {
 export default function FullTestGame({ qualificationId }: FullTestGameProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([])
-  const [timeLeft, setTimeLeft] = useState(60 * 60) // 60 minut w sekundach
+  const [timeLeft, setTimeLeft] = useState(60 * 60)
   const [isFinished, setIsFinished] = useState(false)
   const [showResults, setShowResults] = useState(false)
 
-  // Pobieranie pytań z Convex
   const questionsData = useQuery(api.teoria.query.getQuestionsByQualification, {
     qualificationId: qualificationId as Id<"qualifications">,
   })
 
   const questions = questionsData?.questions || []
 
-  // Inicjalizacja tablicy odpowiedzi gdy pytania się załadują
   useEffect(() => {
     if (questions.length > 0) {
       setSelectedAnswers(new Array(questions.length).fill(null))
     }
   }, [questions.length])
 
-  // Timer
   useEffect(() => {
     if (timeLeft > 0 && !isFinished && questions.length > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
@@ -90,7 +87,6 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
   const progress =
     questions.length > 0 ? (answeredQuestions / questions.length) * 100 : 0
 
-  // Loading state
   if (!questionsData) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -107,7 +103,6 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
     )
   }
 
-  // Brak pytań
   if (questions.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -196,7 +191,6 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header z timerem i postępem */}
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">
@@ -330,7 +324,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
                   index === currentQuestion
                     ? "border-blue-500 bg-blue-500 text-white"
                     : selectedAnswers[index] !== null
-                      ? "border-green-500 bg-green-100 text-green-700"
+                      ? "border-green-500 bg-green-100 text-green-500"
                       : "border-gray-300 hover:border-gray-400"
                 }`}
               >

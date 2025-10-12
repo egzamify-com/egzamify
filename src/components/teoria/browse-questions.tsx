@@ -79,8 +79,9 @@ export default function BrowseQuestions({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+            <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
             <Input
+              ///notka do naprawy
               placeholder="Szukaj pytań..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -100,9 +101,14 @@ export default function BrowseQuestions({
                       : undefined,
                   )
                 }
-                className="w-full rounded-md border border-gray-300 p-2"
+                className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 w-full cursor-pointer rounded-md border p-2"
               >
-                <option value="">Wszystkie lata</option>
+                <option
+                  value=""
+                  className="hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
+                >
+                  Wszystkie lata
+                </option>
                 {stats.years
                   .sort((a, b) => b - a)
                   .map((year) => (
@@ -191,13 +197,13 @@ export default function BrowseQuestions({
                           key={index}
                           className={`rounded-lg border p-3 ${
                             index === question.correctAnswer
-                              ? "border-green-500"
-                              : "border-muted-foreground"
+                              ? "border-green-500 text-green-500"
+                              : "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             {index === question.correctAnswer && (
-                              <Badge className="bg-green-600">Poprawna</Badge>
+                              <Badge className="bg-green-500">Poprawna</Badge>
                             )}
                             <span className="font-semibold">
                               {question.answerLabels?.[index] ||

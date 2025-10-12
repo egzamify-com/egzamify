@@ -113,7 +113,8 @@ export default function GameModes({ qualificationId }: GameModesProps) {
                 </div>
 
                 <Button
-                  className="group-hover:text-muted-foreground mt-4 w-full transition-colors"
+                  className="mt-4 w-full"
+                  variant={"outline"}
                   onClick={(e) => {
                     e.stopPropagation()
                     handleModeSelect(mode)

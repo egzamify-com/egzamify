@@ -65,12 +65,12 @@ export default function RandomQuestionGame({
     startStudySession().then((result) => {
       currentSessionId = result.sessionId
       setSessionId(result.sessionId)
-      console.log("📚 Sesja nauki rozpoczęta:", result.sessionId)
+      console.log("Sesja nauki rozpoczęta:", result.sessionId)
     })
 
     return () => {
       if (currentSessionId) {
-        console.log("🛑 Kończenie sesji nauki:", currentSessionId)
+        console.log("Kończenie sesji nauki:", currentSessionId)
         endStudySession({ sessionId: currentSessionId })
       }
     }
@@ -450,16 +450,16 @@ export default function RandomQuestionGame({
                 </h3>
 
                 {isLoadingExplanation && !displayedExplanation && (
-                  <div className="flex items-center gap-2 text-blue-600">
+                  <div className="flex items-center gap-2">
                     <div className="flex space-x-1">
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500"></div>
+                      <div className="bg h-2 w-2 animate-bounce rounded-full"></div>
                       <div
-                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
+                        className="b h-2 w-2 animate-bounce rounded-full"
                         style={{ animationDelay: "0.1s" }}
                       ></div>
                       <div
-                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
-                        style={{ animationDelay: "0.2s" }}
+                        className="h-2 w-2 animate-bounce rounded-full"
+                        style={{ animationDelay: "0.1s" }}
                       ></div>
                     </div>
                     <span className="text-sm">
@@ -473,7 +473,7 @@ export default function RandomQuestionGame({
                     <p className="whitespace-pre-wrap">
                       {displayedExplanation}
                       {isTyping && (
-                        <span className="ml-1 inline-block h-5 w-2 animate-pulse bg-blue-500"></span>
+                        <span className="ml-1 inline-block h-5 w-2 animate-pulse"></span>
                       )}
                     </p>
                   </div>
