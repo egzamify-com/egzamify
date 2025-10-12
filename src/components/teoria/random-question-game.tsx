@@ -20,13 +20,11 @@ import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent } from "~/components/ui/card"
 
-interface RandomQuestionGameProps {
-  qualificationId: string
-}
-
 export default function RandomQuestionGame({
-  qualificationId,
-}: RandomQuestionGameProps) {
+  qualificationName,
+}: {
+  qualificationName: string
+}) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [timeLeft, setTimeLeft] = useState(120)
@@ -46,7 +44,7 @@ export default function RandomQuestionGame({
   const isGeneratingRef = useRef(false)
 
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
-    qualificationId: qualificationId as Id<"qualifications">,
+    qualificationName,
     _refreshKey: refreshKey,
   })
 
@@ -339,7 +337,7 @@ export default function RandomQuestionGame({
                   index === selectedAnswer &&
                   selectedAnswer !== currentQuestion.correctAnswer
                 ) {
-                  buttonClass += "border-red-500  text-red-500"
+                  buttonClass += "border-destructive  text-destructive"
                 } else {
                   buttonClass += " "
                 }
@@ -368,7 +366,7 @@ export default function RandomQuestionGame({
                       {showResult &&
                         index === selectedAnswer &&
                         selectedAnswer !== currentQuestion.correctAnswer && (
-                          <XCircle className="h-5 w-5 text-red-600" />
+                          <XCircle className="text-destructive h-5 w-5" />
                         )}
                       {!showResult && (
                         <div
@@ -422,7 +420,7 @@ export default function RandomQuestionGame({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-red-600">
+                  <div className="text-destructive flex items-center justify-center gap-2">
                     <XCircle className="h-8 w-8" />
                     <span className="text-2xl font-bold">
                       {timeLeft === 0 ? "Czas minął!" : "Niepoprawna odpowiedź"}

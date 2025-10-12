@@ -1,7 +1,6 @@
 "use client"
 
 import { api } from "convex/_generated/api"
-import type { Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/react"
 import { Clock, Flag, Loader2, SkipForward } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -10,11 +9,11 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Progress } from "~/components/ui/progress"
 
-interface FullTestGameProps {
-  qualificationId: string
-}
-
-export default function FullTestGame({ qualificationId }: FullTestGameProps) {
+export default function FullTestGame({
+  qualificationName,
+}: {
+  qualificationName: string
+}) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([])
   const [timeLeft, setTimeLeft] = useState(60 * 60)
@@ -22,7 +21,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
   const [showResults, setShowResults] = useState(false)
 
   const questionsData = useQuery(api.teoria.query.getQuestionsByQualification, {
-    qualificationId: qualificationId as Id<"qualifications">,
+    qualificationName,
   })
 
   const questions = questionsData?.questions || []

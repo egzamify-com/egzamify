@@ -1,6 +1,6 @@
-import { getUserIdOrThrow } from "convex/custom_helpers"
 import { v } from "convex/values"
 import { mutation } from "../_generated/server"
+import { getUserIdOrThrow } from "../custom_helpers"
 
 export const saveExplanation = mutation({
   args: {

@@ -1,5 +1,6 @@
 import { v } from "convex/values"
 import { query } from "../_generated/server"
+import { getQualificationIdFromNameOrThrow } from "./helpers"
 
 export const getTheoryUsers = query({
   handler: async (ctx) => {
@@ -57,9 +58,14 @@ export const getQualificationsList = query({
 })
 
 export const getQuestionsByQualification = query({
-  args: { qualificationId: v.id("qualifications") },
+  args: { qualificationName: v.string() },
   handler: async (ctx, args) => {
-    const { qualificationId } = args
+    const { qualificationName } = args
+
+    const qualificationId = await getQualificationIdFromNameOrThrow(
+      ctx,
+      qualificationName,
+    )
 
     const questions = await ctx.db
       .query("questions")
@@ -108,11 +114,15 @@ export const getQuestionsByQualification = query({
 
 export const getRandomQuestion = query({
   args: {
-    qualificationId: v.id("qualifications"),
+    qualificationName: v.string(),
     _refreshKey: v.optional(v.number()), // Parametr do wymuszania nowego zapytania
   },
   handler: async (ctx, args) => {
-    const { qualificationId } = args
+    const { qualificationName } = args
+    const qualificationId = await getQualificationIdFromNameOrThrow(
+      ctx,
+      qualificationName,
+    )
 
     const questions = await ctx.db
       .query("questions")
@@ -159,15 +169,18 @@ export const getRandomQuestion = query({
 
 export const getBrowseQuestions = query({
   args: {
-    qualificationId: v.id("qualifications"),
+    qualificationName: v.string(),
     search: v.optional(v.string()),
     year: v.optional(v.number()),
     limit: v.optional(v.number()),
     offset: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const { qualificationId, search, year, limit = 50, offset = 0 } = args
-
+    const { qualificationName, search, year, limit = 50, offset = 0 } = args
+    const qualificationId = await getQualificationIdFromNameOrThrow(
+      ctx,
+      qualificationName,
+    )
     let questions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
@@ -229,9 +242,12 @@ export const getBrowseQuestions = query({
 })
 
 export const getQuestionsStats = query({
-  args: { qualificationId: v.id("qualifications") },
-  handler: async (ctx, args) => {
-    const { qualificationId } = args
+  args: { qualificationName: v.string() },
+  handler: async (ctx, { qualificationName }) => {
+    const qualificationId = await getQualificationIdFromNameOrThrow(
+      ctx,
+      qualificationName,
+    )
 
     const questions = await ctx.db
       .query("questions")

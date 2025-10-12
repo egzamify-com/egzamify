@@ -1,14 +1,12 @@
-import RandomQuestionGame from "~/components/teoria/random-question-game";
-
-interface RandomQuestionPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
+import RandomQuestionGame from "~/components/teoria/random-question-game"
 
 export default async function RandomQuestionPage({
   params,
-}: RandomQuestionPageProps) {
-  const { id } = await params;
-  return <RandomQuestionGame qualificationId={id} />;
+}: {
+  params: Promise<{
+    qualificationName: string
+  }>
+}) {
+  const { qualificationName } = await params
+  return <RandomQuestionGame qualificationName={qualificationName} />
 }

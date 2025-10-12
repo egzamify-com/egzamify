@@ -153,7 +153,10 @@ export default function DashboardPage() {
           {/* EGZAMINY - 2 karty w kolumnie */}
           <div className="flex flex-col gap-4">
             {/* EGZAMIN TEORETYCZNY */}
-            <Link href="/dashboard/teoria" className="group flex-1">
+            <Link
+              href="/dashboard/egzamin-teoretyczny"
+              className="group flex-1"
+            >
               <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
@@ -229,24 +232,43 @@ export default function DashboardPage() {
           </Link>
 
           {/* AI WYJAŚNIA */}
-          <Link href="/dashboard/ai-wyjasnia" className="group">
-            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <MessageSquare className="h-8 w-8" />
-                </div>
-                <CardTitle className="group-hover:text-primary transition-colors">
-                  AI Wyjaśnia
-                </CardTitle>
-                <CardDescription>Zadaj pytanie AI</CardDescription>
-                <Button className="mt-4 w-full" variant="secondary">
-                  Rozpocznij chat
-                </Button>
-              </CardHeader>
-            </Card>
-          </Link>
+          <DashboardCard
+            {...{
+              buttonLabel: "Rozpocznij chat",
+              title: "Ai wyjasnia",
+              description: "Zadaj pytanie AI",
+            }}
+          />
         </div>
       </div>
     </div>
+  )
+}
+function DashboardCard({
+  title,
+  description,
+  buttonLabel,
+}: {
+  title: string
+  description: string
+  buttonLabel: string
+}) {
+  return (
+    <Link href="/dashboard/ai-wyjasnia" className="group">
+      <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
+        <CardHeader className="pb-4">
+          <div className="flex w-full items-center justify-end">
+            <MessageSquare className="h-8 w-8" />
+          </div>
+          <CardTitle className="group-hover:text-primary transition-colors">
+            {title}
+          </CardTitle>
+          <CardDescription>{description}</CardDescription>
+          <Button className="mt-4 w-full" variant="secondary">
+            {buttonLabel}
+          </Button>
+        </CardHeader>
+      </Card>
+    </Link>
   )
 }
