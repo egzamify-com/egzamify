@@ -89,12 +89,12 @@ const navMain: NavbarItem[] = [
   {
     title: "Egzamin Teoretyczny",
     icon: <Check size={SIDEBAR_ICON_SIZE} />,
-    url: "/dashboard/teoria",
+    url: "/dashboard/egzamin-teoretyczny",
     childrenItems: [
       {
         title: "Zacznij egzamin z teorii",
         icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
-        url: "/dashboard/teoria",
+        url: "/dashboard/egzamin-teoretyczny",
       },
     ],
   },
