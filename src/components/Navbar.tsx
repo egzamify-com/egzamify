@@ -8,6 +8,7 @@ import { LogOut } from "lucide-react"
 import Link from "next/link"
 import { redirect, usePathname, useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +26,11 @@ import ActivityStatusAvatar from "./users/activity-status-avatar"
 
 export default function Navbar() {
   const pathname = usePathname()
-  if (pathname.includes("sign-in") || pathname.includes("dashboard")) {
+  if (
+    APP_CONFIG.navbarDisplay.blockNavbarSitesArr.some((segment: string) =>
+      pathname.includes(segment),
+    )
+  ) {
     return null
   }
 

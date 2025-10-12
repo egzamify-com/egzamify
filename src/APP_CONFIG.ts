@@ -1,5 +1,8 @@
 import { groq } from "@ai-sdk/groq"
 type AppConfig = {
+  navbarDisplay: {
+    blockNavbarSitesArr: string[]
+  }
   landingPage: {
     mainTitle: string
     mainDescription: string
@@ -47,6 +50,9 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  navbarDisplay: {
+    blockNavbarSitesArr: ["welcome", "sign-in", "dashboard"],
+  },
   landingPage: {
     mainTitle: "Szybkie i przyjemne przygotowania do egzaminów zawodowych",
     mainDescription: `Zapomnij o żmudnym kuciu! Z nami nauka staje się angażującą przygodą,

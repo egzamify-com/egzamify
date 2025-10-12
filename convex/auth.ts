@@ -26,7 +26,6 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       const defaultUsername = createDefaultUsername(user.email!)
       const newData: Doc<"users"> = {
         ...user,
-        onBoarded: false,
         username: `${defaultUsername}`,
         name: user.name === "null" ? defaultUsername : user.name,
       }
