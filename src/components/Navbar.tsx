@@ -40,7 +40,7 @@ export default function Navbar() {
     >
       <Link href={"/"}>
         <div className="flex flex-row justify-start gap-2">
-          <h1 className="text-3xl font-extrabold">Egzamify</h1>
+          <h1 className="logo-font">Egzamify</h1>
           <Badge variant={"outline"} className="rounded-xl">
             <p className="m-0 p-0 text-xs">Beta</p>
           </Badge>
