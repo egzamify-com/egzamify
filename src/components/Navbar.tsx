@@ -39,10 +39,13 @@ export default function Navbar() {
       className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between gap-4 border-b px-4`}
     >
       <Link href={"/"}>
-        <div className="flex flex-row justify-start gap-2">
+        <div className="relative flex flex-row items-start justify-start gap-2">
           <h1 className="logo-font">Egzamify</h1>
-          <Badge variant={"outline"} className="rounded-xl">
-            <p className="m-0 p-0 text-xs">Beta</p>
+          <Badge
+            variant={"outline"}
+            className="absolute top-2 right-[-55px] rounded-xl"
+          >
+            <p className="">Beta</p>
           </Badge>
         </div>
       </Link>

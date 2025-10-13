@@ -53,9 +53,9 @@ export default function Page() {
   }
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center">
-      <div className="absolute top-20">
-        <h1 className="text-5xl font-bold">Witamy w Egzamify!</h1>
+    <div className="relative flex flex-1 flex-col items-center justify-center gap-20">
+      <div>
+        <h1 className="logo-font-onboarding">Witamy w Egzamify!</h1>
       </div>
       {render()}
     </div>
