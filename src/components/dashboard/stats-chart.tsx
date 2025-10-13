@@ -37,13 +37,13 @@ export function StatsChart({ weeklyData, totalStats }: StatsChartProps) {
         </div>
         <div className="space-y-1">
           <p className="text-muted-foreground text-sm">Poprawne</p>
-          <p className="text-2xl font-bold text-green-600">
+          <p className="text-2xl font-bold">
             {totalStats?.correctAnswers || 0}
           </p>
         </div>
         <div className="space-y-1">
           <p className="text-muted-foreground text-sm">Skuteczność</p>
-          <p className="text-2xl font-bold text-blue-600">
+          <p className="text-2xl font-bold">
             {totalStats?.averageAccuracy || 0}%
           </p>
         </div>
@@ -52,17 +52,11 @@ export function StatsChart({ weeklyData, totalStats }: StatsChartProps) {
         <BarChart data={weeklyData}>
           <XAxis
             dataKey="day"
-            stroke="hsl(var(--muted-foreground))"
             fontSize={12}
             tickLine={false}
             axisLine={false}
           />
-          <YAxis
-            stroke="hsl(var(--muted-foreground))"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-          />
+          <YAxis fontSize={12} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
               backgroundColor: "hsl(var(--card))",
@@ -70,11 +64,7 @@ export function StatsChart({ weeklyData, totalStats }: StatsChartProps) {
               borderRadius: "var(--radius)",
             }}
           />
-          <Bar
-            dataKey="questions"
-            fill="hsl(220 70% 50%)"
-            radius={[8, 8, 0, 0]}
-          />
+          <Bar dataKey="questions" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

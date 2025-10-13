@@ -1,96 +1,91 @@
-"use client";
+"use client"
 
-import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { Clock, Flag, Loader2, SkipForward } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Progress } from "~/components/ui/progress";
+import { api } from "convex/_generated/api"
+import { useQuery } from "convex/react"
+import { Clock, Flag, Loader2, SkipForward } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Progress } from "~/components/ui/progress"
 
-interface FullTestGameProps {
-  qualificationId: string;
-}
+export default function FullTestGame({
+  qualificationName,
+}: {
+  qualificationName: string
+}) {
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([])
+  const [timeLeft, setTimeLeft] = useState(60 * 60)
+  const [isFinished, setIsFinished] = useState(false)
+  const [showResults, setShowResults] = useState(false)
 
-export default function FullTestGame({ qualificationId }: FullTestGameProps) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([]);
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minut w sekundach
-  const [isFinished, setIsFinished] = useState(false);
-  const [showResults, setShowResults] = useState(false);
-
-  // Pobieranie pytań z Convex
   const questionsData = useQuery(api.teoria.query.getQuestionsByQualification, {
-    qualificationId: qualificationId as Id<"qualifications">,
-  });
+    qualificationName,
+  })
 
-  const questions = questionsData?.questions || [];
+  const questions = questionsData?.questions || []
 
-  // Inicjalizacja tablicy odpowiedzi gdy pytania się załadują
   useEffect(() => {
     if (questions.length > 0) {
-      setSelectedAnswers(new Array(questions.length).fill(null));
+      setSelectedAnswers(new Array(questions.length).fill(null))
     }
-  }, [questions.length]);
+  }, [questions.length])
 
-  // Timer
   useEffect(() => {
     if (timeLeft > 0 && !isFinished && questions.length > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
+      return () => clearTimeout(timer)
     } else if (timeLeft === 0 && questions.length > 0) {
-      handleFinishTest();
+      handleFinishTest()
     }
-  }, [timeLeft, isFinished, questions.length]);
+  }, [timeLeft, isFinished, questions.length])
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+  }
 
   const handleAnswerSelect = (answerIndex: number) => {
-    const newAnswers = [...selectedAnswers];
-    newAnswers[currentQuestion] = answerIndex;
-    setSelectedAnswers(newAnswers);
-  };
+    const newAnswers = [...selectedAnswers]
+    newAnswers[currentQuestion] = answerIndex
+    setSelectedAnswers(newAnswers)
+  }
 
   const handleNextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion(currentQuestion + 1)
     }
-  };
+  }
 
   const handlePrevQuestion = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+      setCurrentQuestion(currentQuestion - 1)
     }
-  };
+  }
 
   const handleFinishTest = () => {
-    setIsFinished(true);
-    setShowResults(true);
-  };
+    setIsFinished(true)
+    setShowResults(true)
+  }
 
   const calculateScore = () => {
-    let correct = 0;
+    let correct = 0
     selectedAnswers.forEach((answer, index) => {
       if (answer === questions[index]?.correctAnswer) {
-        correct++;
+        correct++
       }
-    });
-    return correct;
-  };
+    })
+    return correct
+  }
 
   const answeredQuestions = selectedAnswers.filter(
     (answer) => answer !== null,
-  ).length;
+  ).length
   const progress =
-    questions.length > 0 ? (answeredQuestions / questions.length) * 100 : 0;
+    questions.length > 0 ? (answeredQuestions / questions.length) * 100 : 0
 
-  // Loading state
   if (!questionsData) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -98,21 +93,22 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
           <CardContent className="py-12 text-center">
             <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
             <h1 className="mb-4 text-2xl font-bold">Ładowanie testu...</h1>
-            <p className="text-gray-500">Pobieranie pytań z bazy danych</p>
+            <p className="text-muted-foreground">
+              Pobieranie pytań z bazy danych
+            </p>
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
-  // Brak pytań
   if (questions.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
             <h1 className="mb-4 text-2xl font-bold">Test - 0 pytań</h1>
-            <p className="text-lg text-gray-500">
+            <p className="text-muted-foreground text-lg">
               Brak pytań dla tej kwalifikacji.
             </p>
             <Button
@@ -125,12 +121,12 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   if (showResults) {
-    const score = calculateScore();
-    const percentage = Math.round((score / questions.length) * 100);
+    const score = calculateScore()
+    const percentage = Math.round((score / questions.length) * 100)
 
     return (
       <div className="container mx-auto px-4 py-8">
@@ -143,19 +139,19 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
               <div className="mb-2 text-4xl font-bold">
                 {score}/{questions.length}
               </div>
-              <div className="text-xl text-gray-600">{percentage}%</div>
+              <div className="text-muted-foreground text-xl">{percentage}%</div>
               <Badge
-                variant={percentage >= 70 ? "default" : "destructive"}
+                variant={percentage >= 50 ? "default" : "destructive"}
                 className="mt-2"
               >
-                {percentage >= 70 ? "Zaliczony" : "Niezaliczony"}
+                {percentage >= 50 ? "Zaliczony" : "Niezaliczony"}
               </Badge>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Poprawne odpowiedzi:</span>
-                <span className="font-semibold text-green-600">{score}</span>
+                <span className="font-semibold text-green-500">{score}</span>
               </div>
               <div className="flex justify-between">
                 <span>Błędne odpowiedzi:</span>
@@ -182,6 +178,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
               <Button
                 onClick={() => window.location.reload()}
                 className="flex-1"
+                variant={"outline"}
               >
                 Spróbuj ponownie
               </Button>
@@ -189,12 +186,11 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header z timerem i postępem */}
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">
@@ -214,7 +210,7 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
         </div>
 
         <div className="space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="text-muted-foreground flex justify-between text-sm">
             <span>
               Postęp: {answeredQuestions}/{questions.length} odpowiedzi
             </span>
@@ -256,8 +252,8 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
                 onClick={() => handleAnswerSelect(index)}
                 className={`w-full rounded-lg border p-4 text-left transition-colors ${
                   selectedAnswers[currentQuestion] === index
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    ? "border-blue-500"
+                    : "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -299,13 +295,13 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
           {currentQuestion === questions.length - 1 ? (
             <Button
               onClick={handleFinishTest}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-600"
             >
               <Flag className="mr-2 h-4 w-4" />
               Zakończ test
             </Button>
           ) : (
-            <Button onClick={handleNextQuestion}>
+            <Button onClick={handleNextQuestion} variant={"outline"}>
               Następne
               <SkipForward className="ml-2 h-4 w-4" />
             </Button>
@@ -324,12 +320,12 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
               <button
                 key={index}
                 onClick={() => setCurrentQuestion(index)}
-                className={`h-8 w-8 rounded border text-xs ${
+                className={`hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 w-8 cursor-pointer rounded border text-xs ${
                   index === currentQuestion
-                    ? "border-blue-500 bg-blue-500 text-white"
+                    ? "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer border-blue-500 text-white"
                     : selectedAnswers[index] !== null
-                      ? "border-green-500 bg-green-100 text-green-700"
-                      : "border-gray-300 hover:border-gray-400"
+                      ? "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 border-green-500 text-green-500"
+                      : ""
                 }`}
               >
                 {index + 1}
@@ -339,5 +335,5 @@ export default function FullTestGame({ qualificationId }: FullTestGameProps) {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

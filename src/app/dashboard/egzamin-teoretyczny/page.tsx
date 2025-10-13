@@ -1,24 +1,27 @@
-import { Suspense } from "react";
-import AllQualificationsList from "~/components/teoria/all-qualification-list";
+import { SquareCheck } from "lucide-react"
+import { Suspense } from "react"
+import PageHeaderWrapper, {
+  pageHeaderWrapperIconSize,
+} from "~/components/page-header-wrapper"
+import AllQualificationsList from "~/components/teoria/all-qualification-list"
 
-import { Card, CardContent } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card"
 
 export default function TeoriaPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold">Egzamin Teoretyczny</h1>
-        <p className="text-gray-600">
-          Wybierz kwalifikację i rozpocznij naukę. Dostępne są różne tryby nauki
-          i testowania wiedzy.
-        </p>
+    <PageHeaderWrapper
+      title="Egzamin Teoretyczny"
+      description="Wybierz kwalifikację i rozpocznij naukę. Dostępne są różne tryby nauki
+          i testowania wiedzy."
+      icon={<SquareCheck size={pageHeaderWrapperIconSize} />}
+    >
+      <div className="container mx-auto px-4 py-8">
+        <Suspense fallback={<LoadingGrid />}>
+          <AllQualificationsList />
+        </Suspense>
       </div>
-
-      <Suspense fallback={<LoadingGrid />}>
-        <AllQualificationsList />
-      </Suspense>
-    </div>
-  );
+    </PageHeaderWrapper>
+  )
 }
 
 function LoadingGrid() {
@@ -38,5 +41,5 @@ function LoadingGrid() {
         </Card>
       ))}
     </div>
-  );
+  )
 }

@@ -8,6 +8,7 @@ import {
   History,
   Mail,
   MessageCircle,
+  SquareCheck,
   User,
   UserPlus,
   Users,
@@ -87,8 +88,15 @@ const navMain: NavbarItem[] = [
   },
   {
     title: "Egzamin Teoretyczny",
-    url: "/dashboard/teoria",
     icon: <Check size={SIDEBAR_ICON_SIZE} />,
+    url: "/dashboard/egzamin-teoretyczny",
+    childrenItems: [
+      {
+        title: "Zacznij egzamin z teorii",
+        icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
+        url: "/dashboard/egzamin-teoretyczny",
+      },
+    ],
   },
   {
     title: "Egzamin Praktyczny",

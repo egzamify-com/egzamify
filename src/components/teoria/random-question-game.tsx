@@ -1,240 +1,260 @@
-"use client";
+"use client"
 
-import { api } from "convex/_generated/api";
-import type { Id } from "convex/_generated/dataModel";
-import { useAction, useMutation, useQuery } from "convex/react";
+import { api } from "convex/_generated/api"
+import type { Id } from "convex/_generated/dataModel"
+import { useMutation, useQuery } from "convex/react"
 import {
   CheckCircle,
   Clock,
+  Coins,
   Flame,
   Lightbulb,
   Loader2,
   RotateCcw,
   XCircle,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-
-interface RandomQuestionGameProps {
-  qualificationId: string;
-}
+} from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
+import { generateExplanationWithCharge } from "src/actions/theory/actions"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { Card, CardContent } from "~/components/ui/card"
 
 export default function RandomQuestionGame({
-  qualificationId,
-}: RandomQuestionGameProps) {
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showResult, setShowResult] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [answerStreak, setAnswerStreak] = useState(0);
+  qualificationName,
+}: {
+  qualificationName: string
+}) {
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+  const [showResult, setShowResult] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(120)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [answerStreak, setAnswerStreak] = useState(0)
   const [sessionId, setSessionId] = useState<Id<"userActivityHistory"> | null>(
     null,
-  );
+  )
 
-  const [aiExplanation, setAiExplanation] = useState<string | null>(null);
-  const [isLoadingExplanation, setIsLoadingExplanation] = useState(false);
-  const [displayedExplanation, setDisplayedExplanation] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [showExplanation, setShowExplanation] = useState(false);
+  const [aiExplanation, setAiExplanation] = useState<string | null>(null)
+  const [isLoadingExplanation, setIsLoadingExplanation] = useState(false)
+  const [displayedExplanation, setDisplayedExplanation] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
+  const [showExplanation, setShowExplanation] = useState(false)
 
-  const isGeneratingRef = useRef(false);
+  const isGeneratingRef = useRef(false)
 
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
-    qualificationId: qualificationId as Id<"qualifications">,
+    qualificationName,
     _refreshKey: refreshKey,
-  });
+  })
 
-  const currentQuestion = questionData?.question;
+  const user = useQuery(api.users.query.getCurrentUser)
+  const currentQuestion = questionData?.question
 
-  const generateExplanation = useAction(api.teoria.actions.generateExplanation);
-  const saveUserAnswer = useMutation(api.statistics.mutations.saveUserAnswer);
+  const saveUserAnswer = useMutation(api.statistics.mutations.saveUserAnswer)
   const startStudySession = useMutation(
     api.statistics.mutations.startStudySession,
-  );
-  const endStudySession = useMutation(api.statistics.mutations.endStudySession);
+  )
+  const endStudySession = useMutation(api.statistics.mutations.endStudySession)
 
-  // POPRAWIONE: Sesja nauki - start i cleanup
   useEffect(() => {
-    let currentSessionId: Id<"userActivityHistory"> | null = null;
+    let currentSessionId: Id<"userActivityHistory"> | null = null
 
-    // Start sesji
     startStudySession().then((result) => {
-      currentSessionId = result.sessionId;
-      setSessionId(result.sessionId);
-      console.log("📚 Sesja nauki rozpoczęta:", result.sessionId);
-    });
+      currentSessionId = result.sessionId
+      setSessionId(result.sessionId)
+      console.log("Sesja nauki rozpoczęta:", result.sessionId)
+    })
 
-    // Cleanup - zakończ sesję przy odmontowaniu
     return () => {
       if (currentSessionId) {
-        console.log("🛑 Kończenie sesji nauki:", currentSessionId);
-        endStudySession({ sessionId: currentSessionId });
+        console.log("Kończenie sesji nauki:", currentSessionId)
+        endStudySession({ sessionId: currentSessionId })
       }
-    };
-  }, []); // Pusty deps array - tylko raz przy montowaniu
+    }
+  }, [])
 
   const getStreakFromStorage = (): number => {
-    if (typeof window === "undefined") return 0;
-    const stored = localStorage.getItem("answerStreak");
-    return stored ? Number.parseInt(stored, 10) : 0;
-  };
+    if (typeof window === "undefined") return 0
+    const stored = localStorage.getItem("answerStreak")
+    return stored ? Number.parseInt(stored, 10) : 0
+  }
 
   const saveStreakToStorage = (streak: number): void => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("answerStreak", streak.toString());
-  };
+    if (typeof window === "undefined") return
+    localStorage.setItem("answerStreak", streak.toString())
+  }
 
   const updateStreak = (correct: boolean): void => {
     if (correct) {
-      const newStreak = answerStreak + 1;
-      setAnswerStreak(newStreak);
-      saveStreakToStorage(newStreak);
+      const newStreak = answerStreak + 1
+      setAnswerStreak(newStreak)
+      saveStreakToStorage(newStreak)
     } else {
-      setAnswerStreak(0);
-      saveStreakToStorage(0);
+      setAnswerStreak(0)
+      saveStreakToStorage(0)
     }
-  };
+  }
 
   const typeWriterEffect = (text: string, speed = 30) => {
-    setIsTyping(true);
-    setDisplayedExplanation("");
+    setIsTyping(true)
+    setDisplayedExplanation("")
 
-    let index = 0;
+    let index = 0
     const timer = setInterval(() => {
       if (index < text.length) {
-        setDisplayedExplanation((prev) => prev + text.charAt(index));
-        index++;
+        setDisplayedExplanation((prev) => prev + text.charAt(index))
+        index++
       } else {
-        clearInterval(timer);
-        setIsTyping(false);
+        clearInterval(timer)
+        setIsTyping(false)
       }
-    }, speed);
+    }, speed)
 
-    return () => clearInterval(timer);
-  };
+    return () => clearInterval(timer)
+  }
 
   useEffect(() => {
-    const savedStreak = getStreakFromStorage();
-    setAnswerStreak(savedStreak);
-  }, []);
+    const savedStreak = getStreakFromStorage()
+    setAnswerStreak(savedStreak)
+  }, [])
 
   useEffect(() => {
     if (currentQuestion && !isGeneratingRef.current) {
-      setSelectedAnswer(null);
-      setShowResult(false);
-      setIsCorrect(null);
-      setTimeLeft(120);
-      setDisplayedExplanation("");
-      setIsTyping(false);
-      setShowExplanation(false);
-      setIsLoadingExplanation(false);
+      setSelectedAnswer(null)
+      setShowResult(false)
+      setIsCorrect(null)
+      setTimeLeft(120)
+      setDisplayedExplanation("")
+      setIsTyping(false)
+      setShowExplanation(false)
+      setIsLoadingExplanation(false)
 
       if (currentQuestion.explanation) {
-        setAiExplanation(currentQuestion.explanation);
+        setAiExplanation(currentQuestion.explanation)
       } else {
-        setAiExplanation(null);
+        setAiExplanation(null)
       }
     }
-  }, [currentQuestion]);
+  }, [currentQuestion])
 
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
+      return () => clearTimeout(timer)
     } else if (timeLeft === 0 && !showResult && currentQuestion) {
-      handleTimeUp();
+      handleTimeUp()
     }
-  }, [timeLeft, showResult, currentQuestion]);
+  }, [timeLeft, showResult, currentQuestion])
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+  }
 
   const handleAnswerSelect = async (answerIndex: number) => {
-    if (showResult || !currentQuestion) return;
+    if (showResult || !currentQuestion) return
 
-    setSelectedAnswer(answerIndex);
-    const correct = answerIndex === currentQuestion.correctAnswer;
-    setIsCorrect(correct);
-    setShowResult(true);
+    setSelectedAnswer(answerIndex)
+    const correct = answerIndex === currentQuestion.correctAnswer
+    setIsCorrect(correct)
+    setShowResult(true)
 
     await saveUserAnswer({
       question_id: currentQuestion.id as Id<"questions">,
       answer_index: answerIndex,
       isCorrect: correct,
-    });
+    })
 
-    updateStreak(correct);
-  };
+    updateStreak(correct)
+  }
 
   const handleTimeUp = () => {
-    setIsCorrect(false);
-    setShowResult(true);
-    updateStreak(false);
-  };
+    setIsCorrect(false)
+    setShowResult(true)
+    updateStreak(false)
+  }
 
   const handleNewQuestion = () => {
     if (!isGeneratingRef.current) {
-      setRefreshKey((prev) => prev + 1);
+      setRefreshKey((prev) => prev + 1)
     }
-  };
+  }
 
   const handleShowExplanation = () => {
-    if (!currentQuestion) return;
-    setShowExplanation(true);
+    if (!currentQuestion) return
+    setShowExplanation(true)
     if (aiExplanation) {
-      typeWriterEffect(aiExplanation, 15);
+      typeWriterEffect(aiExplanation, 15)
     }
-  };
+  }
 
   const handleGenerateExplanation = async () => {
-    if (!currentQuestion || isLoadingExplanation) return;
+    if (!currentQuestion || isLoadingExplanation) return
 
-    isGeneratingRef.current = true;
-    setIsLoadingExplanation(true);
-    setShowExplanation(true);
-    setDisplayedExplanation("");
+    const userCredits = user?.credits ?? 0
+    if (userCredits < 0.25) {
+      toast.error("Nie masz wystarczających kredytów!", {
+        description: "Potrzebujesz 0.25 kredyta aby wygenerować wyjaśnienie.",
+      })
+      return
+    }
+
+    isGeneratingRef.current = true
+    setIsLoadingExplanation(true)
+    setShowExplanation(true)
+    setDisplayedExplanation("")
 
     try {
-      const result = await generateExplanation({
+      const result = await generateExplanationWithCharge({
         questionId: currentQuestion.id,
         questionContent: currentQuestion.question,
         answers: currentQuestion.answers,
         correctAnswerIndex: currentQuestion.correctAnswer,
         answerLabels: currentQuestion.answerLabels,
-      });
+      })
 
-      setAiExplanation(result.explanation);
-      typeWriterEffect(result.explanation, 25);
+      if (!result.success) {
+        toast.error("Błąd", {
+          description: result.error || "Nie udało się wygenerować wyjaśnienia",
+        })
+        setShowExplanation(false)
+        return
+      }
+
+      setAiExplanation(result.explanation)
+      typeWriterEffect(result.explanation, 25)
+
+      toast.success("Wyjaśnienie wygenerowane! 🎉", {
+        description: "Pobrano 0.25 kredyta z Twojego konta.",
+      })
     } catch (error) {
-      console.error("❌ Błąd podczas generowania wyjaśnienia:", error);
-      const errorMessage =
-        "Przepraszamy, wystąpił błąd podczas generowania wyjaśnienia.";
-      setAiExplanation(errorMessage);
-      typeWriterEffect(errorMessage, 25);
+      console.error("❌ Błąd podczas generowania wyjaśnienia:", error)
+      toast.error("Wystąpił nieoczekiwany błąd", {
+        description: "Spróbuj ponownie później.",
+      })
+      setShowExplanation(false)
     } finally {
-      setIsLoadingExplanation(false);
-      isGeneratingRef.current = false;
+      setIsLoadingExplanation(false)
+      isGeneratingRef.current = false
     }
-  };
+  }
 
-  if (questionData === undefined) {
+  if (questionData === undefined || user === undefined) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
             <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
             <h1 className="mb-4 text-2xl font-bold">Ładowanie pytania...</h1>
-            <p className="text-gray-500">Losowanie pytania z bazy danych</p>
+            <p className="text-muted-foreground">
+              Losowanie pytania z bazy danych
+            </p>
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   if (!currentQuestion) {
@@ -243,7 +263,7 @@ export default function RandomQuestionGame({
         <Card className="mx-auto max-w-2xl">
           <CardContent className="py-12 text-center">
             <h1 className="mb-4 text-2xl font-bold">Losowe pytanie</h1>
-            <p className="text-lg text-gray-500">
+            <p className="text-muted-foreground text-lg">
               Brak pytań dla tej kwalifikacji.
             </p>
             <Button
@@ -256,26 +276,29 @@ export default function RandomQuestionGame({
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
+
+  const userCredits = user?.credits ?? 0
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
         <div className="mb-4 flex items-center justify-between">
-          <div className="flex">
+          <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold">Losowe pytanie</h1>
             <Badge variant="secondary">
-              Pytanie #{currentQuestion.id.slice(-8)}
+              #{currentQuestion.id.slice(-8)}
               {currentQuestion.year && ` • Rok ${currentQuestion.year}`}
             </Badge>
           </div>
-
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2">
-              <Flame className="h-5 w-5 text-orange-500" />
+            {/* Wyświetlanie kredytów */}
+
+            <div className="flex items-center gap-2 rounded-lg border border-orange-600 px-3 py-2">
+              <Flame className="h-5 w-5 text-orange-600" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
-              <span className="text-sm text-orange-600">seria odpowiedzi</span>
+              <span className="text-sm text-orange-600">seria</span>
             </div>
 
             <div className="flex items-center gap-2 text-lg font-semibold">
@@ -289,9 +312,6 @@ export default function RandomQuestionGame({
       </div>
 
       <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-lg">Pytanie</CardTitle>
-        </CardHeader>
         <CardContent>
           <p className="mb-6 text-lg">{currentQuestion.question}</p>
 
@@ -308,25 +328,25 @@ export default function RandomQuestionGame({
           <div className="space-y-3">
             {currentQuestion.answers.map((answer, index) => {
               let buttonClass =
-                "w-full p-4 text-left border rounded-lg transition-colors ";
+                "w-full p-4 text-left border rounded-lg transition-colors "
 
               if (showResult) {
                 if (index === currentQuestion.correctAnswer) {
-                  buttonClass += "border-green-500 bg-green-50 text-green-800";
+                  buttonClass += "border-green-500  text-green-500"
                 } else if (
                   index === selectedAnswer &&
                   selectedAnswer !== currentQuestion.correctAnswer
                 ) {
-                  buttonClass += "border-red-500 bg-red-50 text-red-800";
+                  buttonClass += "border-destructive  text-destructive"
                 } else {
-                  buttonClass += "border-gray-200 bg-gray-50 text-gray-600";
+                  buttonClass += " "
                 }
               } else {
                 if (selectedAnswer === index) {
-                  buttonClass += "border-blue-500 bg-blue-50";
+                  buttonClass += "border-blue-500 bg-blue-50"
                 } else {
                   buttonClass +=
-                    "border-gray-200 hover:border-gray-300 hover:bg-gray-50";
+                    " hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer"
                 }
               }
 
@@ -341,12 +361,12 @@ export default function RandomQuestionGame({
                     <div className="flex h-6 w-6 items-center justify-center">
                       {showResult &&
                         index === currentQuestion.correctAnswer && (
-                          <CheckCircle className="h-5 w-5 text-green-600" />
+                          <CheckCircle className="h-5 w-5 text-green-500" />
                         )}
                       {showResult &&
                         index === selectedAnswer &&
                         selectedAnswer !== currentQuestion.correctAnswer && (
-                          <XCircle className="h-5 w-5 text-red-600" />
+                          <XCircle className="text-destructive h-5 w-5" />
                         )}
                       {!showResult && (
                         <div
@@ -357,7 +377,7 @@ export default function RandomQuestionGame({
                           }`}
                         >
                           {selectedAnswer === index && (
-                            <div className="h-full w-full scale-50 rounded-full bg-white"></div>
+                            <div className="h-full w-full scale-50 rounded-full"></div>
                           )}
                         </div>
                       )}
@@ -370,7 +390,7 @@ export default function RandomQuestionGame({
                     <span>{answer}</span>
                   </div>
                 </button>
-              );
+              )
             })}
           </div>
         </CardContent>
@@ -382,7 +402,7 @@ export default function RandomQuestionGame({
             <div className="mb-4 text-center">
               {isCorrect ? (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-green-600">
+                  <div className="flex items-center justify-center gap-2 text-green-500">
                     <CheckCircle className="h-8 w-8" />
                     <span className="text-2xl font-bold">
                       Poprawna odpowiedź!
@@ -400,14 +420,14 @@ export default function RandomQuestionGame({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-red-600">
+                  <div className="text-destructive flex items-center justify-center gap-2">
                     <XCircle className="h-8 w-8" />
                     <span className="text-2xl font-bold">
                       {timeLeft === 0 ? "Czas minął!" : "Niepoprawna odpowiedź"}
                     </span>
                   </div>
                   {answerStreak > 0 && (
-                    <div className="text-gray-600">
+                    <div className="text-muted-foreground">
                       <span className="text-sm">
                         Seria odpowiedzi została przerwana na {answerStreak}
                       </span>
@@ -418,26 +438,26 @@ export default function RandomQuestionGame({
             </div>
 
             {showExplanation && (
-              <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 transition-all duration-300">
-                <h3 className="mb-3 flex items-center gap-2 font-medium text-blue-800">
+              <div className="border-muted-foreground mt-6 rounded-lg border p-4 transition-all duration-300">
+                <h3 className="mb-3 flex items-center gap-2 font-medium">
                   <Lightbulb className="h-5 w-5" />
-                  Wyjaśnienie AI:
+                  Wyjaśnienie AI (0.25 kredyta):
                   {isLoadingExplanation && (
                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                   )}
                 </h3>
 
                 {isLoadingExplanation && !displayedExplanation && (
-                  <div className="flex items-center gap-2 text-blue-600">
+                  <div className="flex items-center gap-2">
                     <div className="flex space-x-1">
-                      <div className="h-2 w-2 animate-bounce rounded-full bg-blue-500"></div>
+                      <div className="bg h-2 w-2 animate-bounce rounded-full"></div>
                       <div
-                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
+                        className="b h-2 w-2 animate-bounce rounded-full"
                         style={{ animationDelay: "0.1s" }}
                       ></div>
                       <div
-                        className="h-2 w-2 animate-bounce rounded-full bg-blue-500"
-                        style={{ animationDelay: "0.2s" }}
+                        className="h-2 w-2 animate-bounce rounded-full"
+                        style={{ animationDelay: "0.1s" }}
                       ></div>
                     </div>
                     <span className="text-sm">
@@ -447,11 +467,11 @@ export default function RandomQuestionGame({
                 )}
 
                 {displayedExplanation && (
-                  <div className="leading-relaxed text-gray-700">
+                  <div className="leading-relaxed">
                     <p className="whitespace-pre-wrap">
                       {displayedExplanation}
                       {isTyping && (
-                        <span className="ml-1 inline-block h-5 w-2 animate-pulse bg-blue-500"></span>
+                        <span className="ml-1 inline-block h-5 w-2 animate-pulse"></span>
                       )}
                     </p>
                   </div>
@@ -479,16 +499,19 @@ export default function RandomQuestionGame({
                   }
                   variant="outline"
                   className="flex items-center gap-2 bg-transparent"
-                  disabled={isLoadingExplanation}
+                  disabled={isLoadingExplanation || userCredits < 0.25}
                 >
                   <Lightbulb className="h-4 w-4" />
-                  {aiExplanation ? "Pokaż wyjaśnienie" : "Objaśnij z AI (Groq)"}
+                  <Coins className="h-4 w-4" />
+                  {aiExplanation
+                    ? "Pokaż wyjaśnienie"
+                    : "Objaśnij z AI (0.25 kredyta)"}
                 </Button>
               )}
 
               <Button
                 onClick={handleNewQuestion}
-                className="bg-blue-600 hover:bg-blue-700"
+                variant="outline"
                 disabled={isLoadingExplanation}
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
@@ -499,5 +522,5 @@ export default function RandomQuestionGame({
         </div>
       </div>
     </div>
-  );
+  )
 }
