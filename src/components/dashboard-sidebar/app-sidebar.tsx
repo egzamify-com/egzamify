@@ -129,7 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Link href={"/"}>
                 <div className="flex flex-row justify-start gap-2">
-                  <h1 className="text-xl font-extrabold">Egzamify</h1>
+                  <h1 className="logo-font-sidebar">Egzamify</h1>
                   <Badge variant={"outline"} className="rounded-xl">
                     <p className="m-0 p-0 text-xs">Beta</p>
                   </Badge>

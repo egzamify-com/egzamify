@@ -126,6 +126,15 @@
   font-size: xx-large;
 }
 
+.logo-font-sidebar {
+  font-family: "DynaPuff", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  font-size: large;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
