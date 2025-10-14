@@ -1,0 +1,2003 @@
+[
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-25.01-SG",
+    "maxPoints": 38,
+    "examInstructions": "# Zadanie egzaminacyjne\n\nUWAGA: folder z rezultatami pracy oraz płytę należy opisać numerem zdającego, którym został podpisany arkusz, czyli numerem PESEL lub w przypadku jego braku numerem paszportu. Dalej w zadaniu numer ten jest nazwany numerem zdającego.\n\nWykonaj aplikację internetową strony o futbolu, wykorzystując pakiet XAMPP oraz edytor zaznaczający składnię.\n\nAby wykonać zadanie, zaloguj się na konto Egzamin bez hasła. Na pulpicie znajdziesz archiwum ZIP o nazwie dane.7z zabezpieczone hasłem: `!Futbol&`\n\nArchiwum należy rozpakować.\n\nNa pulpicie konta Egzamin utwórz folder. Jako nazwy folderu należy użyć numeru zdającego. Umieść w tym folderze rozpakowane pliki.\n\nPo skończonej pracy wyniki zapisz również w tym folderze.\n\n---\n\n## Operacje na bazie danych\n\nDo wykonania zadania należy użyć tabel: zawodnik, pozycja, rozgrywka i liga przedstawionych na obrazie 1. Ponadto na obrazie przedstawiono wartości w tabeli pozycja.\n\nUruchom usługi MySQL i Apache za pomocą XAMPP Control Panel. Za pomocą narzędzia phpMyAdmin wykonaj podane operacje na bazie danych:\n\n* Utwórz bazę danych o nazwie `egzamin`\n* Do bazy `egzamin` zaimportuj plik `egzamin.sql` z rozpakowanego archiwum\n* Wykonaj zrzut ekranu po imporcie. Zrzut zapisz w formacie PNG i nazwij `import`. Nie kadruj zrzutu. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań. Na zrzucie powinny być widoczne elementy wskazujące na poprawnie wykonany import tabel\n* Zapisz i wykonaj zapytania SQL działające na bazie `egzamin`. Zapytania zapisz w pliku `kwerendy.txt`, w folderze z numerem zdającego. Wykonaj zrzuty ekranu przedstawiające wyniki działania kwerend. Zrzuty zapisz w formacie JPG i nadaj im nazwy `kw1`, `kw2`, `kw3`, `kw4`. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań\n* Zapytanie 1: wybierające jedynie pola `zespol1`, `zespol2`, `wynik`, `data_rozgrywki` z tabeli `rozgrywka` dla rekordów o wartości pola `zespol1` równej „EVG”\n* Zapytanie 2: wybierające jedynie pola `imie` i `nazwisko` z tabeli `zawodnik` dla zawodników, dla których przypisane jest id pozycji równe 3\n* Zapytanie 3: wybierające jedynie pola `id`, `nazwisko` z tabeli `zawodnik` oraz nazwę pozycji z tabeli `pozycja` dla zawodników, którym przypisane jest id równe 1, 2 lub 3\n* Zapytanie 4: usuwające tabelę `liga`\n\n---\n\n## Witryna internetowa\n\n### Przygotowanie grafiki:\n\n* Plik `zad1.png`, wypakowany z archiwum, należy przeskalować z zachowaniem proporcji tak, aby jego szerokość wynosiła dokładnie 150 px. Należy zachować przezroczystość obrazu\n\n### Cechy witryny:\n\n* Składa się ze strony o nazwie `futbol.php`\n* Zapisana w języku HTML 5\n* Jawnie zastosowany właściwy standard kodowania polskich znaków\n* Ustawiony język zawartości strony na polski\n* Tytuł strony widoczny na karcie przeglądarki: „Rozgrywki futbolowe”\n* Arkusz stylów w pliku o nazwie `styl.css` prawidłowo połączony z kodem strony\n* Podział strony na bloki: baner, poniżej blok mecze zawierający zmienną liczbę bloków z informacją o rozgrywkach. Bloki informacyjne generowane są skryptem, a ich liczba zależy od danych w bazie. Poniżej blok główny, poniżej bloki lewy i prawy. Podział zrealizowany za pomocą znaczników sekcji, zgodnie z obrazem 2\n* Zawartość bloku banera:\n    * Nagłówek drugiego stopnia o treści „Światowe rozgrywki piłkarskie”\n    * Obraz `obraz1.jpg` z tekstem alternatywnym o treści: „boisko”\n* Zawartość bloku mecze: Efekt działania skryptu 1\n* Zawartość bloku głównego: nagłówek drugiego stopnia o treści: „Reprezentacja Polski”\n* Zawartość bloku lewego:\n    * Paragraf (akapit) o treści: „Podaj pozycję zawodników (1-bramkarze, 2-obrońcy, 3-pomocnicy, 4-napastnicy):”\n    * Formularz wysyłający dane metodą POST do tej samej strony, zawierający:\n        * Pole edycyjne typu numerycznego\n        * Przycisk wysyłający zawartość formularza z opisem „Sprawdź”\n    * Lista punktowana (nieuporządkowana), a w niej efekt działania skryptu 2\n* Zawartość bloku prawego:\n    * Obraz `zad1.png` z tekstem alternatywnym o treści: „piłkarz”\n    * Paragraf (akapit) o treści: „Autor: ”, dalej wstawiony numer zdającego\n\n---\n\n## Styl CSS witryny internetowej\n\n### Cechy formatowania CSS:\n\n* Dla bloku banera: biały kolor czcionki, wyrównanie tekstu do środka, wysokość 370 px\n* Dla pojedynczego bloku z informacją o rozgrywkach: biały kolor czcionki, wyrównanie tekstu do środka, szerokość 200 px, marginesy zewnętrzne 10 px, obramowanie: 1 px, linia ciągła, kolor czarny, zaokrąglenie rogów obramowania 10 px\n* W momencie najechania kursorem na pojedynczy blok z informacją o rozgrywkach, kolor jego ramki zmienia się na biały\n* Dla bloku głównego: kolor tła WhiteSmoke, wysokość 50 px\n* Dla bloku lewego: kolor tła WhiteSmoke, szerokość 70%, wysokość 230 px\n* Dla bloku prawego: kolor tła WhiteSmoke, szerokość 30%, wysokość 230 px, wyrównanie tekstu do prawej strony\n* Dla znacznika body: krój czcionki Tahoma, kolor tła Crimson\n* Dla znacznika nagłówka drugiego stopnia: wyrównanie tekstu do środka, odległość między literami 7 px, tekst napisany kapitalikami (capitalize)\n\n---\n\n## Skrypt połączenia z bazą\n\nW tabeli 1 podano wybór funkcji PHP do obsługi bazy danych. Wymagania dotyczące skryptów:\n\n* Napisany w języku PHP, w pliku `futbol.php`\n* Skrypt łączy się z serwerem bazodanowym na `localhost`, użytkownik `root` bez hasła, baza danych o nazwie `egzamin`\n* Po wykonaniu operacji na bazie danych skrypt zamyka połączenie z serwerem\n* Działanie skryptu 1:\n    * Wysyła do bazy danych zapytanie 1\n    * Definiuje blok (za pomocą znacznika sekcji), a w nim wyświetla dane zwrócone zapytaniem dotyczące jednego wiersza:\n        * W nagłówku trzeciego stopnia tekst: „<zespół 1> - <zespół 2>”, gdzie pola w nawiasach <> oznaczają dane pobrane zapytaniem\n        * W nagłówku czwartego stopnia wynik pobrany zapytaniem\n        * W paragrafie tekst: „w dniu: <data rozgrywki>”, gdzie pole w nawiasach <> oznacza dane pobrane zapytaniem\n    * Liczba wygenerowanych bloków odpowiada liczbie wierszy zwróconych zapytaniem\n* Działanie skryptu 2, który odbiera dane przesłane z formularza\n    * Odbiera dane z pola edycyjnego\n    * Jeśli pole edycyjne jest puste nie jest wykonywana żadna akcja\n    * Jeżeli wpisano dane skrypt wysyła do bazy danych zmodyfikowane zapytanie 2 tak, że w warunku id pozycji jest równe wartości z pola edycyjnego\n    * Wyświetla zwrócone zapytaniem dane: imiona i nazwiska w paragrafach, jako elementy listy punktowanej\n\nUWAGA: po zakończeniu pracy utwórz plik tekstowy. Zapisz w nim nazwę przeglądarki internetowej, w której weryfikowana była poprawność działania witryny, zapisz go w folderze z numerem zdającego, jako `przeglądarka.txt`.\n\nNagraj płytę z rezultatami pracy. W folderze z numerem zdającego powinny się znajdować pliki: `import.png`, `futbol.php`, `kw1.jpg`, `kw2.jpg`, `kw3.jpg`, `kw4.jpg`, `kwerendy.txt`, `obraz1.jpg`, `przeglądarka.txt`, `styl.css`, `zad1.png`, ewentualnie inne przygotowane pliki. Po nagraniu płyty sprawdź poprawność nagrania. Opisz płytę swoim numerem zdającego i zapakowaną w pudełku pozostaw na stanowisku wraz z arkuszem egzaminacyjnym.\n\nCzas przeznaczony na wykonanie zadania wynosi 150 minut.\n\nOcenie będzie podlegać 5 rezultatów:\n\n* operacje na bazie danych,\n* zawartość witryny internetowej,\n* działanie witryny internetowej,\n* styl CSS witryny internetowej,\n* skrypt połączenia z bazą.",
+    "examDate": "Styczeń 2025",
+    "examAttachments": [
+      {
+        "attachmentId": "kg2a24sxr0kdax3we2a6b7z9sn7sdqwp",
+        "attachmentName": "zad1.png"
+      },
+      {
+        "attachmentId": "kg2d4jtcamcndzjzjtqy5v9xsx7scbtp",
+        "attachmentName": "egzamin.sql"
+      },
+      {
+        "attachmentId": "kg28gf0rqbg9wkpfv03n8rkm8d7sc0hz",
+        "attachmentName": "obraz1.jpg"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli widoczny jest cały obszar ekranu z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import tabel do bazy danych egzamin, czynność udokumentowano plikiem o nazwie import w formacie PNG"
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania"
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Wykonano zapytanie 1 wybierające jedynie pola zespol1, zespol2, wynik, data_rozgrywki z tabeli rozgrywka dla wartości pola zespol1 równego „EVG”. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT zespoll, zespol2, wynik, data_rozgrywki FROM rozgrywka WHERE zespoll = \"EVG\"; oraz wynik działania zapytania udokumentowano zrzutem, na którym widocznych jest dokładnie 5 rekordów, jedynie pola zespol1, zespol2, wynik, data_rozgrywki; w polu zespol1 widnieje tylko \"EVG\""
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Wykonano zapytanie 2 wybierające jedynie pola imie i nazwisko z tabeli zawodnik dla zawodników, którym przypisano id pozycji równe 3. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT imie, nazwisko FROM zawodnik WHERE pozycja_id = 3; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie dane: Grzegorz Krychowiak i Kamil Grosicki"
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Wykonano zapytanie 3 wybierające jedynie pola id zawodnika, nazwisko, oraz nazwę pozycji z tabel zawodnik i pozycja dla zawodników, których id jest równe 1, 2 lub 3. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT zawodnik.id, nazwisko, pozycja.nazwa FROM zawodnik JOIN pozycja ON zawodnik.pozycja_id = pozycja.id WHERE zawodnik.id < 4; (możliwe inne zapisy warunku, INNER JOIN lub bez JOIN - porównanie kluczy w warunku oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie trzy rekordy, jedynie pola id, nazwisko, nazwa, dla id = 1, 2, 3, uwaga: jeżeli zapytanie bez JOIN to alternatywa (OR) obowiązkowo w nawiasie oraz wynik działania zapytania udokumentowano zrzutem wskazującym na poprawne wykonanie zapytania"
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Wykonano zapytanie 4 usuwające tabelę liga. W pliku z kwerendami lub na zrzucie istnieje zapis np.: DROP TABLE liga; oraz wynik działania zapytania udokumentowano zrzutem wskazującym na poprawne wykonanie zapytania"
+          }
+        ]
+      },
+      {
+        "title": "Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Plik zad1.png przeskalowano z zachowaniem proporcji do szerokości 150 px, odpowiadająca temu wysokość wynosi 165 px (± 5 px); przezroczystość została zachowana"
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku PHP o nazwie futbol oraz zastosowano jawnie właściwy standard kodowania polskich znaków"
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Nadano tytuł strony: \"Rozgrywki futbolowe”"
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: baner, blok mecze, poniżej blok główny, lewy i prawy. Zastosowano znaczniki sekcji"
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "W bloku banera zapisano nagłówek h2: \"Światowe rozgrywki piłkarskie\", w bloku głównym nagłówek h2: \"Reprezentacja Polski\" oraz zapisano przynajmniej jeden paragraf"
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku banera umieszczono obraz obraz1.jpg z tekstem alternatywnym: \"boisko\" lub w bloku prawym umieszczono obraz z piłkarzem z tekstem alternatywnym: \"piłkarz\""
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku lewym umieszczono formularz"
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "Na stronie umieszczono pole edycyjne oraz przycisk \"Sprawdź\""
+          },
+          {
+            "symbol": "R.2.9",
+            "description": "W bloku lewym umieszczono jedną listę punktowaną, zastosowano znaczniki <ul>, <li>, (generowana skryptem lub HTML)"
+          }
+        ]
+      },
+      {
+        "title": "Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest w pełni zgodny z obrazem 2 w arkuszu egzaminacyjnym, nie należy brać pod uwagę bloków generowanych skryptem (prawidłowo zastosowano właściwości CSS układające bloki na stronie, np. float albo display flex albo grid albo position)"
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Przycisk wysyła dane z formularza oraz pole do wprowadzania danych jest typu liczbowego"
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Formularz wysyła dane metodą POST do tego samego pliku"
+          },
+          {
+            "symbol": "R.3.4",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl.css, formatowanie CSS pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy źle przypisano co najmniej jeden selektor do bloku (np. kropka zamiast #)"
+          }
+        ]
+      },
+      {
+        "title": "Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.4, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS. W R.4.7, R.4.8 dopuszcza się zdefiniowanie stylu dla bloku mecze",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono krój czcionki Tahoma dla body"
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła Crimson dla body, oraz WhiteSmoke dla bloków głównego, lewego i prawego"
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono biały kolor czcionki dla banera"
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono wysokość banera na 370px, bloku głównego: 50px, lewego i prawego: 230px"
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono szerokość bloku lewego na 70% i prawego na 30%"
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono wyrównanie tekstu do środka dla banera i nagłówka h2 oraz wyrównanie do prawej strony dla bloku prawego"
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Dla pojedynczego bloku z informacją o rozgrywkach ustawiono: biały kolor czcionki, szerokość 200px, wyrównanie tekstu do środka, marginesy zewnętrzne (margin) 10px"
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Dla pojedynczego bloku z informacją o rozgrywkach ustawiono obramowanie o szerokości 1px linią ciągłą, czarną (wartość domyślna nie musi być zapisana) oraz nadano zaokrąglenie rogów ramki 10px (border-radius)"
+          },
+          {
+            "symbol": "R.4.9",
+            "description": "W momencie najechania kursorem na pojedynczy blok z informacją o rozgrywkach kolor jego ramki zmienia się na biały (np. ustawiony kolor dla pseudoklasy hover lub inne rozwiązania)"
+          },
+          {
+            "symbol": "R.4.10",
+            "description": "Ustawiono styl nagłówka h2: odległość między literami (letter-spacing) 7px oraz kapitaliki (text-transform: capitalize;)"
+          }
+        ]
+      },
+      {
+        "title": "Skrypt połączenia z bazą",
+        "note": "Uwaga: rezultat R.5 sprawdzić w wersji XAMPP 8.1.2. Jeśli witryna nie uruchamia się z powodu błędów PHP - sprawdzić 5.1 - 5.5 wg kryteriów w kodzie źródłowym strony. Instrukcje muszą być zgodne ze składnią oraz zawierać dane wynikające z zadania. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt napisano w języku PHP i zawiera przynajmniej jedną instrukcję zgodną ze składnią"
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy egzamin"
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Po wykonaniu operacji na bazie zastosowano funkcję zamknięcia bazy"
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "W skrypcie działającym na danych przesłanych z formularza zastosowano tablicę $_POST, zapis musi być poprawny składniowo i logicznie"
+          },
+          {
+            "symbol": "R.5.5",
+            "description": "Skrypt 1 wysyła do bazy danych zapytanie 1 lub Skrypt 2 wysyła do bazy zmodyfikowane zapytanie 2 tak, że w warunku id pozycji jest równe wartości z pola edycyjnego"
+          },
+          {
+            "symbol": "R.5.6",
+            "description": "Skrypt 1 definiuje blok (za pomocą znacznika sekcji), a w nim wyświetla dane przesłane zapytaniem dotyczące jednego rekordu"
+          },
+          {
+            "symbol": "R.5.7",
+            "description": "Skrypt 1 wyświetla dane wg wzoru: \"<zespół 1> - <zespół 2>\" w nagłówku h3, następnie \"<wynik>\" w nagłówku h4, następnie paragraf \"w dniu: <data rozgrywki>\", gdzie pole w nawiasach <> oznacza dane pobrane skryptem"
+          },
+          {
+            "symbol": "R.5.8",
+            "description": "Liczba wygenerowanych bloków odpowiada liczbie wierszy zwróconych zapytaniem"
+          },
+          {
+            "symbol": "R.5.9",
+            "description": "Skrypt 2 wyświetla przynajmniej jedno imię i nazwisko jeśli wypełniono pole do wprowadzania danych"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-24.01-SG",
+    "maxPoints": 38,
+    "examInstructions": "# Zadanie Egzaminacyjne\n\nWykonaj aplikację internetową strony o futbolu, wykorzystując pakiet XAMPP oraz edytor zaznaczający składnię.\n\nAby wykonać zadanie, zaloguj się na konto Egzamin bez hasła. Na pulpicie znajdziesz archiwum ZIP o nazwie `dane.7z` zabezpieczone hasłem: `!Futbol&`\n\nArchiwum należy rozpakować.\n\nNa pulpicie konta Egzamin utwórz folder. Jako nazwy folderu należy użyć numeru zdającego. Umieść w tym folderze rozpakowane pliki.\n\nPo skończonej pracy wyniki zapisz również w tym folderze.\n\n---\n\n## Operacje na bazie danych\n\nDo wykonania zadania należy użyć tabel: `zawodnik`, `pozycja`, `rozgrywka` i `liga` przedstawionych na obrazie 1. Ponadto na obrazie przedstawiono wartości w tabeli `pozycja`.\n\nUruchom usługi MySQL i Apache za pomocą XAMPP Control Panel. Za pomocą narzędzia phpMyAdmin wykonaj podane operacje na bazie danych:\n\n* Utwórz bazę danych o nazwie `egzamin`\n* Do bazy `egzamin` zaimportuj plik `egzamin.sql` z rozpakowanego archiwum\n* Wykonaj zrzut ekranu po imporcie. Zrzut zapisz w formacie PNG i nazwij `import`. Nie kadruj zrzutu. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań. Na zrzucie powinny być widoczne elementy wskazujące na poprawnie wykonany import tabel\n* Zapisz i wykonaj zapytania SQL działające na bazie `egzamin`. Zapytania zapisz w pliku `kwerendy.txt`, w folderze z numerem zdającego. Wykonaj zrzuty ekranu przedstawiające wyniki działania kwerend. Zrzuty zapisz w formacie JPG i nadaj im nazwy `kw1`, `kw2`, `kw3`, `kw4`. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań\n  * Zapytanie 1: wybierające jedynie pola `zespol1`, `zespol2`, `wynik`, `data_rozgrywki` z tabeli `rozgrywka` dla rekordów o wartości pola `zespol1` równej „EVG”\n  * Zapytanie 2: wybierające jedynie pola `imie` i `nazwisko` z tabeli `zawodnik` dla zawodników, dla których przypisane jest id pozycji równe 3\n  * Zapytanie 3: wybierające jedynie pola `id`, `nazwisko` z tabeli `zawodnik` oraz `nazwę` pozycji z tabeli `pozycja` dla zawodników, którym przypisane jest id równe 1, 2 lub 3\n  * Zapytanie 4: usuwające tabelę `liga`\n\n---\n\n## Witryna internetowa\n\n### Przygotowanie grafiki:\n\n* Plik `zad1.png`, wypakowany z archiwum, należy przeskalować z zachowaniem proporcji tak, aby jego szerokość wynosiła dokładnie 150 px. Należy zachować przezroczystość obrazu\n\n### Cechy witryny:\n\n* Składa się ze strony o nazwie `futbol.php`\n* Zapisana w języku HTML 5\n* Jawnie zastosowany właściwy standard kodowania polskich znaków\n* Ustawiony język zawartości strony na polski\n* Tytuł strony widoczny na karcie przeglądarki: „Rozgrywki futbolowe”\n* Arkusz stylów w pliku o nazwie `styl.css` prawidłowo połączony z kodem strony\n* Podział strony na bloki: `baner`, poniżej blok `mecze` zawierający zmienną liczbę bloków z informacją o rozgrywkach. Bloki informacyjne generowane są skryptem, a ich liczba zależy od danych w bazie. Poniżej blok `główny`, poniżej bloki `lewy` i `prawy`. Podział zrealizowany za pomocą znaczników sekcji, zgodnie z obrazem 2\n\n### Zawartość bloku banera:\n\n* Nagłówek drugiego stopnia o treści „Światowe rozgrywki piłkarskie”\n* Obraz `obraz1.jpg` z tekstem alternatywnym o treści: „boisko”\n\n### Zawartość bloku mecze: Efekt działania skryptu 1\n\n### Zawartość bloku głównego: nagłówek drugiego stopnia o treści: „Reprezentacja Polski”\n\n### Zawartość bloku lewego:\n\n* Paragraf (akapit) o treści: „Podaj pozycję zawodników (1-bramkarze, 2-obrońcy, 3-pomocnicy, 4-napastnicy):”\n* Formularz wysyłający dane metodą POST do tej samej strony, zawierający:\n  * Pole edycyjne typu numerycznego\n  * Przycisk wysyłający zawartość formularza z opisem „Sprawdź”\n* Lista punktowana (nieuporządkowana), a w niej efekt działania skryptu 2\n\n### Zawartość bloku prawego:\n\n* Obraz `zad1.png` z tekstem alternatywnym o treści: „piłkarz”\n* Paragraf (akapit) o treści: „Autor: ”, dalej wstawiony numer zdającego\n\n---\n\n## Styl CSS witryny internetowej\n\n### Cechy formatowania CSS:\n\n* Dla bloku `banera`: biały kolor czcionki, wyrównanie tekstu do środka, wysokość 370 px\n* Dla pojedynczego bloku z informacją o rozgrywkach: biały kolor czcionki, wyrównanie tekstu do środka, szerokość 200 px, marginesy zewnętrzne 10 px, obramowanie: 1 px, linia ciągła, kolor czarny, zaokrąglenie rogów obramowania 10 px\n* W momencie najechania kursorem na pojedynczy blok z informacją o rozgrywkach, kolor jego ramki zmienia się na biały\n* Dla bloku `głównego`: kolor tła WhiteSmoke, wysokość 50 px\n* Dla bloku `lewego`: kolor tła WhiteSmoke, szerokość 70%, wysokość 230 px\n* Dla bloku `prawego`: kolor tła WhiteSmoke, szerokość 30%, wysokość 230 px, wyrównanie tekstu do prawej strony\n* Dla znacznika `body`: krój czcionki Tahoma, kolor tła Crimson\n* Dla znacznika nagłówka drugiego stopnia: wyrównanie tekstu do środka, odległość między literami 7 px, tekst napisany kapitalikami (capitalize)\n\n---\n\n## Skrypt połączenia z bazą\n\nW tabeli 1 podano wybór funkcji PHP do obsługi bazy danych. Wymagania dotyczące skryptów:\n\n* Napisany w języku PHP, w pliku `futbol.php`\n* Skrypt łączy się z serwerem bazodanowym na `localhost`, użytkownik `root` bez hasła, baza danych o nazwie `egzamin`\n* Po wykonaniu operacji na bazie danych skrypt zamyka połączenie z serwerem\n* Działanie skryptu 1:\n  * Wysyła do bazy danych zapytanie 1\n  * Definiuje blok (za pomocą znacznika sekcji), a w nim wyświetla dane zwrócone zapytaniem dotyczące jednego wiersza:\n    * W nagłówku trzeciego stopnia tekst: „<zespół 1> - <zespół 2>”, gdzie pola w nawiasach <> oznaczają dane pobrane zapytaniem\n    * W nagłówku czwartego stopnia wynik pobrany zapytaniem\n    * W paragrafie tekst: „w dniu: <data rozgrywki>”, gdzie pole w nawiasach <> oznacza dane pobrane zapytaniem\n  * Liczba wygenerowanych bloków odpowiada liczbie wierszy zwróconych zapytaniem\n* Działanie skryptu 2, który odbiera dane przesłane z formularza\n  * Odbiera dane z pola edycyjnego\n  * Jeśli pole edycyjne jest puste nie jest wykonywana żadna akcja\n  * Jeżeli wpisano dane skrypt wysyła do bazy danych zmodyfikowane zapytanie 2 tak, że w warunku `id` pozycji jest równe wartości z pola edycyjnego\n  * Wyświetla zwrócone zapytaniem dane: imiona i nazwiska w paragrafach, jako elementy listy punktowanej\n\nUWAGA: po zakończeniu pracy utwórz plik tekstowy. Zapisz w nim nazwę przeglądarki internetowej, w której weryfikowałeś poprawność działania witryny, zapisz go w folderze z numerem zdającego, jako `przegladarka.txt`.\n\nNagraj płytę z rezultatami pracy. W folderze z numerem zdającego powinny się znajdować pliki: `import.png`, `futbol.php`, `kw1.jpg`, `kw2.jpg`, `kw3.jpg`, `kw4.jpg`, `kwerendy.txt`, `obraz1.jpg`, `przegladarka.txt`, `styl.css`, `zad1.png`, ewentualnie inne przygotowane pliki. Po nagraniu płyty sprawdź poprawność nagrania. Opisz płytę swoim numerem zdającego i zapakowaną w pudełku pozostaw na stanowisku wraz z arkuszem egzaminacyjnym.\n\nCzas przeznaczony na wykonanie zadania wynosi 150 minut.\n\nOcenie będzie podlegać 5 rezultatów:\n\n* operacje na bazie danych,\n* zawartość witryny internetowej,\n* działanie witryny internetowej,\n* styl CSS witryny internetowej,\n* skrypt połączenia z bazą.",
+    "examDate": "Styczeń 2024",
+    "examAttachments": [
+      {
+        "attachmentId": "kg2a24sxr0kdax3we2a6b7z9sn7sdqwp",
+        "attachmentName": "zad1.png"
+      },
+      {
+        "attachmentId": "kg2d4jtcamcndzjzjtqy5v9xsx7scbtp",
+        "attachmentName": "egzamin.sql"
+      },
+      {
+        "attachmentId": "kg28gf0rqbg9wkpfv03n8rkm8d7sc0hz",
+        "attachmentName": "obraz1.jpg"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Rezultat 1: Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli widoczny jest cały obszar ekranu z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import tabel do bazy danych egzamin, czynność udokumentowano plikiem o nazwie import w formacie PNG",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Wykonano zapytanie 1 wybierające jedynie pola zespol1, zespol2, wynik, data_rozgrywki z tabeli rozgrywka dla pola zespol1 równego „EVG”. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT zespoll, zespol2, wynik, data_rozgrywki FROM rozgrywka WHERE zespoll = \"EVG\"; oraz wynik działania zapytania udokumentowano zrzutem, na którym widocznych jest dokładnie 5 rekordów, jedynie pola zespol1, zespol2, wynik, data_rozgrywki; w polu zespol1 widnieje tylko \"EVG\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Wykonano zapytanie 2 wybierające jedynie pola imie i nazwisko z tabeli zawodnik dla zawodników, którym przypisano id pozycji równe 3. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT imie, nazwisko FROM zawodnik WHERE pozycja_id = 3; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie dane: Grzegorz Krychowiak i Kamil Grosicki",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Wykonano zapytanie 3 wybierające jedynie pola id zawodnika, nazwisko, oraz nazwę pozycji z tabel zawodnik i pozycja dla zawodników, których id jest równe 1, 2 lub 3. W pliku z kwerendami lub na zrzucie istnieje zapis np. SELECT zawodnik.id, nazwisko, pozycja.nazwa FROM zawodnik JOIN pozycja ON zawodnik.pozycja_id = pozycja.id WHERE zawodnik.id < 4; (możliwe inne zapisy warunku, INNER JOIN lub bez JOIN - porównanie kluczy w warunku oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie trzy rekordy, jedynie pola id, nazwisko, nazwa, dla id = 1, 2, 3, uwaga: jeżeli zapytanie bez JOIN to alternatywa (OR) obowiązkowo w nawiasie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Wykonano zapytanie 4 usuwające tabelę liga. W pliku z kwerendami lub na zrzucie istnieje zapis np.: DROP TABLE liga; oraz wynik działania zapytania udokumentowano zrzutem wskazującym na poprawne wykonanie zapytania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 2: Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Plik zad1.png przeskalowano z zachowaniem proporcji do szerokości 150 px, odpowiadająca temu wysokość wynosi 165 px (± 5 px); przezroczystość została zachowana",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku PHP o nazwie futbol oraz zastosowano jawnie właściwy standard kodowania polskich znaków",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Nadano tytuł strony: \"Rozgrywki futbolowe”",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: baner, blok mecze, poniżej blok główny, lewy i prawy. Zastosowano znaczniki sekcji",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "W bloku banera zapisano nagłówek h2: \"Światowe rozgrywki piłkarskie\", w bloku głównym nagłówek h2: \"Reprezentacja Polski\" oraz zapisano przynajmniej jeden paragraf",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku banera umieszczono obraz obraz1.jpg z tekstem alternatywnym: \"boisko\" lub w bloku prawym umieszczono obraz zad1.png z tekstem alternatywnym: \"piłkarz\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku lewym umieszczono formularz",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "Na stronie umieszczono pole edycyjne oraz przycisk \"Sprawdź\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.9",
+            "description": "W bloku lewym umieszczono jedną listę punktowaną, zastosowano znaczniki <ul>, <li>, (generowana skryptem lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 3: Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest w pełni zgodny z obrazem 2 w arkuszu egzaminacyjnym, nie należy brać pod uwagę bloków generowanych skryptem (prawidłowo zastosowano właściwości CSS układające bloki na stronie, np. float i clear albo display flex albo grid albo position)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Przycisk wysyła dane z formularza oraz pole do wprowadzania danych jest typu liczbowego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Formularz wysyła dane metodą POST do tego samego pliku",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.4",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl.css, formatowanie CSS pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy źle przypisano co najmniej jeden selektor do bloku (np. kropka zamiast #)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 4: Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.4, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono krój czcionki Tahoma dla body",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła Crimson dla body, oraz WhiteSmoke dla bloków głównego, lewego i prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono biały kolor czcionki dla banera",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono wysokość banera na 370px, bloku głównego: 50px, lewego i prawego: 230px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono szerokość bloku lewego na 70% i prawego na 30%",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono wyrównanie tekstu do środka dla banera i nagłówka h2 oraz wyrównanie do prawej strony dla bloku prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Dla pojedynczego bloku z informacją o rozgrywkach ustawiono: biały kolor czcionki, szerokość 200px, wyrównanie tekstu do środka, marginesy zewnętrzne (margin) 10px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Dla pojedynczego bloku z informacją o rozgrywkach ustawiono obramowanie o szerokości 1px linią ciągłą, czarną (wartość domyślna nie musi być zapisana) oraz nadano zaokrąglenie rogów ramki 10px (border-radius)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.9",
+            "description": "W momencie najechania kursorem na pojedynczy blok z informacją o rozgrywkach kolor jego ramki zmienia się na biały (np. ustawiony kolor dla pseudoklasy hover lub inne rozwiązania)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.10",
+            "description": "Ustawiono styl nagłówka h2: odległość między literami (letter-spacing) 7px oraz kapitaliki (text-transform: capitalize;)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 5: Skrypt połączenia z bazą",
+        "note": "Uwaga: rezultat R.5 sprawdzić w wersji XAMPP 8.1.2. Jeśli witryna nie uruchamia się z powodu błędów PHP - sprawdzić 5.1 - 5.5 wg kryteriów w kodzie źródłowym strony. Instrukcje muszą być zgodne ze składnią oraz zawierać dane wynikające z zadania. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt napisano w języku PHP i zawiera przynajmniej jedną instrukcję zgodną ze składnią",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy egzamin",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Po wykonaniu operacji na bazie zastosowano funkcję zamknięcia bazy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "W skrypcie działającym na danych przesłanych z formularza zastosowano tablicę $_POST, zapis musi być poprawny składniowo i logicznie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.5",
+            "description": "Skrypt 1 wysyła do bazy danych zapytanie 1 lub Skrypt 2 wysyła do bazy zmodyfikowane zapytanie 2 tak, że w warunku id pozycji jest równe wartości z pola edycyjnego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.6",
+            "description": "Skrypt 1 definiuje blok (za pomocą znacznika sekcji), a w nim wyświetla dane przesłane zapytaniem dotyczące jednego rekordu",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.7",
+            "description": "Skrypt 1 wyświetla dane wg wzoru: \"<zespół 1> - <zespół 2>\" w nagłówku h3, następnie \"<wynik>\" w nagłówku h4, następnie paragraf \"w dniu: <data rozgrywki>\", gdzie pole w nawiasach <> oznacza dane pobrane skryptem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.8",
+            "description": "Liczba wygenerowanych bloków odpowiada liczbie wierszy zwróconych zapytaniem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.9",
+            "description": "Skrypt 2 wyświetla przynajmniej jedno imię i nazwisko jeśli wypełniono pole do wprowadzania danych",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-24.06-SG",
+    "maxPoints": 40,
+    "examInstructions": "# Zadanie Egzaminacyjne\n\nWykonaj stronę rejestracji na forum miłośników psów, wykorzystując pakiet XAMPP, edytor zaznaczający składnię i edytor grafiki rastrowej.\n\nAby wykonać zadanie, zaloguj się na konto Egzamin bez hasła. Na pulpicie znajduje się archiwum 7-zip o nazwie pliki4.7z zabezpieczone hasłem: !Psy!Psy!\n\nNależy utworzyć folder o nazwie odpowiadającej numerowi PESEL zdającego lub w przypadku jego braku innemu numerowi, którym został podpisany arkusz. Archiwum należy rozpakować do tego folderu.\n\nWażne! Wszystkie wykonane w czasie egzaminu pliki w tym zrzuty ekranu, pliki strony, stylów należy umieścić w tym folderze.\n\n---\n## Operacje na bazie danych\n\nUruchom usługi MySQL i Apache za pomocą XAMPP Control Panel. Za pomocą narzędzia phpMyAdmin wykonaj podane operacje na bazie danych:\n* Utwórz bazę danych o nazwie psy\n* Zapisz i wykonaj zapytania SQL działające na bazie danych psy. Zapytania zapisz w pliku kwerendy.txt, w folderze z numerem PESEL lub w przypadku jego braku w folderze z innym numerem, którym został podpisany arkusz. Wykonaj zrzuty ekranu przedstawiające wyniki działania kwerend. Zrzuty zapisz w formacie JPEG i nadaj im nazwy kw1, kw2, kw3, kw4. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań\n* Zapytanie 1: tworzące tabelę uzytkownicy. Tabela powinna zawierać:\n    * klucz główny id typu całkowitego dodatniego, jawnie zapisany oraz automatycznie inkrementowany, nie może przyjmować wartości pustych\n    * login typu napisowego maksymalnie 50-znakowego\n    * haslo typu napisowego maksymalnie 50-znakowego\n* Zapytanie 2: dodające do tabeli użytkownika o loginie Grzegorz z hasłem „g” (bez szyfrowania)\n* Po wykonaniu zapytań 1 i 2 zaimportuj do tabeli uzytkownicy plik uzytkownicy.sql z rozpakowanego archiwum. Wykonaj zrzut ekranu po imporcie. Na zrzucie powinna być widoczna zawartość tabeli uzytkownicy. Zrzut zapisz w folderze z numerem PESEL lub w przypadku jego braku w folderze z innym numerem, którym został podpisany arkusz, w formacie PNG i nazwij egzamin. Nie kadruj zrzutu. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań\n* Po wykonaniu importu należy wykonać pozostałe zapytania SQL\n* Zapytanie 3: wybierające jedynie pole login z tabeli uzytkownicy\n* Zapytanie 4: wybierające jedynie pola id oraz login z tabeli uzytkownicy dla użytkowników, których hasło zaczyna się od cyfry 4\n\n---\n## Witryna internetowa\n\n### Cechy grafiki:\n* Obraz z pliku obraz.jpg, wypakowany z archiwum, ma zostać odbity poziomo oraz przeskalowany z zachowaniem proporcji tak, aby jego wysokość wynosiła dokładnie 500 px i zapisany pod tą samą nazwą\n\n### Cechy witryny:\n* Składa się ze stron: logowanie.php, regulamin.html\n* W pliku o nazwie regulamin.html jest wpisany jedynie napis „regulamin”. Pozostałe wymagania dotyczą jedynie pliku logowanie.php.\n* Zastosowany właściwy standard kodowania polskich znaków\n* Tytuł strony widoczny na karcie przeglądarki: „Forum o psach\"\n* Arkusz stylów w pliku o nazwie styl4.css prawidłowo połączony z kodem strony\n* Podział strony na bloki: baner, blok lewy oraz dwa bloki prawe jeden pod drugim, poniżej stopka. Podział zrealizowany za pomocą znaczników sekcji tak, aby wygląd układu bloków strony po uruchomieniu w przeglądarce, był zgodny z Obrazem 1\n* Zawartość banera: nagłówek pierwszego stopnia o treści „Forum wielbicieli psów\"\n* Zawartość bloku lewego: obraz o nazwie obraz.jpg z tekstem alternatywnym o treści „foksterier”\n* Zawartość pierwszego bloku prawego:\n    * Nagłówek drugiego stopnia o treści „Zapisz się\"\n    * Formularz wysyłający dane do tej samej strony metodą post z zawartością zgodną z Obrazem 1\n    * Napis „login: ”, następnie pole edycyjne\n    * Napis „hasło: \", następnie pole edycyjne pozwalające na niejawne wpisanie hasła\n    * Napis „powtórz hasło: \", następnie pole edycyjne pozwalające na niejawne wpisanie hasła\n    * Przycisk o treści „Zapisz” wysyłający dane z formularza\n    * Efekt działania skryptu\n* Zawartość drugiego bloku prawego:\n    * Nagłówek drugiego stopnia o treści „Zapraszamy wszystkich\"\n    * Lista numerowana (uporządkowana) z elementami: „właścicieli psów”, „weterynarzy”, „tych, co chcą kupić psa”, „tych, co lubią psy\"\n    * Odnośnik do pliku regulamin.html o treści „Przeczytaj regulamin forum”\n* Zawartość stopki: napis o treści „Stronę wykonał: \", dalej wstawiony numer PESEL zdającego lub w przypadku jego braku inny numer, którym został podpisany arkusz.\n\n---\n## Styl CSS witryny internetowej\n\n### Cechy formatowania CSS:\n* Są zawarte wyłącznie w zewnętrznym arkuszu stylów\n* Domyślne dla całej strony: krój czcionki Garamond\n* Dla banera: kolor tła SaddleBrown, biały kolor czcionki, wyrównanie tekstu do środka, wysokość 50 px\n* Dla bloku lewego: kolor tła Tan, wysokość 500 px, szerokość 40%\n* Dla obu bloków prawych: kolor tła Tan, wysokość 250 px, szerokość 60%\n* Dla bloku stopki: kolor tła SaddleBrown, biały kolor czcionki\n* Dla formularza: kolor tła SaddleBrown, biały kolor czcionki, marginesy wewnętrzne 10 px (góra i dół) i 30 px (lewy i prawy), szerokość 300 px\n* Dla zastosowanych w formularzu pól: marginesy zewnętrzne 5 px\n* Dla paragrafu (akapitu): przed każdym paragrafem wstawiany jest tekst o treści „STATUS: \"\n\n---\n## Skrypt\n\nW Tabeli 1 podano wybór funkcji PHP do obsługi bazy danych oraz opis funkcji sha1. Wymagania dotyczące skryptu:\n* Napisany w języku PHP\n* Skrypt łączy się z serwerem bazy danych na localhost, użytkownik root bez hasła, baza danych o nazwie psy\n* Po wykonaniu operacji na bazie danych skrypt zamyka połączenie z serwerem\n* Skrypt obsługuje błędy danych formularza i wyświetla komunikaty w paragrafie (akapicie):\n    * „wypełnij wszystkie pola”, jeżeli nie wypełniono przynajmniej jednego pola formularza\n    * „login występuje w bazie danych, konto nie zostało dodane”, jeżeli podany login znajduje się w bazie danych, do sprawdzenia należy posłużyć się zapytaniem 3\n    * „hasła nie są takie same, konto nie zostało dodane”, jeżeli hasła wpisane do pola „hasło” oraz pola „powtórz hasło” różnią się\n* W przypadku poprawnych danych skrypt:\n    * Szyfruje hasło algorytmem US Secure Hash Algorithm 1\n    * Wysyła do bazy danych zapytanie 2 zmodyfikowane w ten sposób, że w polach login i haslo są wpisane dane pobrane z formularza (hasło powinno być zaszyfrowane)\n    * Wyświetla w paragrafie komunikat „Konto zostało dodane”\n\nTabela 1. Wybór funkcji języka PHP do obsługi bazy MySQL i MariaDB\n| Funkcje biblioteki MySQLi | Zwracana wartość |\n|---|---|\n| mysqli_connect(serwer, użytkownik, hasło, nazwa_bazy) | id połączenia lub FALSE, gdy niepowodzenie |\n| mysqli_select_db(id_polaczenia, nazwa_bazy) | TRUE/FALSE w zależności od stanu operacji |\n| mysqli_error(id_polaczenia) | Tekst komunikatu błędu |\n| mysqli_close(id_polaczenia) | TRUE/FALSE w zależności od stanu operacji |\n| mysqli_query(id_polaczenia, zapytanie) | Wynik zapytania |\n| mysqli_fetch_row(wynik_zapytania) | Tablica numeryczna odpowiadająca wierszowi zapytania |\n| mysqli_fetch_array(wynik_zapytania) | Tablica zawierająca kolejny wiersz z podanych w wyniku zapytania lub FALSE, jeżeli nie ma więcej wierszy w wyniku zapytania |\n| mysqli_num_rows(wynik_zapytania) | Liczba wierszy w podanym zapytaniu |\n| mysqli_num_fields(wynik_zapytania) | Liczba kolumn w podanym zapytaniu |\n\n### Opis funkcji sha1\nOpis funkcji sha1, pobrany ze strony php.net, dostęp 6.11.2019\n**sha1 (PHP 4 >= 4.3.0, PHP 5, PHP 7)**\nsha1 – Calculate the sha1 hash of a string\n**Description**\nsha1(string $str [, bool $raw_output = FALSE ]): string\nCalculates the sha1 hash of str using the US Secure Hash Algorithm 1.\n**Parameters**\n* str - The input string.\n* raw_output - If the optional raw_output is set to TRUE, then the sha1 digest is instead returned in raw binary format with a length of 20, otherwise the returned value is a 40-character hexadecimal number.\n**Return Values**\nReturns the sha1 hash as a string.\n\n---\nOcenie będzie podlegać 5 rezultatów:\n* operacje na bazie danych,\n* zawartość witryny internetowej,\n* działanie witryny internetowej,\n* styl CSS witryny internetowej,\n* skrypt.",
+    "examDate": "Czerwiec 2024",
+    "examAttachments": [
+      {
+        "attachmentId": "kg28cmew5cs8fexwxzcs3gbd6n7sckxt",
+        "attachmentName": "obraz.jpg"
+      },
+
+      {
+        "attachmentId": "kg23ppmgwyntdajfpyhnng02ps7sc1y5",
+        "attachmentName": "ozytkownicy.sql"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Rezultat 1: Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli obejmuje cały obszar ekranu, z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import danych do tabeli psy.uzytkownicy, czynność udokumentowano plikiem o nazwie egzamin w formacie PNG, na którym widoczna jest zawartość tabeli uzytkownicy lub informacja o imporcie danych zakończonym sukcesem. Kryterium jest uznawane tylko wtedy, gdy przed importem utworzono tabelę uzytkownicy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Wykonano zapytanie 1 tworzące tabelę uzytkownicy . Klucz główny id jest typu całkowitego dodatniego, jawnie zapisany oraz automatycznie inkrementowany. Klucz główny nie może przyjmować wartości pustych. Pola login i haslo są typu napisowego maksymalnie 50 znakowego. W pliku z kwerendami lub na zrzucie istnieje zapis np.: CREATE TABLE uzytkownicy ( id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT, login VARCHAR(50), haslo VARCHAR(50), PRIMARY KEY(id)); oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczny jest efekt poprawnie wykonanego zapytania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Wykonano zapytanie 2 wstawiające do tabeli użytkownika o loginie Grzegorz z hasłem „g\" (bez szyfrowania). W pliku z kwerendami lub na zrzucie istnieje zapis np.: INSERT INTO `uzytkownicy` (`login`, `haslo`) VALUES ('Grzegorz', 'g'); możliwe inne zapisy INSERT INTO oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne jest poprawnie wykonane zapytanie lub tabela z wstawionym rekordem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Wykonano zapytanie 3 wybierające jedynie pole login z tabeli uzytkownicy. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT login FROM uzytkownicy; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne jest jedynie pole login i wypisane wszystkie loginy z tabeli (widocznych jest minimum 11 rekordów)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Wykonano zapytanie 4 wybierające jedynie pola id oraz login z tabeli uzytkownicy dla użytkowników, których hasło zaczyna się od cyfry 4. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT id, login FROM uzytkownicy WHERE haslo LIKE \"4%\"; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie pola id i login dla loginów Heniek; Ola",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 2: Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Plik obraz.jpg odbito poziomo (jak na obrazie 1 w arkuszu) oraz przeskalowano z zachowaniem proporcji tak, że jego wysokość wynosi dokładnie 500 px, odpowiadająca temu szerokość to 323 px ±5 px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku o nazwie logowanie.php",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Zastosowano właściwy standard kodowania polskich znaków dla witryny",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Nadano tytuł strony: \"Forum o psach”",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: baner, blok lewy oraz dwa bloki prawe, stopkę. Zastosowano znaczniki sekcji",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku banera zapisano nagłówek h1: \"Forum wielbicieli psów\" oraz w blokach prawych zapisano nagłówki h2: \"Zapisz się\" i \"Zapraszamy wszystkich\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku prawym pierwszym umieszczono formularz z trzema polami edycyjnymi i przyciskiem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "W bloku prawym drugim umieszczono listę numerowaną z czterema elementami, zastosowano znaczniki <ol>, <li>",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.9",
+            "description": "W bloku lewym umieszczono obraz z psem z tekstem alternatywnym o treści „foksterier\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.10",
+            "description": "W stopce umieszczono napis „Stronę wykonał: ”, dalej wstawiony numer zdającego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 3: Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest zgodny z Obrazem 1 w arkuszu egzaminacyjnym (prawidłowo zastosowano właściwości CSS układające bloki na stronie, np. float i clear albo display flex albo grid)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Na stronie umieszczono odnośnik o treści „Przeczytaj regulamin forum”, którego kliknięcie powoduje przejście do strony regulamin.html",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Formularz wysyła dane do tej samej strony metodą post, poprawnie również bez atrybutu action",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.4",
+            "description": "Przynajmniej jedno pole edycyjne do wpisywania hasła jest typu password oraz przycisk wysyła dane z formularza",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.5",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl4.css, formatowanie pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy źle przypisano co najmniej jeden selektor do bloku (np. kropka zamiast #)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 4: Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.5, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono domyślny krój czcionki dla całej strony na Garamond (dla selektora * lub body lub html lub kontenera całej strony)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła SaddleBrown dla banera i stopki, Tan dla bloku lewego i obu prawych",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono biały kolor czcionki dla banera i stopki",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono wysokość bloków: 50px dla banera, 500px dla bloku lewego, 250px dla obu bloków prawych",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono szerokość bloku lewego 40% oraz obu prawych 60% (zastosowano np.: width lub grid-template-columns lub flex)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono wyrównanie tekstu do środka dla banera",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Ustawiono marginesy wewnętrzne (padding) dla formularza 10px (góra i dół) i 30px (lewy i prawy) oraz marginesy zewnętrzne (margin) dla pola edycyjnego na 5px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Ustawiono pozostałe cechy formularza: kolor tła SaddleBrown, biały kolor czcionki, szerokość 300px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.9",
+            "description": "Ustawiono dla paragrafu styl pseudoelementu before. Przed każdym paragrafem znajduje się tekst o treści \"STATUS: \" (content: \"STATUS: \")",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 5: Skrypt",
+        "note": "Uwaga: Rezultat sprawdzić w wersji XAMPP 8.1.2, jeśli witryna nie uruchamia się z powodu błędów PHP - sprawdzić 5.1 ÷ 5.3, 5.8, 5.10 wg kryteriów w kodzie źródłowym strony. Kryteria 5.4 ÷ 5.7, 5.9 należy sprawdzić wpisując do formularza dane wprowadzanego użytkownika zgodnie z zapisanymi w kryteriach warunkami. Instrukcje muszą być zgodne ze składnią oraz zawierać dane wynikające z zadania. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy psy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Ostatnią operacją na bazie jest jej zamknięcie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Skrypt zawiera instrukcję wysyłającą zapytanie 3 lub zmodyfikowane zapytanie 2 (pola login i hasło są pobrane z formularza)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "Wyświetlono komunikat „wypełnij wszystkie pola”, jeżeli nie wypełniono przynajmniej jednego pola formularza",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.5",
+            "description": "Wyświetlono komunikat „login występuje w bazie danych, konto nie zostało dodane”, jeżeli podany login znajduje się w bazie danych",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.6",
+            "description": "Wyświetlono komunikat „hasła nie są takie same, konto nie zostało dodane”, jeżeli hasła wpisane do pola „hasło” oraz pola „powtórz hasło” różnią się",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.7",
+            "description": "Wstawiono do bazy danych rekord z danymi pobranymi z formularza. Należy sprawdzić w bazie danych czy rekord został wstawiony",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.8",
+            "description": "Zastosowano funkcję sha1 do zaszyfrowania hasła",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.9",
+            "description": "Po dodaniu użytkownika wyświetlono komunikat „Konto zostało dodane”",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.10",
+            "description": "Przynajmniej jeden komunikat jest zapisany w paragrafie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-22.01-SG",
+    "maxPoints": 32,
+    "examInstructions": "# Zadanie Egzaminacyjne\nWykonaj aplikację internetową portalu kart wędkarskich wykorzystując pakiet XAMPP oraz edytor zaznaczający składnię.\n\nAby wykonać zadanie, zaloguj się na konto Egzamin bez hasła. Na pulpicie znajdziesz archiwum ZIP o nazwie `pliki1.zip` zabezpieczone hasłem: `K@RTY*`\n\nArchiwum należy rozpakować.\n\nNależy utworzyć folder o nazwie odpowiadającej numerowi PESEL zdającego lub w przypadku jego braku innemu numerowi, którym został podpisany arkusz. Archiwum należy rozpakować do tego folderu.\n\n**Ważne!** Wszystkie wykonane w czasie egzaminu pliki w tym zrzuty ekranu, pliki strony, stylów należy umieścić w tym folderze.\n\n---\n\n## Operacje na bazie danych\nBaza danych jest zgodna ze strukturą przedstawioną na Obrazie 1. Tabela `Zawody_wedkarskie` jest połączona relacją z tabelą `Lowisko` (opisuje łowisko, gdzie będą się odbywać zawody) oraz tabelą `Karty_wedkarskie` (opisuje wędkarza, który wygrał zawody). Tabela `Lowisko` zawiera pole `rodzaj`, którego wartości oznaczają: 1– morze, 2 – jezioro, 3 – rzeka, 4 – zalew, 5 – staw.\n\nUruchom usługi MySQL i Apache za pomocą XAMPP Control Panel. Za pomocą narzędzia phpMyAdmin wykonaj podane operacje na bazie danych:\n\n*   Utwórz bazę danych o nazwie `wedkowanie`\n*   Do bazy `wedkowanie` zaimportuj tabele z pliku `baza.sql` z rozpakowanego archiwum\n*   Wykonaj zrzut ekranu po imporcie. Zrzut zapisz w folderze z numerem PESEL, lub w przypadku jego braku w folderze z innym numerem, którym został podpisany arkusz, w formacie PNG i nazwij `import`. Nie kadruj zrzutu. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań. Na zrzucie powinny być widoczne elementy wskazujące na poprawnie wykonany import tabel\n*   Zapisz i wykonaj zapytania SQL działające na bazie `wedkowanie`. Zapytania zapisz w pliku `kwerendy.txt`, w folderze z numerem PESEL lub w przypadku jego braku w folderze z innym numerem, którym został podpisany arkusz. Wykonaj zrzuty ekranu przedstawiające wyniki działania kwerend. Zrzuty zapisz w formacie JPEG i nadaj im nazwy `kw1`, `kw2`, `kw3`, `kw4`. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań.\n    *   Zapytanie 1: dodające rekord do tabeli `Karty_wedkarskie` dla Grzegorza Niemczyka, zamieszkałego pod adresem „Gdynia, Batorego 14/5\", z datą „2018-02-23”; wartość punktów: 0. Baza powinna sama nadać wartość pola `id` dla tabeli\n    *   Zapytanie 2: wybierające jedynie pola `imie` i `nazwisko` z tabeli `Karty_wedkarskie` dla wędkarzy, dla których liczba punktów jest większa niż 20\n    *   Zapytanie 3: wybierające jedynie pole `akwen` z tabeli `Lowisko` dla łowisk, gdzie sędzią zawodów jest Krzysztof Dobrowolski, należy użyć relacji\n    *   Zapytanie 4: tworzące użytkownika `anna` na localhost z hasłem `anna123`\n\n---\n\n## Witryna internetowa\nCechy witryny:\n\n*   Składa się ze strony o nazwie `karta.html` oraz skryptu `zapisz.php`. Poniższe wymagania dotyczą tylko pliku `karta.html`\n*   Zastosowany właściwy standard kodowania polskich znaków\n*   Tytuł strony widoczny na karcie przeglądarki: „Karty wędkarskie\"\n*   Arkusz stylów w pliku o nazwie `styl_1.css` prawidłowo połączony z kodem strony\n*   Podział strony na bloki: na górze blok banera, poniżej blok główny, na dole trzy bloki: lewy, środkowy i prawy. Podział zrealizowany za pomocą znaczników sekcji tak, aby po uruchomieniu w przeglądarce wygląd układu bloków był zgodny z Obrazem 2\n*   Zawartość bloku banera: nagłówek drugiego stopnia o treści „Zgłoszenie na kartę wędkarską”\n*   Zawartość bloku głównego:\n    *   Nagłówek czwartego stopnia o treści: „Formularz - karta wędkarska\"\n    *   Formularz wysyłający dane metodą POST do pliku `zapisz.php` zawierający pola\n        *   Pole edycyjne podpisane powyżej tekstem: „imię:”\n        *   Pole edycyjne podpisane powyżej tekstem: „nazwisko:”\n        *   Pole edycyjne podpisane powyżej tekstem: „adres: ”; pole ma rozmiar 30\n        *   Przycisk czyszczący zawartość formularza z etykietą „CZYŚĆ”\n        *   Przycisk wysyłający zawartość formularza z etykietą „ZAPISZ”\n*   Zawartość bloku lewego:\n    *   Nagłówek czwartego stopnia o treści: „Typy łowisk”\n    *   Lista punktowana (nieuporządkowana) zawierająca elementy: Zalewy, Stawy, Jeziora, Rzeki\n*   Zawartość bloku środkowego: obraz `wedka.jpg` z tekstem alternatywnym o treści: „karta wędkarska\"\n*   Zawartość bloku prawego:\n    *   Akapit (paragraf) o treści: „Stronę przygotował: ”, dalej wstawiony numer PESEL zdającego lub w przypadku jego braku inny numer, którym został podpisany arkusz\n    *   Odnośnik do strony „http://www.kartawedkarska.pl/” o treści: „Karta wędkarska”\n\n---\n\n## Styl CSS witryny internetowej\nCechy formatowania CSS:\n\n*   Są zawarte wyłącznie w zewnętrznym arkuszu stylów\n*   Domyślne dla całej strony: krój czcionki Georgia\n*   Dla bloku banera: kolor tła DodgerBlue, biały kolor czcionki, marginesy wewnętrzne 10 px, wyrównanie tekstu do środka\n*   Dla bloku głównego: kolor tła LightBlue, marginesy wewnętrzne 100 px\n*   Dla bloku lewego: kolor tła DodgerBlue, biały kolor czcionki, szerokość 20%, wysokość 220 px\n*   Wspólne dla bloku środkowego i bloku prawego: kolor tła DodgerBlue, biały kolor czcionki, szerokość 40%, wysokość 220 px, wyrównanie tekstu do środka\n*   Dla znacznika odnośnika: obramowanie linią kreskowaną o szerokości 1 px i kolorze DimGray, kolor tła Gold, kolor czcionki DarkRed, marginesy wewnętrzne 10 px\n\n---\n\n## Skrypt połączenia z bazą\nW Tabeli 1 podano wybór funkcji PHP do obsługi bazy danych. Wymagania dotyczące skryptu:\n\n*   Napisany w języku PHP, w pliku `zapisz.php`\n*   Skrypt działa na danych przesłanych z formularza\n*   Skrypt łączy się z serwerem bazodanowym na localhost, użytkownik `root` bez hasła, baza danych o nazwie `wedkowanie`\n*   Skrypt wysyła do bazy danych zmodyfikowane zapytanie 1, które w polach `data_zezwolenia` i `punkty` zawiera wartość NULL, pozostałe wartości wypełnione są danymi z formularza\n*   Na końcu działania skrypt zamyka połączenie z serwerem.\n\n| Funkcje biblioteki mysqli                               | Zwracana wartość                                                                    |\n| :------------------------------------------------------ | :---------------------------------------------------------------------------------- |\n| `mysqli_connect(serwer, użytkownik, hasło, nazwa_bazy)` | id połączenia lub FALSE, gdy niepowodzenie                                         |\n| `mysqli_select_db(id_polaczenia, nazwa_bazy)`           | TRUE/FALSE w zależności od stanu operacji                                         |\n| `mysqli_error(id_polaczenia)`                           | Tekst komunikatu błędu                                                            |\n| `mysqli_close(id_polaczenia)`                           | TRUE/FALSE w zależności od stanu operacji                                         |\n| `mysqli_query(id_polaczenia, zapytanie)`                | Wynik zapytania                                                                     |\n| `mysqli_fetch_row(wynik_zapytania)`                     | Tablica numeryczna odpowiadająca wierszowi zapytania                                |\n| `mysqli_fetch_array(wynik_zapytania)`                   | Tablica zawierająca kolejny wiersz z podanych w wyniku zapytania lub FALSE, jeżeli nie ma więcej wierszy w wyniku zapytania |\n| `mysqli_num_rows(wynik_zapytania)`                      | Liczba wierszy w podanym zapytaniu                                                  |\n| `mysqli_num_fields(wynik_zapytania)`                    | Liczba kolumn w podanym zapytaniu                                                   |\n\nUWAGA: po zakończeniu pracy utwórz w folderze z numerem PESEL lub w przypadku jego braku w folderze z innym numerem, którym został podpisany arkusz plik tekstowy o nazwie `przeglądarka.txt`. Zapisz w nim nazwę przeglądarki internetowej, w której weryfikowano poprawność działania witryny.",
+    "examDate": "Styczeń 2022",
+    "examAttachments": [
+      {
+        "attachmentId": "kg2964pjhf41rtpjzfrhvp8xe97sc63q",
+        "attachmentName": "wedka.jpg"
+      },
+      {
+        "attachmentId": "kg25q7yesz8vsn2tyf83qwaf657schnr",
+        "attachmentName": "baza.sql"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli obejmuje cały obszar ekranu, z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import tabel do bazy danych wedkowanie, czynność udokumentowano plikiem o nazwie import w formacie PNG. Zrzut zawiera cały obszar ekranu z widocznym paskiem zadań",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Utworzono zapytanie 1 dodające rekord do tabeli karty_wedkarskie dla Grzegorza Niemczyka, adres=\"Gdynia, Batorego 14/5\", z datą \"2018-02-23\", punkty=0. Baza powinna sama nadać wartość pola id dla tabeli. W pliku z kwerendami lub na zrzucie istnieje zapis np.: INSERT INTO `karty_wedkarskie` VALUES (NULL, 'Grzegorz', 'Niemczyk', 'Gdynia, Batorego 14/5', '2018-02-23', '0'); oraz wynik działania udokumentowano zrzutem, na którym widoczne jest poprawnie wykonane zapytanie lub tabela z dodanym rekordem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Utworzono zapytanie 2 wybierające jedynie pola imie i nazwisko z tabeli karty_wedkarskie dla wędkarzy, dla których liczba punktów jest większa niż 20. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT imie, nazwisko FROM `karty_wedkarskie` WHERE punkty > 20; oraz wynik działania udokumentowano zrzutem, na którym widoczny jest dokładnie 1 rekord: Jan Kowalski; jedynie pola imie, nazwisko",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Utworzono zapytanie 3 wybierające jedynie pole akwen z tabeli lowisko dla łowisk, gdzie sędzią zawodów jest Krzysztof Dobrowolski. Zapytanie wykorzystuje relację. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT akwen FROM lowisko JOIN zawody_wedkarskie ON lowisko.id = zawody_wedkarskie.Lowisko_id WHERE sedzia= \"Krzysztof Dobrowolski\"; możliwe INNER JOIN lub SELECT akwen FROM lowisko, zawody_wedkarskie WHERE lowisko.id = zawody_wedkarskie.Lowisko_id AND sedzia= \"Krzysztof Dobrowolski\"; oraz wynik działania udokumentowano zrzutem, na którym widoczny jest dokładnie 1 rekord: Zalew Węgrowski; jedynie pole akwen",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Utworzono zapytanie 4 tworzące użytkownika anna na localhost z hasłem anna123. W pliku z kwerendami lub na zrzucie istnieje zapis np.: CREATE USER \"anna\"@\"localhost\" IDENTIFIED BY \"anna123\"; oraz wynik działania udokumentowano zrzutem wskazującym na prawidłowo dodanego użytkownika",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Plik wedka.jpg przeskalowano z zachowaniem proporcji tak, że jego wysokość wynosi dokładnie 220 px, odpowiadająca temu szerokość wynosi 330 px ±5 px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku karta.html oraz zastosowano standard kodowania polskich znaków",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Nadano tytuł strony: \"Karty wędkarskie\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: baner, główny, trzy bloki: lewy, środkowy i prawy. Zastosowano znaczniki sekcji",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "W banerze zapisano nagłówek h2: \"Zgłoszenie na kartę wędkarską\" oraz zapisano przynajmniej jeden nagłówek h4 z: \"Formularz - karta wędkarska\" w bloku głównym lub \"Typy łowisk\" w lewym oraz w bloku prawym paragraf z numerem PESEL lub innym numerem, którym został podpisany arkusz",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku lewym umieszczono listę punktowaną (nieuporządkowaną) z czterema elementami: Zalewy, Stawy, Jeziora, Rzeki, zastosowano znaczniki <ul>, <li> oraz ich zamknięcia",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku środkowym umieszczono obraz wedka.jpg oraz ma on tekst alternatywny \"karta wędkarska\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "W bloku głównym umieszczono formularz z trzema polami edycyjnymi w tym pole do wpisania adresu ma rozmiar 30 (size lub maxlength lub width lub w CSS) oraz dwoma przyciskami \"CZYŚĆ\" i \"ZAPISZ\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest zgodny z Obrazem 2 w arkuszu egzaminacyjnym (prawidłowo zastosowano właściwości CSS układające bloki na stronie, np. float i clear albo display flex albo grid)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Wybranie odnośnika \"Karta wędkarska\" inicjuje otwarcie strony http://www.kartawedkarska.pl/",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Pierwszy przycisk czyści zawartość formularza, drugi przycisk wysyła dane z formularza (input z typem submit lub button)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.4",
+            "description": "Formularz wysyła dane metodą POST do pliku zapisz.php",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.5",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl_1.css, formatowanie pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy źle przypisano co najmniej jeden selektor do bloku (np. kropka zamiast #)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.5, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono domyślny krój czcionki dla całej strony na Georgia (dla selektora * lub body lub html lub kontenera całej strony)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła DodgerBlue dla banera i trzech bloków dolnych oraz kolor LightBlue dla bloku głównego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono biały kolor czcionki dla banera i trzech bloków dolnych",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono wysokość trzech bloków dolnych na 220px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono szerokość dolnych bloków: lewego na 20% oraz środkowego i prawego na 40%",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono wyrównanie tekstu do środka dla banera, bloku środkowego i prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Ustawiono marginesy wewnętrzne (padding) dla banera na 10px i bloku głównego na 100px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Ustawiono styl odnośnika: obramowanie 1px dashed DimGray, kolor tła Gold, kolor czcionki DarkRed, marginesy wewnętrzne 10px (selektor a lub klasa lub identyfikator)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Skrypt",
+        "note": "Uwaga: Rezultat sprawdzić w wersji XAMPP 8.0.7 jeśli witryna nie uruchamia się z powodu błędów PHP - sprawdzić 5.1 5.3 wg kryteriów w kodzie źródłowym strony. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy wedkowanie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Ostatnią operacją na bazie jest jej zamknięcie (zgodne ze składnią)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Skrypt pobiera dane z formularza za pomocą tablicy $_POST (lub $_REQUEST gdy sprawdzono, że REQUEST_METHOD jest równe POST)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "Skrypt wysyła do bazy danych zapytanie 1 wstawiające dane do bazy: pola data_zezwolenia i punkty = NULL, pozostałe wartości wypełnione są danymi z formularza. Należy sprawdzić w bazie czy rekord został dodany",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-22.06-SG",
+    "maxPoints": 42,
+    "examInstructions": "# Zadanie EgzaminacyjneWykonaj fragment aplikacji internetowej dla forum o psach, wykorzystując pakiet XAMPP oraz edytor zaznaczający składnię.---\n## Operacje na bazie danychDo wykonania operacji na bazie należy wykorzystać tabele przedstawione na Obrazie 1. W tabeli konta pole rejestracja oznacza rok rejestracji, pole postow oznacza liczbę opublikowanych postów.Za pomocą narzędzia phpMyAdmin należy wykonać operacje na bazie danych:\n* Utworzenie bazy danych o nazwie: forumpsy z zestawem polskich znaków (np. utf8_unicode_ci)\n* Import tabel do bazy forumpsy z pliku baza.sql. Czynność należy udokumentować zrzutem ekranu, na którym powinny być widoczne elementy wskazujące na poprawnie wykonany import tabel. Zrzut należy zapisać w formacie JPEG, pod nazwą import. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań.\n* Zapytania SQL na bazie forumpsy zapisane do pliku kwerendy.txt. Wykonanie kwerend należy udokumentować zrzutami w formacie PNG o nazwach kw1, kw2, kw3, kw4. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań\n  * Zapytanie 1: wstawiające do tabeli odpowiedzi wiersz, o treści „Przyda Ci się także wysoki stół, na którym postawisz pieska.”. Jest on odpowiedzią na pytanie o id równym 1, udzieloną przez użytkownika o id równym 5.\n  * Zapytanie 2: z tabeli konta dla rekordów, których nick to Jacek, Tomek, Monika wybierające jedynie pole nick oraz liczące ile lat dany użytkownik jest zarejestrowany na forum – kolumnę należy nazwać (alias) latNaForum. Zapytanie jest uniwersalne, gdy zmieni się aktualny rok, też powinno być liczone poprawnie\n  * Zapytanie 3: wybierające jedynie nick i liczbę postów użytkownika z tabeli konta oraz odpowiadające im pole pytanie z tabeli pytania dla pytania, którego id jest równe 1. Należy posłużyć się relacją.\n  * Zapytanie 4: wybierające jedynie id odpowiedzi oraz odpowiedź z tabeli odpowiedzi oraz odpowiadające im pole nick z tabeli konta dla id pytania równego 1. Należy posłużyć się relacją.---\n## Witryna internetowaCechy witryny:\n* Składa się ze strony o nazwie index.php\n* Zapisana w języku HTML5\n* Jawnie zastosowany właściwy standard kodowania polskich znaków\n* Zadeklarowany język zawartości witryny: polski\n* Tytuł strony widoczny na karcie przeglądarki: „Forum o psach\"\n* Arkusz stylów w pliku o nazwie styl.css prawidłowo połączony z kodem strony\n* Podział strony na: blok banera, obok siebie blok lewy i prawy, stopka. Podział zrealizowany za pomocą znaczników sekcji tak, aby wygląd układu bloków strony po uruchomieniu w przeglądarce, był zgodny z Obrazem 2\n* Zawartość banera: nagłówek pierwszego stopnia o treści „Forum miłośników psów”\n* Zawartość bloku lewego:\n  * Obraz o nazwie Avatar i tekście alternatywnym „Użytkownik forum\"\n  * Efekt działania skryptu 1\n  * Film o nazwie video.mp4 z przyciskami do nawigacji, odtwarzający się w pętli\n* Zawartość bloku prawego:\n  * Formularz wysyłający dane metodą bezpieczną do tego samego pliku, zawierający:\n    * Pole wieloliniowe o 4 wierszach i 40 kolumnach\n    * Przycisk o treści „Dodaj odpowiedź”, którego wciśnięcie powoduje wysłanie danych do skryptu 2\n  * Nagłówek drugiego stopnia o treści „Odpowiedzi na pytanie\"\n  * Lista numerowana (uporządkowana), której elementy generowane są skryptem 3\n* Zawartość stopki:\n  * Tekst o treści „Autor: \", dalej wstawiony numer zdającego\n  * Za numerem zdającego wstawiony odnośnik do strony http://mojestrony.pl/ otwierający się w osobnej karcie przeglądarki i podpisany „Zobacz nasze realizacje\"---\n## Styl CSS witryny internetowejCechy formatowania CSS:\n* Styl CSS zdefiniowany w całości w zewnętrznym pliku o nazwie styl.css\n* Ustawione domyślne wartości dla wszystkich selektorów stylu CSS: krój czcionki Garamond, w przypadku jego braku – serif\n* Dla bloku banera: tło będące pionowym gradientem liniowym od koloru #97b498 do #c8e6c9, biały kolor czcionki, wyrównanie tekstu do środka, marginesy wewnętrzne 5 px\n* Dla bloku lewego: kolor tła #c8e6c9, kolor czcionki #005005, szerokość 40%, wysokość 600 px\n* Dla bloku prawego: kolor czcionki #005005, szerokość 60%, wysokość 600 px, zawsze widoczne paski przewijana\n* Dla stopki: tło będące pionowym gradientem liniowym od koloru #c8e6c9 do #97b498, biały kolor czcionki, marginesy wewnętrzne 12 px\n* Dla selektora filmu: szerokość 100%\n* Dla selektora formularza: marginesy wewnętrzne górny i dolny 10 px, lewy i prawy 50 px\n* Dla przycisku: kolor tła #97b498, biały kolor czcionki\n* W momencie, gdy kursor myszy znajdzie się na przycisku kolory tego przycisku są zmienione na: biały kolor tła, kolor czcionki #97b498\n* Uwaga: style CSS dla filmu i formularza należy zdefiniować wyłącznie przy pomocy selektora dla znacznika formularz i znacznika film. Jest to uwarunkowane projektem późniejszej rozbudowy witryny.---\n## SkryptyW Tabeli 1 podano wybór funkcji PHP do obsługi bazy danych. Wymagania dotyczące skryptu:\n* Napisany w języku PHP\n* Skrypt łączy się z serwerem bazy danych na localhost, użytkownik root bez hasła, baza danych o nazwie forumpsy\n* Po wykonaniu operacji na bazie danych skrypt zamyka połączenie z serwerem.\n* Działanie skryptu 1\n  * Wysyła do bazy zapytanie 3\n  * Dane zwrócone zapytaniem wyświetlane są według wzoru, gdzie w nawiasach <> zapisano wartości pobrane z bazy\n    * „Użytkownik: <nick>” w nagłówku czwartego stopnia\n    * „<liczba postów> postów na forum” w paragrafie\n    * <pytanie> w paragrafie\n* Działanie skryptu 2\n  * Jeżeli wpisano dane do pola wielowierszowego i dane nie są puste, skrypt wysyła do bazy zmodyfikowane zapytanie 1, w ten sposób, że w polu odpowiedz znajduje się wartość z pola wielowierszowego\n* Działanie skryptu 3\n  * Wysyła do bazy zapytanie 4\n  * Każdy wiersz zwrócony zapytaniem jest wyświetlany w elemencie listy, w ten sposób, że wyświetlane jest pole odpowiedz, pole nick oraz linia pozioma. Nick jest zapisany za pomocą znacznika semantycznego pochylającego tekst i oznaczającego tekst wyróżniony.",
+    "examDate": "Czerwiec 2022",
+    "examAttachments": [
+      {
+        "attachmentId": "kg2egpk96ft8bgjhwc93fg9bmh7sdatw",
+        "attachmentName": "baza.sql"
+      },
+
+      {
+        "attachmentId": "kg2f3akhbfxfeed3gtztdxv9297sc5m7",
+        "attachmentName": "Avatar.jpg"
+      },
+
+      {
+        "attachmentId": "kg29mkj57c7f3mgg6j60ybnk0d7sd0dq",
+        "attachmentName": "video.mp4"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli widoczny jest cały obszar ekranu z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu Jeżeli na zrzutach ekranu nie są widoczne wszystkie rekordy dla kryteriów 1.3 ÷ 1.6, należy wykonać kwerendę w phpMyAdmin",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import tabel do bazy danych forumpsy, czynność udokumentowano plikiem o nazwie import w formacie JPEG",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Utworzono zapytanie 1 wstawiające do tabeli odpowiedzi wiersz, o treści „Przyda Ci się także wysoki stół, na którym postawisz pieska.\", pytania_id = 1, konta_id = 5. W pliku z kwerendami lub na zrzucie istnieje zapis np.: INSERT INTO `odpowiedzi` (`Pytania_id`, `konta_id`, `odpowiedz`) VALUES (1, 5, 'Przyda Ci się także wysoki stół, na którym postawisz pieska.'); możliwe inne formy zapytania INSERT INTO oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczny jest komunikat o poprawnie wykonanym zapytaniu lub tabela ze wstawionym rekordem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Utworzono zapytanie 2 wybierające z tabeli konta jedynie pole nick oraz liczące ile lat dany użytkownik jest zarejestrowany na forum – alias latNaForum, dla rekordów, których nick jest równy Jacek, Tomek, Monika. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT nick, YEAR(CURRENT_DATE())-rejestracja AS latNaForum FROM konta WHERE nick IN ('Jacek', 'Tomek', 'Monika'); (możliwe inne funkcje zamiast CURRENT_DATE() aktualny rok zwracany funkcją lub warunek z OR) oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie 3 rekordy, jedynie pola nick i latNaForum wartości w kolumnie latNaForum są obliczone dla Jacka 3, Tomka 6, Moniki 2",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Utworzono zapytanie 3 wybierające jedynie nick i liczbę postów użytkownika z tabeli konta oraz odpowiadające im pole pytanie z tabeli pytania dla pytania, którego id jest równe 1. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT nick, postow, pytanie FROM konta JOIN pytania ON konta.id = konta_id WHERE pytania.id = 1; (lub bez JOIN i porównanie kluczy po WHERE) oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczny jest dokładnie jeden rekord o danych Jacek, 50, \"Mam pytanie w jaki sposób dbać ...\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Utworzono zapytanie 4 wybierające jedynie id odpowiedzi oraz odpowiedź z tabeli odpowiedzi oraz odpowiadające im pole nick z tabeli konta dla id pytania równego 1. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT odpowiedzi.id, odpowiedz, nick FROM odpowiedzi JOIN konta ON konta_id = konta.id WHERE Pytania_id = 1; (lub bez JOIN i porównanie kluczy po WHERE) oraz wynik działania zapytania udokumentowano zrzutem, na którym widać tylko rekordy z id równym 1, 2, 3; pola id, odpowiedz i nick lub dodatkowo inne rekordy powstałe wyłącznie na skutek działania zapytania 1",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Obraz w pliku Avatar ma wymiary 100 px na 100 px, tło przezroczyste i jest zapisany w formacie obsługującym przezroczystość",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku o nazwie index.php",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Zapisano jawnie standard kodowania polskich znaków i deklarację HTML5 <!DOCTYPE HTML> oraz zadeklarowano dla witryny język polski (np. lang = 'pl')",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Nadano tytuł strony: Forum o psach",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: baner, lewy, prawy, stopka. Zastosowano znaczniki sekcji",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku banera zapisano nagłówek h1: \"Forum miłośników psów\", w bloku prawym h2: \"Odpowiedzi na pytanie\" oraz zapisano przynajmniej jeden paragraf (w skrypcie lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku prawym umieszczono listę numerowaną, zastosowano znaczniki <ol>, <li> (w skrypcie lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "W bloku lewym umieszczono obraz Avatar z tekstem alternatywnym \"Użytkownik forum\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.9",
+            "description": "W bloku prawym umieszczono formularz z polem wielowierszowym (<textarea>) i przyciskiem, zastosowano znacznik <form>",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.10",
+            "description": "W bloku lewym umieszczono film video.mp4 (np. znaczniki video i source lub jedynie video z atrybutem src lub znacznik object lub embed)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest zgodny z Obrazem 2 w arkuszu egzaminacyjnym (prawidłowo zastosowano właściwości CSS układające bloki na stronie, np. float i clear albo display flex albo grid). Nie należy brać pod uwagę umiejscowienia filmu",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Na stronie umieszczono odnośnik, którego kliknięcie inicjuje otwarcie strony http://mojestrony.pl/ w nowej karcie przeglądarki",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Zdefiniowano wysyłanie danych z formularza do tego samego pliku metodą POST (poprawne również bez atrybutu action)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.4",
+            "description": "Pole wielowierszowe ma 4 wiersze (rows) i 40 kolumn (cols) oraz przycisk wysyła dane z formularza (input lub button z typem submit lub button bez typu)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.5",
+            "description": "Video odtwarza się w pętli",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.6",
+            "description": "Na filmie widoczne są przyciski sterujące",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.7",
+            "description": "W bloku prawym nicki osób publikujących odpowiedzi są wyróżnione znacznikiem <em></em> (w skrypcie lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.8",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl.css, formatowanie pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy zdający źle przypisał co najmniej jeden selektor do bloku (np. kropka zamiast #)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.8, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS Kryteria 4.6, 4.8 są spełnione jedynie gdy zdefiniowano styl selektora osadzającego film i formularza, nie są spełnione gdy zdefiniowano styl klasy lub inny",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono domyślne formatowanie wszystkich selektorów (*): krój czcionki: Garamond, serif (czcionka Garamond jako pierwsza)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła: #c8e6c9 dla bloku lewego i #97b498 dla przycisku",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono gradient liniowy pionowy od koloru #97b498 do #c8e6c9 dla banera np. background: linear-gradient(#97b498, #c8e6c9) i odwrotnej kolejności dla stopki np. background: linear-gradient(#c8e6c9, #97b498)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono biały kolor czcionki dla bloku banera, stopki i przycisku oraz #005005 dla bloków lewego i prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono wysokość 600px dla bloków lewego i prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono szerokość 40% dla bloku lewego i 60% dla prawego (width lub grid-template-columns lub flex) oraz 100% dla selektora osadzającego film (np. video, object, embed)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Ustawiono wyrównanie tekstu do środka dla banera",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Ustawiono marginesy wewnętrzne (padding) 5px dla banera, 12px dla stopki, 10px (górny i dolny) 50px (lewy i prawy) dla selektora form",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.9",
+            "description": "Ustawiono zawsze widoczne paski przewijana dla bloku prawego np. overflow: scroll;",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.10",
+            "description": "W momencie, gdy kursor myszy znajdzie się na przycisku jego kolory są zmienione na: biały kolor tła, kolor czcionki #97b498 (np. za pomocą pseudoklasy :hover)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Skrypt",
+        "note": "Uwaga: rezultat R.5 sprawdzić w wersji XAMPP 8.1.2. jeśli witryna nie uruchamia się z powodu błędów PHP, sprawdzić kryteria 5.1 ÷ 5.3 wg kryteriów w kodzie źródłowym strony. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy forumpsy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Ostatnią operacją na bazie jest jej zamknięcie (zgodne ze składnią)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Skrypt 1 wysyła do bazy zapytanie 3 lub skrypt 3 wysyła do bazy zapytanie 4",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "Skrypt 1 wyświetla dane wg wzoru: w h4: \"Użytkownik: <nick>\", w paragrafie: \"<liczba postów> postów na forum\", w paragrafie <pytanie>, gdzie w nawiasach <> zapisano wartości pobrane z bazy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.5",
+            "description": "Skrypt 2 wysyła do bazy zmodyfikowane zapytanie 1 ten sposób, że w polu odpowiedz znajduje się wartość z pola tekstowego, należy sprawdzić w phpMyAdmin",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.6",
+            "description": "Jeżeli pole tekstowe jest puste, skrypt 2 nie wysyła danych do bazy (w skrypcie 2 znajduje się warunek sprawdzający czy pole jest puste)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.7",
+            "description": "Skrypt 3 wyświetla pola odpowiedz i nick każdego zwróconego wiersza",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.8",
+            "description": "Skrypt 3 wyświetla dane w elementach listy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-23.01-SG",
+    "maxPoints": 37,
+    "examInstructions": "# Zadanie Egzaminacyjne\n\nWykonaj aplikację internetową dla sekretariatu firmy, wykorzystując pakiet XAMPP oraz edytor zaznaczający składnię.\n\n---\n\n## Operacje na bazie danych\n\nDo wykonania operacji na bazie należy wykorzystać tabele przedstawione na Obrazie 1. Pole czyRODO przyjmuje wartość 1, gdy pracownik podpisał dokument RODO lub 0 w przeciwnym przypadku. Pole czyBadania przyjmuje wartość 1, gdy pracownik posiada aktualne badania pracownicze lub 0 w przeciwnym przypadku.\n\nZa pomocą narzędzia phpMyAdmin wykonaj operacje na bazie danych:\n* Utwórz bazę danych o nazwie `firma`\n* Do bazy `firma` zaimportuj tabele z pliku `baza.sql` z rozpakowanego archiwum\n* Wykonaj zrzut ekranu po imporcie. Zrzut zapisz w formacie JPEG i nazwij `import`. Nie kadruj zrzutu. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań. Na zrzucie powinny być widoczne elementy wskazujące na poprawnie wykonany import tabel\n* Wykonaj zapytania SQL działające na bazie `firma`. Zapytania zapisz w pliku `kwerendy.txt`. Wykonaj zrzuty ekranu przedstawiające wyniki działania kwerend. Zrzuty zapisz w formacie PNG i nadaj im nazwy `kw1`, `kw2`, `kw3`, `kw4`. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań\n  * Zapytanie 1: wybierające jedynie pola `imie`, `nazwisko`, `adres`, `miasto`, `czyRODO`, `czyBadania` z tabeli `pracownicy` dla wiersza o `id` równym 2\n  * Zapytanie 2: wybierające liczbę wszystkich rekordów w tabeli `pracownicy`\n  * Zapytanie 3: wybierające jedynie pola `id`, `imie`, `nazwisko` z tabeli `pracownicy` dla wiersza o `id` równym 2\n  * Zapytanie 4: wybierające jedynie `id` z tabeli `pracownicy` i odpowiadające mu pola `nazwa` i `opis` z tabeli `stanowiska` dla wiersza tabeli `pracownicy` o `id` równym 2. Należy posłużyć się relacją\n\n---\n\n## Witryna internetowa\n\nCechy witryny:\n* Składa się ze strony o nazwie `index.php`\n* Zapisana w języku HTML5\n* Jawnie zastosowany właściwy standard kodowania polskich znaków\n* Zadeklarowany język witryny: `polski`\n* Tytuł strony widoczny na karcie przeglądarki: „Sekretariat\"\n* Arkusz stylów w pliku o nazwie `styl.css` prawidłowo połączony z kodem strony\n* Podział strony na bloki: lewy, prawy, stopka. Podział zrealizowany za pomocą znaczników sekcji tak, aby wygląd układu bloków strony po uruchomieniu w przeglądarce, był zgodny z Obrazem 2\n* Zawartość bloku lewego:\n  * nagłówek pierwszego stopnia o treści „Akta Pracownicze”\n  * dane pracownika generowane skryptem 1\n  * linia horyzontalna\n  * nagłówek trzeciego stopnia o treści: „Dokumenty pracownika\"\n  * odnośnik o treści „Pobierz” do pliku `cv.txt`\n  * nagłówek pierwszego stopnia o treści „Liczba zatrudnionych pracowników”\n  * paragraf, a w nim efekt wykonania skryptu 2\n* Zawartość bloku prawego: efekt działania skryptu 3\n* Zawartość stopki:\n  * napis o treści „Autorem aplikacji jest: ”, dalej wstawiony numer zdającego\n  * lista punktowana (nieuporządkowana) o elementach: „skontaktuj się”, „poznaj naszą firmę”\n\n---\n\n## Styl CSS\n\nCechy formatowania CSS:\n* Styl CSS powinien być zdefiniowany jedynie w zewnętrznym pliku CSS\n* Dla selektora strony: krój czcionki Helvetica, kolor tła #DDD, kolor czcionki #546E7A\n* Wspólne dla bloku lewego i prawego: biały kolor tła, wysokość 600 px, marginesy zewnętrzne 20 px, cień bloku bez przesunięcia pionowego i poziomego, rozmycie 20 px i kolor szary\n* Dla bloku lewego: szerokość 50%\n* Dla bloku prawego: szerokość 30%\n* Dla stopki: kolor tła #5C6BC0, biały kolor czcionki, marginesy wewnętrzne 30px\n* Dla selektora obrazu: szerokość 100%\n* Dla selektora nagłówka pierwszego stopnia: kolor tła #5C6BC0, biały kolor czcionki, marginesy wewnętrzne 10 px, brak marginesów zewnętrznych, grubość czcionki 300\n* Dla selektora nagłówka trzeciego stopnia i paragrafu (akapitu): margines wewnętrzny lewy 30 px\n* Dla selektora nagłówka drugiego i czwartego stopnia: wyrównanie tekstu do środka\n\nUwaga: style CSS dla obrazu, nagłówków pierwszego, drugiego, trzeciego i czwartego stopnia oraz paragrafu należy zdefiniować wyłącznie przy pomocy selektora dla znaczników obrazu, nagłówków i paragrafu. Jest to uwarunkowane projektem późniejszej rozbudowy witryny.\n\n---\n\n## Skrypty\n\nW Tabeli 1 podano wybór funkcji PHP do obsługi bazy danych. Wymagania dotyczące skryptu:\n* Napisany w języku PHP\n* Skrypt łączy się z serwerem bazy danych na `localhost`, użytkownik `root` bez hasła, baza danych o nazwie `firma`\n* Po wykonaniu operacji na bazie danych skrypt zamyka połączenie z serwerem.\n* Skrypt 1 wysyła do bazy zapytanie 1 i zwrócone zapytaniem dane wypisuje według schematu:\n  * Nagłówek trzeciego stopnia o treści „dane\"\n  * Paragraf z imieniem i nazwiskiem wybranymi z bazy\n  * Linia horyzontalna\n  * Nagłówek trzeciego stopnia o treści „adres\"\n  * Paragraf z adresem oraz paragraf z miastem wybranymi z bazy\n  * Linia horyzontalna\n  * Paragraf o treści „RODO: podpisano” lub „RODO: niepodpisano” w zależności od wartości pola `czyRODO` zwróconego zapytaniem. Operacja musi mieć charakter uniwersalny niezależnie od wartości zwracanej kwerendą 1.\n  * Paragraf o treści „Badania: aktualne” lub „Badania: nieaktualne” w zależności od wartości pola `czyBadania` zwróconego zapytaniem. Operacja musi mieć charakter uniwersalny niezależnie od wartości zwracanej kwerendą 1.\n* Skrypt 2 wysyła do bazy zapytanie 2 i wypisuje liczbę wybraną zapytaniem\n* Skrypt 3 wysyła do bazy zapytanie 3 a następnie:\n  * Ustala nazwę pliku obrazu według schematu: „`<id>.jpg`” gdzie `<id>` oznacza `id` zwrócone zapytaniem, a operacja ma charakter uniwersalny niezależnie od zwróconej wartości\n  * Wyświetla obraz o ustalonej nazwie pliku z tekstem alternatywnym o treści „pracownik\"\n  * Wyświetla w nagłówku drugiego stopnia imię i nazwisko zwrócone zapytaniem\n  * Wysyła do bazy zapytanie 4\n  * Wyświetla nazwę stanowiska w nagłówku czwartego stopnia\n  * Wyświetla opis stanowiska w nagłówku piątego stopnia\n\n| Funkcje biblioteki MySQLI | Zwracana wartość |\n| :------------------------ | :---------------------------------------------------------------------------------------------------------------------- |\n| mysqli_connect(serwer, użytkownik, hasło, nazwa_bazy) | id połączenia lub FALSE, gdy niepowodzenie |\n| mysqli_select_db(id_polaczenia, nazwa_bazy) | TRUE/FALSE w zależności od stanu operacji |\n| mysqli_error(id_polaczenia) | Tekst komunikatu błędu |\n| mysqli_close(id_polaczenia) | TRUE/FALSE w zależności od stanu operacji |\n| mysqli_query(id_polaczenia, zapytanie) | Wynik zapytania |\n| mysqli_fetch_row(wynik_zapytania) | Tablica numeryczna odpowiadająca wierszowi zapytania |\n| mysqli_fetch_array(wynik_zapytania) | Tablica zawierająca kolejny wiersz z podanych w wyniku zapytania lub FALSE, jeżeli nie ma więcej wierszy w wyniku zapytania |\n| mysqli_num_rows(wynik_zapytania) | Liczba wierszy w podanym zapytaniu |\n| mysqli_num_fields(wynik_zapytania) | Liczba kolumn w podanym zapytaniu |\n\nWybrane fragmenty pomocy ze strony w3schools.com na temat właściwości box-shadow\n\n| Property Values | Value | Description |\n| :-------------- | :---- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| h-offset | Required. The horizontal offset of the shadow. A positive value puts the shadow on the right side of the box, a negative value puts the shadow on the left side of the box. |\n| v-offset | Required. The vertical offset of the shadow. A positive value puts the shadow below the box, a negative value puts the shadow above the box. |\n| blur | Optional. The blur radius. The higher the number, the more blurred the shadow will be. |\n| spread | Optional. The spread radius. A positive value increases the size of the shadow, a negative value decreases the size of the shadow. |\n| color | Optional. The color of the shadow. The default value is the text color. Look at CSS Color Values for a complete list of possible color values. |\n\nOcenie będzie podlegać 5 rezultatów:\n* operacje na bazie danych,\n* zawartość witryny internetowej,\n* działanie witryny internetowej,\n* styl CSS witryny internetowej,\n* skrypt.",
+    "examDate": "Styczeń 2023",
+    "examAttachments": [
+      {
+        "attachmentId": "kg24xhgs8mfd8hbt6wkpzj8f9h7sd6ds",
+        "attachmentName": "2.jpg"
+      },
+
+      {
+        "attachmentId": "kg21nccnc90vemjt8e4xdqsfxh7sd1wc",
+        "attachmentName": "baza.sql"
+      },
+
+      {
+        "attachmentId": "kg2cgc2r5gqvek80d6p2pyxesh7sctb0",
+        "attachmentName": "cv.txt"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Rezultat 1: Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli widoczny jest cały obszar ekranu z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import tabel do bazy danych firma, czynność udokumentowano plikiem o nazwie import w formacie JPEG",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Utworzono zapytanie 1 wybierające jedynie pola imie, nazwisko, adres, miasto, czyRODO, czyBadania z tabeli pracownicy dla wiersza o id równym 2. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT imie, nazwisko, adres, miasto, czyRODO, czyBadania FROM pracownicy WHERE id=2; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczny jest jedynie rekord z danymi: Anna, Nowak, ul. Piekarska 6, Bytom, 1, 1",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Utworzono zapytanie 2 zliczające wszystkie rekordy w tabeli pracownicy. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT COUNT(*) FROM pracownicy; (możliwa też nazwa dowolnego pola zamiast *) oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczna jest wartość 9",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Utworzono zapytanie 3 wybierające jedynie pola id, imie, nazwisko z tabeli pracownicy dla wiersza o id równym 2. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT id, imie, nazwisko FROM pracownicy WHERE id = 2; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczny jest jedynie jeden rekord z danymi: 2, Anna, Nowak",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Utworzono zapytanie 4 wybierające jedynie pole id z tabeli pracownicy i odpowiadające mu pola nazwa i opis z tabeli stanowiska dla wiersza tabeli pracownicy o id równym 2. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT pracownicy.id, nazwa, opis FROM pracownicy JOIN stanowiska ON pracownicy.stanowiska_id = stanowiska.id WHERE pracownicy.id = 2; (możliwe też INNER JOIN lub bez JOIN z porównaniem kluczy w sekcji WHERE) oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczny jest jedynie jeden rekord z danymi: 2, kierownik, kierownik grupy programistow",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 2: Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Plik 2.jpg przeskalowano z zachowaniem proporcji do szerokości 400 px, odpowiadająca temu wysokość wynosi 267 px (± 5 px)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku PHP o nazwie index",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Zastosowano deklarację języka HTML5, jawnie zapisano standard kodowania polskich znaków oraz zadeklarowano język witryny (np. <html lang = 'pl'>)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Nadano tytuł stronie: \"Sekretariat\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: lewy, prawy i stopkę. Zastosowano znaczniki sekcji",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku lewym zapisano: jeden z nagłówków h1: \"Akta Pracownicze\" lub \"Liczba zatrudnionych pracowników\"; przynajmniej jeden nagłówek h3: \"dane\", \"adres\", \"Dokumenty pracownika\" (w skrypcie lub HTML) oraz przynajmniej jeden paragraf. W bloku prawym zapisano nagłówki h2, h4, h5 (w skrypcie lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku stopki umieszczono listę punktowaną z dwoma elementami, zastosowano znaczniki <ul>, <li>",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "W bloku prawym umieszczono obraz z tekstem alternatywnym \"pracownik\" (w skrypcie lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.9",
+            "description": "W stopce umieszczono napis \"Autorem aplikacji jest: \"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 3: Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest zgodny z Obrazem 2 w arkuszu egzaminacyjnym (prawidłowo zastosowano właściwości css układające bloki na stronie, np. float i clear albo display flex albo grid)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Na stronie umieszczono odnośnik, którego kliknięcie otwiera / pobiera plik cv.txt",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl.css, formatowanie pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy zdający źle przypisał co najmniej jeden selektor do bloku (np. kropka zamiast #)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 4: Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.3, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS Kryteria R.4.2, R.4.6, R.4.7, R.4.9 są spełnione jedynie, gdy zdefiniowano styl dla selektora, nie są spełnione gdy zdefiniowano styl klasy lub inny",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono dla selektora strony (body lub html lub kontener strony) krój czcionki Helvetica, kolor tła #DDD, kolor czcionki #546E7A",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła: biały dla bloku lewego i prawego, #5C6BC0 dla stopki oraz dla selektora h1",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono biały kolor czcionki dla stopki oraz h1",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono wysokość bloku lewego i prawego: 600px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono szerokość bloku: lewego: 50%, prawego 30% (width lub grid-template-columns lub flex)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono wyrównanie tekstu do środka dla selektora h2 i h4",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Ustawiono marginesy zewnętrzne (margin) 20px dla bloku lewego i prawego; 0 dla h1 oraz marginesy wewnętrzne (padding) 30px dla stopki; 10px dla h1; lewy 30px (padding-left) dla selektora h3 i selektora p (wystarczy 5 z 7 cech)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Ustawiono dla bloku lewego i prawego cień o cechach: przesunięcie poziome i pionowe 0, rozmycie 20px kolor szary (dowolny odcień) np. box-shadow: 0 0 20px grey; (lub 0 0 20px 0 grey, lub gray, lub inny dowolny szary)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.9",
+            "description": "Ustawiono dla selektora obrazu szerokość 100%",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.10",
+            "description": "Ustawiono dla h1 grubość czcionki na 300",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 5: Skrypt",
+        "note": "Uwaga: rezultat R.5 sprawdzić w wersji XAMPP 8.1.2. jeśli witryna nie uruchamia się z powodu błędów PHP - sprawdzić 5.1 5.3 wg kryteriów w kodzie źródłowym strony. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy firma",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Ostatnią operacją na bazie jest jej zamknięcie (zgodne ze składnią)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Przynajmniej jedno zapytanie zostało wysłane do bazy: skrypt 1 - zapytanie 1 lub skrypt 2 - zapytanie 2 lub skrypt 3 - zapytanie 3 lub 4",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "Skrypt 1 wyświetla w bloku lewym imię, nazwisko, adres i miasto oraz linie horyzontalne zgodne z obrazem 2 w arkuszu egzaminacyjnym",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.5",
+            "description": "W skrypcie 1 zastosowano przynajmniej jedną instrukcję warunkową lub wyboru do sprawdzenia wartości zmiennej czyRODO lub czyBadania. Na stronie wyświetlony jest przynajmniej jeden komunikat zgodnie z wartością zmiennej logicznej",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.6",
+            "description": "Skrypt 2 wyświetla wartość zwróconą zapytaniem 2",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.7",
+            "description": "W skrypcie 3 ustalono nazwę pliku na podstawie wartości id zwróconej zapytaniem np. $wiersz[0] = (string) $wiersz[0] . \".jpg\"; oraz wyświetlono obraz z pliku o tej nazwie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.8",
+            "description": "Skrypt 3 wyświetla imię i nazwisko zwrócone zapytaniem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.9",
+            "description": "Skrypt 3 wyświetla nazwę stanowiska oraz opis stanowiska zwrócone zapytaniem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
