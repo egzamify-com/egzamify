@@ -8,7 +8,7 @@ export default function ExamItem({ exam }: { exam: BaseExam }) {
     <Link
       href={`/dashboard/egzamin-praktyczny/egzamin/${exam._id}`}
       key={exam._id}
-      className="w-full flex-shrink-0 p-5 sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.67rem)] xl:w-[calc(25%-0.75rem)]"
+      className="w-full flex-shrink-0 sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.67rem)] xl:w-[calc(25%-0.75rem)]"
     >
       <Card className="group hover:border-primary/20 h-full w-full gap-1 border transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
         <CardHeader className="pb-3">

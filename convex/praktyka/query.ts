@@ -57,13 +57,34 @@ export const listPracticalExams = query({
             q.eq("qualificationId", qualification._id),
           )
           .collect()
+
+        const sorted = baseExams.sort((a, b) => {
+          function getYearAndMonth(code: string): {
+            year: number
+            month: number
+          } {
+            const year = parseInt(code.slice(8, 10), 10)
+            const month = parseInt(code.slice(11, 13), 10)
+            return { year, month }
+          }
+
+          const dateA = getYearAndMonth(a.code)
+          const dateB = getYearAndMonth(b.code)
+
+          if (dateA.year !== dateB.year) {
+            return dateA.year - dateB.year
+          }
+
+          return dateA.month - dateB.month
+        })
+
         return {
-          baseExams,
+          baseExams: sorted,
           qualification,
         }
       },
     )
-    console.log({ examsWithQualifications })
+    // console.log({ examsWithQualifications })
 
     const finalList = examsWithQualifications
       .filter((qualification) => qualification.baseExams.length > 0)

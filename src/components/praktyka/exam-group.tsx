@@ -51,7 +51,7 @@ export default function ExamGroup({
         </div>
       </button>
       {isExpanded && (
-        <div className="flex flex-wrap gap-4 pb-2">
+        <div className="flex flex-row flex-wrap gap-5 p-5">
           {group.exams.map((exam) => (
             <ExamItem key={exam._id} exam={exam} />
           ))}
