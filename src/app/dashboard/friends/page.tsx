@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <PageHeaderWrapper
       title="Moi znajomi"
-      description="Zarządzaj swoimi kontaktami i pozostań w kontakcie"
+      description="Zarządzaj swoimi znajomymi i pozostań w kontakcie"
       icon={<Users size={pageHeaderWrapperIconSize} />}
     >
       <DisplayFriendList

@@ -42,6 +42,7 @@ export default function PraktykaPage() {
       title="Egzamin praktyczny"
       description="Przeglądaj dostępne egzaminy praktyczne. Prześlij swoją pracę, błyskawicznie otrzymaj wyniki."
       icon={<Cpu size={pageHeaderWrapperIconSize} />}
+      isPending={status === "LoadingFirstPage"}
     >
       <PracticalExamsFilters
         {...{ setSearchInput, setSelectedQualificationId, setSelectedSort }}
