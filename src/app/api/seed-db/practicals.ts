@@ -1,6 +1,9 @@
-// nlx convex import --table basePracticalExams --append --deployment-name confident-aardvark-526  ./src/app/api/seed-db/practicals.json
+// nlx convex import --table basePracticalExams --append --deployment-name confident-aardvark-526  ./seed-db/practicals.json
 
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { generateObject, type ModelMessage } from "ai"
+import { api } from "convex/_generated/api"
+import { fetchMutation } from "convex/nextjs"
 import { readFile, writeFile } from "node:fs/promises"
 import z, { type Infer } from "zod"
 import { APP_CONFIG } from "~/APP_CONFIG"
@@ -85,7 +88,12 @@ const schema = z.object({
     ),
 })
 
-export async function main({ contentPdf, qualificationId, ratingPdf }: Input) {
+export async function main({
+  attachments,
+  contentPdf,
+  qualificationId,
+  ratingPdf,
+}: Input) {
   console.log("Start main func")
 
   const contentFile = await readFile(contentPdf)
@@ -140,6 +148,19 @@ export async function main({ contentPdf, qualificationId, ratingPdf }: Input) {
   console.log("generation done")
   console.dir(object, { depth: null })
 
+  const a = attachments.map(async (attachment) => {
+    const id = await uploadFile(
+      attachment.attachmentPath,
+      attachment.attachmentType,
+    )
+    object.examAttachments.push({
+      attachmentId: id,
+      attachmentName: attachment.attachmentName,
+    })
+  })
+  const p = await Promise.all(a)
+  console.log("object after attachments", object)
+
   const arr = z.array(schema)
   const jsonFile = await readFile(
     "./src/app/api/seed-db/practicals.json",
@@ -160,4 +181,33 @@ export async function main({ contentPdf, qualificationId, ratingPdf }: Input) {
   )
 
   console.log("Successfully appended new data and replaced the file content.")
+}
+
+async function uploadFile(filePath: string, mediaType: string) {
+  const fileBuffer = await readFile(filePath)
+  const postUrl = await fetchMutation(
+    api.praktyka.mutate.generateUploadUrl,
+    {},
+    { token: await convexAuthNextjsToken() },
+  )
+  console.log("Generated upload URL:", postUrl)
+
+  const fileBytes = new Uint8Array(fileBuffer)
+  const fileBlob = new Blob([fileBytes], { type: mediaType })
+
+  // Step 2: POST the file to the URL
+  const result = await fetch(postUrl, {
+    method: "POST",
+    headers: { "Content-Type": mediaType }, // Use the file's actual type
+    body: fileBlob,
+  })
+
+  if (!result.ok) {
+    console.log(result)
+    throw new Error(`HTTP error! status: ${result.status}`)
+  }
+
+  const { storageId } = await result.json()
+  console.log("Received storageId:", storageId)
+  return storageId as string
 }
