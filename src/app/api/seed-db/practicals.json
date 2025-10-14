@@ -1,0 +1,364 @@
+[
+  {
+    "qualificationId": "kd72bqykqqyaypdnyzt1p06rm97sd6t4",
+    "code": "EE.09-01-25.01-SG",
+    "maxPoints": 38,
+    "examInstructions": "# Zadanie Egzaminacyjne\nUWAGA: folder z rezultatami pracy oraz płytę należy opisać numerem zdającego, którym został podpisany arkusz, czyli numerem PESEL lub w przypadku jego braku numeru paszportu. Dalej w zadaniu numer ten jest nazwany numerem zdającego.\n\nWykonaj aplikację internetową strony o futbolu, wykorzystując pakiet XAMPP oraz edytor zaznaczający składnię.\n\nNa pulpicie konta Egzamin utwórz folder. Jako nazwy folderu należy użyć numeru zdającego. Umieść w tym folderze rozpakowane pliki.\n\nPo skończonej pracy wyniki zapisz również w tym folderze.\n\n---\n\n## Operacje na bazie danych\nDo wykonania zadania należy użyć tabel: zawodnik, pozycja, rozgrywka i liga przedstawionych na obrazie 1. Ponadto na obrazie przedstawiono wartości w tabeli pozycja.\n\nUruchom usługi MySQL i Apache za pomocą XAMPP Control Panel. Za pomocą narzędzia phpMyAdmin wykonaj podane operacje na bazie danych:\n* Utwórz bazę danych o nazwie egzamin\n* Do bazy egzamin zaimportuj plik egzamin.sql z rozpakowanego archiwum\n* Wykonaj zrzut ekranu po imporcie. Zrzut zapisz w formacie PNG i nazwij import. Nie kadruj zrzutu. Powinien on obejmować cały ekran monitora, z widocznym paskiem zadań. Na zrzucie powinny być widoczne elementy wskazujące na poprawnie wykonany import tabel\n* Zapisz i wykonaj zapytania SQL działające na bazie egzamin. Zapytania zapisz w pliku kwerendy.txt, w folderze z numerem zdającego. Wykonaj zrzuty ekranu przedstawiające wyniki działania kwerend. Zrzuty zapisz w formacie JPG i nadaj im nazwy kw1, kw2, kw3, kw4. Zrzuty powinny obejmować cały ekran monitora z widocznym paskiem zadań\n  * Zapytanie 1: wybierające jedynie pola zespol1, zespol2, wynik, data_rozgrywki z tabeli rozgrywka dla rekordów o wartości pola zespol1 równej „EVG”\n  * Zapytanie 2: wybierające jedynie pola imie i nazwisko z tabeli zawodnik dla zawodników, dla których przypisane jest id pozycji równe 3\n  * Zapytanie 3: wybierające jedynie pola id, nazwisko z tabeli zawodnik oraz nazwę pozycji z tabeli pozycja dla zawodników, którym przypisane jest id równe 1, 2 lub 3\n  * Zapytanie 4: usuwające tabelę liga\n\n---\n\n## Witryna internetowa\n### Przygotowanie grafiki:\n* Plik zad1.png, wypakowany z archiwum, należy przeskalować z zachowaniem proporcji tak, aby jego szerokość wynosiła dokładnie 150 px. Należy zachować przezroczystość obrazu\n\n### Cechy witryny:\n* Składa się ze strony o nazwie futbol.php\n* Zapisana w języku HTML 5\n* Jawnie zastosowany właściwy standard kodowania polskich znaków\n* Ustawiony język zawartości strony na polski\n* Tytuł strony widoczny na karcie przeglądarki: „Rozgrywki futbolowe\"\n* Arkusz stylów w pliku o nazwie styl.css prawidłowo połączony z kodem strony\n* Podział strony na bloki: baner, poniżej blok mecze zawierający zmienną liczbę bloków z informacją o rozgrywkach. Bloki informacyjne generowane są skryptem, a ich liczba zależy od danych w bazie. Poniżej blok główny, poniżej bloki lewy i prawy. Podział zrealizowany za pomocą znaczników sekcji, zgodnie z obrazem 2\n* Zawartość bloku banera:\n  * Nagłówek drugiego stopnia o treści „Światowe rozgrywki piłkarskie”\n  * Obraz obraz1.jpg z tekstem alternatywnym o treści: „boisko\"\n* Zawartość bloku mecze: Efekt działania skryptu 1\n* Zawartość bloku głównego: nagłówek drugiego stopnia o treści: „Reprezentacja Polski\"\n* Zawartość bloku lewego:\n  * Paragraf (akapit) o treści: „Podaj pozycję zawodników (1-bramkarze, 2-obrońcy, 3-pomocnicy, 4-napastnicy):”\n  * Formularz wysyłający dane metodą POST do tej samej strony, zawierający:\n    * Pole edycyjne typu numerycznego\n    * Przycisk wysyłający zawartość formularza z opisem „Sprawdź”\n  * Lista punktowana (nieuporządkowana), a w niej efekt działania skryptu 2\n* Zawartość bloku prawego:\n  * Obraz zad1.png z tekstem alternatywnym o treści: „piłkarz\"\n  * Paragraf (akapit) o treści: „Autor: ”, dalej wstawiony numer zdającego\n\n---\n\n## Styl CSS witryny internetowej\n### Cechy formatowania CSS:\n* Dla bloku banera: biały kolor czcionki, wyrównanie tekstu do środka, wysokość 370 px\n* Dla pojedynczego bloku z informacją o rozgrywkach: biały kolor czcionki, wyrównanie tekstu do środka, szerokość 200 px, marginesy zewnętrzne 10 px, obramowanie: 1 px, linia ciągła, kolor czarny, zaokrąglenie rogów obramowania 10 px\n* W momencie najechania kursorem na pojedynczy blok z informacją o rozgrywkach, kolor jego ramki zmienia się na biały\n* Dla bloku głównego: kolor tła WhiteSmoke, wysokość 50 px\n* Dla bloku lewego: kolor tła WhiteSmoke, szerokość 70%, wysokość 230 px\n* Dla bloku prawego: kolor tła WhiteSmoke, szerokość 30%, wysokość 230 px, wyrównanie tekstu do prawej strony\n* Dla znacznika body: krój czcionki Tahoma, kolor tła Crimson\n* Dla znacznika nagłówka drugiego stopnia: wyrównanie tekstu do środka, odległość między literami 7 px, tekst napisany kapitalikami (capitalize)\n\n---\n\n## Skrypt połączenia z bazą\nW tabeli 1 podano wybór funkcji PHP do obsługi bazy danych. Wymagania dotyczące skryptów:\n* Napisany w języku PHP, w pliku futbol.php\n* Skrypt łączy się z serwerem bazodanowym na localhost, użytkownik root bez hasła, baza danych o nazwie egzamin\n* Po wykonaniu operacji na bazie danych skrypt zamyka połączenie z serwerem\n* Działanie skryptu 1:\n  * Wysyła do bazy danych zapytanie 1\n  * Definiuje blok (za pomocą znacznika sekcji), a w nim wyświetla dane zwrócone zapytaniem dotyczące jednego wiersza:\n    * W nagłówku trzeciego stopnia tekst: „<zespół 1> - <zespół 2>”, gdzie pola w nawiasach <> oznaczają dane pobrane zapytaniem\n    * W nagłówku czwartego stopnia wynik pobrany zapytaniem\n    * W paragrafie tekst: „w dniu: <data rozgrywki>”, gdzie pole w nawiasach <> oznacza dane pobrane zapytaniem\n  * Liczba wygenerowanych bloków odpowiada liczbie wierszy zwróconych zapytaniem\n* Działanie skryptu 2, który odbiera dane przesłane z formularza\n  * Odbiera dane z pola edycyjnego\n  * Jeśli pole edycyjne jest puste nie jest wykonywana żadna akcja\n  * Jeżeli wpisano dane skrypt wysyła do bazy danych zmodyfikowane zapytanie 2 tak, że w warunku id pozycji jest równe wartości z pola edycyjnego\n  * Wyświetla zwrócone zapytaniem dane: imiona i nazwiska w paragrafach, jako elementy listy punktowanej",
+    "examDate": "Styczeń 2025",
+    "examAttachments": [
+      {
+        "attachmentId": "kg2fjxz4vz1e6drrwkwgfdhqvx7scq5v",
+        "attachmentName": "egzamin.sql"
+      },
+      {
+        "attachmentId": "kg234nc4sefzrp3f6j5gbcktah7sc0ct",
+        "attachmentName": "zad1.png"
+      },
+      {
+        "attachmentId": "kg26btymavz6t44cayjx25kqz97scpqq",
+        "attachmentName": "obraz1.jpg"
+      }
+    ],
+    "ratingData": [
+      {
+        "title": "Rezultat 1: Operacje na bazie danych",
+        "note": "Uwaga: W przypadku oceny zrzutów należy uznać za prawidłowe jeżeli widoczny jest cały obszar ekranu z widocznym paskiem zadań, a zapytanie ma charakter uniwersalny dla każdego zestawu danych. Nie należy oceniać wykadrowanych zrzutów ekranu",
+        "symbol": "R.1",
+        "requirements": [
+          {
+            "symbol": "R.1.1",
+            "description": "Wykonano import tabel do bazy danych egzamin, czynność udokumentowano plikiem o nazwie import w formacie PNG",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.2",
+            "description": "Zapisano plik tekstowy o nazwie kwerendy zawierający co najmniej jedno zapytanie SQL, wynikające z treści zadania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.3",
+            "description": "Wykonano zapytanie 1 wybierające jedynie pola zespol1, zespol2, wynik, data_rozgrywki z tabeli rozgrywka dla wartości pola zespol1 równego „EVG”. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT zespoll, zespol2, wynik, data_rozgrywki FROM rozgrywka WHERE zespoll = \"EVG\"; oraz wynik działania zapytania udokumentowano zrzutem, na którym widocznych jest dokładnie 5 rekordów, jedynie pola zespol1, zespol2, wynik, data_rozgrywki; w polu zespol1 widnieje tylko \"EVG\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.4",
+            "description": "Wykonano zapytanie 2 wybierające jedynie pola imie i nazwisko z tabeli zawodnik dla zawodników, którym przypisano id pozycji równe 3. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT imie, nazwisko FROM zawodnik WHERE pozycja_id = 3; oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie dane: Grzegorz Krychowiak i Kamil Grosicki",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.5",
+            "description": "Wykonano zapytanie 3 wybierające jedynie pola id zawodnika, nazwisko, oraz nazwę pozycji z tabel zawodnik i pozycja dla zawodników, których id jest równe 1, 2 lub 3. W pliku z kwerendami lub na zrzucie istnieje zapis np.: SELECT zawodnik.id, nazwisko, pozycja.nazwa FROM zawodnik JOIN pozycja ON zawodnik.pozycja_id = pozycja.id WHERE zawodnik.id < 4; (możliwe inne zapisy warunku, INNER JOIN lub bez JOIN - porównanie kluczy w warunku oraz wynik działania zapytania udokumentowano zrzutem, na którym widoczne są jedynie trzy rekordy, jedynie pola id, nazwisko, nazwa, dla id = 1, 2, 3, uwaga: jeżeli zapytanie bez JOIN to alternatywa (OR) obowiązkowo w nawiasie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.1.6",
+            "description": "Wykonano zapytanie 4 usuwające tabelę liga. W pliku z kwerendami lub na zrzucie istnieje zapis np.: DROP TABLE liga; oraz wynik działania zapytania udokumentowano zrzutem wskazującym na poprawne wykonanie zapytania",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 2: Zawartość witryny internetowej",
+        "note": "Uwaga: W napisach widocznych na stronie dopuszcza się drobne błędy literowe (nie zmieniające sensu tekstu), błędy wielkości liter i znaków diakrytycznych, tekst może być pisany w cudzysłowach lub bez Jeśli witryna nie uruchamia się z powodu błędów PHP – sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.2",
+        "requirements": [
+          {
+            "symbol": "R.2.1",
+            "description": "Plik zad1.png przeskalowano z zachowaniem proporcji do szerokości 150 px, odpowiadająca temu wysokość wynosi 165 px (± 5 px); przezroczystość została zachowana",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.2",
+            "description": "Witrynę internetową zapisano w pliku PHP o nazwie futbol oraz zastosowano jawnie właściwy standard kodowania polskich znaków",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.3",
+            "description": "Nadano tytuł strony: \"Rozgrywki futbolowe”",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.4",
+            "description": "Wygląd strony zdefiniowano dzieląc ją na bloki: baner, blok mecze, poniżej blok główny, lewy i prawy. Zastosowano znaczniki sekcji",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.5",
+            "description": "W bloku banera zapisano nagłówek h2: \"Światowe rozgrywki piłkarskie\", w bloku głównym nagłówek h2: \"Reprezentacja Polski\" oraz zapisano przynajmniej jeden paragraf",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.6",
+            "description": "W bloku banera umieszczono obraz obraz1.jpg z tekstem alternatywnym: \"boisko\" lub w bloku prawym umieszczono obraz z piłkarzem z tekstem alternatywnym: \"piłkarz\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.7",
+            "description": "W bloku lewym umieszczono formularz",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.8",
+            "description": "Na stronie umieszczono pole edycyjne oraz przycisk \"Sprawdź\"",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.2.9",
+            "description": "W bloku lewym umieszczono jedną listę punktowaną, zastosowano znaczniki <ul>, <li>, (generowana skryptem lub HTML)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 3: Działanie witryny internetowej",
+        "note": "Uwaga: Jeśli witryna nie uruchamia się z powodu błędów PHP – uruchomić plik lokalnie z dysku lub sprawdzić wg kryteriów w kodzie źródłowym strony",
+        "symbol": "R.3",
+        "requirements": [
+          {
+            "symbol": "R.3.1",
+            "description": "Układ bloków po uruchomieniu strony w przeglądarce jest w pełni zgodny z obrazem 2 w arkuszu egzaminacyjnym, nie należy brać pod uwagę bloków generowanych skryptem (prawidłowo zastosowano właściwości CSS układające bloki na stronie, np. float albo display flex albo grid albo position)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.2",
+            "description": "Przycisk wysyła dane z formularza oraz pole do wprowadzania danych jest typu liczbowego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.3",
+            "description": "Formularz wysyła dane metodą POST do tego samego pliku",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.3.4",
+            "description": "Strona zawiera działające połączenie z zewnętrznym arkuszem stylów o nazwie styl.css, formatowanie CSS pochodzi jedynie z tego arkusza Uwaga: kryterium to nie jest spełnione również, gdy źle przypisano co najmniej jeden selektor do bloku (np. kropka zamiast #)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 4: Styl CSS witryny internetowej",
+        "note": "Uwaga: W przypadku, gdy nie jest spełnione kryterium 3.4, kryteria w rezultacie R.4 należy ocenić w kodzie CSS (w pliku CSS lub znaczniku <style>). Składnia musi być zgodna ze specyfikacją CSS. W R.4.7, R.4.8 dopuszcza się zdefiniowanie stylu dla bloku mecze",
+        "symbol": "R.4",
+        "requirements": [
+          {
+            "symbol": "R.4.1",
+            "description": "Ustawiono krój czcionki Tahoma dla body",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.2",
+            "description": "Ustawiono kolor tła Crimson dla body, oraz WhiteSmoke dla bloków głównego, lewego i prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.3",
+            "description": "Ustawiono biały kolor czcionki dla banera",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.4",
+            "description": "Ustawiono wysokość banera na 370px, bloku głównego: 50px, lewego i prawego: 230px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.5",
+            "description": "Ustawiono szerokość bloku lewego na 70% i prawego na 30%",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.6",
+            "description": "Ustawiono wyrównanie tekstu do środka dla banera i nagłówka h2 oraz wyrównanie do prawej strony dla bloku prawego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.7",
+            "description": "Dla pojedynczego bloku z informacją o rozgrywkach ustawiono: biały kolor czcionki, szerokość 200px, wyrównanie tekstu do środka, marginesy zewnętrzne (margin) 10px",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.8",
+            "description": "Dla pojedynczego bloku z informacją o rozgrywkach ustawiono obramowanie o szerokości 1px linią ciągłą, czarną (wartość domyślna nie musi być zapisana) oraz nadano zaokrąglenie rogów ramki 10px (border-radius)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.9",
+            "description": "W momencie najechania kursorem na pojedynczy blok z informacją o rozgrywkach kolor jego ramki zmienia się na biały (np. ustawiony kolor dla pseudoklasy hover lub inne rozwiązania)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.4.10",
+            "description": "Ustawiono styl nagłówka h2: odległość między literami (letter-spacing) 7px oraz kapitaliki (text-transform: capitalize;)",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      },
+      {
+        "title": "Rezultat 5: Skrypt połączenia z bazą",
+        "note": "Uwaga: rezultat R.5 sprawdzić w wersji XAMPP 8.1.2. Jeśli witryna nie uruchamia się z powodu błędów PHP - sprawdzić 5.1 - 5.5 wg kryteriów w kodzie źródłowym strony. Instrukcje muszą być zgodne ze składnią oraz zawierać dane wynikające z zadania. Kryteria uznajemy za spełnione jeżeli zastosowano biblioteki MySQLi lub PDO",
+        "symbol": "R.5",
+        "requirements": [
+          {
+            "symbol": "R.5.1",
+            "description": "Skrypt napisano w języku PHP i zawiera przynajmniej jedną instrukcję zgodną ze składnią",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.2",
+            "description": "Skrypt realizuje połączenie z serwerem bazy danych i wybór bazy egzamin",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.3",
+            "description": "Po wykonaniu operacji na bazie zastosowano funkcję zamknięcia bazy",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.4",
+            "description": "W skrypcie działającym na danych przesłanych z formularza zastosowano tablicę $_POST, zapis musi być poprawny składniowo i logicznie",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.5",
+            "description": "Skrypt 1 wysyła do bazy danych zapytanie 1 lub Skrypt 2 wysyła do bazy zmodyfikowane zapytanie 2 tak, że w warunku id pozycji jest równe wartości z pola edycyjnego",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.6",
+            "description": "Skrypt 1 definiuje blok (za pomocą znacznika sekcji), a w nim wyświetla dane przesłane zapytaniem dotyczące jednego rekordu",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.7",
+            "description": "Skrypt 1 wyświetla dane wg wzoru: \"<zespół 1> - <zespół 2>\" w nagłówku h3, następnie \"<wynik>\" w nagłówku h4, następnie paragraf \"w dniu: <data rozgrywki>\", gdzie pole w nawiasach <> oznacza dane pobrane skryptem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.8",
+            "description": "Liczba wygenerowanych bloków odpowiada liczbie wierszy zwróconych zapytaniem",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          },
+          {
+            "symbol": "R.5.9",
+            "description": "Skrypt 2 wyświetla przynajmniej jedno imię i nazwisko jeśli wypełniono pole do wprowadzania danych",
+            "answer": {
+              "isCorrect": false,
+              "explanation": ""
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
