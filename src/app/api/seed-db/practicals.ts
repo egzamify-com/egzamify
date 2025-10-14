@@ -1,4 +1,4 @@
-// nlx convex import --table basePracticalExams --append --deployment-name confident-aardvark-526  ./seed-db/practicals.json
+// nlx convex import --table basePracticalExams --append --deployment-name confident-aardvark-526  ./src/app/api/seed-db/practicals.json
 
 import { generateObject, type ModelMessage } from "ai"
 import { readFile, writeFile } from "node:fs/promises"
