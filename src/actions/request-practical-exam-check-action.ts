@@ -174,12 +174,15 @@ function transformAttachments(
 ) {
   return attachments.map((attachment) => {
     const mimetype = mime.getType(attachment.url!)
+    const splitName = attachment.attachmentName.split(" ")
+    const name = splitName.join("-")
+    console.log("NAME TRANSFORMED - ", name)
     return {
       type: "file",
       data: new URL(attachment.url!),
       // skip sql because it errors ("not supported type")
       mediaType: `${(mimetype?.includes("application/") ? "text/plain" : mimetype) ?? "text/plain"}`,
-      filename: attachment.attachmentName,
+      filename: name,
     } as FilePart
   })
 }
