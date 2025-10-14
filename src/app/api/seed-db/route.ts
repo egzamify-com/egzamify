@@ -5,61 +5,38 @@ export type Input = {
   contentPdf: string
   ratingPdf: string
   qualificationId: string
-  attachments: {
-    attachmentName: string
-    attachmentId: string
-    attachmentType: string
-    attachmentPath: string
-  }[]
 }
 export async function GET() {
   ;(async () => {
     const toDo: Input[] = [
       {
         contentPdf:
-          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2025-styczen-egzamin-zawodowy-praktyczny.pdf",
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2021-czerwiec-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2021-czerwiec-egzamin-zawodowy-praktyczny.pdf",
         ratingPdf:
-          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2025-styczen-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2021-czerwiec-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2021-czerwiec-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
         qualificationId: EE09,
-        attachments: [
-          {
-            attachmentName: "egzamin.sql",
-            attachmentId: "",
-            attachmentType: "text/plain",
-            attachmentPath:
-              "/Users/antoni-ostrowski/Desktop/ee9/ee09-2025-styczen-egzamin-zawodowy-praktyczny-zalaczniki/dane/egzamin.sql",
-          },
-          {
-            attachmentName: "zad1.png",
-            attachmentId: "",
-            attachmentType: "image/png",
-            attachmentPath:
-              "/Users/antoni-ostrowski/Desktop/ee9/ee09-2025-styczen-egzamin-zawodowy-praktyczny-zalaczniki/dane/zad1.png",
-          },
-
-          {
-            attachmentName: "obraz1.jpg",
-            attachmentId: "",
-            attachmentType: "image/jpg",
-            attachmentPath:
-              "/Users/antoni-ostrowski/Desktop/ee9/ee09-2025-styczen-egzamin-zawodowy-praktyczny-zalaczniki/dane/obraz1.jpg",
-          },
-        ],
       },
-      // {
-      //   contentPdf:
-      //     "/Users/antoni-ostrowski/Desktop/ee9/ee09-2024-czerwiec-egzamin-zawodowy-praktyczny.pdf",
-      //   ratingPdf:
-      //     "/Users/antoni-ostrowski/Desktop/ee9/ee09-2024-czerwiec-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
-      //   qualificationId: EE09,
-      // },
-      // {
-      //   contentPdf:
-      //     "/Users/antoni-ostrowski/Desktop/ee9/ee09-2024-styczen-egzamin-zawodowy-praktyczny.pdf",
-      //   ratingPdf:
-      //     "/Users/antoni-ostrowski/Desktop/ee9/ee09-2024-styczen-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
-      //   qualificationId: EE09,
-      // },
+      {
+        contentPdf:
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2019-czerwiec-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2019-czerwiec-egzamin-zawodowy-praktyczny.pdf",
+        ratingPdf:
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2019-czerwiec-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2019-czerwiec-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
+        qualificationId: EE09,
+      },
+      {
+        contentPdf:
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2020-czerwiec-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2020-czerwiec-egzamin-zawodowy-praktyczny.pdf",
+        ratingPdf:
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2020-czerwiec-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2020-czerwiec-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
+        qualificationId: EE09,
+      },
+      {
+        contentPdf:
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2020-styczen-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2020-styczen-egzamin-zawodowy-praktyczny.pdf",
+        ratingPdf:
+          "/Users/antoni-ostrowski/Desktop/ee9/ee09-2020-styczen-egzamin-zawodowy-praktyczny-zalaczniki/ee09-2020-styczen-egzamin-zawodowy-praktyczny-zasady-oceniania.pdf",
+        qualificationId: EE09,
+      },
     ]
 
     const promises = toDo.map((info) => {
