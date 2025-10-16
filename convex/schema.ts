@@ -116,7 +116,9 @@ const schema = defineSchema({
     examDate: v.string(),
     examAttachments: practicalExamAttachmentValidator,
     ratingData: requirementsValidator,
-  }).index("qualificationId", ["qualificationId"]),
+  })
+    .index("qualificationId", ["qualificationId"])
+    .index("examCode", ["code"]),
 
   usersPracticalExams: defineTable({
     userId: v.id("users"),

@@ -47,6 +47,35 @@ const navMain: NavbarItem[] = [
   },
 
   {
+    title: "Egzamin Teoretyczny",
+    icon: <Check size={SIDEBAR_ICON_SIZE} />,
+    url: "/dashboard/egzamin-teoretyczny",
+    childrenItems: [
+      {
+        title: "Zacznij egzamin z teorii",
+        icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
+        url: "/dashboard/egzamin-teoretyczny",
+      },
+    ],
+  },
+  {
+    title: "Egzamin Praktyczny",
+    icon: <Hand size={SIDEBAR_ICON_SIZE} />,
+    url: "/dashboard/",
+    childrenItems: [
+      {
+        title: "Rozpocznij egzamin",
+        url: "/dashboard/egzamin-praktyczny",
+        icon: <Cpu size={SIDEBAR_ICON_SIZE} />,
+      },
+      {
+        title: "Wykonane egzaminy",
+        url: "/dashboard/egzamin-praktyczny/historia",
+        icon: <History size={SIDEBAR_ICON_SIZE} />,
+      },
+    ],
+  },
+  {
     title: "Znajomi",
     icon: <Users size={SIDEBAR_ICON_SIZE} />,
     url: "/dashboard/friends",
@@ -82,35 +111,6 @@ const navMain: NavbarItem[] = [
       {
         title: "Historia czatów",
         url: "/dashboard/ai-wyjasnia/history",
-        icon: <History size={SIDEBAR_ICON_SIZE} />,
-      },
-    ],
-  },
-  {
-    title: "Egzamin Teoretyczny",
-    icon: <Check size={SIDEBAR_ICON_SIZE} />,
-    url: "/dashboard/egzamin-teoretyczny",
-    childrenItems: [
-      {
-        title: "Zacznij egzamin z teorii",
-        icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
-        url: "/dashboard/egzamin-teoretyczny",
-      },
-    ],
-  },
-  {
-    title: "Egzamin Praktyczny",
-    icon: <Hand size={SIDEBAR_ICON_SIZE} />,
-    url: "/dashboard/",
-    childrenItems: [
-      {
-        title: "Zacznij egzamin z AI",
-        url: "/dashboard/egzamin-praktyczny",
-        icon: <Cpu size={SIDEBAR_ICON_SIZE} />,
-      },
-      {
-        title: "Wykonane egzaminy",
-        url: "/dashboard/egzamin-praktyczny/historia",
         icon: <History size={SIDEBAR_ICON_SIZE} />,
       },
     ],

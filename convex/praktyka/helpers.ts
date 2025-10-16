@@ -1,5 +1,5 @@
 import type { api } from "convex/_generated/api"
-import type { Doc, Id } from "convex/_generated/dataModel"
+import type { Doc } from "convex/_generated/dataModel"
 import type { QueryCtx } from "convex/_generated/server"
 import type { FunctionReturnType } from "convex/server"
 import { v } from "convex/values"
@@ -37,11 +37,11 @@ export const practicalExamAttachmentValidator = v.array(
     attachmentId: v.id("_storage"),
   }),
 )
-export async function getExamDetailsFunc(
-  examId: Id<"basePracticalExams">,
-  ctx: QueryCtx,
-) {
-  const exam = await ctx.db.get(examId)
+export async function getExamDetailsFunc(examCode: string, ctx: QueryCtx) {
+  const exam = await ctx.db
+    .query("basePracticalExams")
+    .withIndex("examCode", (q) => q.eq("code", examCode))
+    .first()
   if (!exam) throw new Error("Exam not found")
   const qualification = await ctx.db.get(exam.qualificationId)
 

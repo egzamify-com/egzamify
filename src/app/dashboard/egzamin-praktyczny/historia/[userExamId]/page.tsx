@@ -49,7 +49,7 @@ export default function PraktykaPage({
         actionButton={
           <div className="flex flex-col gap-3">
             <Link
-              href={`/dashboard/egzamin-praktyczny/egzamin/${userExam.examId}`}
+              href={`/dashboard/egzamin-praktyczny/${userExam.baseExam.code}`}
             >
               <Button
                 onClick={async () => {
@@ -77,7 +77,7 @@ export default function PraktykaPage({
         actionButton={
           <div className="flex flex-col gap-3">
             <Link
-              href={`/dashboard/egzamin-praktyczny/egzamin/${userExam.examId}`}
+              href={`/dashboard/egzamin-praktyczny/${userExam.baseExam.code}`}
             >
               <Button
                 onClick={async () => {

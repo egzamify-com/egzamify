@@ -123,21 +123,21 @@ export const getExamDetails = query({
   },
 })
 
-export const getUserExamFromExamId = query({
-  args: { examId: v.id("basePracticalExams") },
-  handler: async (ctx, { examId }) => {
+export const getUserExamFromExamCode = query({
+  args: { examCode: v.string() },
+  handler: async (ctx, { examCode }) => {
     const userId = await getUserIdOrThrow(ctx)
+
+    const baseExam = await getExamDetailsFunc(examCode, ctx)
+    if (!baseExam) throw new Error("Base exam not found")
 
     const userExam = await ctx.db
       .query("usersPracticalExams")
       .withIndex("by_userId_examId", (q) =>
-        q.eq("userId", userId).eq("examId", examId),
+        q.eq("userId", userId).eq("examId", baseExam._id),
       )
       .filter((q) => q.eq(q.field("status"), "user_pending"))
       .first()
-
-    const baseExam = await getExamDetailsFunc(examId, ctx)
-    if (!baseExam) throw new Error("Base exam not found")
 
     return {
       userExam,

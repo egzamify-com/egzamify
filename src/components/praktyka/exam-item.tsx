@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "../ui/card"
 export default function ExamItem({ exam }: { exam: BaseExam }) {
   return (
     <Link
-      href={`/dashboard/egzamin-praktyczny/egzamin/${exam._id}`}
+      href={`/dashboard/egzamin-praktyczny/${exam.code}`}
       key={exam._id}
       className="w-full flex-shrink-0"
     >

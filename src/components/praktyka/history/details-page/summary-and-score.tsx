@@ -28,7 +28,7 @@ export default function SummaryAndScore({
         <div className="text-muted-foreground text-lg">
           {aiRating?.score} / {baseExam.maxPoints} Punktów
         </div>
-        <Link href={`/dashboard/egzamin-praktyczny/egzamin/${baseExam?._id}`}>
+        <Link href={`/dashboard/egzamin-praktyczny/${baseExam.code}`}>
           <Button className="mt-4 w-full max-w-[200px]">
             <RotateCcw /> Spróbuj ponownie
           </Button>
