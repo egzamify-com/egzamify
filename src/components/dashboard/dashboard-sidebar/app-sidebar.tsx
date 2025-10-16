@@ -15,6 +15,8 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
+import InvitesNavBadge from "~/components/friends/invites-nav-badge"
+import { Badge } from "~/components/ui/badge"
 import {
   Sidebar,
   SidebarContent,
@@ -24,8 +26,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
-import InvitesNavBadge from "../friends/invites-nav-badge"
-import { Badge } from "../ui/badge"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user/nav-user"
 

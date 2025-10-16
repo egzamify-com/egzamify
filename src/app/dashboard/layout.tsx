@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-import { AppSidebar } from "~/components/dashboard-sidebar/app-sidebar"
-import { SiteHeader } from "~/components/dashboard-sidebar/site-header"
+import { AppSidebar } from "~/components/dashboard/dashboard-sidebar/app-sidebar"
+import { SiteHeader } from "~/components/dashboard/dashboard-sidebar/site-header"
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
 
 export default function LayoutDashboard({

@@ -22,9 +22,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar"
-import { Card, CardContent } from "../../ui/card"
-import { Skeleton } from "../../ui/skeleton"
-import ActivityStatusAvatar from "../../users/activity-status-avatar"
+import { Card, CardContent } from "../../../ui/card"
+import { Skeleton } from "../../../ui/skeleton"
+import ActivityStatusAvatar from "../../../users/activity-status-avatar"
 import Credits from "./credits"
 import PracticalExamWidget from "./practical-exam-widget"
 

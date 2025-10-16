@@ -104,7 +104,7 @@ export function NavSignedIn() {
             onClick={async () => {
               await signOut()
               console.log("[AUTH] succesfully signed out")
-              toast.success("Succefully loged out")
+              toast.success("Wylogowano")
               router.replace("/")
             }}
           >

@@ -1,11 +1,144 @@
-import SignIn from "~/components/auth/SignIn";
+"use client"
+
+import { useAuthActions } from "@convex-dev/auth/react"
+import type { Providers } from "convex/auth"
+import { useConvexAuth } from "convex/react"
+import { useTheme } from "next-themes"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState, type ReactNode } from "react"
+import SpinnerLoading from "~/components/spinner-loading"
+import { ModeToggle } from "~/components/theme/theme-toggle"
+import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import { cn } from "~/lib/utils"
 
 export default function Page() {
+  const { isAuthenticated } = useConvexAuth()
+  const router = useRouter()
+  const { signIn } = useAuthActions()
+  if (isAuthenticated) {
+    router.replace("/")
+  }
+  async function handleSignIn(provider: Providers) {
+    await signIn(provider)
+  }
+
   return (
     <div className="w-full">
-      <div className="flex w-full flex-col items-center justify-center md:py-10">
-        <SignIn />
+      <div className="absolute flex w-full flex-row items-center justify-between px-3 py-2">
+        <Link href={"/"}>
+          <div className="relative flex flex-row items-start justify-start gap-2">
+            <h1 className="logo-font">Egzamify</h1>
+            <Badge
+              variant={"outline"}
+              className="absolute top-2 right-[-55px] rounded-xl"
+            >
+              <p className="">Beta</p>
+            </Badge>
+          </div>
+        </Link>
+        <ModeToggle />
+      </div>
+      <div className="bg-background flex min-h-screen w-full items-center justify-center p-4">
+        <Card className="w-full max-w-md border-0 bg-transparent shadow-transparent">
+          <CardHeader className="space-y-1 text-center">
+            <CardTitle className="text-2xl font-bold">Witaj</CardTitle>
+            <CardDescription>
+              Zaloguj się, aby kontynuować naukę
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <SignInButton
+              provider="github"
+              icon={<GithubSvg />}
+              handleSignIn={handleSignIn}
+              name="Github"
+            />
+            <SignInButton
+              provider="google"
+              icon={<GoogleSvg />}
+              handleSignIn={handleSignIn}
+              name="Google"
+            />
+
+            <p className="text-muted-foreground px-4 text-center text-xs">
+              Logując się, akceptujesz nasze warunki korzystania z usługi oraz
+              politykę prywatności.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  );
+  )
+}
+function SignInButton({
+  provider,
+  handleSignIn,
+  icon,
+  name,
+}: {
+  provider: Providers
+  handleSignIn: (input: Providers) => Promise<void>
+  icon: ReactNode
+  name: string
+}) {
+  const [isPending, setIsPending] = useState(false)
+  return (
+    <Button
+      onClick={async () => {
+        setIsPending(true)
+        await handleSignIn(provider)
+      }}
+      variant="outline"
+      className="h-11 w-full"
+      size="lg"
+    >
+      {isPending ? (
+        <SpinnerLoading />
+      ) : (
+        <div className="flex flex-row items-center justify-center gap-4">
+          {icon}
+          Zaloguj się z {name}
+        </div>
+      )}
+    </Button>
+  )
+}
+function GoogleSvg() {
+  const { theme } = useTheme()
+  return (
+    <svg
+      className={cn("scale-125", theme === "dark" && "invert")}
+      role="img"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title>Google</title>
+      <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
+    </svg>
+  )
+}
+function GithubSvg() {
+  const { theme } = useTheme()
+  return (
+    <>
+      <svg
+        className={cn("scale-125", theme === "dark" && "invert")}
+        role="img"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title>GitHub</title>
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+      </svg>
+    </>
+  )
 }

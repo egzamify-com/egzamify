@@ -15,7 +15,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible"
+} from "../../ui/collapsible"
 import type { NavbarItem } from "./app-sidebar"
 
 export function NavMain({ items }: { items: NavbarItem[] }) {
