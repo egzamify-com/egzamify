@@ -1,5 +1,5 @@
 import { v, type Infer } from "convex/values"
-import { APP_CONFIG } from "~/APP_CONFIG"
+import { APP_CONFIG } from "../../src/APP_CONFIG"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import schema from "../schema"
