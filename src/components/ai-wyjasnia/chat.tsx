@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react"
 import type { MyUIMessage } from "~/app/api/chat/route"
 import ChatMessages from "~/components/ai-wyjasnia/chat-messages"
 import NoMessages from "~/components/ai-wyjasnia/no-messages-info"
-import SpinnerLoading from "../SpinnerLoading"
+import SpinnerLoading from "../spinner-loading"
 import { ChatInputWithModeSelection } from "./chat-input"
 
 export default function Chat({

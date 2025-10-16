@@ -4,7 +4,7 @@ import { useMutation } from "convex/react"
 import { RotateCcw, Save } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import SpinnerLoading from "~/components/spinner-loading"
 import {
   InputGroup,
   InputGroupAddon,

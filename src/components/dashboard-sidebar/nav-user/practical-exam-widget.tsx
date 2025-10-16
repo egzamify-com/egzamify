@@ -2,7 +2,7 @@ import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import { Bot } from "lucide-react"
 import Link from "next/link"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Item, ItemActions, ItemContent } from "~/components/ui/item"
 
 export default function PracticalExamWidget() {

@@ -3,7 +3,7 @@
 import type schema from "convex/schema"
 import type { Infer } from "convex/values"
 import { ArrowRight, Brain } from "lucide-react"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Card } from "~/components/ui/card"
 
 type Status = Infer<

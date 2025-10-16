@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
-import SpinnerLoading from "../SpinnerLoading"
+import SpinnerLoading from "../spinner-loading"
 import { Button } from "../ui/button"
 
 export default function CancelRequest({ friendId }: { friendId: Id<"users"> }) {

@@ -5,8 +5,6 @@ import { useQuery } from "convex/custom_helpers"
 import { useParams } from "next/navigation"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
-import Achievements from "~/components/user-profile-page/achievements"
-import UserCharts from "~/components/user-profile-page/charts"
 import ProfileHeader from "~/components/user-profile-page/header"
 
 export default function Page() {
@@ -37,10 +35,12 @@ export default function Page() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <ProfileHeader info={{ user: data }} />
-      <Achievements />
-      <UserCharts />
+    <div className="flex w-full flex-col items-center justify-center p-6">
+      <div className="w-1/2">
+        <ProfileHeader info={{ user: data }} />
+        {/*<Achievements />
+      <UserCharts />*/}
+      </div>
     </div>
   )
 }

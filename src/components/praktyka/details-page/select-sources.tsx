@@ -10,7 +10,7 @@ import {
   type PracticalExamCheckMode,
 } from "~/actions/request-practical-exam-check-action"
 import FullScreenError from "~/components/full-screen-error"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
 import {
   Card,

@@ -4,7 +4,7 @@ import { useMutation } from "convex/react"
 import { Check } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import SpinnerLoading from "../SpinnerLoading"
+import SpinnerLoading from "../spinner-loading"
 import { Button } from "../ui/button"
 
 export default function AcceptRequest({ friendId }: { friendId: Id<"users"> }) {

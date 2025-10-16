@@ -6,7 +6,7 @@ import { useMutation } from "convex/react"
 import { Upload } from "lucide-react"
 import { type ChangeEvent, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
 
 export default function UploadAttachment({ userExam }: { userExam: UserExam }) {

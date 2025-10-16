@@ -6,7 +6,7 @@ import { RotateCcw, Save } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { parseConvexError } from "~/lib/utils"
-import SpinnerLoading from "../SpinnerLoading"
+import SpinnerLoading from "../spinner-loading"
 import {
   InputGroup,
   InputGroupAddon,

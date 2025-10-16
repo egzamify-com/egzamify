@@ -8,7 +8,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import FullScreenError from "~/components/full-screen-error"
 import LogInBtn from "~/components/landing-page/log-in-btn"
-import SpinnerLoading from "~/components/SpinnerLoading"
+import SpinnerLoading from "~/components/spinner-loading"
 import {
   InputGroup,
   InputGroupAddon,

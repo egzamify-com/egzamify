@@ -9,12 +9,10 @@ export default function Credits({
 }) {
   return (
     <CardHeader className="flex flex-row items-center justify-between p-0">
-      {userCredits !== undefined && (
-        <div className="flex flex-row items-center gap-1">
-          <CircleDollarSign size={20} />
-          <p>{userCredits}</p>
-        </div>
-      )}
+      <div className="flex flex-row items-center gap-1">
+        <CircleDollarSign size={20} />
+        <p>{userCredits ?? 0}</p>
+      </div>
       <GetCreditsBtn />
     </CardHeader>
   )
