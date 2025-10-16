@@ -2,7 +2,7 @@ import type { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import type { QueryCtx } from "convex/_generated/server"
 import type { FunctionReturnType } from "convex/server"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 
 export type BaseExam = FunctionReturnType<
   typeof api.praktyka.query.getExamDetails
@@ -42,7 +42,7 @@ export async function getExamDetailsFunc(examCode: string, ctx: QueryCtx) {
     .query("basePracticalExams")
     .withIndex("examCode", (q) => q.eq("code", examCode))
     .first()
-  if (!exam) throw new Error("Exam not found")
+  if (!exam) throw new ConvexError("Nie znaleziono egzaminu")
   const qualification = await ctx.db.get(exam.qualificationId)
 
   return {

@@ -1,6 +1,6 @@
 import { asyncMap } from "convex-helpers"
 import { paginationOptsValidator } from "convex/server"
-import { v, type Infer } from "convex/values"
+import { ConvexError, v, type Infer } from "convex/values"
 import { query } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import { getExamDetailsFunc } from "./helpers"
@@ -129,7 +129,7 @@ export const getUserExamFromExamCode = query({
     const userId = await getUserIdOrThrow(ctx)
 
     const baseExam = await getExamDetailsFunc(examCode, ctx)
-    if (!baseExam) throw new Error("Base exam not found")
+    if (!baseExam) throw new ConvexError("Nie znaleziono egzaminu")
 
     const userExam = await ctx.db
       .query("usersPracticalExams")
@@ -156,14 +156,15 @@ export const getUserExamDetails = query({
       .withIndex("by_id", (q) => q.eq("_id", userExamId))
       .first()
 
-    if (!userExam) throw new Error("User exam not found")
-    if (userExam.userId !== userId) throw new Error("Unauthorized")
+    if (!userExam) throw new ConvexError("Nie znaleziono egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
 
     const baseExam = await ctx.db.get(userExam.examId)
-    if (!baseExam) throw new Error("Base exam not found")
+    if (!baseExam) throw new ConvexError("Nie znaleziono egzaminu")
 
     const qualification = await ctx.db.get(baseExam.qualificationId)
-    if (!qualification) throw new Error("Qualification not found")
+    if (!qualification) throw new ConvexError("Nie znaleziono kwalifikacji")
 
     return {
       ...userExam,
@@ -187,7 +188,7 @@ export const listUserExams = query({
 
     const withQ = await asyncMap(userExams.page, async (userExam) => {
       const baseExam = await ctx.db.get(userExam.examId)
-      if (!baseExam) throw new Error("Exam not found")
+      if (!baseExam) throw new ConvexError("Nie znaleziono egzaminu")
       const qualification = await ctx.db.get(baseExam.qualificationId)
 
       return {

@@ -1,104 +1,104 @@
-import { v } from "convex/values";
-import { mutation } from "../_generated/server";
-import { getUserIdOrThrow } from "../custom_helpers";
+import { ConvexError, v } from "convex/values"
+import { mutation } from "../_generated/server"
+import { getUserIdOrThrow } from "../custom_helpers"
 
 export const cancelFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserIdOrThrow(ctx);
+    const userId = await getUserIdOrThrow(ctx)
 
     const document = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
         q.eq("requestingUserId", userId).eq("receivingUserId", friendId),
       )
-      .first();
+      .first()
 
-    if (!document) throw new Error("Friend request not found");
+    if (!document) throw new ConvexError("Nie znaleziono zaproszenia")
 
-    await ctx.db.delete(document._id);
+    await ctx.db.delete(document._id)
   },
-});
+})
 
 export const deleteFriend = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserIdOrThrow(ctx);
+    const userId = await getUserIdOrThrow(ctx)
 
     const friendRecordFromUser = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
         q.eq("requestingUserId", userId).eq("receivingUserId", friendId),
       )
-      .first();
+      .first()
     const friendRecordFromFriend = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
         q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
-      .first();
+      .first()
 
     // delete the friend record based on who initiated the friend request
     if (friendRecordFromUser && !friendRecordFromFriend) {
-      await ctx.db.delete(friendRecordFromUser._id);
+      await ctx.db.delete(friendRecordFromUser._id)
     } else if (friendRecordFromFriend && !friendRecordFromUser) {
-      await ctx.db.delete(friendRecordFromFriend._id);
+      await ctx.db.delete(friendRecordFromFriend._id)
     }
   },
-});
+})
 
 export const rejectFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserIdOrThrow(ctx);
+    const userId = await getUserIdOrThrow(ctx)
 
     const friendRequest = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
         q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
-      .first();
+      .first()
 
-    if (!friendRequest) throw new Error("Failed to find friend request");
+    if (!friendRequest) throw new Error("Failed to find friend request")
 
     if (friendRequest.status != "request_sent")
-      throw new Error("Friend already accepted");
+      throw new ConvexError("Znajomy już dodany")
 
-    await ctx.db.delete(friendRequest._id);
+    await ctx.db.delete(friendRequest._id)
   },
-});
+})
 
 export const acceptFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserIdOrThrow(ctx);
+    const userId = await getUserIdOrThrow(ctx)
 
     const friendRequest = await ctx.db
       .query("friends")
       .withIndex("from_to", (q) =>
         q.eq("requestingUserId", friendId).eq("receivingUserId", userId),
       )
-      .first();
+      .first()
 
-    if (!friendRequest) throw new Error("Failed to find friend request");
+    if (!friendRequest) throw new ConvexError("Nie znaleziono zaproszenia")
 
     if (friendRequest.status != "request_sent")
-      throw new Error("Friend already accepted");
+      throw new ConvexError("Znajomy już dodany")
 
-    await ctx.db.patch(friendRequest._id, { status: "accepted" });
+    await ctx.db.patch(friendRequest._id, { status: "accepted" })
   },
-});
+})
 
 export const sendFriendRequest = mutation({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
-    const userId = await getUserIdOrThrow(ctx);
+    const userId = await getUserIdOrThrow(ctx)
 
     await ctx.db.insert("friends", {
       requestingUserId: userId,
       receivingUserId: friendId,
       status: "request_sent",
       updatedAt: Date.now(),
-    });
+    })
   },
-});
+})

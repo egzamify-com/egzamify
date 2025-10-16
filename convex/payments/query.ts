@@ -1,4 +1,4 @@
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import type Stripe from "stripe"
 import { query } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
@@ -33,7 +33,9 @@ export const getTransaction = query({
       .first()
     if (!customerId) {
       console.error("[STRIPE] Customer id for user not found")
-      throw new Error("Customer id for user not found")
+      throw new ConvexError(
+        "[STRIPE] Nie znaleziono customer id dla użytkownika",
+      )
     }
     const transactionRecord = await ctx.db
       .query("kv")
@@ -43,18 +45,18 @@ export const getTransaction = query({
       .first()
     if (!transactionRecord) {
       console.error("[STRIPE] Transaction not found")
-      throw new Error("Transaction not found")
+      throw new ConvexError("Nie znaleziono transakcji")
     }
     let payment: Stripe.PaymentIntent | null = null
     try {
       payment = JSON.parse(transactionRecord.value)
     } catch (error) {
       console.error("[STRIPE] Failed to parse transaction from db", error)
-      throw new Error("Failed to parse transaction from db")
+      throw new ConvexError("Nie udało się zdobyć transakcji")
     }
     if (!payment) {
       console.error("[STRIPE] Failed to parse transaction from db")
-      throw new Error("Failed to parse transaction from db")
+      throw new ConvexError("Nie udało się zdobyć transakcji")
     }
     // console.log({ payment })
     console.log("[STRIPE] Payment from db status - ", payment.status)

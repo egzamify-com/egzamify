@@ -1,4 +1,5 @@
 import { v, type Infer } from "convex/values"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import schema from "../schema"
@@ -31,9 +32,9 @@ export const sendFeedback = mutation({
       (feedback) => feedback._creationTime > lastHour,
     ).length
 
-    if (lastHourCount >= 5) {
+    if (lastHourCount >= APP_CONFIG.feedback.maxFeedbacksSentPerHour) {
       throw new Error(
-        "Too many feedbacks sent in last hour, please try again later",
+        "Za dużo opinii wysłanych w ciągu ostatniej godziny, spróbuj ponownie później",
       )
     }
 

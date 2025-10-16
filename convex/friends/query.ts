@@ -1,7 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { stream } from "convex-helpers/server/stream"
 import { paginationOptsValidator } from "convex/server"
-import { v, type Infer } from "convex/values"
+import { ConvexError, v, type Infer } from "convex/values"
 import { query } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import schema from "../schema"
@@ -21,7 +21,7 @@ export const checkUserFriendStatus = query({
   ): Promise<{ status: Infer<typeof friendFilterValidator> }> => {
     const { friendId } = args
     const userId = await getAuthUserId(ctx)
-    if (!userId) throw new Error("Failed to get current user")
+    if (!userId) throw new ConvexError("Nie jesteś zalogowany")
 
     const userSideReq = await ctx.db
       .query("friends")

@@ -1,5 +1,5 @@
 import type { Doc } from "convex/_generated/dataModel"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import schema from "../schema"
@@ -25,8 +25,9 @@ export const updateUserExamStatus = mutation({
     const userId = await getUserIdOrThrow(ctx)
 
     const userExam = await ctx.db.get(userExamId)
-    if (!userExam) throw new Error("User exam not found")
-    if (userExam.userId !== userId) throw new Error("User not authorized")
+    if (!userExam) throw new ConvexError("Nie znaleziono twojego egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
 
     await ctx.db.patch(userExamId, {
       status: newStatus,
@@ -40,8 +41,9 @@ export const deleteUserExam = mutation({
     const userId = await getUserIdOrThrow(ctx)
 
     const userExam = await ctx.db.get(userExamId)
-    if (!userExam) throw new Error("User exam not found")
-    if (userExam.userId !== userId) throw new Error("User not authorized")
+    if (!userExam) throw new ConvexError("Nie znaleziono twojego egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
 
     userExam.attachments?.map(async (attachment) => {
       await ctx.storage.delete(attachment.attachmentId)
@@ -69,8 +71,9 @@ export const sendAttachment = mutation({
     const userId = await getUserIdOrThrow(ctx)
 
     const userExam = await ctx.db.get(userExamId)
-    if (!userExam) throw new Error("User exam not found")
-    if (userExam.userId !== userId) throw new Error("User not authorized")
+    if (!userExam) throw new ConvexError("Nie znaleziono twojego egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
 
     const newAttachments: Doc<"usersPracticalExams">["attachments"] = [
       ...(userExam.attachments ?? []),
@@ -89,8 +92,9 @@ export const deleteAttachment = mutation({
     const userId = await getUserIdOrThrow(ctx)
 
     const userExam = await ctx.db.get(userExamId)
-    if (!userExam) throw new Error("User exam not found")
-    if (userExam.userId !== userId) throw new Error("User not authorized")
+    if (!userExam) throw new ConvexError("Nie znaleziono twojego egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
 
     const newAttachments: Doc<"usersPracticalExams">["attachments"] =
       userExam.attachments?.filter(
@@ -108,8 +112,9 @@ export const saveRatingData = mutation({
     const userId = await getUserIdOrThrow(ctx)
 
     const userExam = await ctx.db.get(userExamId)
-    if (!userExam) throw new Error("User exam not found")
-    if (userExam.userId !== userId) throw new Error("User not authorized")
+    if (!userExam) throw new ConvexError("Nie znaleziono twojego egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
 
     await ctx.db.patch(userExamId, {
       aiRating: ratingData,

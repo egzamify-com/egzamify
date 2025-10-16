@@ -1,5 +1,8 @@
 import { groq } from "@ai-sdk/groq"
 type AppConfig = {
+  feedback: {
+    maxFeedbacksSentPerHour: number
+  }
   navbarDisplay: {
     blockNavbarSitesArr: string[]
   }
@@ -50,6 +53,9 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  feedback: {
+    maxFeedbacksSentPerHour: 8,
+  },
   navbarDisplay: {
     blockNavbarSitesArr: ["welcome", "sign-in", "dashboard"],
   },

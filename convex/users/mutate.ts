@@ -1,21 +1,19 @@
-import { getAuthUserId } from "@convex-dev/auth/server"
 import { ConvexError, v } from "convex/values"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow, vv } from "../custom_helpers"
 
 export const toggleUserActivityStatus = mutation({
   args: { newStatus: v.boolean() },
-  handler: async (ctx, args) => {
-    const { newStatus } = args
-    const userId = await getAuthUserId(ctx)
-    if (!userId) throw new Error("Failed to get current user")
+  handler: async (ctx, { newStatus }) => {
+    const userId = await getUserIdOrThrow(ctx)
 
-    if (newStatus) console.log("User started using app")
-    else console.log("User stopped using app")
+    // if (newStatus) console.log("User started using app")
+    // else console.log("User stopped using app")
 
     await ctx.db.patch(userId, { isActive: newStatus })
   },
 })
+
 export const updateUserCredits = mutation({
   args: { creditsToAdd: v.number() },
   handler: async (ctx, { creditsToAdd }) => {
@@ -54,6 +52,7 @@ export const updateUserProfile = mutation({
     await ctx.db.patch(userId, { ...newFields })
   },
 })
+
 export const updateUsername = mutation({
   args: { newUsername: v.string() },
   handler: async (ctx, { newUsername }) => {
