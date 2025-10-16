@@ -25,10 +25,7 @@ export default function AllQualificationsList() {
 
   if (isPending) <FullScreenLoading />
 
-  if (
-    (qualificationsData && qualificationsData.qualifications.length === 0) ||
-    error
-  ) {
+  if (qualificationsData?.qualifications.length === 0 || error) {
     console.error("[QUALIFICATIONS] Brak kwalifikacji (?)")
     return (
       <FullScreenError
