@@ -1,8 +1,8 @@
 import type { Doc } from "convex/_generated/dataModel"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import type { Dispatch, SetStateAction } from "react"
-import { UpdateUsername } from "~/app/dashboard/settings/page"
 import type { OnboardingState } from "~/app/welcome/page"
+import UpdateUsername from "../settings/update-username"
 import { Button } from "../ui/button"
 import {
   Card,

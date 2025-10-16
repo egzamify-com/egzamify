@@ -1,16 +1,9 @@
-import { api } from "convex/_generated/api"
-import type { Doc, Id } from "convex/_generated/dataModel"
-import { useQuery } from "convex/custom_helpers"
-import { useMutation } from "convex/react"
-import type { FunctionReturnType } from "convex/server"
+import type { Doc } from "convex/_generated/dataModel"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { useState, type Dispatch, type SetStateAction } from "react"
-import { toast } from "sonner"
+import { type Dispatch, type SetStateAction } from "react"
 import type { OnboardingState } from "~/app/welcome/page"
-import { parseConvexError } from "~/lib/utils"
-import FullScreenError from "../full-screen-error"
-import SpinnerLoading from "../SpinnerLoading"
+import UpdateQualifications from "../settings/update-qualifications"
 import { Button } from "../ui/button"
 import {
   Card,
@@ -20,24 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card"
-import { MultiSelect } from "../ui/multi-select"
-const options = [
-  { value: "react", label: "React" },
-  { value: "vue", label: "Vue.js" },
-  { value: "angular", label: "Angular" },
-]
-function transformQualifications(
-  qualifications: FunctionReturnType<
-    typeof api.teoria.query.getQualificationsList
-  >,
-) {
-  return qualifications.qualifications.map((qualification) => {
-    return {
-      value: qualification.id,
-      label: `${qualification.name}`,
-    }
-  })
-}
 
 export default function UserQualifications({
   setCurrentStep,
@@ -46,40 +21,6 @@ export default function UserQualifications({
   setCurrentStep: Dispatch<SetStateAction<OnboardingState>>
   user: Doc<"users">
 }) {
-  const updateUserProfile = useMutation(api.users.mutate.updateUserProfile)
-  const [isMutating, setIsMutating] = useState(false)
-  const [selectedValues, setSelectedValues] = useState<string[]>([])
-  const { data, isPending, error } = useQuery(
-    api.teoria.query.getQualificationsList,
-  )
-  if (isPending) return <SpinnerLoading />
-  if (error || !data) {
-    console.error("[ERROR] Error while fetching qualifications - ", error)
-    return (
-      <FullScreenError errorMessage="Wystąpił nieoczekiwany błąd, przepraszamy." />
-    )
-  }
-  async function handleUpdateQualifications() {
-    try {
-      setIsMutating(true)
-      await updateUserProfile({
-        newFields: {
-          ...user,
-          preferredQualificationsIds: selectedValues as Id<"qualifications">[],
-        },
-      })
-      setIsMutating(false)
-      toast.success("Zapisano twoje kwalifikacje")
-      setCurrentStep("completed")
-    } catch (error) {
-      setIsMutating(false)
-      const errMess = parseConvexError(error)
-      console.error("[ERROR] Error while setting current step - ", error)
-      toast.error("Nie udało się ustawić kwalifikacji", {
-        description: errMess,
-      })
-    }
-  }
   return (
     <Card className="w-2/5">
       <CardHeader>
@@ -98,13 +39,7 @@ export default function UserQualifications({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <MultiSelect
-          options={transformQualifications(data)}
-          onValueChange={setSelectedValues}
-          defaultValue={selectedValues}
-          hideSelectAll
-          placeholder="Wybierz kwalifikacje"
-        />
+        <UpdateQualifications {...{ user }} />
       </CardContent>
       <CardFooter className="flex w-full justify-between">
         <Button
@@ -115,17 +50,11 @@ export default function UserQualifications({
           Wstecz
         </Button>
         <Button
-          onClick={async () => await handleUpdateQualifications()}
+          onClick={async () => setCurrentStep("completed")}
           variant={"outline"}
         >
-          {isMutating ? (
-            <SpinnerLoading />
-          ) : (
-            <>
-              <ArrowRight />
-              Dalej
-            </>
-          )}
+          <ArrowRight />
+          Dalej
         </Button>
       </CardFooter>
     </Card>

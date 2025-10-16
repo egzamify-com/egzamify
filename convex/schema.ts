@@ -24,7 +24,7 @@ const schema = defineSchema({
     pendingCredits: v.optional(v.number()),
     daily_streak: v.optional(v.number()),
     onBoarded: v.optional(v.boolean()),
-    preferredQualificationsIds: v.optional(v.array(v.id("qualifications"))),
+    savedQualificationsIds: v.optional(v.array(v.id("qualifications"))),
   })
     .index("username", ["username"])
     .index("email", ["email"])
