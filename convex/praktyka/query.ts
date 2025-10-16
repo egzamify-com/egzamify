@@ -2,8 +2,8 @@ import { asyncMap } from "convex-helpers"
 import { paginationOptsValidator } from "convex/server"
 import { ConvexError, v, type Infer } from "convex/values"
 import { query } from "../_generated/server"
-import { getUserIdOrThrow } from "../custom_helpers"
-import { getExamDetailsFunc } from "./helpers"
+import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
+import { getExamDetailsFunc, getExamsForQualification } from "./helpers"
 
 export type ListPracticalExamsFilter = Infer<
   typeof ListPracicalExamsFilterValidator
@@ -43,73 +43,19 @@ export const listPracticalExams = query({
       if (qualification._id === qualificationId) {
         return true
       }
+
       return false
     })
 
-    console.log({ qualifications })
-
-    const examsWithQualifications = await asyncMap(
+    const qualificationsWithExams = await getExamsForQualification(
+      ctx,
       qualifications,
-      async (qualification) => {
-        const baseExams = await ctx.db
-          .query("basePracticalExams")
-          .withIndex("qualificationId", (q) =>
-            q.eq("qualificationId", qualification._id),
-          )
-          .collect()
-
-        const sorted = baseExams.sort((a, b) => {
-          function getYearAndMonth(code: string): {
-            year: number
-            month: number
-          } {
-            const year = parseInt(code.slice(8, 10), 10)
-            const month = parseInt(code.slice(11, 13), 10)
-            return { year, month }
-          }
-
-          const dateA = getYearAndMonth(a.code)
-          const dateB = getYearAndMonth(b.code)
-
-          if (dateA.year !== dateB.year) {
-            return dateA.year - dateB.year
-          }
-
-          return dateA.month - dateB.month
-        })
-
-        return {
-          baseExams: sorted,
-          qualification,
-        }
-      },
+      sort,
     )
-    // console.log({ examsWithQualifications })
 
-    const finalList = examsWithQualifications
-      .filter((qualification) => qualification.baseExams.length > 0)
-      .sort((a, b) => {
-        if (sort === "asc") {
-          return a.qualification.name.localeCompare(
-            b.qualification.name,
-            "en",
-            {
-              sensitivity: "base",
-            },
-          )
-        } else {
-          return b.qualification.name.localeCompare(
-            a.qualification.name,
-            "en",
-            {
-              sensitivity: "base",
-            },
-          )
-        }
-      })
     return {
       ...qualificationsQuery,
-      page: finalList,
+      page: qualificationsWithExams,
     }
   },
 })
@@ -226,5 +172,33 @@ export const getLatestUserPendingExam = query({
     })
 
     return exams
+  },
+})
+
+export const listSavedQualificationsWithExams = query({
+  handler: async (ctx) => {
+    const user = await getUserProfileOrThrow(ctx)
+    if (
+      user.savedQualificationsIds?.length === 0 ||
+      !user.savedQualificationsIds
+    ) {
+      return []
+    }
+    const qualifications = await asyncMap(
+      user.savedQualificationsIds,
+      async (id) => {
+        const a = await ctx.db.get(id)
+        if (!a) return null
+        return a
+      },
+    )
+
+    const filtered = qualifications.filter((item) => item !== null)
+
+    const examsWithQualifications = await getExamsForQualification(
+      ctx,
+      filtered,
+    )
+    return examsWithQualifications
   },
 })

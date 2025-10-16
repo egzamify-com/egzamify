@@ -2,8 +2,11 @@
 
 import { usePaginatedQuery } from "convex-helpers/react/cache"
 import { api } from "convex/_generated/api"
+import { useQuery } from "convex/custom_helpers"
 import type { ListPracticalExamsFilter } from "convex/praktyka/query"
-import { Cpu } from "lucide-react"
+import type { PaginatedQueryItem } from "convex/react"
+import { Cpu, Star } from "lucide-react"
+import Link from "next/link"
 import { useState } from "react"
 import LoadMoreBtn from "~/components/load-more"
 import PageHeaderWrapper, {
@@ -14,6 +17,7 @@ import PracticalExamsFilters from "~/components/praktyka/filters"
 import EnhancedExamSkeleton, {
   LoadingMore,
 } from "~/components/praktyka/loadings"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
 export default function PraktykaPage() {
   const [searchInput, setSearchInput] = useState<string>("")
@@ -51,30 +55,70 @@ export default function PraktykaPage() {
       {qualifications.length === 0 && (
         <p className="text-muted-foreground">Brak wyników.</p>
       )}
-      {qualifications.length > 0 && (
-        <div className="flex flex-col gap-4">
-          {qualifications.map((exams) => (
-            <ExamGroup
-              key={crypto.randomUUID()}
-              group={{
-                exams: exams.baseExams.map((exam) => {
-                  return {
-                    ...exam,
-                    qualification: exams.qualification,
-                  }
-                }),
-                count: exams.baseExams.length,
-                qualificationId: exams.qualification._id,
-              }}
-            />
-          ))}
-        </div>
-      )}
+      <SavedQualifications />
+      <RenderQualifications qualifications={qualifications} />
       <LoadingMore isLoading={status === "LoadingMore"} />
       <LoadMoreBtn
         onClick={() => loadMore(40)}
         canLoadMore={status === "CanLoadMore"}
       />
     </PageHeaderWrapper>
+  )
+}
+function RenderQualifications({
+  qualifications,
+}: {
+  qualifications: PaginatedQueryItem<
+    typeof api.praktyka.query.listPracticalExams
+  >[]
+}) {
+  return (
+    <>
+      {qualifications.length > 0 &&
+        qualifications.map((exams) => (
+          <ExamGroup
+            key={crypto.randomUUID()}
+            group={{
+              exams: exams.baseExams.map((exam) => {
+                return {
+                  ...exam,
+                  qualification: exams.qualification,
+                }
+              }),
+              count: exams.baseExams.length,
+              qualificationId: exams.qualification._id,
+            }}
+          />
+        ))}
+    </>
+  )
+}
+function SavedQualifications() {
+  const { data } = useQuery(api.praktyka.query.listSavedQualificationsWithExams)
+
+  return (
+    <Card className="mb-4 gap-2 border-1">
+      <CardHeader>
+        <CardTitle className="flex flex-row items-center justify-start gap-2">
+          <Star /> <p className="text-lg">Twoje kwalifikacje</p>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {data && data.length > 0 ? (
+          <RenderQualifications qualifications={data} />
+        ) : (
+          <div>
+            <p>Brak zapisanych kwalifikacji.</p>
+            <p className="text-muted-foreground">
+              Przejdź do{" "}
+              <Link href={"/dashboard/settings"} className="underline">
+                Ustawień
+              </Link>
+              , aby dodać kwalifikację zgodne z twoim kierunkiem.
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
