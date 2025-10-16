@@ -42,7 +42,7 @@ export default function Page() {
           <Link href="/dashboard/egzamin-praktyczny">
             <Button variant={"outline"}>
               <List />
-              Browse exams
+              Przeglądaj egzaminy
             </Button>
           </Link>
         }

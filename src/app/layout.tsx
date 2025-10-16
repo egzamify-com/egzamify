@@ -29,10 +29,10 @@ export default function RootLayout({
       <ConvexAuthNextjsServerProvider>
         <html
           lang="en"
-          className={`${geist.variable}`}
+          className={`${geist.variable} bg-background`}
           suppressHydrationWarning
         >
-          <body>
+          <body className="bg-background">
             <ThemeProvider
               attribute="class"
               defaultTheme="dark"

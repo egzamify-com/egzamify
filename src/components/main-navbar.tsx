@@ -6,7 +6,7 @@ import { api } from "convex/_generated/api"
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react"
 import { LogOut } from "lucide-react"
 import Link from "next/link"
-import { redirect, usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import {
@@ -18,6 +18,7 @@ import {
 import Feedbackbtn from "./feedback-btn"
 import DashboardBtn from "./landing-page/dashboard-btn"
 import GetCreditsBtn from "./landing-page/get-credits-btn"
+import SpinnerLoading from "./spinner-loading"
 import { ModeToggle } from "./theme/theme-toggle"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
@@ -87,7 +88,8 @@ export function NavSignedIn() {
   if (!user) return null
 
   if (!user.onBoarded && !pathname.includes("/welcome")) {
-    return redirect("/welcome")
+    router.push("/welcome")
+    return <SpinnerLoading />
   }
 
   return (
