@@ -39,9 +39,9 @@ export default function SelectSources({
   if (!userExam || !baseExam)
     return <FullScreenError errorMessage="No user exam found" />
   return (
-    <Card className="gap-2">
-      <CardHeader className="relative flex items-start justify-between">
-        <CardTitle className="flex flex-row items-center justify-start gap-1">
+    <Card className="w-full gap-2 border-0 bg-transparent px-0 py-0 shadow-transparent">
+      <CardHeader className="relative flex items-start justify-between px-0">
+        <CardTitle className="flex flex-row items-center justify-start gap-1 px-0">
           <Files className="mr-2 h-5 w-5" />
           <h2>Prześlij swoje rozwiązanie</h2>
         </CardTitle>
@@ -49,7 +49,7 @@ export default function SelectSources({
           <ClearAll {...{ userExam }} />
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 px-0">
         <CardDescription>
           <p className="text-sm">Dodaj tutaj swoje pliki.</p>
         </CardDescription>
@@ -69,9 +69,6 @@ export default function SelectSources({
           ))}
 
           <div className="flex w-full flex-col items-center justify-center gap-4">
-            {userExam.attachments?.length === 0 && (
-              <p className="text-muted-foreground">Brak dodanych plików.</p>
-            )}
             <UploadAttachment {...{ userExam }} />
           </div>
         </div>
@@ -79,6 +76,7 @@ export default function SelectSources({
         <SelectMode {...{ selectedMode, setSelectedMode }} />
         <CardAction className="flex w-full flex-row items-center justify-center gap-4">
           <Link
+            className="w-full"
             href={`/dashboard/egzamin-praktyczny/historia/${userExam._id}`}
             onClick={(e) => {
               if (!userExam.attachments) {
@@ -92,6 +90,7 @@ export default function SelectSources({
           >
             <Button
               size={"lg"}
+              className="h-12 w-full"
               disabled={!userExam.attachments}
               onClick={async () => {
                 if (!userExam.attachments) return
@@ -103,7 +102,7 @@ export default function SelectSources({
                 <SpinnerLoading />
               ) : (
                 <>
-                  <Brain /> Sprawdź swóją prace z AI
+                  <Brain /> Sprawdź swoją prace z AI
                 </>
               )}
             </Button>

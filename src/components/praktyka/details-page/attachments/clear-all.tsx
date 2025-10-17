@@ -27,7 +27,7 @@ export default function ClearAll({
   return (
     <>
       <Button
-        className="absolute top-0 right-6"
+        className="absolute top-0 right-0"
         size={"sm"}
         variant={"destructive"}
         onClick={async () => {

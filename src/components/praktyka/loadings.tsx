@@ -135,31 +135,14 @@ export function ExamDetailSkeleton() {
           <Skeleton className="h-4 w-24" />
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-4">
+        <div className="grid gap-8">
           {/* Main Content Skeleton */}
-          <div className="space-y-6 lg:col-span-3">
+          <div className="space-y-6">
             <ExamHeaderSkeleton />
 
             <ExamInstructionsSkeleton />
 
             <ExamAttachmentsSkeleton />
-          </div>
-
-          {/* Sidebar Skeleton */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-8 space-y-6">
-              {/* Action Buttons Card Skeleton */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    <Skeleton className="h-6 w-24" />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Skeleton className="h-12 w-full" /> {/* Button */}
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </div>

@@ -35,7 +35,7 @@ export default function SelectMode({
             selectedMode={selectedMode}
             mode="standard"
             title="Podstawowe sprawdzenie egzaminu"
-            description="Uzyskaj niezbędną informację zwrotną na temat egzaminu wraz z kluczowymi
+            description="Uzyskaj niezbędne informacje na temat egzaminu wraz z kluczowymi
             wnioskami i sugestiami dotyczącymi poprawy."
             smallDescription="Idealne dla szybkiej oceny"
           />

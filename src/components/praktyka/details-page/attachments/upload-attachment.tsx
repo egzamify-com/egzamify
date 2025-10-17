@@ -4,7 +4,13 @@ import { api } from "convex/_generated/api"
 import type { UserExam } from "convex/praktyka/helpers"
 import { useMutation } from "convex/react"
 import { Upload } from "lucide-react"
-import { type ChangeEvent, useEffect, useRef, useState } from "react"
+import {
+  type ChangeEvent,
+  type DragEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { toast } from "sonner"
 import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
@@ -16,6 +22,7 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
   const imageInput = useRef<HTMLInputElement>(null)
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null)
   const [isUploading, setIsUploading] = useState(false) // State to track upload in progress
+  const [isDragging, setIsDragging] = useState(false)
 
   // This function now exclusively handles the upload logic
   async function uploadSelectedFile(file: File) {
@@ -53,6 +60,7 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
         attachmentName: file.name,
         userExamId: userExam._id,
       })
+      toast.success("Przesłano pliki")
     } catch (error) {
       console.error("[EXAM CHECK] Error during image upload:", error)
       toast.error("Nie udało się przesłać pliku!", {
@@ -67,11 +75,24 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
       setSelectedFiles(event.target.files)
     }
   }
+
+  const handleDrop = (event: DragEvent<HTMLButtonElement>) => {
+    event.preventDefault() // Prevents browser from opening a file
+    setIsDragging(false)
+
+    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+      console.log("files selected via drop")
+      setSelectedFiles(event.dataTransfer.files)
+    }
+  }
+
   useEffect(() => {
-    ;(async () => {
-      await handleStartUpload()
-      setSelectedFiles(null)
-    })()
+    if (selectedFiles) {
+      ;(async () => {
+        await handleStartUpload()
+        setSelectedFiles(null)
+      })()
+    }
   }, [selectedFiles])
 
   async function handleStartUpload() {
@@ -87,11 +108,9 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
     console.log("exec promsies")
     await Promise.all(promises)
     setIsUploading(false)
-    toast.success("Przesłano pliki")
   }
-
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()} className="w-full">
       <input
         hidden
         type="file"
@@ -102,7 +121,19 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
         disabled={isUploading}
       />
       <Button
-        variant={"outline"}
+        onDragOver={(event: DragEvent<HTMLButtonElement>) => {
+          event.preventDefault()
+        }}
+        onDragEnter={(event: DragEvent<HTMLButtonElement>) => {
+          event.preventDefault()
+          setIsDragging(true)
+        }}
+        onDragLeave={(event: DragEvent<HTMLButtonElement>) => {
+          event.preventDefault()
+          setIsDragging(false)
+        }}
+        onDrop={handleDrop}
+        className="text-foreground hover:bg-accent w-full border-3 border-dashed bg-transparent py-8"
         type="button"
         onClick={async () => {
           if (!isUploading) {

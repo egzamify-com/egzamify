@@ -13,7 +13,10 @@ export const Instructions = ({ exam }: { exam: BaseExam }) => {
   return (
     <>
       <Card
-        className={cn("cursor-pointer transition-colors", "hover:bg-muted")}
+        className={cn(
+          "cursor-pointer transition-colors",
+          "hover:bg-muted bg-transparent py-4",
+        )}
         onClick={() => setIsExpanded((old) => !old)}
       >
         <CardHeader>
