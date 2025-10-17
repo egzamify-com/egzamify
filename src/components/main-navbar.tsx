@@ -18,10 +18,10 @@ import {
 import Feedbackbtn from "./feedback-btn"
 import DashboardBtn from "./landing-page/dashboard-btn"
 import GetCreditsBtn from "./landing-page/get-credits-btn"
+import LogInBtn from "./landing-page/log-in-btn"
 import SpinnerLoading from "./spinner-loading"
 import { ModeToggle } from "./theme/theme-toggle"
 import { Badge } from "./ui/badge"
-import { Button } from "./ui/button"
 import { Skeleton } from "./ui/skeleton"
 import ActivityStatusAvatar from "./users/activity-status-avatar"
 
@@ -70,11 +70,7 @@ export default function Navbar() {
 }
 
 function SignedOut() {
-  return (
-    <Link href={`/sign-in`}>
-      <Button>Zaloguj się</Button>
-    </Link>
-  )
+  return <LogInBtn size="sm" className="h-9" />
 }
 
 export function NavSignedIn() {

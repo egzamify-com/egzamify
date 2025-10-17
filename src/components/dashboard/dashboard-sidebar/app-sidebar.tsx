@@ -52,7 +52,7 @@ const navMain: NavbarItem[] = [
     url: "/dashboard/egzamin-teoretyczny",
     childrenItems: [
       {
-        title: "Zacznij egzamin z teorii",
+        title: "Rozpocznij egzamin",
         icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
         url: "/dashboard/egzamin-teoretyczny",
       },
@@ -99,7 +99,7 @@ const navMain: NavbarItem[] = [
     ],
   },
   {
-    title: "Ai wyjasnia",
+    title: "AI wyjasnia",
     icon: <MessageCircle size={SIDEBAR_ICON_SIZE} />,
     url: "/dashboard/ai-wyjasnia",
     childrenItems: [
