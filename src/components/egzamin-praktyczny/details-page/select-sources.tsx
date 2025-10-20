@@ -82,7 +82,7 @@ export default function SelectSources({
         </div>
 
         <SelectMode {...{ selectedMode, setSelectedMode }} />
-        <CardAction className="flex w-full flex-row items-center justify-center gap-4">
+        <CardAction className="flex w-full flex-row items-end justify-end gap-4">
           {canUserAfford ? (
             <SubmitButton
               disabled={!userExam.attachments || isSubmittingExamCheck}
@@ -130,7 +130,7 @@ function SubmitButtonContent() {
 }
 function SubmitButton({ ...props }: ButtonProps) {
   return (
-    <Button size={"lg"} className="h-12 w-full" {...props}>
+    <Button size={"lg"} className="w-1/4" {...props}>
       {props.children}
     </Button>
   )
