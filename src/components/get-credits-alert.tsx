@@ -11,10 +11,16 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
 
-export default function GetCreditsAlert({ children }: { children: ReactNode }) {
+export default function GetCreditsAlert({
+  children,
+  // triggerClassName = "",
+}: {
+  children: ReactNode
+  // triggerClassName?: ButtonProps["className"]
+}) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

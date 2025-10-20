@@ -1,17 +1,21 @@
 "use client"
 
+import { api } from "convex/_generated/api"
+import { useQuery } from "convex/custom_helpers"
 import type { BaseExam, UserExam } from "convex/praktyka/helpers"
 import { Brain, Files } from "lucide-react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import {
   requestPracticalExamCheck,
   type PracticalExamCheckMode,
 } from "~/actions/request-practical-exam-check-action"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
+import GetCreditsAlert from "~/components/get-credits-alert"
 import SpinnerLoading from "~/components/spinner-loading"
-import { Button } from "~/components/ui/button"
+import { Button, type ButtonProps } from "~/components/ui/button"
 import {
   Card,
   CardAction,
@@ -32,9 +36,13 @@ export default function SelectSources({
   userExam: UserExam
   baseExam: BaseExam
 }) {
+  const { data: user } = useQuery(api.users.query.getCurrentUser)
   const [isSubmittingExamCheck, setIsSubmittingExamCheck] = useState(false)
   const [selectedMode, setSelectedMode] =
     useState<PracticalExamCheckMode>("standard")
+  const router = useRouter()
+  const canUserAfford =
+    user && (user.credits ?? 0) >= getModePrice(selectedMode)
 
   if (!userExam || !baseExam)
     return <FullScreenError errorMessage="No user exam found" />
@@ -75,40 +83,60 @@ export default function SelectSources({
 
         <SelectMode {...{ selectedMode, setSelectedMode }} />
         <CardAction className="flex w-full flex-row items-center justify-center gap-4">
-          <Link
-            className="w-full"
-            href={`/dashboard/egzamin-praktyczny/historia/${userExam._id}`}
-            onClick={(e) => {
-              if (!userExam.attachments) {
-                console.warn("no attachemnts")
-                toast.error("Upload some attachments first")
-                e.preventDefault()
-                e.stopPropagation()
-                return
-              }
-            }}
-          >
-            <Button
-              size={"lg"}
-              className="h-12 w-full"
-              disabled={!userExam.attachments}
-              onClick={async () => {
-                if (!userExam.attachments) return
+          {canUserAfford ? (
+            <SubmitButton
+              disabled={!userExam.attachments || isSubmittingExamCheck}
+              onClick={async (e) => {
+                if (!userExam.attachments) {
+                  toast.error("Upload some attachments first")
+                  e.preventDefault()
+                  return
+                }
+
                 setIsSubmittingExamCheck(true)
                 await requestPracticalExamCheck(userExam._id, selectedMode)
+
+                router.replace(
+                  `/dashboard/egzamin-praktyczny/historia/${userExam._id}`,
+                )
+                setIsSubmittingExamCheck(false)
               }}
             >
               {isSubmittingExamCheck ? (
                 <SpinnerLoading />
               ) : (
-                <>
-                  <Brain /> Sprawdź swoją prace z AI
-                </>
+                <SubmitButtonContent />
               )}
-            </Button>
-          </Link>
+            </SubmitButton>
+          ) : (
+            <GetCreditsAlert>
+              <SubmitButton disabled={!userExam.attachments}>
+                <SubmitButtonContent />
+              </SubmitButton>
+            </GetCreditsAlert>
+          )}
         </CardAction>
       </CardContent>
     </Card>
   )
+}
+
+function SubmitButtonContent() {
+  return (
+    <>
+      <Brain /> Sprawdź swoją prace z AI
+    </>
+  )
+}
+function SubmitButton({ ...props }: ButtonProps) {
+  return (
+    <Button size={"lg"} className="h-12 w-full" {...props}>
+      {props.children}
+    </Button>
+  )
+}
+function getModePrice(mode: PracticalExamCheckMode) {
+  if (mode === "standard") return APP_CONFIG.practicalExamRating.standardPrice
+  if (mode === "complete") return APP_CONFIG.practicalExamRating.completePrice
+  return APP_CONFIG.practicalExamRating.completePrice
 }
