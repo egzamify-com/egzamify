@@ -1,5 +1,5 @@
+import { UserExamItemSkeleton } from "~/components/egzamin-praktyczny/loadings"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
-import { UserExamItemSkeleton } from "~/components/praktyka/loadings"
 
 export default function Loading() {
   return (

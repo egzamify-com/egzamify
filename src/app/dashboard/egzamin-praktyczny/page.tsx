@@ -8,15 +8,15 @@ import type { PaginatedQueryItem } from "convex/react"
 import { Cpu, Star } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import ExamGroup from "~/components/egzamin-praktyczny/exam-group"
+import PracticalExamsFilters from "~/components/egzamin-praktyczny/filters"
+import EnhancedExamSkeleton, {
+  LoadingMore,
+} from "~/components/egzamin-praktyczny/loadings"
 import LoadMoreBtn from "~/components/load-more"
 import PageHeaderWrapper, {
   pageHeaderWrapperIconSize,
 } from "~/components/page-header-wrapper"
-import ExamGroup from "~/components/praktyka/exam-group"
-import PracticalExamsFilters from "~/components/praktyka/filters"
-import EnhancedExamSkeleton, {
-  LoadingMore,
-} from "~/components/praktyka/loadings"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
 export default function PraktykaPage() {

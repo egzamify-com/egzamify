@@ -4,13 +4,13 @@ import { usePaginatedQuery } from "convex-helpers/react/cache"
 import { api } from "convex/_generated/api"
 import { History, List } from "lucide-react"
 import Link from "next/link"
+import UserExamCard from "~/components/egzamin-praktyczny/history/user-exam-card"
+import { UserExamItemSkeleton } from "~/components/egzamin-praktyczny/loadings"
 import FullScreenError from "~/components/full-screen-error"
 import LoadMoreBtn from "~/components/load-more"
 import PageHeaderWrapper, {
   pageHeaderWrapperIconSize,
 } from "~/components/page-header-wrapper"
-import UserExamCard from "~/components/praktyka/history/user-exam-card"
-import { UserExamItemSkeleton } from "~/components/praktyka/loadings"
 import { Button } from "~/components/ui/button"
 
 const title = "Wykonane egzaminy praktyczne"

@@ -1,5 +1,5 @@
+import EnhancedExamSkeleton from "~/components/egzamin-praktyczny/loadings"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
-import EnhancedExamSkeleton from "~/components/praktyka/loadings"
 
 export default function Loading() {
   return (

@@ -1,4 +1,4 @@
-import { ExamDetailSkeleton } from "~/components/praktyka/loadings"
+import { ExamDetailSkeleton } from "~/components/egzamin-praktyczny/loadings"
 
 export default function Loading() {
   return <ExamDetailSkeleton />
