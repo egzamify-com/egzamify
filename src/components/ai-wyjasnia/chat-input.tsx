@@ -8,7 +8,8 @@ import { toast } from "sonner"
 import type { MyUIMessage } from "~/app/api/chat/route"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import { cn } from "~/lib/utils"
-import { Button } from "../ui/button"
+import GetCreditsAlert from "../get-credits-alert"
+import { Button, type ButtonProps } from "../ui/button"
 import {
   InputGroup,
   InputGroupAddon,
@@ -132,23 +133,34 @@ export function ChatInputWithModeSelection({
               placeholder={`Zapytaj o cokolwiek ...`}
             />
             <InputGroupAddon align="block-end">
-              <InputGroupButton
-                type="submit"
-                className="ml-auto"
-                size="sm"
-                variant="default"
-                disabled={
-                  !input.trim() ||
-                  (user?.credits ?? 0) <
-                    APP_CONFIG.ai_wyjasnia.creditPricePerMessage
-                }
-              >
-                Wyślij
-              </InputGroupButton>
+              {user &&
+              (user?.credits ?? 0) >=
+                APP_CONFIG.ai_wyjasnia.creditPricePerMessage ? (
+                <SendButton type="submit" />
+              ) : (
+                <div className="flex w-full flex-row justify-end">
+                  <GetCreditsAlert>
+                    <SendButton />
+                  </GetCreditsAlert>
+                </div>
+              )}
             </InputGroupAddon>
           </InputGroup>
         </form>
       </div>
     </>
+  )
+}
+
+function SendButton({ ...props }: ButtonProps) {
+  return (
+    <InputGroupButton
+      {...props}
+      className="ml-auto"
+      size="sm"
+      variant="default"
+    >
+      Wyślij
+    </InputGroupButton>
   )
 }
