@@ -73,7 +73,7 @@ function RenderQualifications({
   >[]
 }) {
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {qualifications.length > 0 &&
         qualifications.map((exams) => (
           <ExamGroup
@@ -90,7 +90,7 @@ function RenderQualifications({
             }}
           />
         ))}
-    </>
+    </div>
   )
 }
 function SavedQualifications() {
@@ -100,7 +100,8 @@ function SavedQualifications() {
     <Card className="mb-4 gap-2 border-1">
       <CardHeader>
         <CardTitle className="flex flex-row items-center justify-start gap-2">
-          <Star /> <p className="text-lg">Twoje kwalifikacje</p>
+          <Star color="yellow" fill="yellow" />{" "}
+          <p className="text-lg">Twoje kwalifikacje</p>
         </CardTitle>
       </CardHeader>
       <CardContent>

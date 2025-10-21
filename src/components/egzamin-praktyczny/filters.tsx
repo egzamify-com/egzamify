@@ -46,7 +46,7 @@ export default function PracticalExamsFilters({
   if (isPending) return <FiltersSkeleton />
 
   return (
-    <div className="mb-8 rounded-lg">
+    <div className="mb-6 rounded-lg">
       <div className="flex flex-col gap-4 lg:flex-row">
         <div className="w-2/4">
           <div className="relative">
