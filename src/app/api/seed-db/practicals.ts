@@ -130,6 +130,7 @@ export async function main({
     - if you see any images inside skip them, dont recreate them, just skip them. Keep the exam content as it is, it will be referencing the images but dont worry i will handle that. Do not try to recrate any images with md tables or anything, just skip the image and continue with exam objectives.
     - use markdown format to best describe the exam objectives, use lists big headings for sections and recreate tables if needed.
     - remember that the whole thing has to be as similar to the original content as possible. Do not come up with anything from scratch. Of course the extracted content has to be still in polish language
+    - if exam contains some help for student (for example a table with some mysql commands) you should include it in the parsed exam content
     - focus on the exam objectives only, any text that is not relevant for student while taking the exam should be skipped
     - **Strictly use Markdown syntax for structure and presentation.**
     - **Use single-hash headings ('#') for the main title (e.g., '# Zadanie Egzaminacyjne').**
