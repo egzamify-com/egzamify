@@ -5,6 +5,7 @@ import { Skeleton } from "../ui/skeleton"
 import DashboardBtn from "./dashboard-btn"
 import GetCreditsBtn from "./get-credits-btn"
 import LogInBtn from "./log-in-btn"
+import PrivacyBtn from "./privacy-url"
 
 export function Footer() {
   return (
@@ -37,13 +38,13 @@ export function Footer() {
         </div>
       </div>
 
-      {/*<div className="border-border border-t">
+      <div className="border-border border-t">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <p className="text-muted-foreground text-center text-sm">
-            © 2025 Your Company. All rights reserved.
+            © 2025 Egzamify. <PrivacyBtn />
           </p>
         </div>
-      </div>*/}
+      </div>
     </footer>
   )
 }
