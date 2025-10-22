@@ -1,4 +1,4 @@
-export default function PolitykaPrywatnosci() {
+export default async function PolitykaPrywatnosci() {
   return (
     <main className="mx-auto max-w-3xl space-y-8 px-6 py-16">
       <h1 className="mb-6 text-3xl font-bold">Polityka Prywatności</h1>
@@ -12,7 +12,7 @@ export default function PolitykaPrywatnosci() {
             href="https://egzamify.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 underline"
+            className="text-muted-foreground underline"
           >
             https://egzamify.com
           </a>{" "}
@@ -22,13 +22,7 @@ export default function PolitykaPrywatnosci() {
           Administratorem danych osobowych jest Dawid Trynkiewicz i Antoni
           Ostrowski, prowadzący działalność pod adresem: ul. Dąbrówki 4, 05-300
           Mińsk Mazowiecki, e-mail:{" "}
-          <a
-            href="mailto:egzamify-admin@proton.me"
-            className="text-blue-600 underline"
-          >
-            egzamify-admin@proton.me
-          </a>
-          .
+          <a className="text-muted-foreground">egzamify-admin@proton.me</a>.
         </p>
         <p>
           Dane osobowe przetwarzane są zgodnie z RODO oraz przepisami krajowymi.
@@ -145,10 +139,7 @@ export default function PolitykaPrywatnosci() {
         </ul>
         <p>
           Kontakt:{" "}
-          <a
-            href="mailto:egzamify-admin@proton.me"
-            className="text-blue-600 underline"
-          >
+          <a className="text-muted-foreground underline">
             egzamify-admin@proton.me
           </a>
         </p>
@@ -196,19 +187,12 @@ export default function PolitykaPrywatnosci() {
         <p>
           Administrator zastrzega sobie prawo do wprowadzania zmian w Polityce
           prywatności. Aktualna wersja zawsze dostępna pod:{" "}
-          <a
-            href="https://egzamify.com/polityka-prywatnosci"
-            className="text-blue-600 underline"
-          >
-            https://egzamify.com/polityka-prywatnosci
+          <a className="text-muted-foreground">
+            egzamify.com/polityka-prywatnosci
           </a>
           . Zmiany wchodzą w życie z chwilą publikacji.
         </p>
       </section>
-
-      <p className="text-sm text-gray-500">
-        Data wejścia w życie: 22 października 2025 r.
-      </p>
     </main>
   )
 }
