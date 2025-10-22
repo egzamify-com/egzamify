@@ -1,7 +1,7 @@
 import type { ChatRequestOptions, CreateUIMessage } from "ai"
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
-import { OctagonX, Plus } from "lucide-react"
+import { Gem, OctagonX, Plus } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -160,6 +160,7 @@ function SendButton({ ...props }: ButtonProps) {
       size="sm"
       variant="default"
     >
+      <Gem />
       Wyślij
     </InputGroupButton>
   )

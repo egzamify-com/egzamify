@@ -2,7 +2,7 @@
 
 import { api } from "convex/_generated/api"
 import { useMutation } from "convex/react"
-import { ShoppingCart } from "lucide-react"
+import { Gem } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import type Stripe from "stripe"
@@ -91,8 +91,9 @@ export default function Product({
           )}
         </CardTitle>
         <div className="mt-2 flex items-baseline justify-center gap-1">
-          <span className="text-primary text-4xl font-bold">
-            {parseInt(product.name) * quantity} kredytów
+          <span className="text-primary flex flex-row items-center justify-center gap-2 text-4xl font-bold">
+            <Gem className="h-9 w-9" />
+            {parseInt(product.name) * quantity}
           </span>
         </div>
         <div className="text-accent-foreground mt-2 text-xl font-semibold">
@@ -108,13 +109,7 @@ export default function Product({
           onClick={async () => await handleCheckout()}
           disabled={mutationPending}
         >
-          {mutationPending ? (
-            <SpinnerLoading />
-          ) : (
-            <>
-              <ShoppingCart /> Zakup
-            </>
-          )}
+          {mutationPending ? <SpinnerLoading /> : <>Zakup</>}
         </Button>
       </CardFooter>
     </Card>

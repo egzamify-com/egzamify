@@ -3,7 +3,7 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import type { BaseExam, UserExam } from "convex/praktyka/helpers"
-import { Brain, Files } from "lucide-react"
+import { Files, Gem } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -124,7 +124,7 @@ export default function SelectSources({
 function SubmitButtonContent() {
   return (
     <>
-      <Brain /> Sprawdź swoją prace z AI
+      <Gem /> Sprawdź swoją prace z AI
     </>
   )
 }
