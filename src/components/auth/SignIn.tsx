@@ -3,6 +3,7 @@
 import { useAuthActions } from "@convex-dev/auth/react"
 import { useConvexAuth } from "convex/react"
 import { Github } from "lucide-react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import {
@@ -68,8 +69,11 @@ export default function SignIn() {
           </Button>
 
           <p className="text-muted-foreground px-4 text-center text-xs">
-            Logując się, akceptujesz nasze warunki korzystania z usługi oraz
-            politykę prywatności.
+            Logując się, akceptujesz nasze warunki korzystania z usługi oraz{" "}
+            <Link href="/polityka-prywatnosci" className="underline">
+              politykę prywatności
+            </Link>
+            .
           </p>
         </CardContent>
       </Card>

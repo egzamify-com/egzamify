@@ -8,11 +8,6 @@
  * @module
  */
 
-import type {
-  ApiFromModules,
-  FilterApi,
-  FunctionReference,
-} from "convex/server";
 import type * as ai_wyjasnia_helpers from "../ai_wyjasnia/helpers.js";
 import type * as ai_wyjasnia_mutate from "../ai_wyjasnia/mutate.js";
 import type * as ai_wyjasnia_query from "../ai_wyjasnia/query.js";
@@ -37,6 +32,12 @@ import type * as teoria_mutate from "../teoria/mutate.js";
 import type * as teoria_query from "../teoria/query.js";
 import type * as users_mutate from "../users/mutate.js";
 import type * as users_query from "../users/query.js";
+
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -72,11 +73,15 @@ declare const fullApi: ApiFromModules<{
   "users/mutate": typeof users_mutate;
   "users/query": typeof users_query;
 }>;
+declare const fullApiWithMounts: typeof fullApi;
+
 export declare const api: FilterApi<
-  typeof fullApi,
+  typeof fullApiWithMounts,
   FunctionReference<any, "public">
 >;
 export declare const internal: FilterApi<
-  typeof fullApi,
+  typeof fullApiWithMounts,
   FunctionReference<any, "internal">
 >;
+
+export declare const components: {};

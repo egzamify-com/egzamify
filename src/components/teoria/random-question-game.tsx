@@ -226,11 +226,11 @@ export default function RandomQuestionGame({
       setAiExplanation(result.explanation)
       typeWriterEffect(result.explanation, 25)
 
-      toast.success("Wyjaśnienie wygenerowane! 🎉", {
+      toast.success("Wyjaśnienie wygenerowane!", {
         description: "Pobrano 0.25 kredyta z Twojego konta.",
       })
     } catch (error) {
-      console.error("❌ Błąd podczas generowania wyjaśnienia:", error)
+      console.error("Błąd podczas generowania wyjaśnienia:", error)
       toast.error("Wystąpił nieoczekiwany błąd", {
         description: "Spróbuj ponownie później.",
       })

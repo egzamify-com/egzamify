@@ -5,12 +5,10 @@ import { useQuery } from "convex/custom_helpers"
 import {
   Award,
   BookOpen,
-  Clock,
   Coins,
   FileCheck,
   Flame,
   MessageSquare,
-  Target,
   TrendingUp,
   Users,
 } from "lucide-react"
@@ -50,7 +48,6 @@ export default function DashboardPage() {
   return (
     <div className="bg-background min-h-screen p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-4">
-        {/* Powitanie */}
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">
             Witaj z powrotem, {user.username}! 👋
@@ -60,9 +57,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* GÓRNY RZĄD: Seria dzienna + Kredyty */}
         <div className="grid gap-4 md:grid-cols-2">
-          {/* SERIA DZIENNY STREAK */}
           <Card className="">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -102,7 +97,6 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* TWOJE KREDYTY */}
           <Card className="">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -134,9 +128,7 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* ŚRODKOWY RZĄD: Statystyki (duży) + Egzaminy */}
         <div className="grid gap-4 lg:grid-cols-3">
-          {/* STATYSTYKI - duży box */}
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -150,18 +142,15 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          {/* EGZAMINY - 2 karty w kolumnie */}
           <div className="flex flex-col gap-4">
-            {/* EGZAMIN TEORETYCZNY */}
             <Link
               href="/dashboard/egzamin-teoretyczny"
               className="group flex-1"
             >
               <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
                 <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex w-full items-center justify-end">
                     <BookOpen className="h-8 w-8" />
-                    <Target className="text-muted-foreground h-6 w-6" />
                   </div>
                   <CardTitle className="group-hover:text-primary transition-colors">
                     Egzamin teoretyczny
@@ -174,13 +163,11 @@ export default function DashboardPage() {
               </Card>
             </Link>
 
-            {/* EGZAMIN PRAKTYCZNY */}
             <Link href="/dashboard/egzamin-praktyczny" className="group flex-1">
               <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
                 <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex w-full items-center justify-end">
                     <FileCheck className="h-8 w-8" />
-                    <Clock className="text-muted-foreground h-6 w-6" />
                   </div>
                   <CardTitle className="group-hover:text-primary transition-colors">
                     Egzamin praktyczny
@@ -199,7 +186,7 @@ export default function DashboardPage() {
           <Link href="/dashboard/friends" className="group">
             <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
+                <div className="flex w-full items-center justify-end">
                   <Users className="h-8 w-8" />
                 </div>
                 <CardTitle className="group-hover:text-primary transition-colors">
@@ -213,16 +200,16 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          {/* STATYSTYKI - link do pełnej strony */}
           <Link href="/dashboard/konto" className="group">
             <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
               <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
+                <div className="flex w-full items-center justify-end">
                   <Award className="h-8 w-8" />
                 </div>
                 <CardTitle className="group-hover:text-primary transition-colors">
                   Statystyki
                 </CardTitle>
+
                 <CardDescription>Szczegółowe wyniki</CardDescription>
                 <Button className="mt-4 w-full" variant="secondary">
                   Zobacz statystyki
@@ -231,7 +218,6 @@ export default function DashboardPage() {
             </Card>
           </Link>
 
-          {/* AI WYJAŚNIA */}
           <DashboardCard
             {...{
               buttonLabel: "Rozpocznij chat",

@@ -5,6 +5,7 @@ import { Skeleton } from "../ui/skeleton"
 import DashboardBtn from "./dashboard-btn"
 import GetCreditsBtn from "./get-credits-btn"
 import LogInBtn from "./log-in-btn"
+import PrivacyBtn from "./privacy-btn"
 
 export function Footer() {
   return (
@@ -27,9 +28,11 @@ export function Footer() {
             </AuthLoading>
             <Unauthenticated>
               <LogInBtn />
+              <PrivacyBtn />
             </Unauthenticated>
 
             <Authenticated>
+              <PrivacyBtn />
               <DashboardBtn />
               <GetCreditsBtn />
             </Authenticated>
