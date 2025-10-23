@@ -3,7 +3,12 @@ import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { convertToModelMessages, streamText, type UIMessage } from "ai"
 import { api } from "convex/_generated/api"
 import { fetchMutation } from "convex/nextjs"
-import { chargeCredits, refundCredits } from "~/actions/actions"
+import {
+  chargeCredits,
+  getNextjsUserOrThrow,
+  refundCredits,
+} from "~/actions/actions"
+import { PostHogClient } from "~/actions/posthog"
 import { APP_CONFIG } from "~/APP_CONFIG"
 
 type MyMessageMetadata = {
@@ -56,6 +61,19 @@ export async function POST(req: Request) {
           id: id as string,
           messages: toOriginalMessagesWithoutMode(messages) as MyUIMessage[],
         })
+        try {
+          const posthog = PostHogClient()
+          const user = await getNextjsUserOrThrow()
+          posthog.capture({
+            event: "ai chat message",
+            distinctId: crypto.randomUUID(),
+            properties: {
+              userId: user._id,
+            },
+          })
+        } catch (e) {
+          console.error("Failed to capture posthog event - ", e)
+        }
       },
     })
   } catch (e) {
