@@ -1,35 +1,46 @@
-// import { Suspense } from "react"
-// import FullScreenLoading from "~/components/full-screen-loading"
+import { Gem } from "lucide-react"
+import FullScreenError from "~/components/full-screen-error"
+import DashboardBtn from "~/components/landing-page/dashboard-btn"
+import HandleToasts from "~/components/payments/handle-toasts"
+import { tryCatch } from "~/lib/tryCatch"
+import { polarApi } from "~/server/polar"
 
-// export default async function SuccessPage() {
-//   return (
-//     <>
-//       <Suspense
-//         fallback={
-//           <FullScreenLoading
-//             loadingMessage="Dziękujemy, otrzymaliśmy twoją płatność!"
-//             loadingDetail="Finalizujemy transakcję"
-//           />
-//         }
-//       >
-//         <div>success page</div>
-//       </Suspense>
-//     </>
-//   )
-// }
-export default function Page({
-  searchParams: { checkoutId },
+export default async function Page({
+  searchParams,
 }: {
-  searchParams: {
-    checkoutId: string
-  }
+  searchParams: Promise<{ checkoutId: string | undefined }>
 }) {
-  // Checkout has been confirmed
-  // Now, make sure to capture the Checkout.updated webhook event to update the order status in your system
+  const checkoutId = (await searchParams).checkoutId
+  if (!checkoutId) return <div>Checkout ID not found</div>
+  console.log({ checkoutId })
+  const [checkout, error] = await tryCatch(
+    (async () => {
+      return await polarApi.checkouts.get({ id: checkoutId })
+    })(),
+  )
+  if (error)
+    return (
+      <FullScreenError
+        errorMessage="Nie znaleziono sesji"
+        errorDetail={error.message}
+      />
+    )
 
   return (
-    <div>
-      <h1>Thank you! Your checkout is now being processed.</h1>
+    <div className="flex flex-1 flex-col items-center justify-center gap-4">
+      <HandleToasts
+        status={checkout.status}
+        productName={checkout.product.name}
+      />
+      <h1 className="text-5xl font-bold">{`Dziękujemy za zakup!`}</h1>
+      <h1 className="flex flex-row gap-2 text-3xl font-bold">
+        {`Zakupiono`}
+        <div className="flex flex-row items-center justify-center gap-2">
+          <Gem />
+          {`${checkout.product.name}!`}
+        </div>
+      </h1>
+      <DashboardBtn />
     </div>
   )
 }

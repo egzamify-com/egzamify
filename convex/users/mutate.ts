@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values"
-import { mutation } from "../_generated/server"
+import { internalMutation, mutation } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow, vv } from "../custom_helpers"
 
 export const toggleUserActivityStatus = mutation({
@@ -20,6 +20,16 @@ export const updateUserCredits = mutation({
     const user = await getUserProfileOrThrow(ctx)
 
     await ctx.db.patch(user._id, {
+      credits: (user.credits ?? 0) + creditsToAdd,
+    })
+  },
+})
+export const updateUserCredits_WEBHOOK_ONLY = internalMutation({
+  args: { creditsToAdd: v.number(), userId: v.id("users") },
+  handler: async ({ db }, { creditsToAdd, userId }) => {
+    const user = await db.get(userId)
+    if (!user) throw new ConvexError("User not found")
+    await db.patch(userId, {
       credits: (user.credits ?? 0) + creditsToAdd,
     })
   },

@@ -11,7 +11,7 @@ export async function getNextjsUserOrThrow() {
     { token: await convexAuthNextjsToken() },
   )
   if (!user) {
-    throw new Error("User not found")
+    throw new Error("Nie znaleziono użytkownika")
   }
   return user
 }
