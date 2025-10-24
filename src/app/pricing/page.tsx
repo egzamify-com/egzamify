@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation"
+import { getNextjsUserOrThrow } from "~/actions/actions"
 import ProductCard from "~/components/payments/product-card"
 import { polarApi } from "~/server/polar"
 export async function getProducts() {
@@ -11,6 +13,10 @@ export async function getProducts() {
 
 export default async function PricingPage() {
   const products = await getProducts()
+  const user = await getNextjsUserOrThrow()
+  if (!user) {
+    return redirect("/sign-in")
+  }
   return (
     <div className="px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -26,7 +32,7 @@ export default async function PricingPage() {
         </div>
         <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
           {products.map((product) => (
-            <ProductCard key={crypto.randomUUID()} {...{ product }} />
+            <ProductCard key={crypto.randomUUID()} {...{ product, user }} />
           ))}
         </div>
       </div>

@@ -14,6 +14,10 @@ export const POST = Webhooks({
         console.log("Checkout updated")
         break
 
+      case "order.paid":
+        console.log("order paid, add credits here")
+        break
+
       default:
         console.log(`Unhandled event type ${payload.type}`)
     }

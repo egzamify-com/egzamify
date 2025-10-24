@@ -1,6 +1,7 @@
 "use client"
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js"
+import type { Doc } from "convex/_generated/dataModel"
 import { Gem } from "lucide-react"
 import Link from "next/link"
 import { Badge } from "~/components/ui/badge"
@@ -8,7 +9,13 @@ import { Button } from "~/components/ui/button"
 import { Card, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
 import { cn } from "~/lib/utils"
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({
+  product,
+  user,
+}: {
+  product: Product
+  user: Doc<"users">
+}) {
   const productPrice = useGetProductPriceInPln(product)
 
   return (
@@ -47,7 +54,10 @@ export default function ProductCard({ product }: { product: Product }) {
       </CardHeader>
 
       <CardFooter className="pt-6">
-        <Link href={`/checkout?products=${product.id}`} className="w-full">
+        <Link
+          href={`/checkout?products=${product.id}&customerExternalId=${user._id}`}
+          className="w-full"
+        >
           <Button
             variant={true ? "default" : "outline"}
             className={`h-14 w-full text-lg font-semibold`}
@@ -68,5 +78,8 @@ function useGetProductPriceInPln(product: Product) {
   if (!productPriceInCents) return null
   const usdAmount = productPriceInCents / 100
   const plnAmount = usdAmount * USD_TO_PLN_RATE
-  return parseFloat(plnAmount.toFixed(0))
+
+  const withTax = plnAmount * 1.23
+
+  return parseFloat(withTax.toFixed(0))
 }
