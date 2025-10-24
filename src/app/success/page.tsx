@@ -1,55 +1,35 @@
-import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
-import { api } from "convex/_generated/api"
-import { fetchQuery } from "convex/nextjs"
-import { redirect } from "next/navigation"
-import { Suspense } from "react"
-import FullScreenLoading from "~/components/full-screen-loading"
-import SyncData from "./sync-stripe-data"
+// import { Suspense } from "react"
+// import FullScreenLoading from "~/components/full-screen-loading"
 
-export default async function SuccessPage({
-  searchParams,
+// export default async function SuccessPage() {
+//   return (
+//     <>
+//       <Suspense
+//         fallback={
+//           <FullScreenLoading
+//             loadingMessage="Dziękujemy, otrzymaliśmy twoją płatność!"
+//             loadingDetail="Finalizujemy transakcję"
+//           />
+//         }
+//       >
+//         <div>success page</div>
+//       </Suspense>
+//     </>
+//   )
+// }
+export default function Page({
+  searchParams: { checkoutId },
 }: {
-  searchParams: Promise<{ sessionId: string }>
+  searchParams: {
+    checkoutId: string
+  }
 }) {
-  console.log({ searchParams })
-  console.log("[STRIPE] Success server component code started")
-  const user = await fetchQuery(
-    api.users.query.getCurrentUser,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
-  if (!user) {
-    console.log("[AUTH] User not found on succes page (?)")
-    return redirect("/")
-  }
-
-  const customerId = await fetchQuery(
-    api.payments.query.getStripeCustomerId,
-    {},
-    { token: await convexAuthNextjsToken() },
-  )
-
-  if (!customerId) {
-    console.log("[STRIPE] Customer id not found on success page (?)")
-    return redirect("/")
-  }
+  // Checkout has been confirmed
+  // Now, make sure to capture the Checkout.updated webhook event to update the order status in your system
 
   return (
-    <>
-      <Suspense
-        fallback={
-          <FullScreenLoading
-            loadingMessage="Dziękujemy, otrzymaliśmy twoją płatność!"
-            loadingDetail="Finalizujemy transakcję"
-          />
-        }
-      >
-        <SyncData
-          customerId={customerId}
-          sessionId={(await searchParams).sessionId}
-          user={user}
-        />
-      </Suspense>
-    </>
+    <div>
+      <h1>Thank you! Your checkout is now being processed.</h1>
+    </div>
   )
 }
