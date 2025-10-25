@@ -25,12 +25,33 @@ export const updateUserCredits = mutation({
   },
 })
 export const updateUserCredits_WEBHOOK_ONLY = internalMutation({
-  args: { creditsToAdd: v.number(), userId: v.id("users") },
-  handler: async ({ db }, { creditsToAdd, userId }) => {
+  args: {
+    creditsToAdd: v.number(),
+    userId: v.id("users"),
+    orderId: v.string(),
+  },
+  handler: async ({ db }, { creditsToAdd, userId, orderId }) => {
+    const existingOrder = await db
+      .query("processedPayments")
+      .withIndex("by_order_id", (q) => q.eq("polarOrderId", orderId))
+      .first()
+
+    if (existingOrder) {
+      console.warn("[POLAR] Order is already stored in db")
+      return
+    }
+
     const user = await db.get(userId)
     if (!user) throw new ConvexError("User not found")
+
     await db.patch(userId, {
       credits: (user.credits ?? 0) + creditsToAdd,
+    })
+
+    await db.insert("processedPayments", {
+      userId: user._id,
+      creditsAdded: creditsToAdd,
+      polarOrderId: orderId,
     })
   },
 })

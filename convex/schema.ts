@@ -154,6 +154,12 @@ const schema = defineSchema({
       v.literal("Opinia"),
     ),
   }).index("by_user_id", ["userId"]),
+
+  processedPayments: defineTable({
+    userId: v.id("users"),
+    polarOrderId: v.string(),
+    creditsAdded: v.number(),
+  }).index("by_order_id", ["polarOrderId"]),
 })
 
 export default schema

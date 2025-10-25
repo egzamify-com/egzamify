@@ -26,6 +26,7 @@ export const handleWebhook = internalAction({
             {
               creditsToAdd,
               userId: event.data.customer.externalId as Id<"users">,
+              orderId: event.data.id,
             },
           )
           console.log("credist added succesfully - ", creditsToAdd, " credits")
