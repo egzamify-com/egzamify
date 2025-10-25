@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { type Dispatch, type SetStateAction } from "react"
 import type { OnboardingState } from "~/app/welcome/page"
-import UpdateQualifications from "../settings/update-qualifications"
+import UpdateQualifications from "../settings/profile-section/update-qualifications"
 import { Button } from "../ui/button"
 import {
   Card,

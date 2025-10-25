@@ -16,19 +16,23 @@ export default function ProductCard({
   product: Product
   user: Doc<"users">
 }) {
-  const productPrice = useGetProductPriceInPln(product)
-
+  const productPrice = getProductPriceInPln(
+    product.prices[0]?.amountType === "fixed"
+      ? product.prices[0].priceAmount
+      : 0,
+  )
+  const popular = product.name.slice(0, 2).includes("50")
   return (
     <Card
       key={crypto.randomUUID()}
       className={cn(
         `relative flex flex-col gap-0 transition-all duration-300 hover:shadow-lg`,
-        true
+        popular
           ? "border-primary hover:border-muted-foreground scale-105 shadow-lg"
           : "border-border hover:border-muted-foreground",
       )}
     >
-      {true && (
+      {popular && (
         <Badge className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 transform">
           Popularne
         </Badge>
@@ -36,7 +40,7 @@ export default function ProductCard({
 
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">
-          {true && (
+          {popular && (
             <Badge variant={"outline"} className="text-lg font-bold">
               Popular
             </Badge>
@@ -59,7 +63,7 @@ export default function ProductCard({
           className="w-full"
         >
           <Button
-            variant={true ? "default" : "outline"}
+            variant={popular ? "default" : "outline"}
             className={`h-14 w-full text-lg font-semibold`}
             size="lg"
           >
@@ -71,10 +75,8 @@ export default function ProductCard({
   )
 }
 
-function useGetProductPriceInPln(product: Product) {
+export function getProductPriceInPln(productPriceInCents: number) {
   const USD_TO_PLN_RATE = 3.6439
-  const productPriceInCents =
-    product.prices[0]?.amountType === "fixed" && product.prices[0].priceAmount
   if (!productPriceInCents) return null
   const usdAmount = productPriceInCents / 100
   const plnAmount = usdAmount * USD_TO_PLN_RATE

@@ -1,30 +1,19 @@
-"use client"
-
-import { useQuery } from "convex-helpers/react"
+import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { api } from "convex/_generated/api"
-import type { Doc } from "convex/_generated/dataModel"
-import { Settings, User } from "lucide-react"
-import FullScreenError from "~/components/full-screen-error"
-import FullScreenLoading from "~/components/full-screen-loading"
+import { fetchQuery } from "convex/nextjs"
+import { Settings } from "lucide-react"
 import PageHeaderWrapper, {
   pageHeaderWrapperIconSize,
 } from "~/components/page-header-wrapper"
-import UpdateQualifications from "~/components/settings/update-qualifications"
-import UpdateUsername from "~/components/settings/update-username"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card"
-import { Separator } from "~/components/ui/separator"
+import OrderHistorySection from "~/components/settings/order-history/order-history-section"
+import ProfileSection from "~/components/settings/profile-section/profile-section"
 
-export default function SettingsPage() {
-  const { data: user, isPending } = useQuery(api.users.query.getCurrentUser)
-  if (isPending) return <FullScreenLoading />
-  if (!user)
-    return <FullScreenError errorMessage="Nie znaleziono użytkownika" />
+export default async function SettingsPage() {
+  const user = await fetchQuery(
+    api.users.query.getCurrentUser,
+    {},
+    { token: await convexAuthNextjsToken() },
+  )
 
   return (
     <PageHeaderWrapper
@@ -32,32 +21,12 @@ export default function SettingsPage() {
       description="Zarządzaj konfiguracją swojego konta."
       icon={<Settings size={pageHeaderWrapperIconSize} />}
     >
-      <div className="bg-background min-h-screen">
-        <ProfileSection {...{ user }} />
+      <div className="flex w-full flex-col items-center justify-start">
+        <div className="flex w-3xl flex-col items-center justify-start gap-6">
+          <ProfileSection {...{ user }} />
+          <OrderHistorySection {...{ user }} />
+        </div>
       </div>
     </PageHeaderWrapper>
-  )
-}
-function ProfileSection({ user }: { user: Doc<"users"> }) {
-  return (
-    <div className="container mx-auto flex max-w-4xl flex-col gap-6 px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User size={22} />
-            <h1 className="text-xl">Profil</h1>
-          </CardTitle>
-          <CardDescription>
-            Zaktualizuj informacje o swoim profilu.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Separator />
-          <UpdateUsername {...{ user }} />
-          <Separator />
-          <UpdateQualifications {...{ user }} />
-        </CardContent>
-      </Card>
-    </div>
   )
 }

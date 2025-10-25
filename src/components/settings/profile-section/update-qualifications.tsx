@@ -1,3 +1,5 @@
+"use client"
+
 import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
@@ -6,15 +8,15 @@ import { RotateCcw, Save } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { parseConvexError } from "~/lib/utils"
-import SpinnerLoading from "../spinner-loading"
+import SpinnerLoading from "../../spinner-loading"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
-} from "../ui/input-group"
-import { Label } from "../ui/label"
-import { MultiSelect, type MultiSelectOption } from "../ui/multi-select"
-import { Skeleton } from "../ui/skeleton"
+} from "../../ui/input-group"
+import { Label } from "../../ui/label"
+import { MultiSelect, type MultiSelectOption } from "../../ui/multi-select"
+import { Skeleton } from "../../ui/skeleton"
 
 function transformToOptions(
   qualifications: Doc<"qualifications">[],
