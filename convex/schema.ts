@@ -157,9 +157,12 @@ const schema = defineSchema({
 
   processedPayments: defineTable({
     userId: v.id("users"),
-    polarOrderId: v.string(),
+    polarOrderId: v.optional(v.string()),
     creditsAdded: v.number(),
-  }).index("by_order_id", ["polarOrderId"]),
+    isFixingLog: v.optional(v.number()),
+  })
+    .index("by_order_id", ["polarOrderId"])
+    .index("by_user_id", ["userId"]),
 })
 
 export default schema

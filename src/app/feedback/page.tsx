@@ -2,13 +2,21 @@
 
 import { api } from "convex/_generated/api"
 import type { FeedbackType } from "convex/feedback/feedback"
-import { Authenticated, Unauthenticated, useMutation } from "convex/react"
-import { Send } from "lucide-react"
+import {
+  Authenticated,
+  AuthLoading,
+  Unauthenticated,
+  useMutation,
+} from "convex/react"
+import { Gem, Send } from "lucide-react"
+import Link from "next/link"
 import { useState } from "react"
 import { toast } from "sonner"
 import FullScreenError from "~/components/full-screen-error"
+import FullScreenLoading from "~/components/full-screen-loading"
 import LogInBtn from "~/components/landing-page/log-in-btn"
 import SpinnerLoading from "~/components/spinner-loading"
+import { Button } from "~/components/ui/button"
 import {
   InputGroup,
   InputGroupAddon,
@@ -40,16 +48,13 @@ export default function Page() {
       <Authenticated>
         <div className="flex flex-1 flex-col items-center justify-start pt-10">
           <div className="flex flex-col items-center justify-center gap-4 p-40">
-            <div>
-              <h1 className="text-center text-3xl font-bold">
-                Podziel się swoją opinią!
-              </h1>
-              <p>
-                Jeśli napotkałeś problem, lub masz sugestię, prosimy o
-                zgłoszenie.
-              </p>
-            </div>
-            <div className="flex w-full flex-col gap-2">
+            <h1 className="text-center text-3xl font-bold">
+              Podziel się swoją opinią!
+            </h1>
+            <p>
+              Jeśli napotkałeś problem, lub masz sugestię, prosimy o zgłoszenie.
+            </p>
+            <div className="flex w-full flex-col gap-4">
               <div className="flex w-full flex-col gap-2">
                 <InputGroup
                   onFocus={() => setDidMutationFail(false)}
@@ -131,6 +136,12 @@ export default function Page() {
                 </InputGroup>
               </div>
             </div>
+            <Link href={"/feedback/sync-credits"}>
+              <Button variant={"outline"}>
+                <Gem />
+                Nie otrzymałem zakupionych kredytów
+              </Button>
+            </Link>
           </div>
         </div>
       </Authenticated>
@@ -141,6 +152,9 @@ export default function Page() {
           actionButton={<LogInBtn />}
         />
       </Unauthenticated>
+      <AuthLoading>
+        <FullScreenLoading />
+      </AuthLoading>
     </>
   )
 }

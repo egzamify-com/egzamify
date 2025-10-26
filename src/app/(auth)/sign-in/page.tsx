@@ -4,12 +4,10 @@ import { useAuthActions } from "@convex-dev/auth/react"
 import type { Providers } from "convex/auth"
 import { useConvexAuth } from "convex/react"
 import { useTheme } from "next-themes"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, type ReactNode } from "react"
+import MinimalNavbar from "~/components/minimal-navbar"
 import SpinnerLoading from "~/components/spinner-loading"
-import { ModeToggle } from "~/components/theme/theme-toggle"
-import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import {
   Card,
@@ -33,20 +31,7 @@ export default function Page() {
 
   return (
     <div className="w-full">
-      <div className="absolute flex w-full flex-row items-center justify-between px-3 py-2">
-        <Link href={"/"}>
-          <div className="relative flex flex-row items-start justify-start gap-2">
-            <h1 className="logo-font">Egzamify</h1>
-            <Badge
-              variant={"outline"}
-              className="absolute top-2 right-[-55px] rounded-xl"
-            >
-              <p className="">Beta</p>
-            </Badge>
-          </div>
-        </Link>
-        <ModeToggle />
-      </div>
+      <MinimalNavbar />
       <div className="bg-background flex min-h-screen w-full items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 bg-transparent shadow-transparent">
           <CardHeader className="space-y-1 text-center">
