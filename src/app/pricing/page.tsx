@@ -1,7 +1,6 @@
 "use client"
 
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { Suspense } from "react"
+import { useQuery } from "@tanstack/react-query"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import { env } from "~/env"
@@ -9,15 +8,11 @@ import type { GetProductsResponse } from "../api/stripe/get-stripe-products/rout
 import Product from "./product"
 
 export default function Page() {
-  return (
-    <Suspense fallback={<FullScreenLoading />}>
-      <PricingPage />
-    </Suspense>
-  )
-}
-
-export function PricingPage() {
-  const { data: products, error } = useSuspenseQuery({
+  const {
+    data: products,
+    error,
+    isPending,
+  } = useQuery({
     queryFn: getProducts,
     queryKey: ["stripe-products"],
   })
@@ -26,9 +21,12 @@ export function PricingPage() {
     return (
       <FullScreenError
         errorDetail={error.message}
-        errorMessage="Sorry, this page in unavailable."
+        errorMessage="Coś poszło nie tak."
       />
     )
+  }
+  if (isPending) {
+    return <FullScreenLoading />
   }
 
   if (products.length === 0) {

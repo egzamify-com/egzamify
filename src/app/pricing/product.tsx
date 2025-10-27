@@ -107,8 +107,7 @@ export default function Product({
           className={`h-14 w-full text-lg font-semibold`}
           size="lg"
           onClick={async () => await handleCheckout()}
-          // disabled={mutationPending}
-          disabled={true}
+          disabled={mutationPending}
         >
           {mutationPending ? <SpinnerLoading /> : <>Zakup</>}
         </Button>
