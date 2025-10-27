@@ -39,7 +39,7 @@ export const syncUserCreditsWithPolar = mutation({
       })
       return {
         ok: false,
-        mess: "Bardzo przepraszamy, że nie otrzymałeś automatycznie swoich kredytów. Dodaliśmy do twojego konta zaginione kredyty.",
+        mess: "Bardzo przepraszamy, że nie otrzymałeś automatycznie swoich kredytów po zakupie. Dodaliśmy do twojego konta zaginione kredyty. Bardzo przepraszamy za niedogodności.",
       }
     }
 
