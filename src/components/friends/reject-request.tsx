@@ -42,7 +42,7 @@ export default function RejectRequest({ friendId }: { friendId: Id<"users"> }) {
               setIsPending(true)
               await rejectRequest({ friendId })
               setIsPending(false)
-              toast.error("Friend request rejected!")
+              toast.error("Odrzucono zaproszenie!")
             }}
           >
             {isPending ? <SpinnerLoading /> : <p>Tak, odrzuć</p>}

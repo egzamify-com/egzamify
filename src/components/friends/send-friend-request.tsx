@@ -17,7 +17,7 @@ export default function AddFriend({ friendId }: { friendId: Id<"users"> }) {
         setIsPending(true)
         sendFriendRequest({ friendId })
         setIsPending(false)
-        toast.success("Friend request sent!")
+        toast.success("Wysłano zaproszenie!")
       }}
     >
       {isPending ? (

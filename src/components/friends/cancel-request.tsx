@@ -42,7 +42,7 @@ export default function CancelRequest({ friendId }: { friendId: Id<"users"> }) {
               setIsPending(true)
               await cancelRequest({ friendId })
               setIsPending(false)
-              toast.error("Friend request cancelled")
+              toast.error("Anulowano zaproszenie!")
             }}
           >
             {isPending ? (

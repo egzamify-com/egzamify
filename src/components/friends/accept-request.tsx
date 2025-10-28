@@ -19,7 +19,7 @@ export default function AcceptRequest({ friendId }: { friendId: Id<"users"> }) {
         setIsPending(true)
         await acceptRequest({ friendId })
         setIsPending(false)
-        toast.success("Friend request accepted!")
+        toast.success("Zaakceptowano zaproszenie!")
       }}
     >
       {isPending ? (

@@ -43,7 +43,7 @@ export default function DeleteFriend({ friendId }: { friendId: Id<"users"> }) {
               setIsPending(true)
               await deleteFriend({ friendId })
               setIsPending(false)
-              toast.error("Friend deleted!")
+              toast.error("Usunięto znajomego!")
             }}
           >
             {isPending ? (
