@@ -2,9 +2,10 @@ import { api } from "convex/_generated/api"
 import type { Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import type { ListPracticalExamsFilter } from "convex/praktyka/query"
-import { Search } from "lucide-react"
+import { Search, XIcon } from "lucide-react"
 import { useEffect, type Dispatch, type SetStateAction } from "react"
 import useDebouncedSearch from "~/hooks/use-debounced-search"
+import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import {
   Select,
@@ -101,6 +102,16 @@ export default function PracticalExamsFilters({
             <SelectItem value="desc">Nazwa Z-A</SelectItem>
           </SelectContent>
         </Select>
+        <Button
+          variant={"destructive"}
+          onClick={() => {
+            setSearchInput("")
+            setSelectedSort("asc")
+            setSelectedQualificationId("wszystkie")
+          }}
+        >
+          <XIcon />
+        </Button>
       </div>
     </div>
   )
