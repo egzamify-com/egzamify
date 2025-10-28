@@ -29,6 +29,7 @@ import type * as teoria_actions from "../teoria/actions.js";
 import type * as teoria_helpers from "../teoria/helpers.js";
 import type * as teoria_mutate from "../teoria/mutate.js";
 import type * as teoria_query from "../teoria/query.js";
+import type * as users_helpers from "../users/helpers.js";
 import type * as users_mutate from "../users/mutate.js";
 import type * as users_query from "../users/query.js";
 
@@ -68,6 +69,7 @@ declare const fullApi: ApiFromModules<{
   "teoria/helpers": typeof teoria_helpers;
   "teoria/mutate": typeof teoria_mutate;
   "teoria/query": typeof teoria_query;
+  "users/helpers": typeof users_helpers;
   "users/mutate": typeof users_mutate;
   "users/query": typeof users_query;
 }>;

@@ -1,7 +1,7 @@
-import { asyncMap } from "convex-helpers"
 import { v } from "convex/values"
 import { query } from "../_generated/server"
 import { getUserProfileOrThrow } from "../custom_helpers"
+import { getUserSavedQualifications } from "./helpers"
 
 export const getCurrentUser = query({
   handler: async (ctx) => {
@@ -20,33 +20,6 @@ export const getUserFromUsername = query({
 
 export const getSavedQualifications = query({
   handler: async (ctx) => {
-    const user = await getUserProfileOrThrow(ctx)
-    const allQualifications = await ctx.db.query("qualifications").collect()
-
-    if (!user.savedQualificationsIds) {
-      return { userSavedQualifications: [], allQualifications }
-    }
-
-    const userSavedQualifications = await asyncMap(
-      user.savedQualificationsIds,
-      async (prefferedQualificationId) => {
-        const qual = await ctx.db.get(prefferedQualificationId)
-        if (!qual) {
-          return null
-        }
-        return qual
-      },
-    )
-
-    if (!userSavedQualifications) {
-      return { userSavedQualifications: [], allQualifications }
-    }
-
-    return {
-      userSavedQualifications: userSavedQualifications.filter(
-        (qual) => qual !== null,
-      ),
-      allQualifications,
-    }
+    return await getUserSavedQualifications(ctx)
   },
 })

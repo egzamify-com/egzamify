@@ -3,6 +3,7 @@ import { paginationOptsValidator } from "convex/server"
 import { ConvexError, v, type Infer } from "convex/values"
 import { query } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
+import { getUserSavedQualifications } from "../users/helpers"
 import { getExamDetailsFunc, getExamsForQualification } from "./helpers"
 
 export type ListPracticalExamsFilter = Infer<
@@ -184,16 +185,10 @@ export const listSavedQualificationsWithExams = query({
     ) {
       return []
     }
-    const qualifications = await asyncMap(
-      user.savedQualificationsIds,
-      async (id) => {
-        const a = await ctx.db.get(id)
-        if (!a) return null
-        return a
-      },
-    )
 
-    const filtered = qualifications.filter((item) => item !== null)
+    const { userSavedQualifications } = await getUserSavedQualifications(ctx)
+
+    const filtered = userSavedQualifications.filter((item) => item !== null)
 
     const examsWithQualifications = await getExamsForQualification(
       ctx,

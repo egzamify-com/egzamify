@@ -5,6 +5,7 @@ import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import type { ListPracticalExamsFilter } from "convex/praktyka/query"
 import type { PaginatedQueryItem } from "convex/react"
+import type { FunctionReturnType } from "convex/server"
 import { Cpu, Star } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -41,6 +42,9 @@ export default function PraktykaPage() {
     { initialNumItems: 40 },
   )
 
+  const { data: savedQualifications } = useQuery(
+    api.praktyka.query.listSavedQualificationsWithExams,
+  )
   return (
     <PageHeaderWrapper
       title="Egzamin praktyczny"
@@ -52,11 +56,28 @@ export default function PraktykaPage() {
         {...{ setSearchInput, setSelectedQualificationId, setSelectedSort }}
       />
       {status === "LoadingFirstPage" && <EnhancedExamSkeleton />}
+      {savedQualifications && (
+        <>
+          <SavedQualifications
+            filteredQualifications={qualifications}
+            savedQualifications={savedQualifications}
+          />
+        </>
+      )}
       {qualifications.length === 0 && (
         <p className="text-muted-foreground">Brak wyników.</p>
       )}
-      <SavedQualifications />
-      <RenderQualifications qualifications={qualifications} />
+      {/* remove saved qualifictaions from the full list (so the saved qs are only in the highlighted area)*/}
+      {savedQualifications && (
+        <RenderQualifications
+          qualifications={qualifications.filter(
+            (q) =>
+              !savedQualifications
+                .map((a) => a.qualification._id)
+                .includes(q.qualification._id),
+          )}
+        />
+      )}
       <LoadingMore isLoading={status === "LoadingMore"} />
       <LoadMoreBtn
         onClick={() => loadMore(40)}
@@ -65,6 +86,56 @@ export default function PraktykaPage() {
     </PageHeaderWrapper>
   )
 }
+function SavedQualifications({
+  filteredQualifications,
+  savedQualifications,
+}: {
+  filteredQualifications: PaginatedQueryItem<
+    typeof api.praktyka.query.listPracticalExams
+  >[]
+  savedQualifications: FunctionReturnType<
+    typeof api.praktyka.query.listSavedQualificationsWithExams
+  >
+}) {
+  if (!savedQualifications) return null
+
+  // show saved qs, only when filters are met
+  const final = savedQualifications.filter((q) =>
+    filteredQualifications
+      .map((q) => q.qualification._id)
+      .includes(q.qualification._id),
+  )
+
+  if (final.length === 0) return null
+
+  return (
+    <Card className="mb-4 gap-2 border-1">
+      <CardHeader>
+        <CardTitle className="flex flex-row items-center justify-start gap-2">
+          <Star color="yellow" fill="yellow" />{" "}
+          <p className="text-lg">Twoje kwalifikacje</p>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {final ? (
+          <RenderQualifications qualifications={final} />
+        ) : (
+          <div>
+            <p>Brak zapisanych kwalifikacji.</p>
+            <p className="text-muted-foreground">
+              Przejdź do{" "}
+              <Link href={"/dashboard/settings"} className="underline">
+                Ustawień
+              </Link>
+              , aby dodać kwalifikację zgodne z twoim kierunkiem.
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
 function RenderQualifications({
   qualifications,
 }: {
@@ -91,35 +162,5 @@ function RenderQualifications({
           />
         ))}
     </div>
-  )
-}
-function SavedQualifications() {
-  const { data } = useQuery(api.praktyka.query.listSavedQualificationsWithExams)
-
-  return (
-    <Card className="mb-4 gap-2 border-1">
-      <CardHeader>
-        <CardTitle className="flex flex-row items-center justify-start gap-2">
-          <Star color="yellow" fill="yellow" />{" "}
-          <p className="text-lg">Twoje kwalifikacje</p>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {data && data.length > 0 ? (
-          <RenderQualifications qualifications={data} />
-        ) : (
-          <div>
-            <p>Brak zapisanych kwalifikacji.</p>
-            <p className="text-muted-foreground">
-              Przejdź do{" "}
-              <Link href={"/dashboard/settings"} className="underline">
-                Ustawień
-              </Link>
-              , aby dodać kwalifikację zgodne z twoim kierunkiem.
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
   )
 }
