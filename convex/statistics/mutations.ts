@@ -1,27 +1,24 @@
-import { getAuthUserId } from "@convex-dev/auth/server"
 import { v } from "convex/values"
 import { mutation } from "../_generated/server"
+import { getUserIdOrThrow } from "../custom_helpers"
 
 export const saveUserAnswer = mutation({
   args: {
-    question_id: v.id("questions"),
+    questionId: v.id("questions"),
     answer_index: v.number(),
     isCorrect: v.boolean(),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) {
-      throw new Error("User not authenticated")
-    }
+    const userId = await getUserIdOrThrow(ctx)
 
-    const question = await ctx.db.get(args.question_id)
+    const question = await ctx.db.get(args.questionId)
     if (!question) {
       throw new Error("Question not found")
     }
 
     const answers = await ctx.db
       .query("answers")
-      .withIndex("by_question", (q) => q.eq("question_id", args.question_id))
+      .withIndex("by_question", (q) => q.eq("questionId", args.questionId))
       .collect()
 
     const sortedAnswers = answers.sort((a, b) => a.label.localeCompare(b.label))
@@ -32,11 +29,10 @@ export const saveUserAnswer = mutation({
     }
 
     await ctx.db.insert("userAnswers", {
-      user_id: userId,
-      question_id: args.question_id,
-      answer_id: selectedAnswer._id,
+      userId,
+      questionId: args.questionId,
+      answerId: selectedAnswer._id,
       isCorrect: args.isCorrect,
-      answered_at: Date.now(),
     })
 
     return { success: true }
@@ -46,10 +42,7 @@ export const saveUserAnswer = mutation({
 export const startStudySession = mutation({
   args: {},
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) {
-      throw new Error("User not authenticated")
-    }
+    const userId = await getUserIdOrThrow(ctx)
 
     const now = Date.now()
     const sessionId = await ctx.db.insert("userActivityHistory", {
@@ -67,10 +60,7 @@ export const endStudySession = mutation({
     sessionId: v.id("userActivityHistory"),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx)
-    if (!userId) {
-      throw new Error("User not authenticated")
-    }
+    await getUserIdOrThrow(ctx)
 
     await ctx.db.patch(args.sessionId, {
       stop_date: Date.now(),

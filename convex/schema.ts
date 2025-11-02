@@ -69,37 +69,34 @@ const schema = defineSchema({
     }),
 
   questions: defineTable({
-    qualification_id: v.id("qualifications"),
+    qualificationId: v.id("qualifications"),
     content: v.string(),
     year: v.number(),
-    image_url: v.optional(v.string()),
+    attachmentId: v.optional(v.string()),
     explanation: v.optional(v.string()),
-    created_at: v.optional(v.number()),
     tags: v.optional(v.array(v.string())),
     category: v.optional(v.string()),
   })
-    .index("by_qualification", ["qualification_id"])
+    .index("by_qualification", ["qualificationId"])
     .index("by_year", ["year"])
-    .index("by_qualification_year", ["qualification_id", "year"]),
+    .index("by_qualification_year", ["qualificationId", "year"]),
 
   answers: defineTable({
-    question_id: v.id("questions"),
+    questionId: v.id("questions"),
     content: v.string(),
-    image_url: v.optional(v.string()),
-    is_correct: v.boolean(),
+    attachmentId: v.optional(v.string()),
+    isCorrect: v.boolean(),
     label: v.string(),
-  }).index("by_question", ["question_id"]),
+  }).index("by_question", ["questionId"]),
 
   userAnswers: defineTable({
-    user_id: v.id("users"),
-    question_id: v.id("questions"),
+    userId: v.id("users"),
+    questionId: v.id("questions"),
     isCorrect: v.boolean(),
-    answer_id: v.id("answers"),
-    answered_at: v.number(),
+    answerId: v.id("answers"),
   })
-    .index("by_user", ["user_id"])
-    .index("by_user_date", ["user_id", "answered_at"])
-    .index("by_question", ["question_id"]),
+    .index("by_question", ["questionId"])
+    .index("by_userId", ["userId"]),
 
   userActivityHistory: defineTable({
     user_id: v.id("users"),

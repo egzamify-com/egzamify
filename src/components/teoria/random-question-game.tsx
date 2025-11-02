@@ -162,7 +162,7 @@ export default function RandomQuestionGame({
     setShowResult(true)
 
     await saveUserAnswer({
-      question_id: currentQuestion.id as Id<"questions">,
+      questionId: currentQuestion.id as Id<"questions">,
       answer_index: answerIndex,
       isCorrect: correct,
     })

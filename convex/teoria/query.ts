@@ -29,7 +29,7 @@ export const getQualificationsList = query({
         const questions = await ctx.db
           .query("questions")
           .withIndex("by_qualification", (q) =>
-            q.eq("qualification_id", qualification._id),
+            q.eq("qualificationId", qualification._id),
           )
           .collect()
 
@@ -44,7 +44,7 @@ export const getQualificationsList = query({
           id: qualification._id,
           name: qualification.name,
           label: qualification.label,
-          created_at: qualification.created_at || Date.now(),
+          created_at: qualification.created_at ?? Date.now(),
           questionsCount: questions.length,
           baseExams,
         }
@@ -70,7 +70,7 @@ export const getQuestionsByQualification = query({
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
-        q.eq("qualification_id", qualificationId),
+        q.eq("qualificationId", qualificationId),
       )
       .collect()
 
@@ -78,7 +78,7 @@ export const getQuestionsByQualification = query({
       questions.map(async (question) => {
         const answers = await ctx.db
           .query("answers")
-          .withIndex("by_question", (q) => q.eq("question_id", question._id))
+          .withIndex("by_question", (q) => q.eq("questionId", question._id))
           .collect()
 
         // Sortuj odpowiedzi według label
@@ -90,10 +90,10 @@ export const getQuestionsByQualification = query({
           id: question._id,
           question: question.content,
           answers: sortedAnswers.map((answer) => answer.content),
-          correctAnswer: sortedAnswers.findIndex((answer) => answer.is_correct),
+          correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
           explanation: question.explanation,
           year: question.year,
-          imageUrl: question.image_url,
+          imageUrl: question.attachmentId,
           answerLabels: sortedAnswers.map((answer) => answer.label),
         }
       }),
@@ -101,8 +101,8 @@ export const getQuestionsByQualification = query({
 
     // Sortuj pytania według daty utworzenia
     questionsWithAnswers.sort((a, b) => {
-      const aTime = questions.find((q) => q._id === a.id)?.created_at || 0
-      const bTime = questions.find((q) => q._id === b.id)?.created_at || 0
+      const aTime = questions.find((q) => q._id === a.id)?._creationTime ?? 0
+      const bTime = questions.find((q) => q._id === b.id)?._creationTime ?? 0
       return aTime - bTime
     })
 
@@ -127,7 +127,7 @@ export const getRandomQuestion = query({
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
-        q.eq("qualification_id", qualificationId),
+        q.eq("qualificationId", qualificationId),
       )
       .collect()
 
@@ -146,7 +146,7 @@ export const getRandomQuestion = query({
 
     const answers = await ctx.db
       .query("answers")
-      .withIndex("by_question", (q) => q.eq("question_id", randomQuestion._id))
+      .withIndex("by_question", (q) => q.eq("questionId", randomQuestion._id))
       .collect()
 
     // Sortuj odpowiedzi według label
@@ -157,10 +157,10 @@ export const getRandomQuestion = query({
         id: randomQuestion._id,
         question: randomQuestion.content,
         answers: sortedAnswers.map((answer) => answer.content),
-        correctAnswer: sortedAnswers.findIndex((answer) => answer.is_correct),
+        correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
         explanation: randomQuestion.explanation,
         year: randomQuestion.year,
-        imageUrl: randomQuestion.image_url,
+        imageUrl: randomQuestion.attachmentId,
         answerLabels: sortedAnswers.map((answer) => answer.label),
       },
     }
@@ -184,7 +184,7 @@ export const getBrowseQuestions = query({
     let questions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
-        q.eq("qualification_id", qualificationId),
+        q.eq("qualificationId", qualificationId),
       )
       .collect()
 
@@ -202,7 +202,7 @@ export const getBrowseQuestions = query({
     }
 
     // Sortuj według daty utworzenia (najnowsze pierwsze)
-    questions.sort((a, b) => (b.created_at || 0) - (a.created_at || 0))
+    questions.sort((a, b) => (b._creationTime ?? 0) - (a._creationTime ?? 0))
 
     // Paginacja
     const paginatedQuestions = questions.slice(offset, offset + limit)
@@ -211,7 +211,7 @@ export const getBrowseQuestions = query({
       paginatedQuestions.map(async (question) => {
         const answers = await ctx.db
           .query("answers")
-          .withIndex("by_question", (q) => q.eq("question_id", question._id))
+          .withIndex("by_question", (q) => q.eq("questionId", question._id))
           .collect()
 
         // Sortuj odpowiedzi według label
@@ -223,10 +223,10 @@ export const getBrowseQuestions = query({
           id: question._id,
           question: question.content,
           answers: sortedAnswers.map((answer) => answer.content),
-          correctAnswer: sortedAnswers.findIndex((answer) => answer.is_correct),
+          correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
           explanation: question.explanation,
           year: question.year,
-          imageUrl: question.image_url,
+          imageUrl: question.attachmentId,
           answerLabels: sortedAnswers.map((answer) => answer.label),
           category: `Rok ${question.year}`,
           difficulty: "Średni",
@@ -252,7 +252,7 @@ export const getQuestionsStats = query({
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
-        q.eq("qualification_id", qualificationId),
+        q.eq("qualificationId", qualificationId),
       )
       .collect()
 

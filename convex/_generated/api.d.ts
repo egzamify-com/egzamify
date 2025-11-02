@@ -23,6 +23,7 @@ import type * as payments_query from "../payments/query.js";
 import type * as praktyka_helpers from "../praktyka/helpers.js";
 import type * as praktyka_mutate from "../praktyka/mutate.js";
 import type * as praktyka_query from "../praktyka/query.js";
+import type * as statistics_helpers from "../statistics/helpers.js";
 import type * as statistics_mutations from "../statistics/mutations.js";
 import type * as statistics_query from "../statistics/query.js";
 import type * as teoria_actions from "../teoria/actions.js";
@@ -63,6 +64,7 @@ declare const fullApi: ApiFromModules<{
   "praktyka/helpers": typeof praktyka_helpers;
   "praktyka/mutate": typeof praktyka_mutate;
   "praktyka/query": typeof praktyka_query;
+  "statistics/helpers": typeof statistics_helpers;
   "statistics/mutations": typeof statistics_mutations;
   "statistics/query": typeof statistics_query;
   "teoria/actions": typeof teoria_actions;
