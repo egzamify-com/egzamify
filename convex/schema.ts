@@ -72,7 +72,8 @@ const schema = defineSchema({
     qualificationId: v.id("qualifications"),
     content: v.string(),
     year: v.number(),
-    attachmentId: v.optional(v.string()),
+    month: v.string(),
+    attachmentId: v.optional(v.id("_storage")),
     explanation: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
     category: v.optional(v.string()),
@@ -84,7 +85,7 @@ const schema = defineSchema({
   answers: defineTable({
     questionId: v.id("questions"),
     content: v.string(),
-    attachmentId: v.optional(v.string()),
+    attachmentId: v.optional(v.id("_storage")),
     isCorrect: v.boolean(),
     label: v.string(),
   }).index("by_question", ["questionId"]),
