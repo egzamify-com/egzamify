@@ -5,24 +5,6 @@ import { Hero } from "~/components/landing-page/hero"
 export default function Page() {
   return (
     <main className="min-h-screen">
-      <div className="bg-red-500">
-        <input
-          type="file"
-          onChange={async (e) => {
-            const file = e.target.files?.[0] as File
-            const data = new FormData()
-            data.set("contentPdf", file)
-            data.set("qualificationId", "some qualifcation id")
-            data.set("year", "some year")
-            data.set("month", "some month")
-
-            const uploadRequest = await fetch("/api/seed-db/seed-teoria", {
-              method: "POST",
-              body: data,
-            })
-          }}
-        />
-      </div>
       <Hero />
 
       {/*<div className="mx-auto max-w-7xl">
