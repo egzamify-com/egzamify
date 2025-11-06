@@ -4,20 +4,63 @@ import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { fetchMutation } from "convex/nextjs"
 import type { WithoutSystemFields } from "convex/server"
-import { readFile } from "fs/promises"
+import type { NextRequest } from "next/server"
 import z from "zod/v4"
 import { APP_CONFIG } from "~/APP_CONFIG"
+import { env } from "~/env"
 
-export async function GET() {
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+export async function POST(request: NextRequest) {
+  const requestData = await request.formData()
+
+  const authHeader = request.headers.get("authorization")
+  if (authHeader !== `Bearer ${env.AI_GATEWAY_API_KEY}`) {
+    throw new Error("Unauthorized")
+  }
+
+  const contentPdf: File | null = requestData.get(
+    "contentPdf",
+  ) as unknown as File
+
+  const ratingPdf: File | null = requestData.get("ratingPdf") as unknown as File
+
+  const qualificationId = requestData.get("qualificationId") as string
+
+  const year = requestData.get("year") as string
+
+  const month = requestData.get("month") as string
+
+  console.log(contentPdf)
+  console.log(ratingPdf)
+  console.log(qualificationId)
+  console.log(year)
+  console.log(month)
+
+  if (!ratingPdf || !contentPdf || !qualificationId || !month || !year) {
+    console.error("Some data missing")
+
+    console.log(contentPdf)
+    console.log(ratingPdf)
+    console.log(qualificationId)
+    console.log(year)
+    console.log(month)
+    throw new Error("Failed to do request")
+  }
+
+  const contentPdfBuffer = await contentPdf.arrayBuffer()
+  const ratingPdfBuffer = await ratingPdf.arrayBuffer()
+
   const input: TeoriaInput[] = [
     {
-      qualificationId: "kn70hd791arfasty6tnnz2r2dh7tacbw",
-      year: 2025,
-      month: "Czerwiec",
-      contentPdf:
-        "/Users/antoni-ostrowski/Downloads/ee09-2025-czerwiec-egzamin-zawodowy-pisemny.pdf",
-      ratingPdf:
-        "/Users/antoni-ostrowski/Downloads/ee09-2025-czerwiec-egzamin-zawodowy-pisemny-odpowiedzi.pdf",
+      qualificationId: qualificationId,
+      year: parseInt(year),
+      month: month,
+      contentPdf: contentPdfBuffer,
+      ratingPdf: ratingPdfBuffer,
     },
   ]
 
@@ -43,8 +86,6 @@ export async function parsePdfWithAi({
 }: TeoriaInput) {
   console.log("Start main func")
 
-  const contentFile = await readFile(contentPdf)
-  const ratingFile = await readFile(ratingPdf)
   console.log("file read done")
 
   const mess: ModelMessage[] = [
@@ -53,12 +94,12 @@ export async function parsePdfWithAi({
       content: [
         {
           type: "file",
-          data: contentFile,
+          data: contentPdf,
           mediaType: "application/pdf",
         },
         {
           type: "file",
-          data: ratingFile,
+          data: ratingPdf,
           mediaType: "application/pdf",
         },
       ],
@@ -115,8 +156,10 @@ async function insertData(data: ReadyQuestionWithAnswers[]) {
 }
 
 export type TeoriaInput = {
-  contentPdf: string
-  ratingPdf: string
+  // contentPdf: string
+  // ratingPdf: string
+  contentPdf: ArrayBuffer
+  ratingPdf: ArrayBuffer
   qualificationId: string
   year: number
   month: string
