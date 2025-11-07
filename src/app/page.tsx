@@ -1,3 +1,4 @@
+"use client"
 import { Footer } from "~/components/landing-page/footer"
 import { Hero } from "~/components/landing-page/hero"
 
