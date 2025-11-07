@@ -1,19 +1,22 @@
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { generateObject, type ModelMessage } from "ai"
 import { api } from "convex/_generated/api"
-import type { Doc } from "convex/_generated/dataModel"
+import type { Doc, Id } from "convex/_generated/dataModel"
 import { fetchMutation } from "convex/nextjs"
 import type { WithoutSystemFields } from "convex/server"
 import type { NextRequest } from "next/server"
 import z from "zod/v4"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import { env } from "~/env"
+import { getFileUrl } from "~/lib/utils"
 
 export const config = {
   api: {
     bodyParser: false,
   },
 }
+type StorageId = Id<"_storage">
+
 export async function POST(request: NextRequest) {
   const requestData = await request.formData()
 
@@ -22,11 +25,15 @@ export async function POST(request: NextRequest) {
     throw new Error("Unauthorized")
   }
 
-  const contentPdf: File | null = requestData.get(
-    "contentPdf",
-  ) as unknown as File
+  const contentPdfParam = requestData.get("contentPdf") as string
 
-  const ratingPdf: File | null = requestData.get("ratingPdf") as unknown as File
+  const ratingPdfParam = requestData.get("ratingPdf") as string
+
+  console.log({ contentPdfParam })
+  console.log({ ratingPdfParam })
+
+  const contentPdf = getFileUrl(contentPdfParam as StorageId, "contentPdf.pdf")
+  const ratingPdf = getFileUrl(ratingPdfParam as StorageId, "ratingPdf.pdf")
 
   const qualificationId = requestData.get("qualificationId") as string
 
@@ -51,18 +58,16 @@ export async function POST(request: NextRequest) {
     throw new Error("Failed to do request")
   }
 
-  const contentPdfBuffer = await contentPdf.arrayBuffer()
-  const ratingPdfBuffer = await ratingPdf.arrayBuffer()
-
   const input: TeoriaInput[] = [
     {
       qualificationId: qualificationId,
       year: parseInt(year),
       month: month,
-      contentPdf: contentPdfBuffer,
-      ratingPdf: ratingPdfBuffer,
+      contentPdf: contentPdf.raw.href,
+      ratingPdf: ratingPdf.raw.href,
     },
   ]
+  console.log({ input })
 
   const promises = input.map(async (item) => {
     const readyData = await parsePdfWithAi(item)
@@ -156,10 +161,8 @@ async function insertData(data: ReadyQuestionWithAnswers[]) {
 }
 
 export type TeoriaInput = {
-  // contentPdf: string
-  // ratingPdf: string
-  contentPdf: ArrayBuffer
-  ratingPdf: ArrayBuffer
+  contentPdf: string
+  ratingPdf: string
   qualificationId: string
   year: number
   month: string
