@@ -15,7 +15,7 @@ import { getFileUrl } from "~/lib/utils"
 import { chargeCredits, refundCredits } from "./actions"
 
 export type PracticalExamCheckMode = "standard" | "complete"
-// fkdslfj
+
 export async function requestPracticalExamCheck(
   userExamId: Id<"usersPracticalExams">,
   mode: "standard" | "complete",
@@ -41,6 +41,9 @@ export async function requestPracticalExamCheck(
     const examAttachments = transformAttachments(realExam.examAttachments)
 
     infoLogger("Transformed both exams attachemnts")
+
+    console.log({ userAttachments })
+    console.log({ examAttachments })
 
     // feed the ai all the context it needs
     const resources: ModelMessage[] = [

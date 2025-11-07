@@ -94,11 +94,13 @@ export default function SelectSources({
                 }
 
                 setIsSubmittingExamCheck(true)
-                await requestPracticalExamCheck(userExam._id, selectedMode)
 
-                router.replace(
+                requestPracticalExamCheck(userExam._id, selectedMode)
+
+                router.push(
                   `/dashboard/egzamin-praktyczny/historia/${userExam._id}`,
                 )
+
                 setIsSubmittingExamCheck(false)
               }}
             >
