@@ -15,7 +15,7 @@ import { getFileUrl } from "~/lib/utils"
 import { chargeCredits, refundCredits } from "./actions"
 
 export type PracticalExamCheckMode = "standard" | "complete"
-
+// fkdslfj
 export async function requestPracticalExamCheck(
   userExamId: Id<"usersPracticalExams">,
   mode: "standard" | "complete",
