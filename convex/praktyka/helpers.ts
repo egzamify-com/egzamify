@@ -39,11 +39,16 @@ export const practicalExamAttachmentValidator = v.array(
   }),
 )
 export async function getExamDetailsFunc(examCode: string, ctx: QueryCtx) {
+  console.log("finding exam with code - ", examCode)
   const exam = await ctx.db
     .query("basePracticalExams")
     .withIndex("examCode", (q) => q.eq("code", examCode))
     .first()
+
+  console.log("exam ?", exam?._id)
+
   if (!exam) throw new ConvexError("Nie znaleziono egzaminu")
+
   const qualification = await ctx.db.get(exam.qualificationId)
 
   return {

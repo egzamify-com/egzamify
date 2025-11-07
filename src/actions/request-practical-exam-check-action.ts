@@ -12,7 +12,6 @@ import mime from "mime"
 import { z } from "zod/v4"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import { getFileUrl } from "~/lib/utils"
-
 import { chargeCredits, refundCredits } from "./actions"
 
 export type PracticalExamCheckMode = "standard" | "complete"
@@ -22,18 +21,26 @@ export async function requestPracticalExamCheck(
   mode: "standard" | "complete",
 ) {
   const gotCharged = await chargeCredits(getModePrice(mode))
+
   if (!gotCharged) {
     await updateUserExamStatus(userExamId, "not_enough_credits_error")
     return
   }
+
   try {
     await updateUserExamStatus(userExamId, "parsing_exam")
+    infoLogger("Updated user exam status to parsing_exam")
+
     const userExam = await getUserExamDetails(userExamId)
-    const realExam = await getRealExamDetails(userExam.examId)
-    console.log("check for  - ", userExamId)
+    infoLogger(`Fetched user exam - ${userExam._id}`)
+
+    const realExam = await getRealExamDetails(userExam.baseExam.code)
+    infoLogger("fetched real exam")
 
     const userAttachments = transformAttachments(userExam.attachments)
     const examAttachments = transformAttachments(realExam.examAttachments)
+
+    infoLogger("Transformed both exams attachemnts")
 
     // feed the ai all the context it needs
     const resources: ModelMessage[] = [
@@ -86,15 +93,27 @@ export async function requestPracticalExamCheck(
         ],
       },
     ]
-    console.dir(resources, { depth: null })
+
+    infoLogger("contstructed messages for ai")
+
     await updateUserExamStatus(userExamId, "ai_pending")
+    infoLogger("updated user exam status")
+
     const generatedRating = await generateAiCheck(mode, resources)
+    infoLogger("generated ai check")
+
     await saveRatingData(userExamId, generatedRating)
+    infoLogger("saved rating data")
+
     await updateUserExamStatus(userExamId, "done")
+    infoLogger("updated user exam status")
   } catch (e) {
-    console.error("[PRACTICAL EXAM] Error - ", e)
+    console.error("[EXAM CHECK] Error occured, refunding credits ", e)
     await refundCredits(getModePrice(mode))
+    infoLogger("Refunded credits")
+
     await updateUserExamStatus(userExamId, "unknown_error_credits_refunded")
+    infoLogger("Updated status to unknown_error_credits_refunded")
   }
 }
 function getModePrice(mode: PracticalExamCheckMode) {
@@ -139,17 +158,16 @@ async function getUserExamDetails(userExamId: Id<"usersPracticalExams">) {
   }
 }
 
-async function getRealExamDetails(examId: Id<"basePracticalExams">) {
+async function getRealExamDetails(examCode: string) {
   const exam = await fetchQuery(
     api.praktyka.query.getExamDetails,
     {
-      examId,
+      examCode,
     },
     { token: await convexAuthNextjsToken() },
   )
   if (!exam) throw new Error("Exam not found")
   const urls = await getAttachmentsUrls(exam.examAttachments)
-
   return { ...exam, examAttachments: urls }
 }
 
@@ -161,7 +179,7 @@ async function getAttachmentsUrls(
     if (!urls) throw new Error("Attachment URL not found")
     return {
       ...attachment,
-      url: urls.normal.toString(),
+      url: urls.raw.href,
     }
   })
 }
@@ -176,10 +194,9 @@ function transformAttachments(
     const mimetype = mime.getType(attachment.url!)
     const splitName = attachment.attachmentName.split(" ")
     const name = splitName.join("-")
-    console.log("NAME TRANSFORMED - ", name)
     return {
       type: "file",
-      data: new URL(attachment.url!),
+      data: attachment.url,
       // skip sql because it errors ("not supported type")
       mediaType: `${(mimetype?.includes("application/") ? "text/plain" : mimetype) ?? "text/plain"}`,
       filename: name,
@@ -243,12 +260,10 @@ function getSchema(mode: PracticalExamCheckMode) {
   })
 
   if (mode === "complete") {
-    console.log("got to extending schema")
     return examCheckOutputSchema.extend({
       details: ratingSchema,
     })
   }
-  console.log("used base schema")
   return examCheckOutputSchema
 }
 async function saveRatingData(
@@ -320,4 +335,8 @@ function cleanExamMarkdown(md: string): string {
       // trim
       .trim()
   )
+}
+
+function infoLogger(value: string) {
+  console.log(`[EXAM CHECK] [${new Date().toISOString()}] ${value}`)
 }

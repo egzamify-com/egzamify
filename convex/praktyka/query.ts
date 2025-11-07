@@ -62,11 +62,11 @@ export const listPracticalExams = query({
 })
 
 export const getExamDetails = query({
-  args: { examId: v.id("basePracticalExams") },
-  handler: async (ctx, { examId }) => {
+  args: { examCode: v.string() },
+  handler: async (ctx, { examCode }) => {
     await getUserIdOrThrow(ctx)
 
-    return getExamDetailsFunc(examId, ctx)
+    return getExamDetailsFunc(examCode, ctx)
   },
 })
 

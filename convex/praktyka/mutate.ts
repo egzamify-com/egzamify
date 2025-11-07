@@ -3,6 +3,7 @@ import { ConvexError, v } from "convex/values"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import schema from "../schema"
+
 export const startExam = mutation({
   args: { examId: v.id("basePracticalExams") },
   handler: async (ctx, { examId }) => {
