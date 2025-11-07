@@ -25,7 +25,7 @@ async function main() {
   data.set("month", month)
 
   // Use this async function to get the full size
-  async function getFormDataPayloadSize(formData) {
+  async function getFormDataPayloadSize(formData: FormData) {
     // Create a dummy Response object from the FormData
     const response = new Response(formData)
 
