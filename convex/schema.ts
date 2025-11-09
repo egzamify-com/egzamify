@@ -5,7 +5,7 @@ import {
   practicalExamAttachmentValidator,
   requirementsValidator,
 } from "./praktyka/helpers"
-import { pvpQuizPlayerData } from "./pvp-quiz/helpers"
+import { pvpQuizPlayerData } from "./pvp_quiz/helpers"
 
 const schema = defineSchema({
   ...authTables,
@@ -168,9 +168,9 @@ const schema = defineSchema({
       v.literal("quiz_pending"),
       v.literal("quiz_completed"),
     ),
-    winnerUserId: v.id("users"),
-    creatorData: pvpQuizPlayerData,
-    opponnentData: pvpQuizPlayerData,
+    winnerUserId: v.optional(v.id("users")),
+    creatorData: v.optional(pvpQuizPlayerData),
+    opponnentData: v.optional(pvpQuizPlayerData),
   }),
 })
 
