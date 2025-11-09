@@ -13,7 +13,7 @@ export type FriendProps = {
   updated_at?: Date
   created_at?: Date
   hideFriendButton?: boolean
-  actionButtons: (friend: Doc<"users">) => ReactNode
+  actionButtons?: (friend: Doc<"users">) => ReactNode
 }
 export default function Friend({ friend }: { friend: FriendProps }) {
   if (!friend) return null

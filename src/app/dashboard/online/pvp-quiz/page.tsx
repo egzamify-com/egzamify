@@ -1,6 +1,6 @@
 "use client"
 
-import type { Id } from "convex/_generated/dataModel"
+import type { Doc } from "convex/_generated/dataModel"
 import { Users } from "lucide-react"
 import { useState } from "react"
 import DisplayFriendList from "~/components/friends/display-friend-list"
@@ -8,9 +8,11 @@ import PageHeaderWrapper, {
   pageHeaderWrapperIconSize,
 } from "~/components/page-header-wrapper"
 import { Button } from "~/components/ui/button"
+import { NoFriendsFound } from "../../friends/page"
 
 export default function Page() {
-  const [selectedUserId, setSelectedUserId] = useState<Id<"users"> | null>(null)
+  const [selectedUser, setSelectedUser] = useState<Doc<"users"> | null>(null)
+
   return (
     <PageHeaderWrapper
       title="Quiz pvp"
@@ -19,23 +21,23 @@ export default function Page() {
       <div>
         quiz pvp page
         <p>select your friend and start quiz battle</p>
-        <p>{selectedUserId}</p>
+        <p>{selectedUser?.username}</p>
       </div>
       <DisplayFriendList
         filter="accepted_friends"
-        notFoundComponent="no friends found"
+        notFoundComponent={<NoFriendsFound />}
         friendItemProps={{
           hideFriendButton: true,
           actionButtons: (friend) => (
             <div>
-              {friend._id === selectedUserId && <p>selected</p>}
+              {friend._id === selectedUser?._id && <p>selected</p>}
               <Button
                 onClick={() => {
-                  setSelectedUserId((prevUserId) => {
-                    if (prevUserId === friend._id) {
+                  setSelectedUser((prevUser) => {
+                    if (prevUser?._id === friend._id) {
                       return null
                     }
-                    return friend._id
+                    return friend
                   })
                 }}
               >
