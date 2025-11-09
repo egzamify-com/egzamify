@@ -5,7 +5,7 @@ import { Button, type ButtonProps } from "../ui/button"
 export default function GetCreditsBtn({ ...props }: ButtonProps) {
   return (
     <Link href={"/pricing"} prefetch={true}>
-      <Button variant={"outline"} {...props}>
+      <Button variant={"outline"} {...props} className="w-40">
         <Gem size={20} />
         {"Doładuj konto"}
       </Button>

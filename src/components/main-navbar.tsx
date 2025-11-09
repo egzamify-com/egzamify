@@ -15,9 +15,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-import Feedbackbtn from "./feedback-btn"
 import DashboardBtn from "./landing-page/dashboard-btn"
 import GetCreditsBtn from "./landing-page/get-credits-btn"
+import HamburgerMenu from "./landing-page/hamburger-menu"
 import LogInBtn from "./landing-page/log-in-btn"
 import SpinnerLoading from "./spinner-loading"
 import { ModeToggle } from "./theme/theme-toggle"
@@ -37,7 +37,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between gap-4 border-b px-4`}
+      className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between px-4`}
     >
       <Link href={"/"}>
         <div className="relative flex flex-row items-start justify-start gap-2">
@@ -50,7 +50,10 @@ export default function Navbar() {
           </Badge>
         </div>
       </Link>
-      <div className="flex gap-4">
+      <div className="flex sm:hidden">
+        <HamburgerMenu />
+      </div>
+      <div className="hidden gap-4 sm:flex">
         <AuthLoading>
           <AuthSkeleton />
         </AuthLoading>
@@ -62,7 +65,6 @@ export default function Navbar() {
         </Unauthenticated>
         <div className="flex flex-row items-center justify-center gap-2">
           <ModeToggle />
-          <Feedbackbtn />
         </div>
       </div>
     </nav>
