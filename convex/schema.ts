@@ -5,6 +5,7 @@ import {
   practicalExamAttachmentValidator,
   requirementsValidator,
 } from "./praktyka/helpers"
+import { pvpQuizPlayerData } from "./pvp-quiz/helpers"
 
 const schema = defineSchema({
   ...authTables,
@@ -157,6 +158,20 @@ const schema = defineSchema({
       v.literal("Opinia"),
     ),
   }).index("by_user_id", ["userId"]),
+
+  pvpQuizzes: defineTable({
+    creatorUserId: v.id("users"),
+    opponentUserId: v.id("users"),
+    status: v.union(
+      v.literal("waiting_for_oponent_accept"),
+      v.literal("getting_random_quiz"),
+      v.literal("quiz_pending"),
+      v.literal("quiz_completed"),
+    ),
+    winnerUserId: v.id("users"),
+    creatorData: pvpQuizPlayerData,
+    opponnentData: pvpQuizPlayerData,
+  }),
 })
 
 export default schema

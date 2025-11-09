@@ -47,6 +47,12 @@ const navMain: NavbarItem[] = [
   },
 
   {
+    title: "Tryby online",
+    url: "/dashboard/online",
+    icon: <Users size={SIDEBAR_ICON_SIZE} />,
+  },
+
+  {
     title: "Egzamin Teoretyczny",
     icon: <Check size={SIDEBAR_ICON_SIZE} />,
     url: "/dashboard/egzamin-teoretyczny",

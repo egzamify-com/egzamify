@@ -9,15 +9,17 @@ import useDebouncedSearch from "~/hooks/use-debounced-search"
 import { cn } from "~/lib/utils"
 import LoadMoreBtn from "../load-more"
 import { Input } from "../ui/input"
-import Friend from "./friend"
+import Friend, { type FriendProps } from "./friend"
 import FriendsSkeleton from "./friend-list-skeleton"
 
 export default function DisplayFriendList({
   filter,
   notFoundComponent,
+  friendItemProps,
 }: {
   filter: Infer<typeof friendFilterValidator>
   notFoundComponent: ReactNode
+  friendItemProps: FriendProps
 }) {
   const { isPending, debouncedSearch, inputOnChange, search } =
     useDebouncedSearch({ time: 250 })
@@ -38,6 +40,7 @@ export default function DisplayFriendList({
           search={debouncedSearch}
           filter={filter}
           notFoundComponent={notFoundComponent}
+          friendItemProps={friendItemProps}
         />
       )}
     </div>
@@ -48,10 +51,12 @@ function Render({
   search,
   filter,
   notFoundComponent,
+  friendItemProps,
 }: {
   search: string
   filter: Infer<typeof friendFilterValidator>
   notFoundComponent: ReactNode
+  friendItemProps: FriendProps
 }) {
   let query = api.friends.query.getPaginatedFriends
   switch (filter) {
@@ -101,7 +106,9 @@ function Render({
           {friend && (
             <Friend
               friend={{
+                ...friendItemProps,
                 user: friend,
+                actionButtons: friendItemProps.actionButtons,
               }}
             />
           )}
