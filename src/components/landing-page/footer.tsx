@@ -9,8 +9,8 @@ import PrivacyBtn from "./privacy-url"
 
 export function Footer() {
   return (
-    <footer className="border-border bg-background border-t">
-      <div className="mx-auto max-w-7xl px-6 py-24">
+    <footer className="border-border bg-background">
+      <div className="mx-auto max-w-7xl px-6 pb-20">
         <div className="text-center">
           <h2 className="text-foreground mb-4 font-sans text-4xl font-bold tracking-tight text-balance md:text-3xl">
             Gotowy na rozpoczęcie przygotowań do egzaminu?
