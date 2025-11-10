@@ -16,7 +16,7 @@ import { Label } from "../ui/label"
 import { MultiSelect, type MultiSelectOption } from "../ui/multi-select"
 import { Skeleton } from "../ui/skeleton"
 
-function transformToOptions(
+export function transformQualificationsToOptions(
   qualifications: Doc<"qualifications">[],
 ): MultiSelectOption[] {
   return qualifications.map((qualification) => {
@@ -26,7 +26,9 @@ function transformToOptions(
     }
   })
 }
-function transformToValues(qualifications: Doc<"qualifications">[]) {
+export function transformQualificationsToValues(
+  qualifications: Doc<"qualifications">[],
+) {
   return qualifications.map((qualification) => qualification._id)
 }
 export default function UpdateQualifications({ user }: { user: Doc<"users"> }) {
@@ -57,8 +59,10 @@ export default function UpdateQualifications({ user }: { user: Doc<"users"> }) {
     <Component
       {...{
         user,
-        allQualifications: transformToOptions(data.allQualifications),
-        userSavedQualifications: transformToValues(
+        allQualifications: transformQualificationsToOptions(
+          data.allQualifications,
+        ),
+        userSavedQualifications: transformQualificationsToValues(
           data.userSavedQualifications,
         ),
       }}

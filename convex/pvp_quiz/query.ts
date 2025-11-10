@@ -15,9 +15,6 @@ export const getPvpQuiz = query({
       throw new ConvexError(errMessage)
     }
 
-    console.log({ quiz })
-
-    console.log({ currentUserId })
     if (
       currentUserId !== quiz.creatorUserId &&
       currentUserId !== quiz.opponentUserId

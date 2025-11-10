@@ -171,6 +171,8 @@ const schema = defineSchema({
     winnerUserId: v.optional(v.id("users")),
     creatorData: v.optional(pvpQuizPlayerData),
     opponnentData: v.optional(pvpQuizPlayerData),
+    quizQuestionsIds: v.array(v.id("questions")),
+    quizQualificationId: v.id("qualifications"),
   }),
 })
 

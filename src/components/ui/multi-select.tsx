@@ -114,10 +114,12 @@ interface MultiSelectProps
       "animationConfig"
     >,
     VariantProps<typeof multiSelectVariants> {
+  singleSelect?: boolean
   /**
    * An array of option objects or groups to be displayed in the multi-select component.
    */
   options: MultiSelectOption[] | MultiSelectGroup[]
+
   /**
    * Callback function triggered when the selected values change.
    * Receives an array of the new selected values.
@@ -331,6 +333,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       deduplicateOptions = false,
       resetOnDefaultValueChange = true,
       closeOnSelect = false,
+      singleSelect = false,
       ...props
     },
     ref,
@@ -620,12 +623,31 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       if (disabled) return
       const option = getOptionByValue(optionValue)
       if (option?.disabled) return
-      const newSelectedValues = selectedValues.includes(optionValue)
-        ? selectedValues.filter((value) => value !== optionValue)
-        : [...selectedValues, optionValue]
+
+      let newSelectedValues: string[]
+
+      if (selectedValues.includes(optionValue)) {
+        // Deselect: If it's already selected, remove it.
+        newSelectedValues = selectedValues.filter(
+          (value) => value !== optionValue,
+        )
+      } else {
+        // Select:
+        if (singleSelect) {
+          // <-- Use the new prop
+          // In single-select mode, replace the current selection with the new one
+          newSelectedValues = [optionValue]
+        } else {
+          // In multi-select mode, add to the current selection
+          newSelectedValues = [...selectedValues, optionValue]
+        }
+      }
+
       setSelectedValues(newSelectedValues)
       onValueChange(newSelectedValues)
-      if (closeOnSelect) {
+
+      if (closeOnSelect || singleSelect) {
+        // <-- Close if closeOnSelect OR singleSelect
         setIsPopoverOpen(false)
       }
     }
