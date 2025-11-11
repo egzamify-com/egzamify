@@ -9,6 +9,7 @@ export const pvpQuizPlayerData = v.object({
   ),
   time: v.optional(v.number()),
   score: v.optional(v.number()),
+  submittedAt: v.optional(v.number()),
 })
 
 function shuffleArray<T>(array: T[]): T[] {

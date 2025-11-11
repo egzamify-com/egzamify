@@ -164,7 +164,6 @@ const schema = defineSchema({
     opponentUserId: v.id("users"),
     status: v.union(
       v.literal("waiting_for_oponent_accept"),
-      v.literal("getting_random_quiz"),
       v.literal("quiz_pending"),
       v.literal("quiz_completed"),
     ),
