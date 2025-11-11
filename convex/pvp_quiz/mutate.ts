@@ -6,11 +6,11 @@ import {
   authUserToAccessQuizOrThrow,
   calcQuizScore,
   calcQuizTime,
+  generateQuizProperties,
   getQuizOrThrow,
   getRandomQuestionsIds,
   insertQuizAnswers,
   quizGameStateValidator,
-  workOutNewQuizStatus,
 } from "./helpers"
 
 export const createPvpQuiz = mutation({
@@ -71,15 +71,30 @@ export const submitQuiz = mutation({
     }
 
     const isCurrentUserQuizCreator = currentUserId === quiz.creatorUserId
-    console.log({ isCurrentUserQuizCreator })
 
-    const newDataToInsert: Doc<"pvpQuizzes"> = isCurrentUserQuizCreator
-      ? { ...quiz, creatorData: newPlayerData }
-      : { ...quiz, opponnentData: newPlayerData }
+    const { newDataToInsert, winner, newQuizStatus } = (() => {
+      if (isCurrentUserQuizCreator) {
+        return generateQuizProperties(
+          quiz,
+          newPlayerData,
+          "creatorData",
+          isCurrentUserQuizCreator,
+        )
+      } else {
+        return generateQuizProperties(
+          quiz,
+          newPlayerData,
+          "opponentData",
+          isCurrentUserQuizCreator,
+        )
+      }
+    })()
 
     await ctx.db.patch(quizId, {
       ...newDataToInsert,
-      status: workOutNewQuizStatus(quiz, newDataToInsert),
+      status: newQuizStatus,
+      winnerUserId: winner?.winnerUserId,
+      winnerType: winner?.winnerType,
     })
   },
 })

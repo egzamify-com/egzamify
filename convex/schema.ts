@@ -181,8 +181,11 @@ const schema = defineSchema({
     ),
     startedAt: v.optional(v.number()),
     winnerUserId: v.optional(v.id("users")),
+    winnerType: v.optional(
+      v.union(v.literal("by_score"), v.literal("by_time")),
+    ),
     creatorData: pvpQuizPlayerDataValidator,
-    opponnentData: pvpQuizPlayerDataValidator,
+    opponentData: pvpQuizPlayerDataValidator,
     quizQuestionsIds: v.array(v.id("questions")),
     quizQualificationId: v.id("qualifications"),
   }),

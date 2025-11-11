@@ -18,6 +18,16 @@ export const getUserFromUsername = query({
   },
 })
 
+export const getUserFromId = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, { userId }) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_id", (q) => q.eq("_id", userId))
+      .first()
+  },
+})
+
 export const getSavedQualifications = query({
   handler: async (ctx) => {
     return await getUserSavedQualifications(ctx)

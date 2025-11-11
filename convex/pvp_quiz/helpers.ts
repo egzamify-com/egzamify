@@ -5,14 +5,12 @@ import { ConvexError, v, type Infer } from "convex/values"
 import { vv } from "../schema"
 
 export const quizAnswerValidator = v.object({
-  // ...schema.tables.answers.validator.fields,
   ...vv.doc("answers").fields,
   isSelected: v.boolean(),
 })
 export type QuizAnswersType = Infer<typeof quizAnswerValidator>
 
 export const quizQuestionValidator = v.object({
-  // ...schema.tables.questions.validator.,
   ...vv.doc("questions").fields,
   answers: v.array(quizAnswerValidator),
 })
@@ -158,12 +156,105 @@ export function workOutNewQuizStatus(
   const isAnyNewDataIncoming = newDataToInsert !== undefined
 
   const isAnyPlayerDataAlreadyInDb =
-    quiz.opponnentData !== undefined || quiz.creatorData !== undefined
+    quiz.opponentData !== undefined || quiz.creatorData !== undefined
 
   const shouldSetQuizToCompleted =
     isAnyPlayerDataAlreadyInDb && isAnyNewDataIncoming
 
-  if (shouldSetQuizToCompleted) return "quiz_completed"
+  if (shouldSetQuizToCompleted) {
+    return "quiz_completed"
+  }
 
   return "quiz_pending"
+}
+
+export function calcWinner(
+  quiz: Doc<"pvpQuizzes">,
+  newDataToInsert: Doc<"pvpQuizzes">,
+  isCurrentUserQuizCreator: boolean,
+):
+  | {
+      winnerUserId: Doc<"pvpQuizzes">["winnerUserId"]
+      winnerType: Doc<"pvpQuizzes">["winnerType"]
+    }
+  | undefined {
+  let creatorScore: number | undefined = 0
+  let opponentScore: number | undefined = 0
+
+  let creatorTime: number | undefined = 0
+  let opponentTime: number | undefined = 0
+
+  if (isCurrentUserQuizCreator) {
+    console.log("winner coming from creator")
+    creatorScore = newDataToInsert.creatorData?.score
+    opponentScore = quiz.opponentData?.score
+
+    creatorTime = newDataToInsert.creatorData?.time
+    opponentTime = quiz.opponentData?.time
+  } else if (!isCurrentUserQuizCreator) {
+    console.log("winner coming from opponent")
+    creatorScore = quiz.creatorData?.score
+    opponentScore = newDataToInsert.opponentData?.score
+
+    creatorTime = quiz.creatorData?.time
+    opponentTime = newDataToInsert.opponentData?.time
+  }
+
+  if (!creatorScore || !opponentScore) {
+    console.log("no creator or oppoent score found")
+    console.log({ creatorScore })
+    console.log({ opponentScore })
+    return undefined
+  }
+
+  if (creatorScore > opponentScore) {
+    console.log("creator win")
+    return { winnerUserId: quiz.creatorUserId, winnerType: "by_score" }
+  } else if (creatorScore < opponentScore) {
+    console.log("opp win")
+    return { winnerUserId: quiz.opponentUserId, winnerType: "by_score" }
+  } else {
+    console.log("remis, checking time")
+
+    if (!creatorTime || !opponentTime) {
+      console.log("no creator or oppoent time found")
+      console.log({ creatorTime })
+      console.log({ opponentTime })
+      return undefined
+    }
+
+    if (creatorTime < opponentTime) {
+      console.log("creator win by time")
+      return { winnerUserId: quiz.creatorUserId, winnerType: "by_time" }
+    } else if (creatorTime > opponentTime) {
+      console.log("opp win by time")
+      return { winnerUserId: quiz.opponentUserId, winnerType: "by_time" }
+    }
+  }
+  console.log("no ifs hit, default undefined returned")
+  return undefined
+}
+
+export function generateQuizProperties(
+  quiz: Doc<"pvpQuizzes">,
+  newPlayerData: Doc<"pvpQuizzes">["creatorData"],
+  // TODO: infer this from schema to make it better
+  newPlayerDataKey: "creatorData" | "opponentData",
+  isCurrentUserQuizCreator: boolean,
+) {
+  const newDataToInsert = { ...quiz, [newPlayerDataKey]: newPlayerData }
+  const newQuizStatus = workOutNewQuizStatus(quiz, newDataToInsert)
+
+  const winner =
+    newQuizStatus === "quiz_completed"
+      ? calcWinner(quiz, newDataToInsert, isCurrentUserQuizCreator)
+      : undefined
+
+  console.log(
+    isCurrentUserQuizCreator
+      ? "in current user = creator"
+      : "in current user != creator",
+  )
+
+  return { newDataToInsert, newQuizStatus, winner }
 }

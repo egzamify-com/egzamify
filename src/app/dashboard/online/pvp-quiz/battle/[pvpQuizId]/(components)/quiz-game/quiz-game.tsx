@@ -3,11 +3,11 @@ import type { QuizAnswersType, QuizGameState } from "convex/pvp_quiz/helpers"
 import { useMutation } from "convex/react"
 import { useState } from "react"
 import { toast } from "sonner"
-import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
 import { tryCatch } from "~/lib/tryCatch"
 import type { PvpQuizQueryReturnType } from "../../page"
 import QuizQuestion from "./quiz-question"
+import QuizSubmitted from "./quiz-submitted"
 
 export default function QuizGame({
   quizData,
@@ -24,11 +24,7 @@ export default function QuizGame({
   >("idle")
 
   if (submitStatus === "submitted") {
-    return (
-      <div>
-        <SpinnerLoading /> subbmited quiz! wait for opps
-      </div>
-    )
+    return <QuizSubmitted />
   }
 
   return (
