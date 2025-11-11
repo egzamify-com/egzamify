@@ -2,6 +2,7 @@ import { asyncMap } from "convex-helpers"
 import { ConvexError, v } from "convex/values"
 import { query } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
+import { authUserToAccessQuizOrThrow } from "./helpers"
 
 export const getPvpQuiz = query({
   args: { pvpQuizId: v.id("pvpQuizzes") },
@@ -16,14 +17,7 @@ export const getPvpQuiz = query({
       throw new ConvexError(errMessage)
     }
 
-    if (
-      currentUserId !== quiz.creatorUserId &&
-      currentUserId !== quiz.opponentUserId
-    ) {
-      const errMessage = "Nie nie posiadasz uprawnien do tej bitwy!"
-      console.error(errMessage)
-      throw new ConvexError(errMessage)
-    }
+    await authUserToAccessQuizOrThrow(currentUserId, quiz)
 
     const creatorUser = await ctx.db.get(quiz.creatorUserId)
     const opponentUser = await ctx.db.get(quiz.opponentUserId)

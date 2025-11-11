@@ -19,10 +19,10 @@ importers:
         version: 0.40.0
       '@convex-dev/auth':
         specifier: ^0.0.90
-        version: 0.0.90(@auth/core@0.40.0)(convex@1.28.2(react@19.2.0))(react@19.2.0)
+        version: 0.0.90(@auth/core@0.40.0)(convex@1.29.0(react@19.2.0))(react@19.2.0)
       '@convex-dev/react-query':
         specifier: 0.0.0-alpha.11
-        version: 0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.90.7(react@19.2.0))(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
+        version: 0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.90.7(react@19.2.0))(convex@1.29.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -129,11 +129,11 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       convex:
-        specifier: ^1.28.0
-        version: 1.28.2(react@19.2.0)
+        specifier: ^1.29.0
+        version: 1.29.0(react@19.2.0)
       convex-helpers:
         specifier: ^0.1.104
-        version: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
+        version: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.29.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2133,8 +2133,8 @@ packages:
       zod:
         optional: true
 
-  convex@1.28.2:
-    resolution: {integrity: sha512-KzNsLbcVXb1OhpVQ+vHMgu+hjrsQ1ks5BZwJ2lR8O+nfbeJXE6tHbvsg1H17+ooUDvIDBSMT3vXS+AlodDhTnQ==}
+  convex@1.29.0:
+    resolution: {integrity: sha512-uoIPXRKIp2eLCkkR9WJ2vc9NtgQtx8Pml59WPUahwbrd5EuW2WLI/cf2E7XrUzOSifdQC3kJZepisk4wJNTJaA==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -3668,10 +3668,10 @@ snapshots:
 
   '@babel/runtime@7.28.4': {}
 
-  '@convex-dev/auth@0.0.83(@auth/core@0.37.4)(convex@1.28.2(react@19.2.0))(react@19.2.0)':
+  '@convex-dev/auth@0.0.83(@auth/core@0.37.4)(convex@1.29.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@auth/core': 0.37.4
-      convex: 1.28.2(react@19.2.0)
+      convex: 1.29.0(react@19.2.0)
       cookie: 1.0.2
       is-network-error: 1.3.0
       jose: 5.10.0
@@ -3684,12 +3684,12 @@ snapshots:
     optionalDependencies:
       react: 19.2.0
 
-  '@convex-dev/auth@0.0.90(@auth/core@0.40.0)(convex@1.28.2(react@19.2.0))(react@19.2.0)':
+  '@convex-dev/auth@0.0.90(@auth/core@0.40.0)(convex@1.29.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@auth/core': 0.40.0
       '@oslojs/crypto': 1.0.1
       '@oslojs/encoding': 1.1.0
-      convex: 1.28.2(react@19.2.0)
+      convex: 1.29.0(react@19.2.0)
       cookie: 1.0.2
       is-network-error: 1.3.0
       jose: 5.10.0
@@ -3701,13 +3701,13 @@ snapshots:
     optionalDependencies:
       react: 19.2.0
 
-  '@convex-dev/react-query@0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.90.7(react@19.2.0))(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)':
+  '@convex-dev/react-query@0.0.0-alpha.11(@standard-schema/spec@1.0.0)(@tanstack/react-query@5.90.7(react@19.2.0))(convex@1.29.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)':
     dependencies:
       '@auth/core': 0.37.4
-      '@convex-dev/auth': 0.0.83(@auth/core@0.37.4)(convex@1.28.2(react@19.2.0))(react@19.2.0)
+      '@convex-dev/auth': 0.0.83(@auth/core@0.37.4)(convex@1.29.0(react@19.2.0))(react@19.2.0)
       '@tanstack/react-query': 5.90.7(react@19.2.0)
-      convex: 1.28.2(react@19.2.0)
-      convex-helpers: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
+      convex: 1.29.0(react@19.2.0)
+      convex-helpers: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.29.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
       - '@simplewebauthn/server'
@@ -5314,16 +5314,16 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12):
+  convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.29.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@4.1.12):
     dependencies:
-      convex: 1.28.2(react@19.2.0)
+      convex: 1.29.0(react@19.2.0)
     optionalDependencies:
       '@standard-schema/spec': 1.0.0
       react: 19.2.0
       typescript: 5.9.3
       zod: 4.1.12
 
-  convex@1.28.2(react@19.2.0):
+  convex@1.29.0(react@19.2.0):
     dependencies:
       esbuild: 0.25.4
       prettier: 3.6.2

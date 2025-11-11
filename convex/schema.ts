@@ -1,11 +1,23 @@
 import { authTables } from "@convex-dev/auth/server"
+import { typedV } from "convex-helpers/validators"
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
 import {
   practicalExamAttachmentValidator,
   requirementsValidator,
 } from "./praktyka/helpers"
-import { pvpQuizPlayerData } from "./pvp_quiz/helpers"
+
+export const pvpQuizPlayerDataValidator = v.optional(
+  v.object({
+    answersIds: v.optional(v.array(v.id("userAnswers"))),
+    status: v.optional(
+      v.union(v.literal("waiting"), v.literal("answering"), v.literal("done")),
+    ),
+    time: v.optional(v.number()),
+    score: v.optional(v.number()),
+    submittedAt: v.optional(v.number()),
+  }),
+)
 
 const schema = defineSchema({
   ...authTables,
@@ -167,12 +179,15 @@ const schema = defineSchema({
       v.literal("quiz_pending"),
       v.literal("quiz_completed"),
     ),
+    startedAt: v.optional(v.number()),
     winnerUserId: v.optional(v.id("users")),
-    creatorData: v.optional(pvpQuizPlayerData),
-    opponnentData: v.optional(pvpQuizPlayerData),
+    creatorData: pvpQuizPlayerDataValidator,
+    opponnentData: pvpQuizPlayerDataValidator,
     quizQuestionsIds: v.array(v.id("questions")),
     quizQualificationId: v.id("qualifications"),
   }),
 })
 
 export default schema
+
+export const vv = typedV(schema)

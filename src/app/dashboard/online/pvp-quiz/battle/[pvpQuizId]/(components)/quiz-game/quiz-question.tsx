@@ -1,6 +1,6 @@
+import type { QuizGameState, QuizQuestionType } from "convex/pvp_quiz/helpers"
 import type { Dispatch, SetStateAction } from "react"
 import QuizAnswer from "./quiz-answer"
-import type { QuizGameState, QuizQuestionType } from "./quiz-game"
 
 export default function QuizQuestion({
   question,

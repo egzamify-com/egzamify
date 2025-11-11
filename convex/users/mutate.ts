@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values"
 import { mutation } from "../_generated/server"
-import { getUserIdOrThrow, getUserProfileOrThrow, vv } from "../custom_helpers"
+import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
+import { vv } from "../schema"
 
 export const toggleUserActivityStatus = mutation({
   args: { newStatus: v.boolean() },

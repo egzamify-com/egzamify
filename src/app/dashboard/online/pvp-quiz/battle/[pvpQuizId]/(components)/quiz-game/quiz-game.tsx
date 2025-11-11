@@ -1,36 +1,13 @@
-import type { Doc } from "convex/_generated/dataModel"
+import { api } from "convex/_generated/api"
+import type { QuizAnswersType, QuizGameState } from "convex/pvp_quiz/helpers"
+import { useMutation } from "convex/react"
 import { useState } from "react"
+import { toast } from "sonner"
+import SpinnerLoading from "~/components/spinner-loading"
+import { Button } from "~/components/ui/button"
+import { tryCatch } from "~/lib/tryCatch"
 import type { PvpQuizQueryReturnType } from "../../page"
 import QuizQuestion from "./quiz-question"
-
-export type QuizAnswerType = Doc<"answers"> & {
-  isSelected: boolean
-}
-
-export type QuizQuestionType = Doc<"questions"> & {
-  answers: QuizAnswerType[]
-}
-
-export type QuizGameState = QuizQuestionType[]
-
-function transformQuizDataToQuizState(
-  quizData: PvpQuizQueryReturnType,
-): QuizGameState {
-  const result: QuizGameState = quizData.quizQuestions.map((question) => {
-    const transformedAnswers = question.answers.map((answer) => {
-      return {
-        ...answer,
-        isSelected: false,
-      }
-    })
-
-    return {
-      ...question,
-      answers: transformedAnswers,
-    }
-  })
-  return result
-}
 
 export default function QuizGame({
   quizData,
@@ -40,8 +17,19 @@ export default function QuizGame({
   const [quizGameState, setQuizGameState] = useState<QuizGameState>(
     transformQuizDataToQuizState(quizData),
   )
-
   console.log({ quizGameState })
+  const submitQuiz = useMutation(api.pvp_quiz.mutate.submitQuiz)
+  const [submitStatus, setSubmitStatus] = useState<
+    "pending" | "submitted" | "idle"
+  >("idle")
+
+  if (submitStatus === "submitted") {
+    return (
+      <div>
+        <SpinnerLoading /> subbmited quiz! wait for opps
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -53,6 +41,45 @@ export default function QuizGame({
           />
         )
       })}
+      <Button
+        onClick={async () => {
+          setSubmitStatus("pending")
+
+          const [, err] = await tryCatch(
+            submitQuiz({ quizGameState, quizId: quizData._id }),
+          )
+          if (err) {
+            const errMess = "Nie udalo sie przeslac quizu"
+            console.error(errMess)
+            toast.error(errMess)
+            return
+          }
+
+          setSubmitStatus("submitted")
+          toast.success("Przeslano quiz!")
+        }}
+      >
+        Submit quiz
+      </Button>
     </div>
   )
+}
+
+function transformQuizDataToQuizState(
+  quizData: PvpQuizQueryReturnType,
+): QuizGameState {
+  return quizData.quizQuestions.map((question) => {
+    const transformedAnswers: QuizAnswersType[] = question.answers.map(
+      (answer, index) => {
+        return {
+          ...answer,
+          isSelected: index === 0 ? true : false,
+        }
+      },
+    )
+    return {
+      ...question,
+      answers: transformedAnswers,
+    }
+  })
 }
