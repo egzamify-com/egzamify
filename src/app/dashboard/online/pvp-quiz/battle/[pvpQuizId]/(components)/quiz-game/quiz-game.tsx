@@ -27,6 +27,23 @@ export default function QuizGame({
     return <QuizSubmitted />
   }
 
+  async function handleSubmitQuiz() {
+    setSubmitStatus("pending")
+
+    const [, err] = await tryCatch(
+      submitQuiz({ quizGameState, quizId: quizData._id }),
+    )
+    if (err) {
+      const errMess = "Nie udalo sie przeslac quizu"
+      console.error(errMess)
+      toast.error(errMess)
+      return
+    }
+
+    setSubmitStatus("submitted")
+    toast.success("Przeslano quiz!")
+  }
+
   return (
     <div>
       {quizGameState.map((question) => {
@@ -37,24 +54,7 @@ export default function QuizGame({
           />
         )
       })}
-      <Button
-        onClick={async () => {
-          setSubmitStatus("pending")
-
-          const [, err] = await tryCatch(
-            submitQuiz({ quizGameState, quizId: quizData._id }),
-          )
-          if (err) {
-            const errMess = "Nie udalo sie przeslac quizu"
-            console.error(errMess)
-            toast.error(errMess)
-            return
-          }
-
-          setSubmitStatus("submitted")
-          toast.success("Przeslano quiz!")
-        }}
-      >
+      <Button onClick={async () => await handleSubmitQuiz()}>
         Submit quiz
       </Button>
     </div>
