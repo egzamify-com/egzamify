@@ -33,7 +33,7 @@ export default function Page() {
   async function handleCreateQuiz(finalSelectedUser: Doc<"users">) {
     setIsCreatingQuiz(true)
 
-    const [battleId, err] = await tryCatch(
+    const [quizId, err] = await tryCatch(
       createQuiz({
         opponentUserId: finalSelectedUser._id,
         quizQualificationId: selectedQualification[0] as Id<"qualifications">,
@@ -50,7 +50,7 @@ export default function Page() {
       return
     }
 
-    router.push(`/dashboard/online/pvp-quiz/battle/${battleId}`)
+    router.push(`/dashboard/online/pvp-quiz/game/${quizId}`)
   }
 
   return (
