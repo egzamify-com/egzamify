@@ -144,3 +144,32 @@ export function toSemanticTime(yyyymmdd: string): string {
     return `${diffDays} dni temu`
   }
 }
+
+export function formatDuration(durationMs: number): string {
+  // 1. Ensure the duration is a non-negative number of seconds
+  const totalSeconds = Math.floor(Math.abs(durationMs) / 1000)
+
+  // 2. Calculate all components
+
+  // Total Hours (no padding for hours, as per requirement for conciseness)
+  const hours = Math.floor(totalSeconds / 3600)
+
+  // Remaining Minutes (will be < 60)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+
+  // Remaining Seconds (will be < 60)
+  const seconds = totalSeconds % 60
+
+  // 3. Helper function to pad Minutes and Seconds (always needed)
+  const pad = (num: number): string => String(num).padStart(2, "0")
+
+  // 4. Return the string based on condition
+  if (hours > 0) {
+    // Duration is 1 hour or longer: return H:MM:SS (or HH:MM:SS)
+    // We do NOT pad the 'hours' component, keeping it concise (e.g., 2:05:30)
+    return `${hours}:${pad(minutes)}:${pad(seconds)}`
+  } else {
+    // Duration is less than 1 hour: return MM:SS
+    return `${pad(minutes)}:${pad(seconds)}`
+  }
+}

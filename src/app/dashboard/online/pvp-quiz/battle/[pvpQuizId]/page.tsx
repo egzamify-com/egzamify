@@ -8,7 +8,7 @@ import { useParams } from "next/navigation"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import { parseConvexError } from "~/lib/utils"
-import QuizCompleted from "./(components)/quiz-completed"
+import QuizCompleted from "./(components)/quiz-completed/quiz-completed"
 import QuizGame from "./(components)/quiz-game/quiz-game"
 import WaitForOpponent from "./(components)/wait-for-opponent"
 
