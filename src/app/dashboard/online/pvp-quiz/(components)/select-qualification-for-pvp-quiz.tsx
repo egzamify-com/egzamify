@@ -2,6 +2,7 @@ import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import { transformQualificationsToOptions } from "~/components/settings/update-qualifications"
 import SpinnerLoading from "~/components/spinner-loading"
+import { Field, FieldLabel, FieldSet } from "~/components/ui/field"
 import { MultiSelect } from "~/components/ui/multi-select"
 
 export default function SelectQualificationForPvpQuiz({
@@ -19,16 +20,22 @@ export default function SelectQualificationForPvpQuiz({
     return <div>error with qualifications</div>
   }
   return (
-    <MultiSelect
-      singleSelect
-      className="border-0 text-sm"
-      options={transformQualificationsToOptions(
-        qualificationsQuery.data.allQualifications,
-      )}
-      onValueChange={handleNewQualification}
-      value={selectedQualification}
-      hideSelectAll
-      placeholder="Wybierz kwalifikacje"
-    />
+    <FieldSet>
+      <Field>
+        <FieldLabel htmlFor="multi-select-pvp-quiz">Kwalifikacja</FieldLabel>
+        <MultiSelect
+          className="bg-input/30 h-9 p-0"
+          id="multi-select-pvp-quiz"
+          singleSelect
+          options={transformQualificationsToOptions(
+            qualificationsQuery.data.allQualifications,
+          )}
+          onValueChange={handleNewQualification}
+          value={selectedQualification}
+          hideSelectAll
+          placeholder="Wybierz kwalifikacje"
+        />
+      </Field>
+    </FieldSet>
   )
 }

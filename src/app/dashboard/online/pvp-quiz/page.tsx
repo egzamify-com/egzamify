@@ -3,16 +3,25 @@
 import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import { Users } from "lucide-react"
+import { Brain, GamepadIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import DisplayFriendList from "~/components/friends/display-friend-list"
+import Friend from "~/components/friends/friend"
 import PageHeaderWrapper, {
   pageHeaderWrapperIconSize,
 } from "~/components/page-header-wrapper"
 import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 import { tryCatch } from "~/lib/tryCatch"
 import { NoFriendsFound } from "../../friends/page"
 import SelectQualificationForPvpQuiz from "./(components)/select-qualification-for-pvp-quiz"
@@ -41,74 +50,127 @@ export default function Page() {
       }),
     )
 
-    setIsCreatingQuiz(false)
-
     if (err) {
       const errMess = "Failed to create pvp quiz"
       console.error(errMess)
       toast.error(errMess)
+      setIsCreatingQuiz(false)
       return
     }
 
     router.push(`/dashboard/online/pvp-quiz/game/${quizId}`)
   }
 
+  function handleSelectNewUser(friend: Doc<"users">) {
+    setSelectedUser((prevUser) => {
+      if (prevUser?._id === friend._id) {
+        return null
+      }
+      return friend
+    })
+  }
+
   return (
     <PageHeaderWrapper
-      title="Quiz pvp"
-      icon={<Users size={pageHeaderWrapperIconSize} />}
+      title="Konfiguracja Pojedynku"
+      icon={<GamepadIcon size={pageHeaderWrapperIconSize} />}
     >
-      <div>
-        <p>select your friend and start quiz battle</p>
-      </div>
-      {isQuizConfigReady && (
-        <Button onClick={async () => await handleCreateQuiz(selectedUser)}>
-          {isCreatingQuiz ? (
-            <>
-              <SpinnerLoading />
-            </>
-          ) : (
-            <p>Zacznij quiz z {selectedUser.username}</p>
-          )}
-        </Button>
-      )}
-      {selectedQualification}
-      {selectedQuestionCount}
-      <SelectQualificationForPvpQuiz
-        {...{
-          selectedQualification,
-          handleNewQualification: (newQualificationArr) =>
-            setSelectedQualifaction(newQualificationArr),
-        }}
-      />
-      <SelectQuestionCount
-        {...{ selectedQuestionCount, setSelectedQuestionCount }}
-      />
-
-      <DisplayFriendList
-        filter="accepted_friends"
-        notFoundComponent={<NoFriendsFound />}
-        friendItemProps={{
-          hideFriendButton: true,
-          actionButtons: (friend) => (
-            <div>
-              {friend._id === selectedUser?._id && <p>selected</p>}
-              <Button
-                onClick={() => {
-                  setSelectedUser((prevUser) => {
-                    if (prevUser?._id === friend._id) {
-                      return null
-                    }
-                    return friend
-                  })
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <Card className="w-1/2">
+          <CardHeader>
+            <CardTitle className="flex flex-row items-center justify-start gap-2">
+              <Brain />
+              <h1>Konfiguracja</h1>
+            </CardTitle>
+            <CardDescription>
+              <p>Ustaw jaki quiz chcesz i z kim.</p>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-start gap-4">
+            <div className="grid w-full grid-cols-2 gap-4">
+              <SelectQualificationForPvpQuiz
+                {...{
+                  selectedQualification,
+                  handleNewQualification: (newQualificationArr) =>
+                    setSelectedQualifaction(newQualificationArr),
                 }}
-              >
-                Zapros do quizu
-              </Button>
+              />
+              <SelectQuestionCount
+                {...{ selectedQuestionCount, setSelectedQuestionCount }}
+              />
             </div>
-          ),
-        }}
-      />
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>
+                  <h2>Przeciwnik</h2>
+                </CardTitle>
+                <CardDescription>
+                  <p className="text-muted-foreground">
+                    Wybierz przeciwnika sposrod znajomych.
+                  </p>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {selectedUser ? (
+                  <Friend
+                    friend={{ user: selectedUser, hideFriendButton: true }}
+                  />
+                ) : (
+                  <p className="text-muted-foreground">
+                    Nie wybrano przeciwnika
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Button
+              className="w-full"
+              disabled={!isQuizConfigReady}
+              onClick={async () => {
+                if (!isQuizConfigReady) {
+                  toast.error("Uzupelnij dane!")
+                  return null
+                }
+
+                await handleCreateQuiz(selectedUser)
+              }}
+            >
+              {isCreatingQuiz ? <SpinnerLoading /> : <p>Zacznij quiz</p>}
+            </Button>
+
+            <div className="max-h-1/2 w-full">
+              <DisplayFriendList
+                fullWidthSearchBar
+                filter="accepted_friends"
+                notFoundComponent={<NoFriendsFound />}
+                friendItemProps={{
+                  hideFriendButton: true,
+                  actionButtons: (friend) => {
+                    const isSelected = friend._id === selectedUser?._id
+                    return (
+                      <RadioGroup asChild>
+                        <Button
+                          variant={"secondary"}
+                          onClick={() => {
+                            console.log("button lick")
+                            handleSelectNewUser(friend)
+                          }}
+                        >
+                          <RadioGroupItem
+                            value=""
+                            checked={isSelected}
+                            className="cursor-pointer"
+                          />
+                        </Button>
+                      </RadioGroup>
+                    )
+                  },
+                }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </PageHeaderWrapper>
   )
 }

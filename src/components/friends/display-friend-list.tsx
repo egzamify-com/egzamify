@@ -16,10 +16,13 @@ export default function DisplayFriendList({
   filter,
   notFoundComponent,
   friendItemProps,
+  fullWidthSearchBar,
 }: {
   filter: Infer<typeof friendFilterValidator>
   notFoundComponent: ReactNode
   friendItemProps?: FriendProps
+
+  fullWidthSearchBar?: boolean
 }) {
   const { isPending, debouncedSearch, inputOnChange, search } =
     useDebouncedSearch({ time: 250 })
@@ -31,7 +34,7 @@ export default function DisplayFriendList({
           value={search}
           onChange={inputOnChange}
           placeholder="Wyszukaj znajomego..."
-          className="max-w-1/2 pl-10"
+          className={cn("pl-10", fullWidthSearchBar ? "w-full" : "w-1/2")}
         />
       </div>
       {isPending && <FriendsSkeleton countOfSkeletons={5} />}

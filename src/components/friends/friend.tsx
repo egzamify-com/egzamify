@@ -26,7 +26,7 @@ export default function Friend({ friend }: { friend: FriendProps }) {
       key={`friend-card-for-${user._id}`}
       className="transition-shadow hover:shadow-md"
     >
-      <CardContent className="p-4">
+      <CardContent className="">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <ActivityStatusAvatar userToShow={user} />
