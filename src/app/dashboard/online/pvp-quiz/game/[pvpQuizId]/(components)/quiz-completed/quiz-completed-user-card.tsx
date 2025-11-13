@@ -70,7 +70,7 @@ export function QuizCompletedPlayerStatsCard({
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-sm">
                 <AppleIcon className="h-4 w-4" />
-                Score
+                Wynik
               </span>
               <span className="text-foreground text-2xl font-bold">
                 {playerData.score ?? 0}/{quizData.quizQuestionsIds.length}
@@ -79,7 +79,8 @@ export function QuizCompletedPlayerStatsCard({
 
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground flex items-center gap-2 text-sm">
-                <GamepadIcon className="h-4 w-4" /> Accuracy
+                <GamepadIcon className="h-4 w-4" />
+                Dokladnosc
               </span>
               <span className={`text-lg font-semibold`}>{accuracy}%</span>
             </div>
@@ -88,7 +89,7 @@ export function QuizCompletedPlayerStatsCard({
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4" />
-                  Time
+                  Czas
                 </span>
                 <span className="text-foreground text-lg font-semibold">
                   {formatDuration(playerData.time)}

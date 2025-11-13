@@ -48,7 +48,7 @@ export default function QuizCompletedResultHeader({
           isCurrentUserWinner && "text-green-500",
         )}
       >
-        {isCurrentUserWinner ? "Victory!" : "Nice Try!"}
+        {isCurrentUserWinner ? "Zwyciestwo!" : "Bylo blisko!"}
       </motion.h1>
 
       <motion.p
