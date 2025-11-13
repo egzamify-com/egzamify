@@ -9,15 +9,20 @@ import useDebouncedSearch from "~/hooks/use-debounced-search"
 import { cn } from "~/lib/utils"
 import LoadMoreBtn from "../load-more"
 import { Input } from "../ui/input"
-import Friend from "./friend"
+import Friend, { type FriendProps } from "./friend"
 import FriendsSkeleton from "./friend-list-skeleton"
 
 export default function DisplayFriendList({
   filter,
   notFoundComponent,
+  friendItemProps,
+  fullWidthSearchBar,
 }: {
   filter: Infer<typeof friendFilterValidator>
   notFoundComponent: ReactNode
+  friendItemProps?: FriendProps
+
+  fullWidthSearchBar?: boolean
 }) {
   const { isPending, debouncedSearch, inputOnChange, search } =
     useDebouncedSearch({ time: 250 })
@@ -29,15 +34,16 @@ export default function DisplayFriendList({
           value={search}
           onChange={inputOnChange}
           placeholder="Wyszukaj znajomego..."
-          className="max-w-1/2 pl-10"
+          className={cn("pl-10", fullWidthSearchBar ? "w-full" : "w-1/2")}
         />
       </div>
-      {isPending && <FriendsSkeleton countOfSkeletons={10} />}
+      {isPending && <FriendsSkeleton countOfSkeletons={5} />}
       {!isPending && (
         <Render
           search={debouncedSearch}
           filter={filter}
           notFoundComponent={notFoundComponent}
+          friendItemProps={friendItemProps}
         />
       )}
     </div>
@@ -48,10 +54,12 @@ function Render({
   search,
   filter,
   notFoundComponent,
+  friendItemProps,
 }: {
   search: string
   filter: Infer<typeof friendFilterValidator>
   notFoundComponent: ReactNode
+  friendItemProps?: FriendProps
 }) {
   let query = api.friends.query.getPaginatedFriends
   switch (filter) {
@@ -86,7 +94,7 @@ function Render({
   )
 
   if (status === "LoadingFirstPage") {
-    return <FriendsSkeleton countOfSkeletons={10} />
+    return <FriendsSkeleton countOfSkeletons={5} />
   }
 
   if (friendList.length === 0) {
@@ -101,13 +109,15 @@ function Render({
           {friend && (
             <Friend
               friend={{
+                ...friendItemProps,
                 user: friend,
+                actionButtons: friendItemProps?.actionButtons,
               }}
             />
           )}
         </div>
       ))}
-      {status === "LoadingMore" && <FriendsSkeleton countOfSkeletons={3} />}
+      {status === "LoadingMore" && <FriendsSkeleton countOfSkeletons={5} />}
       <LoadMoreBtn
         onClick={() => loadMore(APP_CONFIG.friends.friendsPerPage)}
         canLoadMore={status === "CanLoadMore"}

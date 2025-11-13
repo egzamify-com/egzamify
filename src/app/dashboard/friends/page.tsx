@@ -17,17 +17,20 @@ export default function Page() {
     >
       <DisplayFriendList
         filter="accepted_friends"
-        notFoundComponent={
-          <div className="flex flex-col items-start gap-2">
-            <p className="mt-2">Nie masz jeszcze żadnych znajomych.</p>
-            <Link href={`/dashboard/friends/add`}>
-              <Button>
-                <Search /> Znajdź nowych znajomych
-              </Button>
-            </Link>
-          </div>
-        }
+        notFoundComponent={<NoFriendsFound />}
       />
     </PageHeaderWrapper>
+  )
+}
+export function NoFriendsFound() {
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <p className="mt-2">Nie masz jeszcze żadnych znajomych.</p>
+      <Link href={`/dashboard/friends/add`}>
+        <Button>
+          <Search /> Znajdź nowych znajomych
+        </Button>
+      </Link>
+    </div>
   )
 }

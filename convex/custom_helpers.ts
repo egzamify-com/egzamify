@@ -1,11 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { makeUseQueryWithStatus } from "convex-helpers/react"
 import { useQueries } from "convex-helpers/react/cache"
-import { typedV } from "convex-helpers/validators"
 import { ConvexError } from "convex/values"
 import type { Id } from "./_generated/dataModel"
 import type { MutationCtx, QueryCtx } from "./_generated/server"
-import schema from "./schema"
 
 export const useQuery = makeUseQueryWithStatus(useQueries)
 
@@ -30,4 +28,3 @@ export async function getUserProfileOrThrow(ctx: QueryCtx | MutationCtx) {
   }
   return res
 }
-export const vv = typedV(schema)

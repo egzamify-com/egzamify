@@ -23,6 +23,9 @@ import type * as payments_query from "../payments/query.js";
 import type * as praktyka_helpers from "../praktyka/helpers.js";
 import type * as praktyka_mutate from "../praktyka/mutate.js";
 import type * as praktyka_query from "../praktyka/query.js";
+import type * as pvp_quiz_helpers from "../pvp_quiz/helpers.js";
+import type * as pvp_quiz_mutate from "../pvp_quiz/mutate.js";
+import type * as pvp_quiz_query from "../pvp_quiz/query.js";
 import type * as seed from "../seed.js";
 import type * as statistics_helpers from "../statistics/helpers.js";
 import type * as statistics_mutations from "../statistics/mutations.js";
@@ -41,14 +44,6 @@ import type {
   FunctionReference,
 } from "convex/server";
 
-/**
- * A utility for referencing Convex functions in your app's API.
- *
- * Usage:
- * ```js
- * const myFunctionReference = api.myModule.myFunction;
- * ```
- */
 declare const fullApi: ApiFromModules<{
   "ai_wyjasnia/helpers": typeof ai_wyjasnia_helpers;
   "ai_wyjasnia/mutate": typeof ai_wyjasnia_mutate;
@@ -65,6 +60,9 @@ declare const fullApi: ApiFromModules<{
   "praktyka/helpers": typeof praktyka_helpers;
   "praktyka/mutate": typeof praktyka_mutate;
   "praktyka/query": typeof praktyka_query;
+  "pvp_quiz/helpers": typeof pvp_quiz_helpers;
+  "pvp_quiz/mutate": typeof pvp_quiz_mutate;
+  "pvp_quiz/query": typeof pvp_quiz_query;
   seed: typeof seed;
   "statistics/helpers": typeof statistics_helpers;
   "statistics/mutations": typeof statistics_mutations;
@@ -77,14 +75,30 @@ declare const fullApi: ApiFromModules<{
   "users/mutate": typeof users_mutate;
   "users/query": typeof users_query;
 }>;
-declare const fullApiWithMounts: typeof fullApi;
 
+/**
+ * A utility for referencing Convex functions in your app's public API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
 export declare const api: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "public">
 >;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
 export declare const internal: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "internal">
 >;
 

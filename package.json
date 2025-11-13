@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.0.0",
   "scripts": {
     "build": "next build --turbo",
     "check": "next lint && tsc --noEmit",
@@ -58,8 +57,9 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "convex": "^1.28.0",
+    "convex": "^1.29.0",
     "convex-helpers": "^0.1.104",
+    "framer-motion": "^12.23.24",
     "lodash": "^4.17.21",
     "lucide-react": "^0.545.0",
     "marked-react": "^3.0.2",

@@ -1,10 +1,23 @@
 import { authTables } from "@convex-dev/auth/server"
+import { typedV } from "convex-helpers/validators"
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
 import {
   practicalExamAttachmentValidator,
   requirementsValidator,
 } from "./praktyka/helpers"
+
+export const pvpQuizPlayerDataValidator = v.optional(
+  v.object({
+    answersIds: v.optional(v.array(v.id("userAnswers"))),
+    status: v.optional(
+      v.union(v.literal("waiting"), v.literal("answering"), v.literal("done")),
+    ),
+    time: v.optional(v.number()),
+    score: v.optional(v.number()),
+    submittedAt: v.optional(v.number()),
+  }),
+)
 
 const schema = defineSchema({
   ...authTables,
@@ -157,6 +170,28 @@ const schema = defineSchema({
       v.literal("Opinia"),
     ),
   }).index("by_user_id", ["userId"]),
+
+  pvpQuizzes: defineTable({
+    creatorUserId: v.id("users"),
+    opponentUserId: v.id("users"),
+    status: v.union(
+      v.literal("waiting_for_oponent_accept"),
+      v.literal("opponent_declined"),
+      v.literal("quiz_pending"),
+      v.literal("quiz_completed"),
+    ),
+    startedAt: v.optional(v.number()),
+    winnerUserId: v.optional(v.id("users")),
+    winnerType: v.optional(
+      v.union(v.literal("by_score"), v.literal("by_time")),
+    ),
+    creatorData: pvpQuizPlayerDataValidator,
+    opponentData: pvpQuizPlayerDataValidator,
+    quizQuestionsIds: v.array(v.id("questions")),
+    quizQualificationId: v.id("qualifications"),
+  }).index("by_status", ["status"]),
 })
 
 export default schema
+
+export const vv = typedV(schema)
