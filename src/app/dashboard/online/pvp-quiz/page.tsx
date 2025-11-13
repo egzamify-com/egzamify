@@ -76,7 +76,7 @@ export default function Page() {
       icon={<GamepadIcon size={pageHeaderWrapperIconSize} />}
     >
       <div className="flex flex-1 flex-col items-center justify-center">
-        <Card className="w-1/2">
+        <Card className="w-full xl:w-1/2">
           <CardHeader>
             <CardTitle className="flex flex-row items-center justify-start gap-2">
               <Brain />

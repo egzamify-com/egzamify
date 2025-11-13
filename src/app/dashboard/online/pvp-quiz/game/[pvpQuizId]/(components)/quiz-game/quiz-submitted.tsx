@@ -10,7 +10,7 @@ import {
 export default function QuizSubmitted() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <Card className="w-1/2">
+      <Card className="w-1/4">
         <CardHeader>
           <CardTitle>
             <h1>Przeslano quiz!</h1>

@@ -1,8 +1,13 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
+import type { FunctionReturnType } from "convex/server"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import type { PvpQuizQueryReturnType } from "../../page"
+import FullQuestionCard, {
+  type FullQuestionPlayerData,
+} from "../quiz-game/complete-question-card"
+import { transformQuizDataToQuizState } from "../quiz-game/quiz-game"
 import QuizCompletedResultHeader from "./quiz-completed-result-header"
 import { QuizCompletedPlayerStatsCard } from "./quiz-completed-user-card"
 
@@ -19,6 +24,7 @@ export default function QuizCompleted({
   if (isPending) {
     return <FullScreenLoading />
   }
+
   if (error || !data) {
     return (
       <FullScreenError
@@ -27,9 +33,10 @@ export default function QuizCompleted({
       />
     )
   }
+
   return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <div className="flex w-full flex-col items-center justify-center gap-8 p-6 xl:w-3/5">
+    <div className="flex w-full flex-col items-center justify-center gap-8 p-6">
+      <div className="flex w-full flex-col items-center justify-center gap-8 xl:w-3/5">
         <QuizCompletedResultHeader
           {...{
             isCurrentUserWinner: data.currentUser._id === data.winnerUser._id,
@@ -59,47 +66,66 @@ export default function QuizCompleted({
           />
         </div>
       </div>
+      <div className="flex w-full flex-col items-center justify-start gap-8 xl:w-3/5">
+        {transformQuizDataToQuizState(quizData).map((questionItem) => {
+          const { answers, ...question } = questionItem
+
+          const { currentUserQuizData, otherUserQuizData } = calcRoles(
+            data,
+            quizData,
+          )
+
+          return (
+            <FullQuestionCard
+              key={crypto.randomUUID()}
+              {...{
+                nonInteractive: true,
+                question: question,
+                answers: answers,
+                currentUserQuizData,
+                otherUserQuizData,
+              }}
+            />
+          )
+        })}
+      </div>
     </div>
   )
+}
 
-  // return (
-  //   <div className="flex flex-1 flex-col items-center justify-center">
-  //     <Card className="w-3/4">
-  //       <CardHeader>
-  //         <CardTitle>
-  //           {data.currentUser._id === data.winnerUser._id ? (
-  //             <p className="text-green-500">Wygrales!</p>
-  //           ) : (
-  //             <p className="text-destructive">Przegrales :(</p>
-  //           )}
-  //         </CardTitle>
-  //         <CardDescription>
-  //           <p>Quiz zakonczony, porownaj swoje wyniki z przeciwnikiem.</p>
-  //         </CardDescription>
-  //       </CardHeader>
-  //       <CardContent>
-  //         <div className="flex flex-col gap-2">
-  //           <div className="flex flex-row items-center justify-between gap-10">
-  //             <QuizCompleteUserCard
-  //               {...{
-  //                 user: data.creatorUser,
-  //                 isWinner: data.creatorUser._id === data.winnerUser._id,
-  //                 quizData,
-  //                 currentUser: data.currentUser,
-  //               }}
-  //             />
-  //             <QuizCompleteUserCard
-  //               {...{
-  //                 user: data.opponentUser,
-  //                 isWinner: data.opponentUser._id === data.winnerUser._id,
-  //                 quizData,
-  //                 currentUser: data.currentUser,
-  //               }}
-  //             />
-  //           </div>
-  //         </div>
-  //       </CardContent>
-  //     </Card>
-  //   </div>
-  // )
+function calcRoles(
+  data: FunctionReturnType<typeof api.pvp_quiz.query.getUsersFromQuiz>,
+  quizData: PvpQuizQueryReturnType,
+) {
+  let currentUserQuizData: FullQuestionPlayerData = {
+    userProfile: data.currentUser,
+    userData: null,
+  }
+  let otherUserQuizData: FullQuestionPlayerData = {
+    userProfile: null,
+    userData: null,
+  }
+  if (data.currentUser._id === quizData.creatorUserId) {
+    console.log("current user is creator")
+    currentUserQuizData = {
+      ...currentUserQuizData,
+      userData: quizData.creatorData,
+    }
+    otherUserQuizData = {
+      userProfile: quizData.opponentUser,
+      userData: quizData.opponentData,
+    }
+  } else {
+    console.log("current user IT NOT creator")
+
+    currentUserQuizData = {
+      ...currentUserQuizData,
+      userData: quizData.opponentData,
+    }
+    otherUserQuizData = {
+      userProfile: quizData.creatorUser,
+      userData: quizData.creatorData,
+    }
+  }
+  return { currentUserQuizData, otherUserQuizData }
 }

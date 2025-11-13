@@ -17,13 +17,16 @@ export default function Page() {
     return <FullScreenLoading />
   }
 
-  if (error || !data) {
+  if (error) {
     return (
       <FullScreenError
         errorMessage={"Cos poszlo nie tak"}
         errorDetail={parseConvexError(error)}
       />
     )
+  }
+  if (data.length === 0) {
+    return <FullScreenError type="warning" errorMessage="Brak zaproszen." />
   }
 
   return (

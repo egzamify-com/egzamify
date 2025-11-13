@@ -1,8 +1,10 @@
 "use client"
 
 import {
+  BellRing,
   Calendar,
   Check,
+  Component,
   Cpu,
   Hand,
   History,
@@ -12,6 +14,7 @@ import {
   User,
   UserPlus,
   Users,
+  Zap,
 } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
@@ -49,16 +52,16 @@ const navMain: NavbarItem[] = [
   {
     title: "Tryby online",
     url: "/dashboard/online",
-    icon: <Users size={SIDEBAR_ICON_SIZE} />,
+    icon: <Zap size={SIDEBAR_ICON_SIZE} />,
     childrenItems: [
       {
         title: "Tryby",
-        icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
+        icon: <Component size={SIDEBAR_ICON_SIZE} />,
         url: "/dashboard/online",
       },
       {
         title: "Zaproszenia",
-        icon: <SquareCheck size={SIDEBAR_ICON_SIZE} />,
+        icon: <BellRing size={SIDEBAR_ICON_SIZE} />,
         url: "/dashboard/online/pvp-quiz/invites",
       },
     ],

@@ -149,3 +149,35 @@ export const getOnlineInvites = query({
       .filter((a) => a !== null)
   },
 })
+
+export const getAnswersFromUserAnswers = query({
+  args: {
+    currentUserAnswersIds: v.optional(v.array(v.id("userAnswers"))),
+    otherUserAnswersIds: v.optional(v.array(v.id("userAnswers"))),
+  },
+  handler: async (ctx, { currentUserAnswersIds, otherUserAnswersIds }) => {
+    if (!currentUserAnswersIds || !otherUserAnswersIds) return null
+
+    const currentUsers = await asyncMap(
+      currentUserAnswersIds,
+      async (userAnswerId) => {
+        const userAnswer = await ctx.db.get(userAnswerId)
+        if (!userAnswer) return null
+        return await ctx.db.get(userAnswer.answerId)
+      },
+    )
+
+    const otherUsers = await asyncMap(
+      otherUserAnswersIds,
+      async (userAnswerId) => {
+        const userAnswer = await ctx.db.get(userAnswerId)
+        if (!userAnswer) return null
+        return await ctx.db.get(userAnswer.answerId)
+      },
+    )
+    return {
+      currentUsers: currentUsers.filter((a) => a !== null),
+      otherUsers: otherUsers.filter((a) => a !== null),
+    }
+  },
+})

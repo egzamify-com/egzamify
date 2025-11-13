@@ -1,4 +1,5 @@
 import { api } from "convex/_generated/api"
+import type { Doc } from "convex/_generated/dataModel"
 import type { QuizAnswersType, QuizGameState } from "convex/pvp_quiz/helpers"
 import { useMutation } from "convex/react"
 import { useState } from "react"
@@ -6,7 +7,7 @@ import { toast } from "sonner"
 import { Button } from "~/components/ui/button"
 import { tryCatch } from "~/lib/tryCatch"
 import type { PvpQuizQueryReturnType } from "../../page"
-import QuizQuestion from "./quiz-question"
+import FullQuestionCard from "./complete-question-card"
 import QuizSubmitted from "./quiz-submitted"
 
 export default function QuizGame({
@@ -44,24 +45,76 @@ export default function QuizGame({
     toast.success("Przeslano quiz!")
   }
 
+  function handleSelectingNewAnswer(
+    selectedAnswer: QuizAnswersType,
+    question: Doc<"questions">,
+  ) {
+    console.log("selected this answer")
+    console.log(selectedAnswer.content)
+
+    setQuizGameState((prevQuizGameState) => {
+      if (!prevQuizGameState) {
+        return [
+          {
+            ...question,
+            answers: [{ ...selectedAnswer, isSelected: true }],
+          },
+        ] as QuizGameState
+      }
+
+      const newQuizState: QuizGameState = prevQuizGameState.map((q) => {
+        if (q._id === question._id) {
+          const updatedAnswers = q.answers.map((a) => {
+            if (a._id === selectedAnswer._id) {
+              return {
+                ...a,
+                isSelected: true,
+              }
+            }
+            return { ...a, isSelected: false }
+          })
+
+          return {
+            ...q,
+            answers: updatedAnswers,
+          }
+        }
+        return q
+      })
+
+      return newQuizState
+    })
+  }
+
   return (
-    <div>
-      {quizGameState.map((question) => {
-        return (
-          <QuizQuestion
-            key={crypto.randomUUID()}
-            {...{ question, setQuizGameState }}
-          />
-        )
-      })}
-      <Button onClick={async () => await handleSubmitQuiz()}>
-        Submit quiz
+    <div className="flex flex-col items-center justify-start gap-4 p-4">
+      <div className="flex w-full flex-col gap-4 xl:w-1/2">
+        {quizGameState.map((question) => {
+          return (
+            <FullQuestionCard
+              key={crypto.randomUUID()}
+              {...{
+                showQuestionMetadata: true,
+                questionNumber: 1,
+                question: question,
+                answers: question.answers,
+                handleSelectingNewAnswer,
+              }}
+            />
+          )
+        })}
+      </div>
+      <Button
+        variant={"outline"}
+        onClick={async () => await handleSubmitQuiz()}
+      >
+        Przeslij quiz
       </Button>
     </div>
   )
 }
 
-function transformQuizDataToQuizState(
+export function transformQuizDataToQuizState(
   quizData: PvpQuizQueryReturnType,
 ): QuizGameState {
   return quizData.quizQuestions.map((question) => {
