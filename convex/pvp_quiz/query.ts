@@ -46,11 +46,14 @@ export const getPvpQuiz = query({
       },
     )
 
+    const quizQualification = await ctx.db.get(quiz.quizQualificationId)
+
     return {
       ...quiz,
       creatorUser,
       opponentUser,
       quizQuestions: quizQuestions.filter((a) => a !== null),
+      quizQualification,
     }
   },
 })
