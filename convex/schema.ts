@@ -176,6 +176,7 @@ const schema = defineSchema({
     opponentUserId: v.id("users"),
     status: v.union(
       v.literal("waiting_for_oponent_accept"),
+      v.literal("opponent_declined"),
       v.literal("quiz_pending"),
       v.literal("quiz_completed"),
     ),
@@ -188,7 +189,7 @@ const schema = defineSchema({
     opponentData: pvpQuizPlayerDataValidator,
     quizQuestionsIds: v.array(v.id("questions")),
     quizQualificationId: v.id("qualifications"),
-  }),
+  }).index("by_status", ["status"]),
 })
 
 export default schema

@@ -8,6 +8,7 @@ import { useParams } from "next/navigation"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import { parseConvexError } from "~/lib/utils"
+import OpponentDeclinedQuiz from "./(components)/opponent-declined-quiz"
 import QuizCompleted from "./(components)/quiz-completed/quiz-completed"
 import QuizGame from "./(components)/quiz-game/quiz-game"
 import WaitForOpponent from "./(components)/wait-for-opponent"
@@ -45,5 +46,8 @@ export default function Page() {
       return <QuizGame {...{ quizData: pvpQuizQuery.data }} />
     case "quiz_completed":
       return <QuizCompleted {...{ quizData: pvpQuizQuery.data }} />
+
+    case "opponent_declined":
+      return <OpponentDeclinedQuiz {...{ quizData: pvpQuizQuery.data }} />
   }
 }

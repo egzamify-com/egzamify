@@ -121,3 +121,31 @@ export const getAnswersFromIdArray = query({
     return answers
   },
 })
+
+export const getOnlineInvites = query({
+  handler: async (ctx) => {
+    const currentUserId = await getUserIdOrThrow(ctx)
+    const pendingQuizzes = await ctx.db
+      .query("pvpQuizzes")
+      .withIndex("by_status", (q) =>
+        q.eq("status", "waiting_for_oponent_accept"),
+      )
+      .collect()
+
+    const quizzes = await asyncMap(pendingQuizzes, async (quiz) => {
+      return {
+        ...quiz,
+        quizQualification: await ctx.db.get(quiz.quizQualificationId),
+      }
+    })
+
+    return quizzes
+      .filter((a) => {
+        if (a.creatorUserId === currentUserId) {
+          return null
+        }
+        return a
+      })
+      .filter((a) => a !== null)
+  },
+})

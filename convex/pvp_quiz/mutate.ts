@@ -1,7 +1,8 @@
 import type { Doc } from "convex/_generated/dataModel"
-import { v } from "convex/values"
+import { ConvexError, v } from "convex/values"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
+import { vv } from "../schema"
 import {
   authUserToAccessQuizOrThrow,
   calcQuizScore,
@@ -96,5 +97,37 @@ export const submitQuiz = mutation({
       winnerUserId: winner?.winnerUserId,
       winnerType: winner?.winnerType,
     })
+  },
+})
+
+export const updateQuizStatus = mutation({
+  args: {
+    quizId: v.id("pvpQuizzes"),
+    newStatus: vv.doc("pvpQuizzes").fields.status,
+  },
+  handler: async (ctx, { quizId, newStatus }) => {
+    const quiz = await ctx.db.get(quizId)
+    if (!quiz) {
+      console.error("Nie znaleziono quizu")
+      throw new ConvexError("Nie znaleziono quizu")
+    }
+
+    authUserToAccessQuizOrThrow(await getUserIdOrThrow(ctx), quiz)
+
+    await ctx.db.patch(quiz._id, { status: newStatus })
+  },
+})
+
+export const deleteDeclinedQuiz = mutation({
+  args: { quizId: v.id("pvpQuizzes") },
+  handler: async (ctx, { quizId }) => {
+    const quiz = await getQuizOrThrow(ctx, quizId)
+    authUserToAccessQuizOrThrow(await getUserIdOrThrow(ctx), quiz)
+
+    if (quiz.status !== "opponent_declined") {
+      throw new ConvexError("Nie mozna usunac aktywnego quizu")
+    }
+
+    await ctx.db.delete(quizId)
   },
 })
