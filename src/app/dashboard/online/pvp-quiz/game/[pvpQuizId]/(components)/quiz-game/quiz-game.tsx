@@ -2,9 +2,18 @@ import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import type { QuizAnswersType, QuizGameState } from "convex/pvp_quiz/helpers"
 import { useMutation } from "convex/react"
+import { Send } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import { Button } from "~/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
 import { tryCatch } from "~/lib/tryCatch"
 import type { PvpQuizQueryReturnType } from "../../page"
 import FullQuestionCard from "./complete-question-card"
@@ -83,30 +92,46 @@ export default function QuizGame({
   }
 
   return (
-    <div className="flex flex-col items-center justify-start gap-4 p-4">
-      <div className="flex w-full flex-col gap-4 xl:w-1/2">
-        {quizGameState.map((question) => {
-          return (
-            <FullQuestionCard
-              key={crypto.randomUUID()}
-              {...{
-                showQuestionMetadata: true,
-                questionNumber: 1,
-                question: question,
-                answers: question.answers,
-                handleSelectingNewAnswer,
-              }}
-            />
-          )
-        })}
-      </div>
-      <Button
-        variant={"outline"}
-        onClick={async () => await handleSubmitQuiz()}
-      >
-        Przeslij quiz
-      </Button>
-    </div>
+    <PageHeaderWrapper>
+      <Card className="bg-transparent">
+        <CardHeader>
+          <CardTitle>
+            <h1>Quiz</h1>
+          </CardTitle>
+          <CardDescription>
+            <p>Kwalifikacja: {quizData.quizQualification?.nameLabelCombined}</p>
+            <p>Pytania: {quizData.quizQuestionsIds.length}</p>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex w-full flex-col items-center justify-start gap-4">
+          <div className="flex w-full flex-col gap-4">
+            {quizGameState.map((question) => {
+              return (
+                <FullQuestionCard
+                  key={crypto.randomUUID()}
+                  {...{
+                    showQuestionMetadata: true,
+                    questionNumber: 1,
+                    question: question,
+                    answers: question.answers,
+                    handleSelectingNewAnswer,
+                  }}
+                />
+              )
+            })}
+          </div>
+          <div className="flex w-full flex-row items-center justify-end">
+            <Button
+              className="w-full"
+              onClick={async () => await handleSubmitQuiz()}
+            >
+              <Send />
+              {"Prześlij quiz"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </PageHeaderWrapper>
   )
 }
 

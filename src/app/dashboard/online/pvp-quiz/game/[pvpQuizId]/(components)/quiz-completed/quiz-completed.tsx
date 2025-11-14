@@ -4,6 +4,7 @@ import type { FunctionReturnType } from "convex/server"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import { parseConvexError } from "~/lib/utils"
 import type { PvpQuizQueryReturnType } from "../../page"
 import FullQuestionCard, {
@@ -37,61 +38,63 @@ export default function QuizCompleted({
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-8 p-6">
-      <div className="flex w-full flex-col items-center justify-center gap-8 xl:w-3/5">
-        <QuizCompletedResultHeader
-          {...{
-            isCurrentUserWinner: data.currentUser._id === data.winnerUser._id,
-            winnerPlayerData: data.winnerUser,
-            winnerType: quizData.winnerType,
-          }}
-        />
-
-        <div className="grid w-full gap-6 md:grid-cols-2">
-          <QuizCompletedPlayerStatsCard
+    <PageHeaderWrapper>
+      <div className="flex w-full flex-col items-center justify-center gap-8 p-6">
+        <div className="flex w-full flex-col items-center justify-center gap-8">
+          <QuizCompletedResultHeader
             {...{
-              quizData,
-              isCurrentUser: quizData.creatorUserId === data.currentUser._id,
-              user: quizData.creatorUser,
-              cardIndex: 0,
-              playerType: "creator",
+              isCurrentUserWinner: data.currentUser._id === data.winnerUser._id,
+              winnerPlayerData: data.winnerUser,
+              winnerType: quizData.winnerType,
             }}
           />
-          <QuizCompletedPlayerStatsCard
-            {...{
-              quizData,
-              isCurrentUser: quizData.opponentUserId === data.currentUser._id,
-              user: quizData.opponentUser,
-              cardIndex: 0,
-              playerType: "opponent",
-            }}
-          />
-        </div>
-      </div>
-      <div className="flex w-full flex-col items-center justify-start gap-8 xl:w-3/5">
-        {transformQuizDataToQuizState(quizData).map((questionItem) => {
-          const { answers, ...question } = questionItem
 
-          const { currentUserQuizData, otherUserQuizData } = calcRoles(
-            data,
-            quizData,
-          )
-
-          return (
-            <FullQuestionCard
-              key={crypto.randomUUID()}
+          <div className="grid w-full gap-6 md:grid-cols-2">
+            <QuizCompletedPlayerStatsCard
               {...{
-                nonInteractive: true,
-                question: question,
-                answers: answers,
-                currentUserQuizData,
-                otherUserQuizData,
+                quizData,
+                isCurrentUser: quizData.creatorUserId === data.currentUser._id,
+                user: quizData.creatorUser,
+                cardIndex: 0,
+                playerType: "creator",
               }}
             />
-          )
-        })}
+            <QuizCompletedPlayerStatsCard
+              {...{
+                quizData,
+                isCurrentUser: quizData.opponentUserId === data.currentUser._id,
+                user: quizData.opponentUser,
+                cardIndex: 0,
+                playerType: "opponent",
+              }}
+            />
+          </div>
+        </div>
+        <div className="flex w-full flex-col items-center justify-start gap-8">
+          {transformQuizDataToQuizState(quizData).map((questionItem) => {
+            const { answers, ...question } = questionItem
+
+            const { currentUserQuizData, otherUserQuizData } = calcRoles(
+              data,
+              quizData,
+            )
+
+            return (
+              <FullQuestionCard
+                key={crypto.randomUUID()}
+                {...{
+                  nonInteractive: true,
+                  question: question,
+                  answers: answers,
+                  currentUserQuizData,
+                  otherUserQuizData,
+                }}
+              />
+            )
+          })}
+        </div>
       </div>
-    </div>
+    </PageHeaderWrapper>
   )
 }
 
