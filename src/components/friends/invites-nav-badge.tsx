@@ -19,13 +19,9 @@ export default function InvitesNavBadge() {
     }
 
     if (incomingRequestsCount + outcomingRequestsCount > 20) {
-      return <Badge className="ml-1">20+</Badge>
+      return <Badge>20+</Badge>
     } else {
-      return (
-        <Badge className="ml-1">
-          {incomingRequestsCount + outcomingRequestsCount}
-        </Badge>
-      )
+      return <Badge>{incomingRequestsCount + outcomingRequestsCount}</Badge>
     }
   }
   return <>{render()}</>

@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
+import OnlineInvitesSidebarBadge from "~/app/dashboard/online/pvp-quiz/invites/(components)/invites-count-sidebar-badge"
 import InvitesNavBadge from "~/components/friends/invites-nav-badge"
 import { Badge } from "~/components/ui/badge"
 import {
@@ -63,6 +64,7 @@ const navMain: NavbarItem[] = [
         title: "Zaproszenia",
         icon: <BellRing size={SIDEBAR_ICON_SIZE} />,
         url: "/dashboard/online/pvp-quiz/invites",
+        badgeComponent: <OnlineInvitesSidebarBadge />,
       },
     ],
   },
