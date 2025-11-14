@@ -13,14 +13,7 @@ export default function Page() {
       description="Wyszukaj i dodaj znajomych..."
       icon={<UserPlus size={pageHeaderWrapperIconSize} />}
     >
-      <DisplayFriendList
-        filter="not_friends"
-        notFoundComponent={
-          <div className="flex flex-col items-start gap-2">
-            <p className="mt-2 text-gray-500">Brak użytkowników.</p>
-          </div>
-        }
-      />
+      <DisplayFriendList filter="not_friends" />
     </PageHeaderWrapper>
   )
 }

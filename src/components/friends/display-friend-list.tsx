@@ -19,7 +19,7 @@ export default function DisplayFriendList({
   fullWidthSearchBar,
 }: {
   filter: Infer<typeof friendFilterValidator>
-  notFoundComponent: ReactNode
+  notFoundComponent?: ReactNode
   friendItemProps?: FriendProps
 
   fullWidthSearchBar?: boolean
@@ -58,7 +58,7 @@ function Render({
 }: {
   search: string
   filter: Infer<typeof friendFilterValidator>
-  notFoundComponent: ReactNode
+  notFoundComponent?: ReactNode
   friendItemProps?: FriendProps
 }) {
   let query = api.friends.query.getPaginatedFriends
@@ -97,11 +97,17 @@ function Render({
     return <FriendsSkeleton countOfSkeletons={5} />
   }
 
-  if (friendList.length === 0) {
+  if (
+    (friendList.length === 0 && search) ||
+    (friendList.length === 0 && !notFoundComponent)
+  ) {
+    return <p className="text-muted-foreground text-base">{"Brak wyników."}</p>
+  }
+
+  if (friendList.length === 0 && notFoundComponent) {
     return <>{notFoundComponent}</>
   }
 
-  // console.log({ friendList })
   return (
     <div className="space-y-3">
       {friendList.map((friend) => (

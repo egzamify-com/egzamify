@@ -62,25 +62,11 @@ export default function Page() {
           value="incoming"
           className="flex w-full flex-row items-start justify-start"
         >
-          <DisplayFriendList
-            filter="incoming_requests"
-            notFoundComponent={
-              <div className="flex flex-col items-start gap-2">
-                <p className="mt-2 text-gray-500">No users found.</p>
-              </div>
-            }
-          />
+          <DisplayFriendList filter="incoming_requests" />
         </TabsContent>
 
         <TabsContent value="pending" className="space-y-3">
-          <DisplayFriendList
-            filter="outcoming_requests"
-            notFoundComponent={
-              <div className="flex flex-col items-start gap-2">
-                <p className="mt-2 text-gray-500">No users found.</p>
-              </div>
-            }
-          />
+          <DisplayFriendList filter="outcoming_requests" />
         </TabsContent>
       </Tabs>
     </PageHeaderWrapper>

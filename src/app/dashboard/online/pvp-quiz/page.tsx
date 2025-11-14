@@ -23,7 +23,6 @@ import {
 } from "~/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 import { tryCatch } from "~/lib/tryCatch"
-import { NoFriendsFound } from "../../friends/page"
 import SelectQualificationForPvpQuiz from "./(components)/select-qualification-for-pvp-quiz"
 import SelectQuestionCount from "./(components)/select-question-count"
 
@@ -142,7 +141,6 @@ export default function Page() {
               <DisplayFriendList
                 fullWidthSearchBar
                 filter="accepted_friends"
-                notFoundComponent={<NoFriendsFound />}
                 friendItemProps={{
                   hideFriendButton: true,
                   actionButtons: (friend) => {
