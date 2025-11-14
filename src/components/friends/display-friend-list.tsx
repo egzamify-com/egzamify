@@ -113,7 +113,6 @@ function Render({
               friend={{
                 ...friendItemProps,
                 user: friend,
-                actionButtons: friendItemProps?.actionButtons,
               }}
             />
           )}

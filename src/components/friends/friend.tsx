@@ -15,13 +15,15 @@ export type FriendProps = {
   created_at?: Date
   hideFriendButton?: boolean
   actionButtons?: (friend: Doc<"users">) => ReactNode
+  cardOnClickHandler?: (friend: Doc<"users">) => void
 }
 
 export default function Friend({ friend }: { friend: FriendProps }) {
   if (!friend) return null
   if (!friend.user) return null
 
-  const { user, status, hideFriendButton, actionButtons } = friend
+  const { user, status, hideFriendButton, actionButtons, cardOnClickHandler } =
+    friend
 
   const renderedActionButtons =
     typeof actionButtons === "function" ? actionButtons(user) : actionButtons
@@ -31,6 +33,7 @@ export default function Friend({ friend }: { friend: FriendProps }) {
       <Card
         key={`friend-card-for-${user._id}`}
         className="transition-shadow hover:shadow-md"
+        onClick={() => cardOnClickHandler?.(user)}
       >
         <CardContent className="">
           <div className="flex items-center justify-between">
@@ -39,8 +42,10 @@ export default function Friend({ friend }: { friend: FriendProps }) {
 
               <Link href={`/user/${user.username}`}>
                 <div>
-                  <h3 className="text-foreground font-medium">{user.name}</h3>
-                  <p className="text-muted-foreground text-sm">
+                  <h3 className="hover:text-muted-foreground font-medium transition-all">
+                    {user.name}
+                  </h3>
+                  <p className="text-muted-foreground hover:text-foreground text-sm transition-all">
                     @{user.username}
                   </p>
                 </div>

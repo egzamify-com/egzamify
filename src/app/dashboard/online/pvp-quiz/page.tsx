@@ -36,11 +36,6 @@ export default function Page() {
   )
   const [selectedQuestionCount, setSelectedQuestionCount] = useState<number>(0)
 
-  const isQuizConfigReady =
-    selectedUser &&
-    selectedQualification.length > 0 &&
-    selectedQuestionCount > 0
-
   async function handleCreateQuiz(finalSelectedUser: Doc<"users"> | null) {
     if (!finalSelectedUser) {
       toast.error("Wybierz przeciwnika aby rozpocząć!")
@@ -100,7 +95,7 @@ export default function Page() {
               <h1>Konfiguracja</h1>
             </CardTitle>
             <CardDescription>
-              <p>Ustaw jaki quiz chcesz i z kim.</p>
+              <p>Skonfiguruj swój quiz.</p>
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-start gap-4">
@@ -123,7 +118,7 @@ export default function Page() {
                 </CardTitle>
                 <CardDescription>
                   <p className="text-muted-foreground">
-                    Wybierz przeciwnika sposrod znajomych.
+                    {"Wybierz przeciwnika spośrod znajomych."}
                   </p>
                 </CardDescription>
               </CardHeader>
@@ -134,7 +129,7 @@ export default function Page() {
                   />
                 ) : (
                   <p className="text-muted-foreground">
-                    Nie wybrano przeciwnika
+                    Nie wybrano przeciwnika.
                   </p>
                 )}
               </CardContent>
@@ -146,7 +141,7 @@ export default function Page() {
                 await handleCreateQuiz(selectedUser)
               }}
             >
-              {isCreatingQuiz ? <SpinnerLoading /> : <p>Zacznij quiz</p>}
+              {isCreatingQuiz ? <SpinnerLoading /> : <p>Rozpocznij quiz</p>}
             </Button>
 
             <div className="max-h-1/2 w-full">
@@ -155,17 +150,14 @@ export default function Page() {
                 filter="accepted_friends"
                 friendItemProps={{
                   hideFriendButton: true,
+                  cardOnClickHandler: (friend) => {
+                    handleSelectNewUser(friend)
+                  },
                   actionButtons: (friend) => {
                     const isSelected = friend._id === selectedUser?._id
                     return (
                       <RadioGroup asChild>
-                        <Button
-                          variant={"secondary"}
-                          onClick={() => {
-                            console.log("button lick")
-                            handleSelectNewUser(friend)
-                          }}
-                        >
+                        <Button variant={"secondary"}>
                           <RadioGroupItem
                             value=""
                             checked={isSelected}
