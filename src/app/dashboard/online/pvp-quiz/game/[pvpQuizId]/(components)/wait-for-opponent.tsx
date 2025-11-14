@@ -1,6 +1,7 @@
-import type { PvpQuizQueryReturnType } from "../page"
-
+import { api } from "convex/_generated/api"
+import { useMutation } from "convex/react"
 import { Clock, InfoIcon, X } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import {
@@ -11,13 +12,16 @@ import {
   CardTitle,
 } from "~/components/ui/card"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
+import type { PvpQuizQueryReturnType } from "../page"
 
 export default function WaitForOpponent({
   quizData,
 }: {
   quizData: PvpQuizQueryReturnType
 }) {
+  const router = useRouter()
   const playerData = quizData.opponentUser
+  const deleteQuiz = useMutation(api.pvp_quiz.mutate.deleteQuiz)
 
   return (
     <div className="from-background via-background to-muted/20 flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
@@ -82,7 +86,11 @@ export default function WaitForOpponent({
               variant="outline"
               size="lg"
               className="text-destructive w-full bg-transparent"
-              onClick={() => window.history.back()}
+              onClick={() => {
+                router.push("/dashboard/online")
+
+                deleteQuiz({ quizId: quizData._id })
+              }}
             >
               <X className="mr-1 h-4 w-4" />
               Anuluj Quiz

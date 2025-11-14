@@ -1,8 +1,10 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import type { FunctionReturnType } from "convex/server"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
+import { parseConvexError } from "~/lib/utils"
 import type { PvpQuizQueryReturnType } from "../../page"
 import FullQuestionCard, {
   type FullQuestionPlayerData,
@@ -28,8 +30,8 @@ export default function QuizCompleted({
   if (error || !data) {
     return (
       <FullScreenError
-        errorMessage="Cos poszlo nie tak"
-        errorDetail={error.message}
+        errorMessage={APP_CONFIG.defaultFullScreenErrorMessage}
+        errorDetail={parseConvexError(error)}
       />
     )
   }
@@ -106,7 +108,6 @@ function calcRoles(
     userData: null,
   }
   if (data.currentUser._id === quizData.creatorUserId) {
-    console.log("current user is creator")
     currentUserQuizData = {
       ...currentUserQuizData,
       userData: quizData.creatorData,
@@ -116,8 +117,6 @@ function calcRoles(
       userData: quizData.opponentData,
     }
   } else {
-    console.log("current user IT NOT creator")
-
     currentUserQuizData = {
       ...currentUserQuizData,
       userData: quizData.opponentData,

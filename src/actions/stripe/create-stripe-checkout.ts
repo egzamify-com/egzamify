@@ -10,31 +10,32 @@ export async function createStripeCheckout(
   product: Stripe.Product,
   quantity: number,
 ) {
-  console.log("[STRIPE] Creating new checkout")
+  const user = await getNextjsUserOrThrow()
+  console.log("[STRIPE] Started reating new checkout for - ", user._id)
 
   const productPriceId = product.default_price
   if (!productPriceId) {
-    console.error(
-      "[STRIPE] Product doesnt have a price (?), product id - ",
-      product.id,
-    )
-    throw new Error("[STRIPE] Product doesnt have a price (?), product id - ")
+    const errMess = "[STRIPE] Product doesnt have a price (?), product id - "
+    console.error(errMess, product.id)
+    throw new Error(errMess)
   }
 
   let stripeCustomerId = await getStripeCustomerId()
 
   if (!stripeCustomerId) {
-    const user = await getNextjsUserOrThrow()
     console.warn(
-      "[STRIPE] failed to get stripe customer, creating new customer for current user",
+      "[STRIPE] Failed to get stripe customer, creating new customer for current signed in user",
     )
+
     const newCustomer = await stripe.customers.create({
       email: user.email,
       metadata: {
         userId: user._id, // DO NOT FORGET THIS
       },
     })
+
     console.log("[STRIPE] created new customer - ", newCustomer.id)
+
     await storeStripeCustomerId(user._id, newCustomer.id)
     stripeCustomerId = newCustomer.id
   }
@@ -43,11 +44,13 @@ export async function createStripeCheckout(
     "[STRIPE] User already has a stripe customer id - ",
     stripeCustomerId,
   )
+
   const randomUUID = crypto.randomUUID()
   const checkoutMetadata = {
     mySessionId: randomUUID,
     creditsPurchased: quantity * parseInt(product.name),
   }
+
   const checkout = await stripe.checkout.sessions.create({
     metadata: { ...checkoutMetadata },
     payment_intent_data: {
@@ -64,9 +67,12 @@ export async function createStripeCheckout(
     ],
   })
 
-  console.log("[STRIPE] Created new checkout successfully")
-  console.log("[STRIPE] Our random checkout id - ", randomUUID)
-  console.log("[STRIPE] Officical stripe checkout id - ", checkout.id)
+  console.log(
+    "[STRIPE] Created new checkout successfully, stripe checkout id - ",
+    checkout.id,
+    " random session id - ",
+    randomUUID,
+  )
 
   return checkout.id
 }

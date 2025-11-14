@@ -18,7 +18,6 @@ export default function QuizGame({
   const [quizGameState, setQuizGameState] = useState<QuizGameState>(
     transformQuizDataToQuizState(quizData),
   )
-  console.log({ quizGameState })
   const submitQuiz = useMutation(api.pvp_quiz.mutate.submitQuiz)
   const [submitStatus, setSubmitStatus] = useState<
     "pending" | "submitted" | "idle"
@@ -49,9 +48,6 @@ export default function QuizGame({
     selectedAnswer: QuizAnswersType,
     question: Doc<"questions">,
   ) {
-    console.log("selected this answer")
-    console.log(selectedAnswer.content)
-
     setQuizGameState((prevQuizGameState) => {
       if (!prevQuizGameState) {
         return [

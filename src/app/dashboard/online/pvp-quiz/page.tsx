@@ -36,9 +36,27 @@ export default function Page() {
   )
   const [selectedQuestionCount, setSelectedQuestionCount] = useState<number>(0)
 
-  const isQuizConfigReady = selectedUser && selectedQualification.length > 0
+  const isQuizConfigReady =
+    selectedUser &&
+    selectedQualification.length > 0 &&
+    selectedQuestionCount > 0
 
-  async function handleCreateQuiz(finalSelectedUser: Doc<"users">) {
+  async function handleCreateQuiz(finalSelectedUser: Doc<"users"> | null) {
+    if (!finalSelectedUser) {
+      toast.error("Wybierz przeciwnika aby rozpocząć!")
+      return
+    }
+
+    if (selectedQualification.length == 0) {
+      toast.error("Wybierz kwalifikacje aby rozpocząć!")
+      return
+    }
+
+    if (selectedQuestionCount == 0) {
+      toast.error("Wybierz liczbe pytań aby rozpocząć!")
+      return
+    }
+
     setIsCreatingQuiz(true)
 
     const [quizId, err] = await tryCatch(
@@ -124,13 +142,7 @@ export default function Page() {
 
             <Button
               className="w-full"
-              disabled={!isQuizConfigReady}
               onClick={async () => {
-                if (!isQuizConfigReady) {
-                  toast.error("Uzupelnij dane!")
-                  return null
-                }
-
                 await handleCreateQuiz(selectedUser)
               }}
             >

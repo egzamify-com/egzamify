@@ -103,7 +103,6 @@ export function NavSignedIn() {
             className="cursor-pointer"
             onClick={async () => {
               await signOut()
-              console.log("[AUTH] succesfully signed out")
               toast.success("Wylogowano")
               router.replace("/")
             }}

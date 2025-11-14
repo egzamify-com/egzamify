@@ -1,13 +1,13 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
+import { motion } from "framer-motion"
 import { MessageCircle, Trash } from "lucide-react"
 import Link from "next/link"
 import type { MyUIMessage } from "~/app/api/chat/route"
 import SemanticDate from "~/components/semantic-date"
 import { Button } from "~/components/ui/button"
-import { Card, CardHeader, CardTitle } from "~/components/ui/card"
-
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 export default function ThreadCard({ item }: { item: Doc<"explanations"> }) {
   const messages = parseContent(item.content)
   const deleteChat = useMutation(api.ai_wyjasnia.mutate.deleteChat)
@@ -18,18 +18,24 @@ export default function ThreadCard({ item }: { item: Doc<"explanations"> }) {
       className="w-1/2"
       prefetch={true}
     >
-      <Card className="group hover:shadow-primary/10 hover:border-primary/200 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg">
-        <CardHeader className="px-4">
-          <CardTitle>
-            <h3 className="group-hover:text-primary line-clamp-2 overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap transition-colors duration-200">
-              {messages[0]?.parts[0]?.type == "text"
-                ? messages[0]?.parts[0]?.text
-                : ""}
-            </h3>
-          </CardTitle>
-          <div className="flex flex-row items-start justify-start gap-3">
-            <div className="min-w-0 flex-1">
-              <div className="text-muted-foreground mt-2 flex items-center gap-3 text-sm">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card className="group hover:border-primary border-border cursor-pointer gap-0 transition-all duration-300">
+          <CardHeader>
+            <CardTitle>
+              <h3 className="line-clamp-2 overflow-hidden text-base font-semibold text-ellipsis whitespace-nowrap transition-colors">
+                {messages[0]?.parts[0]?.type == "text"
+                  ? messages[0]?.parts[0]?.text
+                  : ""}
+              </h3>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative flex flex-row justify-between">
+            <div className="relative flex flex-row items-start justify-start gap-3">
+              <div className="text-muted-foreground flex items-center gap-3 text-sm">
                 <div className="flex items-center gap-1">
                   <SemanticDate date={item._creationTime} withIcon />
                 </div>
@@ -42,19 +48,21 @@ export default function ThreadCard({ item }: { item: Doc<"explanations"> }) {
                 )}
               </div>
             </div>
-            <Button
-              variant={"outline"}
-              onClick={async (e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                await deleteChat({ chatId: item._id })
-              }}
-            >
-              <Trash className="text-destructive" />
-            </Button>
-          </div>
-        </CardHeader>
-      </Card>
+            <div className="absolute -top-10 right-4 flex h-full flex-col items-start justify-start">
+              <Button
+                variant={"outline"}
+                onClick={async (e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  await deleteChat({ chatId: item._id })
+                }}
+              >
+                <Trash className="text-destructive" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </Link>
   )
 }

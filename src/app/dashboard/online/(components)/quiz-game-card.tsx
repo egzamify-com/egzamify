@@ -38,7 +38,7 @@ export function PvpQuizCard({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="from-card via-card to-muted border-border hover:border-primary relative flex min-h-[280px] w-full flex-col overflow-hidden rounded-2xl border-2 bg-gradient-to-br p-8 transition-all duration-300"
+          className="from-card via-card to-muted border-border hover:border-primary relative flex min-h-[280px] w-full flex-col overflow-hidden rounded-xl border bg-gradient-to-br p-8 transition-all duration-300"
         >
           {/* Animated background effect */}
           <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">

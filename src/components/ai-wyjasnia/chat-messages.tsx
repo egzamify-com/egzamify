@@ -1,6 +1,7 @@
 import { Bot } from "lucide-react"
 import Markdown from "marked-react"
 import type { MyUIMessage } from "~/app/api/chat/route"
+import { cn } from "~/lib/utils"
 import { Card, CardContent } from "../ui/card"
 import ActivityStatusAvatar from "../users/activity-status-avatar"
 import MessageModeAndActionBtns from "./message-mode"
@@ -25,13 +26,19 @@ export default function ChatMessages({
 function ChatMessage({ message }: { message: MyUIMessage }) {
   return (
     <div
-      className={`my-3 flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+      className={cn(
+        `my-3 flex gap-3`,
+        message.role === "user" ? "justify-end" : "justify-start",
+      )}
     >
       <div
-        className={`flex max-w-[50%] gap-3 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+        className={cn(
+          `relative flex w-1/2 gap-3`,
+          message.role === "user" ? "flex-row-reverse" : "flex-row",
+        )}
       >
         <div
-          className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full`}
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full`}
         >
           {message.role === "user" ? (
             <ActivityStatusAvatar />
@@ -39,12 +46,12 @@ function ChatMessage({ message }: { message: MyUIMessage }) {
             <Bot className="h-6 w-6" />
           )}
         </div>
-        <Card className={`relative flex items-center justify-center py-2`}>
-          <MessageModeAndActionBtns
-            {...{
-              message,
-            }}
-          />
+        <MessageModeAndActionBtns
+          {...{
+            message,
+          }}
+        />
+        <Card className={cn(`relative flex items-center justify-center py-2`)}>
           <CardContent>
             <div className="text-sm whitespace-pre-wrap">
               {message.parts.map((part, index) =>

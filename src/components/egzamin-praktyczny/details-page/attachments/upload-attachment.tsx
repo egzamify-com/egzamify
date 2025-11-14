@@ -32,12 +32,10 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
     }
 
     // setIsUploading(true); // Indicate that upload has started
-    console.log("Starting upload for file:", file.name)
 
     try {
       // Step 1: Get a short-lived upload URL
       const postUrl = await generateUploadUrl()
-      console.log("Generated upload URL:", postUrl)
 
       // Step 2: POST the file to the URL
       const result = await fetch(postUrl, {
@@ -47,20 +45,16 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
       })
 
       if (!result.ok) {
-        console.log(result)
         throw new Error(`HTTP error! status: ${result.status}`)
       }
 
       const { storageId } = await result.json()
-      console.log("Received storageId:", storageId)
 
-      // Step 3: Save the newly allocated storage id to the database
       await sendAttachment({
         storageId,
         attachmentName: file.name,
         userExamId: userExam._id,
       })
-      toast.success("Przesłano pliki")
     } catch (error) {
       console.error("[EXAM CHECK] Error during image upload:", error)
       toast.error("Nie udało się przesłać pliku!", {
@@ -71,7 +65,6 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      console.log("files selected")
       setSelectedFiles(event.target.files)
     }
   }
@@ -81,7 +74,6 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
     setIsDragging(false)
 
     if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-      console.log("files selected via drop")
       setSelectedFiles(event.dataTransfer.files)
     }
   }
@@ -96,16 +88,13 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
   }, [selectedFiles])
 
   async function handleStartUpload() {
-    console.log("[P-EXAM RATING] upload func start")
     if (!selectedFiles) {
-      console.log("[P-EXAM RATING] upload func end, no files to upload")
       return
     }
     const promises = [...selectedFiles].map((file) => {
       return uploadSelectedFile(file)
     })
     setIsUploading(true)
-    console.log("exec promsies")
     await Promise.all(promises)
     setIsUploading(false)
   }
@@ -138,8 +127,6 @@ export default function UploadAttachment({ userExam }: { userExam: UserExam }) {
         onClick={async () => {
           if (!isUploading) {
             imageInput.current?.click()
-
-            console.log("image input clicked")
           }
         }}
         disabled={isUploading}

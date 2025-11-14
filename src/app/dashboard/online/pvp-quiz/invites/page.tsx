@@ -2,6 +2,7 @@
 
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
@@ -20,18 +21,19 @@ export default function Page() {
   if (error) {
     return (
       <FullScreenError
-        errorMessage={"Cos poszlo nie tak"}
+        errorMessage={APP_CONFIG.defaultFullScreenErrorMessage}
         errorDetail={parseConvexError(error)}
       />
     )
   }
+
   if (data.length === 0) {
-    return <FullScreenError type="warning" errorMessage="Brak zaproszen." />
+    return <FullScreenError type="warning" errorMessage="Brak zaproszeń." />
   }
 
   return (
     <PageHeaderWrapper title="Zaproszenia">
-      <div>
+      <div className="flex w-full flex-col items-center justify-start gap-4">
         {data.map((quizInvite) => {
           return (
             <InviteItemCard

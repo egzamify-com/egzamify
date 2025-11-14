@@ -22,19 +22,23 @@ export const maxDuration = 30
 
 export async function POST(req: Request) {
   const body = await req.json()
-  console.dir(body, { depth: null })
   const { messages, id } = body
 
   const gotCharged = await chargeCredits(
     APP_CONFIG.ai_wyjasnia.creditPricePerMessage,
   )
+
   if (!gotCharged) {
-    throw new Error("Not enough credits")
+    const errMess = "[AI CHAT] Not enough credits to send a message"
+    console.error(errMess)
+    throw new Error(errMess)
   }
-  console.dir(messages, { depth: null })
-  console.dir(convertToModelMessages(messages as MyUIMessage[], {}), {
-    depth: null,
-  })
+
+  // console.dir(messages, { depth: null })
+  // console.dir(convertToModelMessages(messages as MyUIMessage[], {}), {
+  //   depth: null,
+  // })
+
   try {
     const result = streamText({
       model: APP_CONFIG.ai_wyjasnia.model,
@@ -72,12 +76,14 @@ export async function POST(req: Request) {
             },
           })
         } catch (e) {
-          console.error("Failed to capture posthog event - ", e)
+          console.error("[AI CHAT] Failed to capture posthog event - ", e)
         }
       },
     })
   } catch (e) {
-    console.log("Error while generating response in ai chat, refunding credits")
+    console.log(
+      "[AI CHAT] Error while generating response in ai chat, refunding credits",
+    )
     await refundCredits(APP_CONFIG.ai_wyjasnia.creditPricePerMessage)
   }
 }
@@ -90,10 +96,10 @@ export async function saveChat({
 }): Promise<void> {
   const content = JSON.stringify(messages, null, 2)
   // console.log("id - ", id);
-  console.log("content going into db - ", content)
+  // console.log("content going into db - ", content)
   const token = await convexAuthNextjsToken()
   try {
-    const a = await fetchMutation(
+    await fetchMutation(
       api.ai_wyjasnia.mutate.storeChatMessages,
       {
         chatId: id,
@@ -103,9 +109,10 @@ export async function saveChat({
         token,
       },
     )
-    console.log("result from stroing messages- ", a)
+    // console.log("result from stroing messages- ", a)
   } catch {}
 }
+
 function toMessagesWithModeInContent(
   originalMessages: MyUIMessage[],
 ): MyUIMessage[] {
@@ -121,11 +128,12 @@ function toMessagesWithModeInContent(
     if (a.parts[0]?.type === "text") {
       a.parts[0].text = newContent
     }
-    console.log("a - ", a)
+    // console.log("a - ", a)
     return a
   })
   return messes
 }
+
 function toOriginalMessagesWithoutMode(modifiedMessages: MyUIMessage[]) {
   return modifiedMessages.map((message) => {
     if (message.parts[0]?.type === "text") {

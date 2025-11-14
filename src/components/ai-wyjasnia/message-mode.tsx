@@ -2,6 +2,7 @@ import { Copy } from "lucide-react"
 import { toast } from "sonner"
 import type { MyUIMessage } from "~/app/api/chat/route"
 import { convertDateToEpoch } from "~/lib/dateUtils"
+import { cn } from "~/lib/utils"
 import SemanticDate from "../semantic-date"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
@@ -14,13 +15,19 @@ export default function MessageModeAndActionBtns({
 }) {
   return (
     <div
-      className={`absolute top-[-38px] left-[0px] flex w-full flex-row justify-between gap-2 px-2`}
+      className={cn(
+        `absolute -top-10 flex w-full flex-row items-center justify-start gap-2 overflow-visible px-2`,
+        message.role === "user" ? "right-10" : "left-10",
+      )}
     >
       {message.role === "assistant" && (
         <Badge variant="outline">{message.metadata?.mode}</Badge>
       )}
       <div
-        className={`flex w-full flex-row gap-2 ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+        className={cn(
+          `flex w-full flex-row gap-2`,
+          message.role === "user" ? "flex-row-reverse" : "flex-row",
+        )}
       >
         <CopyButton {...{ message }} />
         {message.metadata?.createdAt && (

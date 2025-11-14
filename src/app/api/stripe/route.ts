@@ -11,9 +11,11 @@ export async function POST(req: Request) {
   console.log("[STRIPE] Webhook received!")
   const body = await req.text()
   const signature = (await headers()).get("Stripe-Signature")
-  if (!signature) return NextResponse.json({}, { status: 400 })
+  if (!signature) {
+    console.error("[STRIPE] No stripe signature headers found")
+    return NextResponse.json({}, { status: 400 })
+  }
 
-  console.dir({ body })
   async function doEventProcessing() {
     if (typeof signature !== "string") {
       throw new Error("[STRIPE HOOK] Header isn't a string???")
@@ -36,8 +38,9 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ received: true })
 }
+
 async function processEvent(event: Stripe.Event) {
-  console.log("[STRIPE] Processing event")
+  console.log("[STRIPE] Start processing event")
   // Skip processing if the event isn't one I'm tracking (list of all events below)
   if (!allowedEvents.includes(event.type)) return
 
@@ -62,9 +65,9 @@ async function processEvent(event: Stripe.Event) {
 
   return res
 }
+
 const allowedEvents: Stripe.Event.Type[] = [
   "checkout.session.completed",
-  "payment_intent.succeeded",
   "payment_intent.payment_failed",
   "payment_intent.canceled",
   "payment_intent.succeeded",

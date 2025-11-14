@@ -11,10 +11,11 @@ export async function getNextjsUserOrThrow() {
     { token: await convexAuthNextjsToken() },
   )
   if (!user) {
-    throw new Error("User not found")
+    throw new Error("Failed to get current user in app server")
   }
   return user
 }
+
 export async function chargeCredits(creditsToCharge: number) {
   const result = await fetchMutation(
     api.users.mutate.chargeCreditsOrThrow,
@@ -26,16 +27,18 @@ export async function chargeCredits(creditsToCharge: number) {
     },
   )
   if (result.message === "user has enough credits") {
-    console.log("user got charged")
+    console.log("User got charged successfully")
     return true
   }
   if (result.message === "user DOESNT have enough credits") {
-    console.log("user doesnt have enough credits")
+    console.log("User doesnt have enough credits")
     return false
   }
   return false
 }
+
 export async function refundCredits(creditsToRefund: number) {
+  console.log("Refunding user credits")
   await fetchMutation(
     api.users.mutate.updateUserCredits,
     {
@@ -45,4 +48,5 @@ export async function refundCredits(creditsToRefund: number) {
       token: await convexAuthNextjsToken(),
     },
   )
+  console.log("Successfully refunded user credits")
 }

@@ -1,5 +1,5 @@
-import { groq } from "@ai-sdk/groq"
 type AppConfig = {
+  defaultFullScreenErrorMessage: string
   feedback: {
     maxFeedbacksSentPerHour: number
   }
@@ -53,6 +53,7 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  defaultFullScreenErrorMessage: "Przepraszamy, coś poszło nie tak.",
   feedback: {
     maxFeedbacksSentPerHour: 8,
   },
@@ -111,8 +112,8 @@ export const APP_CONFIG: AppConfig = {
     maxUserMessageCharacters: 600,
     creditPricePerMessage: 2,
     maxOutputTokens: 500,
-    model: groq("llama-3.3-70b-versatile"),
-    // model: "google/gemini-2.0-flash",
+    // model: groq("llama-3.3-70b-versatile"),
+    model: "google/gemini-2.0-flash",
     system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly).
     You also support modes of responses, which are:
 

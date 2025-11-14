@@ -5,6 +5,7 @@ import type { Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import type { FunctionReturnType } from "convex/server"
 import { useParams } from "next/navigation"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
 import { parseConvexError } from "~/lib/utils"
@@ -32,12 +33,10 @@ export default function Page() {
     return (
       <FullScreenError
         errorDetail={parseConvexError(pvpQuizQuery.error)}
-        errorMessage="Cos poszlo nie tak."
+        errorMessage={APP_CONFIG.defaultFullScreenErrorMessage}
       />
     )
   }
-
-  console.log(pvpQuizQuery.data)
 
   switch (pvpQuizQuery.data.status) {
     case "waiting_for_oponent_accept":
@@ -46,7 +45,6 @@ export default function Page() {
       return <QuizGame {...{ quizData: pvpQuizQuery.data }} />
     case "quiz_completed":
       return <QuizCompleted {...{ quizData: pvpQuizQuery.data }} />
-
     case "opponent_declined":
       return <OpponentDeclinedQuiz {...{ quizData: pvpQuizQuery.data }} />
   }

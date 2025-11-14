@@ -64,19 +64,15 @@ function Render({
   let query = api.friends.query.getPaginatedFriends
   switch (filter) {
     case "not_friends":
-      console.log("[FRIENDS] not friends query ran")
       query = api.friends.query.getPaginatedNotFriends
       break
     case "accepted_friends":
-      console.log("[FRIENDS] user friends query ran")
       query = api.friends.query.getPaginatedFriends
       break
     case "outcoming_requests":
-      console.log("[FRIENDS] outcoming requests query ran")
       query = api.friends.query.getPaginatedOutgoingRequests
       break
     case "incoming_requests":
-      console.log("[FRIENDS] incoming req query ran")
       query = api.friends.query.getPaginatedIncomingRequests
       break
   }

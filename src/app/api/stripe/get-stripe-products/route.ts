@@ -18,16 +18,20 @@ export async function GET() {
         },
       }
     })
+
   const products = await Promise.all(productsPromises)
-  console.log(
-    "[STIRPE] Stripe products fetched - ",
-    products.map((product) => product.name),
-  )
 
   const sortedProducts = products.sort(
     (a, b) => a.price.transformed_amount - b.price.transformed_amount,
   )
+
+  console.log(
+    "[STIRPE] Stripe products fetched - ",
+    sortedProducts.map((product) => product.name),
+  )
+
   return NextResponse.json(sortedProducts)
 }
+
 export type GetProductsResponse =
   Awaited<ReturnType<typeof GET>> extends NextResponse<infer T> ? T : never

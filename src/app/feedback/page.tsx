@@ -84,8 +84,6 @@ export default function Page() {
                       size="sm"
                       variant="default"
                       onClick={async () => {
-                        console.log({ content })
-                        console.log({ selectedType })
                         setIsActionPending(true)
                         try {
                           if (!content) {

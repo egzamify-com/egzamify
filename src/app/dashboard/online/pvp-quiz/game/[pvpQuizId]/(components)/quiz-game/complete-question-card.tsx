@@ -32,13 +32,10 @@ export default function FullQuestionCard(props: FullQuestionCardProps) {
   const currentUserProfile = props.currentUserQuizData?.userProfile
   const otherUserProfile = props.otherUserQuizData?.userProfile
 
-  const { data, isPending, error } = useQuery(
-    api.pvp_quiz.query.getAnswersFromUserAnswers,
-    {
-      currentUserAnswersIds: props.currentUserQuizData?.userData?.answersIds,
-      otherUserAnswersIds: props.otherUserQuizData?.userData?.answersIds,
-    },
-  )
+  const { data } = useQuery(api.pvp_quiz.query.getAnswersFromUserAnswers, {
+    currentUserAnswersIds: props.currentUserQuizData?.userData?.answersIds,
+    otherUserAnswersIds: props.otherUserQuizData?.userData?.answersIds,
+  })
 
   return (
     <div className="w-full">

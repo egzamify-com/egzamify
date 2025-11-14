@@ -50,22 +50,25 @@ export const updatePendingCredits = mutation({
     await ctx.db.patch(user._id, {
       pendingCredits: pendingCreditsToAdd + userCurrents,
     })
+    console.log("[STRIPE] Updated pending credits successfully")
   },
 })
 
 export const updateUserCreditsAndClearPendings = mutation({
   args: { creditsToAdd: v.number() },
   handler: async (ctx, { creditsToAdd }) => {
+    console.log("[STRIPE] Updating user credits, adding - ", { creditsToAdd })
     const user = await getUserProfileOrThrow(ctx)
 
     const userCurrents = user.credits ?? 0
-    console.log({ userCurrents })
+
     const res = creditsToAdd + userCurrents
-    console.log({ res })
-    console.log({ creditsToAdd })
+    console.log("[STRIPE] New credits state for user - ", { res })
+
     await ctx.db.patch(user._id, {
       credits: creditsToAdd + userCurrents,
       pendingCredits: 0,
     })
+    console.log("[STRIPE] Updated user credits successfully")
   },
 })

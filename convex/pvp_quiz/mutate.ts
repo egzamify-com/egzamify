@@ -118,15 +118,11 @@ export const updateQuizStatus = mutation({
   },
 })
 
-export const deleteDeclinedQuiz = mutation({
+export const deleteQuiz = mutation({
   args: { quizId: v.id("pvpQuizzes") },
   handler: async (ctx, { quizId }) => {
     const quiz = await getQuizOrThrow(ctx, quizId)
     authUserToAccessQuizOrThrow(await getUserIdOrThrow(ctx), quiz)
-
-    if (quiz.status !== "opponent_declined") {
-      throw new ConvexError("Nie mozna usunac aktywnego quizu")
-    }
 
     await ctx.db.delete(quizId)
   },
