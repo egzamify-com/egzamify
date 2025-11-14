@@ -83,7 +83,7 @@ export default function QuizCompleted({
               <FullQuestionCard
                 key={crypto.randomUUID()}
                 {...{
-                  questionMetadata: {
+                  questionAdditionalMetadata: {
                     questionNumber: index + 1,
                   },
                   showQuestionMetadata: true,

@@ -6,7 +6,7 @@ import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
 import { Calendar, Check, ListIcon } from "lucide-react"
 import type { ReactNode } from "react"
 import MarkdownRenderer from "~/components/markdown-rendered"
-import { Badge, badgeVariants } from "~/components/ui/badge"
+import { Badge, type badgeVariants } from "~/components/ui/badge"
 import {
   Card,
   CardContent,
@@ -49,7 +49,7 @@ export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
         <CardHeader className="gap-2">
           {props.showQuestionMetadata && (
             <CardDescription>
-              <div className="text-muted-foreground flex flex-col items-start justify-start gap-0 text-sm font-medium">
+              <div className="text-muted-foreground flex flex-col items-start justify-start gap-4 text-sm font-medium">
                 <div className="flex w-full flex-row items-start justify-between">
                   {props.questionAdditionalMetadata?.questionNumber && (
                     <div className="flex flex-row items-center justify-center gap-2">
