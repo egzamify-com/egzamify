@@ -266,3 +266,10 @@ export const getQuestionsStats = query({
     }
   },
 })
+
+export const getQualificationFromId = query({
+  args: { qualificationId: v.id("qualifications") },
+  handler: async (ctx, { qualificationId }) => {
+    return await ctx.db.get(qualificationId)
+  },
+})

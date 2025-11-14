@@ -110,9 +110,8 @@ export default function QuizGame({
                 <FullQuestionCard
                   key={crypto.randomUUID()}
                   {...{
-                    questionMetadata: {
+                    questionAdditionalMetadata: {
                       questionNumber: index + 1,
-                      questionDate: `${question.month} ${question.year}`,
                     },
                     showQuestionMetadata: true,
                     questionNumber: 1,
