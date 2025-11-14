@@ -16,6 +16,7 @@ export const pvpQuizPlayerDataValidator = v.optional(
     time: v.optional(v.number()),
     score: v.optional(v.number()),
     submittedAt: v.optional(v.number()),
+    startedAt: v.optional(v.number()),
   }),
 )
 

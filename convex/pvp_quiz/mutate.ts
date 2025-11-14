@@ -7,7 +7,7 @@ import {
   authUserToAccessQuizOrThrow,
   calcQuizScore,
   calcQuizTime,
-  generateQuizProperties,
+  calcQuizWinner,
   getQuizOrThrow,
   getRandomQuestionsIds,
   insertQuizAnswers,
@@ -55,47 +55,58 @@ export const submitQuiz = mutation({
 
     const submittedAt = Date.now()
 
-    const nestedUserAnswerIdsFromQuiz = await insertQuizAnswers(
+    const allUserAnswersIds = await insertQuizAnswers(
       ctx,
       quizGameState,
       currentUserId,
     )
 
-    const allUserAnswersIds = nestedUserAnswerIdsFromQuiz.flatMap((a) => a)
+    const isCurrentUserQuizCreator = currentUserId === quiz.creatorUserId
+    console.log({ isCurrentUserQuizCreator })
 
     const newPlayerData: Doc<"pvpQuizzes">["creatorData"] = {
-      submittedAt,
+      submittedAt: Date.now(),
       status: "done",
       answersIds: allUserAnswersIds,
       score: calcQuizScore(quizGameState),
-      time: calcQuizTime(quiz, submittedAt),
     }
 
-    const isCurrentUserQuizCreator = currentUserId === quiz.creatorUserId
+    if (isCurrentUserQuizCreator) {
+      await ctx.db.patch(quizId, {
+        creatorData: {
+          ...newPlayerData,
+          time: calcQuizTime(quiz.creatorData?.startedAt, submittedAt),
+        },
+      })
+    } else {
+      await ctx.db.patch(quizId, {
+        opponentData: {
+          ...newPlayerData,
+          time: calcQuizTime(quiz.opponentData?.startedAt, submittedAt),
+        },
+      })
+    }
 
-    const { newDataToInsert, winner, newQuizStatus } = (() => {
-      if (isCurrentUserQuizCreator) {
-        return generateQuizProperties(
-          quiz,
-          newPlayerData,
-          "creatorData",
-          isCurrentUserQuizCreator,
-        )
-      } else {
-        return generateQuizProperties(
-          quiz,
-          newPlayerData,
-          "opponentData",
-          isCurrentUserQuizCreator,
-        )
-      }
-    })()
+    const updatedQuizState = await getQuizOrThrow(ctx, quizId)
+
+    const isQuizCompletedByBothUsers =
+      updatedQuizState.creatorData?.status === "done" &&
+      updatedQuizState.opponentData?.status === "done"
+
+    if (!isQuizCompletedByBothUsers) {
+      console.log("quiz is not completed by both users, going next")
+      return
+    }
+    console.log(
+      "both creator and opp data status is set to done, here should set quiz to completed, and calc winner",
+    )
+
+    const { winnerUserId, winnerType } = calcQuizWinner(updatedQuizState)
 
     await ctx.db.patch(quizId, {
-      ...newDataToInsert,
-      status: newQuizStatus,
-      winnerUserId: winner?.winnerUserId,
-      winnerType: winner?.winnerType,
+      status: "quiz_completed",
+      winnerUserId,
+      winnerType,
     })
   },
 })
@@ -113,6 +124,17 @@ export const updateQuizStatus = mutation({
     }
 
     authUserToAccessQuizOrThrow(await getUserIdOrThrow(ctx), quiz)
+
+    const startedAt = Date.now()
+
+    if (newStatus === "quiz_pending") {
+      await ctx.db.patch(quiz._id, {
+        status: newStatus,
+        creatorData: { ...quiz.creatorData, startedAt },
+        opponentData: { ...quiz.opponentData, startedAt },
+      })
+      return
+    }
 
     await ctx.db.patch(quiz._id, { status: newStatus })
   },
