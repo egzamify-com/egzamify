@@ -2,7 +2,7 @@ import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
-import { Check } from "lucide-react"
+import { Calendar, Check, ListIcon } from "lucide-react"
 import MarkdownRenderer from "~/components/markdown-rendered"
 import {
   Card,
@@ -19,7 +19,7 @@ export type FullQuestionPlayerData = {
   userProfile: Doc<"users"> | null
 }
 
-type FullQuestionCardProps = {
+type CompleteQuestionCardProps = {
   question: Doc<"questions">
   answers: QuizAnswersType[]
   nonInteractive?: boolean
@@ -30,26 +30,36 @@ type FullQuestionCardProps = {
   showQuestionMetadata?: boolean
   questionMetadata?: {
     questionNumber?: number
+    questionDate?: string
   }
   currentUserQuizData?: FullQuestionPlayerData
   otherUserQuizData?: FullQuestionPlayerData
 }
 
-export default function FullQuestionCard(props: FullQuestionCardProps) {
+export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
   return (
     <div className="w-full">
       <Card className="w-full overflow-hidden">
         <CardHeader>
           {props.showQuestionMetadata && (
             <CardDescription>
-              <div className="flex items-center gap-4">
-                {props.questionMetadata?.questionNumber && (
-                  <div>
-                    <span className="text-muted-foreground text-sm font-medium">
+              <div className="text-muted-foreground flex items-center justify-between gap-4 text-sm font-medium">
+                <div>
+                  {props.questionMetadata?.questionNumber && (
+                    <div className="flex flex-row items-center justify-center gap-2">
+                      <ListIcon size={16} />
                       Pytanie {props.questionMetadata?.questionNumber}
-                    </span>
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {props.questionMetadata?.questionDate && (
+                    <div className="flex flex-row items-center justify-center gap-2">
+                      <Calendar size={16} />
+                      {props.questionMetadata?.questionDate}
+                    </div>
+                  )}
+                </div>
               </div>
             </CardDescription>
           )}
@@ -80,7 +90,7 @@ function Answer({
   questionComponentProps,
 }: {
   answer: QuizAnswersType
-  questionComponentProps: FullQuestionCardProps
+  questionComponentProps: CompleteQuestionCardProps
 }) {
   function makeDidUserSelectThisAnswer(userData: Doc<"answers">[] | undefined) {
     return userData?.map((a) => a._id).includes(answer._id)
@@ -119,7 +129,7 @@ function Answer({
         )
       }}
       className={cn(
-        `border-border bg-card hover:border-foreground/50 relative flex w-full cursor-auto cursor-pointer flex-row items-center justify-between gap-2 rounded-lg border p-4 text-left transition-all ease-in-out`,
+        `border-border bg-card hover:border-foreground/50 relative flex w-full cursor-auto cursor-pointer flex-row items-center justify-start gap-2 rounded-lg border p-4 text-left transition-all ease-in-out`,
         answer.isSelected &&
           !questionComponentProps.nonInteractive &&
           "bg-muted",
@@ -127,6 +137,10 @@ function Answer({
           "border-green-500 bg-green-500/10 text-green-500 hover:bg-green-500/10",
       )}
     >
+      <p>
+        {answer.label}
+        {"."}
+      </p>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-foreground text-md leading-relaxed text-pretty">

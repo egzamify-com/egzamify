@@ -112,6 +112,7 @@ export default function QuizGame({
                   {...{
                     questionMetadata: {
                       questionNumber: index + 1,
+                      questionDate: `${question.month} ${question.year}`,
                     },
                     showQuestionMetadata: true,
                     questionNumber: 1,
