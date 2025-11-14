@@ -1,5 +1,6 @@
 import type { friendFilterValidator } from "convex/friends/helpers"
 import type { Infer } from "convex/values"
+import { motion } from "framer-motion"
 import Link from "next/link"
 import type { ReactNode } from "react"
 import { type Doc } from "~/../convex/_generated/dataModel"
@@ -15,43 +16,49 @@ export type FriendProps = {
   hideFriendButton?: boolean
   actionButtons?: (friend: Doc<"users">) => ReactNode
 }
+
 export default function Friend({ friend }: { friend: FriendProps }) {
   if (!friend) return null
   if (!friend.user) return null
+
   const { user, status, hideFriendButton, actionButtons } = friend
+
   const renderedActionButtons =
     typeof actionButtons === "function" ? actionButtons(user) : actionButtons
+
   return (
-    <Card
-      key={`friend-card-for-${user._id}`}
-      className="transition-shadow hover:shadow-md"
-    >
-      <CardContent className="">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <ActivityStatusAvatar userToShow={user} />
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      <Card
+        key={`friend-card-for-${user._id}`}
+        className="transition-shadow hover:shadow-md"
+      >
+        <CardContent className="">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <ActivityStatusAvatar userToShow={user} />
 
-            <Link href={`/user/${user.username}`}>
-              <div>
-                <h3 className="text-foreground font-medium">{user.name}</h3>
-                <p className="text-muted-foreground text-sm">
-                  @{user.username}
-                </p>
-              </div>
-            </Link>
-          </div>
+              <Link href={`/user/${user.username}`}>
+                <div>
+                  <h3 className="text-foreground font-medium">{user.name}</h3>
+                  <p className="text-muted-foreground text-sm">
+                    @{user.username}
+                  </p>
+                </div>
+              </Link>
+            </div>
 
-          <div className="flex items-center space-x-2">
-            {renderedActionButtons}
-            {!hideFriendButton && (
-              <FriendButton
-                friendId={friend.user._id}
-                alreadyKnownStatus={status}
-              />
-            )}
+            <div className="flex items-center space-x-2">
+              {renderedActionButtons}
+              {!hideFriendButton && (
+                <FriendButton
+                  friendId={friend.user._id}
+                  alreadyKnownStatus={status}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }

@@ -1,4 +1,5 @@
 import type { BaseExam } from "convex/praktyka/helpers"
+import { motion } from "framer-motion"
 import { Box, Calendar, ChevronDown } from "lucide-react"
 import { useState } from "react"
 import { cn } from "~/lib/utils"
@@ -17,7 +18,11 @@ export default function ExamGroup({
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <div className="overflow-hidden rounded-lg border shadow-sm">
+    <motion.div
+      className="overflow-hidden rounded-lg border shadow-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
       <button
         className="hover:bg-card w-full cursor-pointer border-b p-4 text-left transition-colors"
         onClick={() => setIsExpanded((old) => !old)}
@@ -57,6 +62,6 @@ export default function ExamGroup({
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }

@@ -35,8 +35,8 @@ export function PvpQuizCard({
       {/* @ts-expect-error fjdks */}
       <Link href={href} className="w-full">
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="from-card via-card to-muted border-border hover:border-primary relative flex min-h-[280px] w-full flex-col overflow-hidden rounded-xl border bg-gradient-to-br p-8 transition-all duration-300"
         >

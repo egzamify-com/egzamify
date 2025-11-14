@@ -1,6 +1,8 @@
+"use client"
+
+import { motion } from "framer-motion"
 import type { ReactNode } from "react"
 import { Skeleton } from "./ui/skeleton"
-
 export const pageHeaderWrapperIconSize = 40
 
 export default function PageHeaderWrapper({
@@ -42,9 +44,13 @@ export default function PageHeaderWrapper({
           </div>
         </div>
       )}
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <motion.div
+        className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
         {children}
-      </div>
+      </motion.div>
     </div>
   )
 }
