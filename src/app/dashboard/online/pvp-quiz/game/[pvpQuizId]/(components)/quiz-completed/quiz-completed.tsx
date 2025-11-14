@@ -71,7 +71,7 @@ export default function QuizCompleted({
           </div>
         </div>
         <div className="flex w-full flex-col items-center justify-start gap-8">
-          {transformQuizDataToQuizState(quizData).map((questionItem) => {
+          {transformQuizDataToQuizState(quizData).map((questionItem, index) => {
             const { answers, ...question } = questionItem
 
             const { currentUserQuizData, otherUserQuizData } = calcRoles(
@@ -83,6 +83,10 @@ export default function QuizCompleted({
               <FullQuestionCard
                 key={crypto.randomUUID()}
                 {...{
+                  questionMetadata: {
+                    questionNumber: index + 1,
+                  },
+                  showQuestionMetadata: true,
                   nonInteractive: true,
                   question: question,
                   answers: answers,

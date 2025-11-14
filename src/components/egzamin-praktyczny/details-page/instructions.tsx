@@ -2,8 +2,8 @@
 
 import type { BaseExam } from "convex/praktyka/helpers"
 import { ChevronDown, FileText } from "lucide-react"
-import Markdown from "marked-react"
 import { useState } from "react"
+import MarkdownRenderer from "~/components/markdown-rendered"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { cn } from "~/lib/utils"
@@ -39,7 +39,10 @@ export const Instructions = ({ exam }: { exam: BaseExam }) => {
       {isExpanded && (
         <CardContent>
           <div className="prose prose-md dark:prose-invert max-w-none">
-            <Markdown>{exam.examInstructions}</Markdown>
+            <MarkdownRenderer
+              markdownText={exam.examInstructions}
+              textSize="prose-md"
+            />
           </div>
         </CardContent>
       )}

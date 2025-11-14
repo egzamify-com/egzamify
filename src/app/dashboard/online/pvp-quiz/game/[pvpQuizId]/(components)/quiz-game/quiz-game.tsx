@@ -105,11 +105,14 @@ export default function QuizGame({
         </CardHeader>
         <CardContent className="flex w-full flex-col items-center justify-start gap-4">
           <div className="flex w-full flex-col gap-4">
-            {quizGameState.map((question) => {
+            {quizGameState.map((question, index) => {
               return (
                 <FullQuestionCard
                   key={crypto.randomUUID()}
                   {...{
+                    questionMetadata: {
+                      questionNumber: index + 1,
+                    },
                     showQuestionMetadata: true,
                     questionNumber: 1,
                     question: question,
