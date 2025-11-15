@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import { Field, FieldLabel, FieldSet } from "~/components/ui/field"
 import {
   Select,
@@ -20,7 +21,9 @@ export default function SelectQuestionCount({
   return (
     <FieldSet>
       <Field>
-        <FieldLabel htmlFor="multi-select-pvp-quiz">Liczba pytan</FieldLabel>
+        <FieldLabel htmlFor="multi-select-pvp-quiz">
+          {"Liczba pytań"}
+        </FieldLabel>
         <Select
           value={selectedQuestionCount.toString()}
           onValueChange={(newValue) => {
@@ -28,14 +31,21 @@ export default function SelectQuestionCount({
           }}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Liczba pytan" />
+            <SelectValue placeholder={"Liczba pytań"} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Liczba pytan</SelectLabel>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="15">15</SelectItem>
+              <SelectLabel>{"Liczba pytań"}</SelectLabel>
+              {APP_CONFIG.onlinePvpQuiz.questionCountOptions.map((count) => {
+                return (
+                  <SelectItem
+                    key={crypto.randomUUID()}
+                    value={count.toString()}
+                  >
+                    {count}
+                  </SelectItem>
+                )
+              })}
             </SelectGroup>
           </SelectContent>
         </Select>

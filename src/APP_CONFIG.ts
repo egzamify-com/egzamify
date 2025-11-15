@@ -1,4 +1,8 @@
 type AppConfig = {
+  onlinePvpQuiz: {
+    defaultQuestionCount: number
+    questionCountOptions: number[]
+  }
   defaultFullScreenErrorMessage: string
   feedback: {
     maxFeedbacksSentPerHour: number
@@ -53,6 +57,10 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  onlinePvpQuiz: {
+    defaultQuestionCount: 5,
+    questionCountOptions: [5, 10, 15, 20, 40],
+  },
   defaultFullScreenErrorMessage: "Przepraszamy, coś poszło nie tak.",
   feedback: {
     maxFeedbacksSentPerHour: 8,

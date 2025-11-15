@@ -7,6 +7,7 @@ import { Brain, GamepadIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
+import { APP_CONFIG } from "~/APP_CONFIG"
 import DisplayFriendList from "~/components/friends/display-friend-list"
 import Friend from "~/components/friends/friend"
 import PageHeaderWrapper, {
@@ -34,7 +35,9 @@ export default function Page() {
   const [selectedQualification, setSelectedQualifaction] = useState<string[]>(
     [],
   )
-  const [selectedQuestionCount, setSelectedQuestionCount] = useState<number>(0)
+  const [selectedQuestionCount, setSelectedQuestionCount] = useState<number>(
+    APP_CONFIG.onlinePvpQuiz.defaultQuestionCount,
+  )
 
   async function handleCreateQuiz(finalSelectedUser: Doc<"users"> | null) {
     if (!finalSelectedUser) {
