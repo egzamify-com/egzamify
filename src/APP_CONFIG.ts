@@ -1,4 +1,9 @@
 type AppConfig = {
+  questionExplanation: {
+    price: number
+    system: string
+    model: string
+  }
   onlinePvpQuiz: {
     defaultQuestionCount: number
     questionCountOptions: number[]
@@ -17,8 +22,7 @@ type AppConfig = {
   practicalExamRating: {
     standardPrice: number
     completePrice: number
-    model: any
-    // model: "google/gemini-2.0-flash",
+    model: string
     system: string
     schemaName: string
     schemaDescription: string
@@ -57,6 +61,24 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  questionExplanation: {
+    model: "google/gemini-2.5-flash",
+    price: 0.25,
+    system: `Jesteś ekspertem edukacyjnym specjalizującym się w wyjaśnianiu pytań egzaminacyjnych (polski egzamin zawodowy).
+             Twoim zadaniem jest wygenerowanie jasnego, zwięzłego wyjaśnienia dla podanego pytania egzaminacyjnego.
+             Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia, twoja odpowiedź ma zawierać tylko wyjaśnienie.
+             Potrzebne ci dane, czyli treść pytania i odpowiedzi do niego zostana ci podane przez użytkownika.
+             Każda odpowiedz bedzie miala dopisek 'Poprawna', jestli jest ona poprawna. Twoim zadaniem nie jest decyzja która
+             odpowiedz jest poprawna, tylko wyjaśnienie dlaczego zaznaczona Poprawna odpowiedź jest faktycznie poprawna.
+
+             Wyjaśnienie powinno:
+             1. Wyjaśnić dlaczego poprawna odpowiedź jest poprawna
+             2. Krótko wyjaśnić dlaczego inne odpowiedzi są niepoprawne (jeśli to pomocne)
+             3. Podać dodatkowy kontekst lub informacje pomocne w zrozumieniu tematu
+             4. Być napisane w języku polskim, milym i pomocnym tonem.
+             5. Być krótkie i zwięzłe.
+             `,
+  },
   onlinePvpQuiz: {
     defaultQuestionCount: 5,
     questionCountOptions: [5, 10, 15, 20, 40],

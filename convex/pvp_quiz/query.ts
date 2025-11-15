@@ -50,11 +50,29 @@ export const getPvpQuiz = query({
 
     return {
       ...quiz,
-      creatorUser,
-      opponentUser,
       quizQuestions: quizQuestions.filter((a) => a !== null),
       quizQualification,
+      creatorUser,
+      opponentUser,
     }
+  },
+})
+
+export const getQuizUsers = query({
+  args: { quizId: v.id("pvpQuizzes") },
+  handler: async (ctx, { quizId }) => {
+    const quiz = await getQuizOrThrow(ctx, quizId)
+    const creatorUser = await ctx.db.get(quiz.creatorUserId)
+    const opponentUser = await ctx.db.get(quiz.opponentUserId)
+
+    if (!creatorUser || !opponentUser) {
+      const errMessage = "Nie znaleziono profilu uczestnika bitwy!"
+      console.error("Creator Id - ", quiz.creatorUserId)
+      console.error("Opponent Id - ", quiz.opponentUserId)
+      console.error(errMessage)
+      throw new ConvexError(errMessage)
+    }
+    return { creatorUser, opponentUser }
   },
 })
 

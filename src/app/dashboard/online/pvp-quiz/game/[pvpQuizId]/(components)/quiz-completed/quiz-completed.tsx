@@ -92,6 +92,7 @@ export default function QuizCompleted({
                   answers: answers,
                   currentUserQuizData,
                   otherUserQuizData,
+                  showExplanationBtn: true,
                 }}
               />
             )

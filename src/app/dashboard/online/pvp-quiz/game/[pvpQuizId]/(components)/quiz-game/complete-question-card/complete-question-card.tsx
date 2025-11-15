@@ -16,16 +16,18 @@ import {
 } from "~/components/ui/card"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 import { cn } from "~/lib/utils"
+import ExplainQuestionBtn from "./explain-question-btn"
 
 export type FullQuestionPlayerData = {
   userData: Doc<"pvpQuizzes">["creatorData"] | null
   userProfile: Doc<"users"> | null
 }
 
-type CompleteQuestionCardProps = {
+export type CompleteQuestionCardProps = {
   question: Doc<"questions">
   answers: QuizAnswersType[]
   nonInteractive?: boolean
+  showCorrectAnswer?: boolean
   handleSelectingNewAnswer?: (
     answerSelected: QuizAnswersType,
     question: Doc<"questions">,
@@ -36,6 +38,7 @@ type CompleteQuestionCardProps = {
   }
   currentUserQuizData?: FullQuestionPlayerData
   otherUserQuizData?: FullQuestionPlayerData
+  showExplanationBtn?: boolean
 }
 
 export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
@@ -48,16 +51,34 @@ export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
       <Card className="w-full overflow-hidden">
         <CardHeader className="gap-2">
           {props.showQuestionMetadata && (
-            <CardDescription>
-              <div className="text-muted-foreground flex flex-col items-start justify-start gap-4 text-sm font-medium">
-                <div className="flex w-full flex-row items-start justify-between">
-                  {props.questionAdditionalMetadata?.questionNumber && (
-                    <div className="flex flex-row items-center justify-center gap-2">
-                      <ListIcon size={16} />
-                      Pytanie {props.questionAdditionalMetadata?.questionNumber}
+            <CardTitle>
+              <div
+                className={cn(
+                  "text-muted-foreground flex flex-col items-start justify-start gap-2 text-sm font-medium",
+                )}
+              >
+                {!props.questionAdditionalMetadata?.questionNumber &&
+                !props.showExplanationBtn ? null : (
+                  <div className="flex w-full flex-row items-center justify-between">
+                    {props.questionAdditionalMetadata?.questionNumber && (
+                      <div className="flex flex-row items-center justify-center gap-2">
+                        <ListIcon size={16} />
+                        Pytanie{" "}
+                        {props.questionAdditionalMetadata?.questionNumber}
+                      </div>
+                    )}
+                    <div>
+                      {props.showExplanationBtn && (
+                        <ExplainQuestionBtn
+                          {...{
+                            question: props.question,
+                            answers: props.answers,
+                          }}
+                        />
+                      )}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
                 <div className="flex flex-row gap-2">
                   <QuestionBadge>
                     <Calendar size={16} />
@@ -80,16 +101,16 @@ export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
                   })}
                 </div>
               </div>
-            </CardDescription>
+            </CardTitle>
           )}
-          <CardTitle>
+          <CardDescription>
             <div className="flex items-start justify-start">
               <MarkdownRenderer
                 markdownText={props.question.content}
                 textSize="prose-lg"
               />
             </div>
-          </CardTitle>
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-start justify-start gap-2">
           {props.answers.map((answer) => (
@@ -136,7 +157,9 @@ function Answer({
   )
 
   const showCorrectAnswer =
-    answer.isCorrect && questionComponentProps.nonInteractive
+    answer.isCorrect &&
+    questionComponentProps.nonInteractive &&
+    questionComponentProps.showCorrectAnswer
 
   return (
     <div
