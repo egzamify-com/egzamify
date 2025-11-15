@@ -12,7 +12,7 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
+import { Card } from "~/components/ui/card"
 import PageHeaderWrapper, {
   pageHeaderWrapperIconSize,
 } from "../page-header-wrapper"
@@ -34,7 +34,6 @@ export default function GameModes({ qualificationName }: GameModesProps) {
       difficulty: "Trudny",
       duration: "60 min",
       questions: 40,
-
       variant: "default" as const,
       route: "full-test",
     },
@@ -47,7 +46,6 @@ export default function GameModes({ qualificationName }: GameModesProps) {
       difficulty: "Łatwy",
       duration: "2 min",
       questions: 1,
-
       variant: "secondary" as const,
       route: "random-question",
     },
@@ -60,7 +58,6 @@ export default function GameModes({ qualificationName }: GameModesProps) {
       difficulty: "Dowolny",
       duration: "Bez limitu",
       questions: "Wszystkie",
-
       variant: "outline" as const,
       route: "browse-questions",
     },
@@ -83,47 +80,40 @@ export default function GameModes({ qualificationName }: GameModesProps) {
                 // @ts-expect-error next.js routing ?
                 href={`/dashboard/egzamin-teoretyczny/${qualificationName}/game-modes/${mode.route}`}
               >
-                <Card className="group relative cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                  <div className={`absolute top-0 right-0 left-0 h-1`} />
+                <Card className="flex h-full flex-col items-center p-8 transition-shadow hover:shadow-lg">
+                  <div className="mb-6">
+                    <IconComponent className="h-16 w-16" />
+                  </div>
 
-                  <CardHeader className="pb-4">
-                    <div className="mb-2 flex items-center justify-between">
-                      <div className={`bg-opacity-10 rounded-lg p-3`}>
-                        <IconComponent className="h-6 w-6" />
-                      </div>
+                  <h3 className="mb-4 text-center text-xl font-semibold">
+                    {mode.title}
+                  </h3>
+
+                  <p className="text-muted-foreground mb-8 flex-grow text-center text-sm">
+                    {mode.description}
+                  </p>
+
+                  <div className="text-muted-foreground mb-6 flex items-center justify-center gap-4 text-xs">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      <span>{mode.duration}</span>
                     </div>
-                    <CardTitle className="group-hover:text-muted-foreground text-xl transition-colors">
-                      {mode.title}
-                    </CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="space-y-4">
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {mode.description}
-                    </p>
-
-                    <div className="text-muted-foreground flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{mode.duration}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Target className="h-4 w-4" />
-                        <span>{mode.questions} pytań</span>
-                      </div>
+                    <div className="flex items-center gap-1">
+                      <Target className="h-3 w-3" />
+                      <span>{mode.questions} pyt.</span>
                     </div>
+                  </div>
 
-                    <Button className="mt-4 w-full" variant={"outline"}>
-                      {mode.id === 3 ? (
-                        <>
-                          <Search className="mr-2 h-4 w-4" />
-                          Przeglądaj
-                        </>
-                      ) : (
-                        "Rozpocznij"
-                      )}
-                    </Button>
-                  </CardContent>
+                  <Button className="w-full" variant="outline">
+                    {mode.id === 3 ? (
+                      <>
+                        <Search className="mr-2 h-4 w-4" />
+                        Przeglądaj
+                      </>
+                    ) : (
+                      "Rozpocznij"
+                    )}
+                  </Button>
                 </Card>
               </Link>
             )

@@ -48,6 +48,7 @@ export default function DashboardPage() {
   return (
     <div className="bg-background min-h-screen p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-4">
+        {/* Powitanie */}
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">
             Witaj z powrotem, {user.username}! 👋
@@ -57,32 +58,47 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card className="">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <Card className="lg:col-span-1">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Flame className="h-6 w-6 text-orange-500" />
-                Seria dzienna
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Twoje kredyty</CardTitle>
+                <Coins className="h-8 w-8" />
+              </div>
+              <CardDescription className="pt-4">
+                Dostępnych kredytów
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-4xl font-bold">
-                      {currentStreak} {currentStreak === 1 ? "dzień" : "dni"}
-                    </p>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                      {currentStreak > 0
-                        ? "Świetna robota! Kontynuuj naukę"
-                        : "Rozpocznij swoją serię już dziś!"}
-                    </p>
-                  </div>
-                  <Flame className="h-16 w-16 text-orange-500" />
-                </div>
+                <p className="text-4xl font-bold">{userCredits}</p>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/dashboard/konto">Zarządzaj kredytami</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Seria dzienna</CardTitle>
+                <Flame className="h-8 w-8 text-orange-500" />
+              </div>
+              <CardDescription className="pt-4">
+                {currentStreak > 0
+                  ? "Świetna robota! Kontynuuj naukę"
+                  : "Rozpocznij swoją serię już dziś!"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-4xl font-bold">
+                  {currentStreak} {currentStreak === 1 ? "dzień" : "dni"}
+                </p>
 
                 {currentStreak > 0 && (
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex gap-2">
                     {[...Array(Math.min(currentStreak, 7))].map((_, i) => (
                       <div
                         key={i}
@@ -97,164 +113,132 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Coins className="h-6 w-6" />
-                Twoje kredyty
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+          <Link href="/dashboard/egzamin-teoretyczny" className="group">
+            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
+              <CardHeader>
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-4xl font-bold">{userCredits}</p>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                      Dostępnych kredytów
-                    </p>
-                  </div>
-                  <Coins className="h-16 w-16" />
+                  <CardTitle className="group-hover:text-primary transition-colors">
+                    Egzamin teoretyczny
+                  </CardTitle>
+                  <BookOpen className="h-8 w-8" />
                 </div>
-
-                <Button
-                  variant="outline"
-                  className="w-full bg-transparent"
-                  asChild
-                >
-                  <Link href="/dashboard/konto">Zarządzaj kredytami</Link>
+                <CardDescription className="pt-4">
+                  Pytania testowe
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="secondary">
+                  Rozpocznij
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </Link>
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 lg:row-span-2">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Twoje postępy
-              </CardTitle>
-              <CardDescription>Statystyki z ostatnich 7 dni</CardDescription>
+              <div className="flex items-center justify-between">
+                <CardTitle>Twoje postępy</CardTitle>
+                <TrendingUp className="h-8 w-8" />
+              </div>
+              <CardDescription className="pt-2">
+                Statystyki z ostatnich 7 dni
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="h-full">
               <StatsChart weeklyData={weeklyProgress} totalStats={userStats} />
             </CardContent>
           </Card>
 
-          <div className="flex flex-col gap-4">
-            <Link
-              href="/dashboard/egzamin-teoretyczny"
-              className="group flex-1"
-            >
-              <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-                <CardHeader className="pb-4">
-                  <div className="flex w-full items-center justify-end">
-                    <BookOpen className="h-8 w-8" />
-                  </div>
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    Egzamin teoretyczny
-                  </CardTitle>
-                  <CardDescription>Pytania testowe</CardDescription>
-                  <Button className="mt-4 w-full" variant="secondary">
-                    Rozpocznij
-                  </Button>
-                </CardHeader>
-              </Card>
-            </Link>
-
-            <Link href="/dashboard/egzamin-praktyczny" className="group flex-1">
-              <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-                <CardHeader className="pb-4">
-                  <div className="flex w-full items-center justify-end">
-                    <FileCheck className="h-8 w-8" />
-                  </div>
+          <Link href="/dashboard/egzamin-praktyczny" className="group">
+            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
+              <CardHeader>
+                <div className="flex items-center justify-between">
                   <CardTitle className="group-hover:text-primary transition-colors">
                     Egzamin praktyczny
                   </CardTitle>
-                  <CardDescription>Projekty egzaminacyjne</CardDescription>
-                  <Button className="mt-4 w-full" variant="secondary">
-                    Rozpocznij
-                  </Button>
-                </CardHeader>
-              </Card>
-            </Link>
-          </div>
+                  <FileCheck className="h-8 w-8" />
+                </div>
+                <CardDescription className="pt-4">
+                  Projekty egzaminacyjne
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="secondary">
+                  Rozpocznij
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Link href="/dashboard/friends" className="group">
+          {/* AI WYJAŚNIA */}
+          <Link href="/dashboard/ai-wyjasnia" className="group">
             <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex w-full items-center justify-end">
-                  <Users className="h-8 w-8" />
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="group-hover:text-primary transition-colors">
+                    AI Wyjaśnia
+                  </CardTitle>
+                  <MessageSquare className="h-8 w-8" />
                 </div>
-                <CardTitle className="group-hover:text-primary transition-colors">
-                  Znajomi
-                </CardTitle>
-                <CardDescription>Ucz się razem</CardDescription>
-                <Button className="mt-4 w-full" variant="secondary">
-                  Zobacz znajomych
-                </Button>
+                <CardDescription className="pt-4">
+                  Zadaj pytanie AI
+                </CardDescription>
               </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="secondary">
+                  Rozpocznij chat
+                </Button>
+              </CardContent>
             </Card>
           </Link>
 
+          {/* STATYSTYKI */}
           <Link href="/dashboard/konto" className="group">
             <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex w-full items-center justify-end">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="group-hover:text-primary transition-colors">
+                    Statystyki
+                  </CardTitle>
                   <Award className="h-8 w-8" />
                 </div>
-                <CardTitle className="group-hover:text-primary transition-colors">
-                  Statystyki
-                </CardTitle>
-
-                <CardDescription>Szczegółowe wyniki</CardDescription>
-                <Button className="mt-4 w-full" variant="secondary">
+                <CardDescription className="pt-4">
+                  Szczegółowe wyniki
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="secondary">
                   Zobacz statystyki
                 </Button>
-              </CardHeader>
+              </CardContent>
             </Card>
           </Link>
 
-          <DashboardCard
-            {...{
-              buttonLabel: "Rozpocznij chat",
-              title: "Ai wyjasnia",
-              description: "Zadaj pytanie AI",
-            }}
-          />
+          {/* ZNAJOMI */}
+          <Link href="/dashboard/friends" className="group">
+            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="group-hover:text-primary transition-colors">
+                    Znajomi
+                  </CardTitle>
+                  <Users className="h-8 w-8" />
+                </div>
+                <CardDescription className="pt-4">
+                  Ucz się razem
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" variant="secondary">
+                  Zobacz znajomych
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
       </div>
     </div>
-  )
-}
-function DashboardCard({
-  title,
-  description,
-  buttonLabel,
-}: {
-  title: string
-  description: string
-  buttonLabel: string
-}) {
-  return (
-    <Link href="/dashboard/ai-wyjasnia" className="group">
-      <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-        <CardHeader className="pb-4">
-          <div className="flex w-full items-center justify-end">
-            <MessageSquare className="h-8 w-8" />
-          </div>
-          <CardTitle className="group-hover:text-primary transition-colors">
-            {title}
-          </CardTitle>
-          <CardDescription>{description}</CardDescription>
-          <Button className="mt-4 w-full" variant="secondary">
-            {buttonLabel}
-          </Button>
-        </CardHeader>
-      </Card>
-    </Link>
   )
 }
