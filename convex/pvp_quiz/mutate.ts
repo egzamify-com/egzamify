@@ -75,14 +75,14 @@ export const submitQuiz = mutation({
       await ctx.db.patch(quizId, {
         creatorData: {
           ...newPlayerData,
-          time: calcQuizTime(quiz.creatorData?.startedAt, submittedAt),
+          time: calcQuizTime(quiz.creatorData!.startedAt!, submittedAt),
         },
       })
     } else {
       await ctx.db.patch(quizId, {
         opponentData: {
           ...newPlayerData,
-          time: calcQuizTime(quiz.opponentData?.startedAt, submittedAt),
+          time: calcQuizTime(quiz.opponentData!.startedAt!, submittedAt),
         },
       })
     }

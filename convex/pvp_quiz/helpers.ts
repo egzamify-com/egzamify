@@ -146,11 +146,8 @@ export function calcQuizScore(quizGameState: QuizGameState) {
   return corrects.length
 }
 
-export function calcQuizTime(
-  startedAt: number | undefined,
-  submittedAt: number,
-) {
-  const timeSpentOnQuiz = submittedAt - (startedAt ?? 0)
+export function calcQuizTime(startedAt: number, submittedAt: number) {
+  const timeSpentOnQuiz = submittedAt - startedAt
   return timeSpentOnQuiz
 }
 

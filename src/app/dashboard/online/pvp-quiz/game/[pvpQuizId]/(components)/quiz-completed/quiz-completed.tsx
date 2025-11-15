@@ -9,7 +9,7 @@ import { parseConvexError } from "~/lib/utils"
 import type { PvpQuizQueryReturnType } from "../../page"
 import FullQuestionCard, {
   type FullQuestionPlayerData,
-} from "../quiz-game/complete-question-card"
+} from "../quiz-game/complete-question-card/complete-question-card"
 import { transformQuizDataToQuizState } from "../quiz-game/quiz-game"
 import QuizCompletedResultHeader from "./quiz-completed-result-header"
 import { QuizCompletedPlayerStatsCard } from "./quiz-completed-user-card"
