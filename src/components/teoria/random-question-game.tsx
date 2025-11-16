@@ -19,6 +19,7 @@ import { generateExplanationWithCharge } from "src/actions/theory/actions"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent } from "~/components/ui/card"
+import { getFileUrl } from "~/lib/utils"
 
 export default function RandomQuestionGame({
   qualificationName,
@@ -40,6 +41,8 @@ export default function RandomQuestionGame({
   const [displayedExplanation, setDisplayedExplanation] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [showExplanation, setShowExplanation] = useState(false)
+
+  const [waitingForNewQuestion, setWaitingForNewQuestion] = useState(false)
 
   const isGeneratingRef = useRef(false)
 
@@ -120,7 +123,7 @@ export default function RandomQuestionGame({
   }, [])
 
   useEffect(() => {
-    if (currentQuestion && !isGeneratingRef.current) {
+    if (currentQuestion && !isGeneratingRef.current && !waitingForNewQuestion) {
       setSelectedAnswer(null)
       setShowResult(false)
       setIsCorrect(null)
@@ -136,7 +139,7 @@ export default function RandomQuestionGame({
         setAiExplanation(null)
       }
     }
-  }, [currentQuestion])
+  }, [currentQuestion, waitingForNewQuestion])
 
   useEffect(() => {
     if (timeLeft > 0 && !showResult && currentQuestion) {
@@ -177,9 +180,8 @@ export default function RandomQuestionGame({
   }
 
   const handleNewQuestion = () => {
-    if (!isGeneratingRef.current) {
-      setRefreshKey((prev) => prev + 1)
-    }
+    setWaitingForNewQuestion(false)
+    setRefreshKey((prev) => prev + 1)
   }
 
   const handleShowExplanation = () => {
@@ -205,6 +207,7 @@ export default function RandomQuestionGame({
     setIsLoadingExplanation(true)
     setShowExplanation(true)
     setDisplayedExplanation("")
+    setWaitingForNewQuestion(true)
 
     try {
       const result = await generateExplanationWithCharge({
@@ -220,6 +223,7 @@ export default function RandomQuestionGame({
           description: result.error || "Nie udało się wygenerować wyjaśnienia",
         })
         setShowExplanation(false)
+        setWaitingForNewQuestion(false)
         return
       }
 
@@ -235,6 +239,7 @@ export default function RandomQuestionGame({
         description: "Spróbuj ponownie później.",
       })
       setShowExplanation(false)
+      setWaitingForNewQuestion(false)
     } finally {
       setIsLoadingExplanation(false)
       isGeneratingRef.current = false
@@ -293,12 +298,10 @@ export default function RandomQuestionGame({
             </Badge>
           </div>
           <div className="flex items-center gap-4">
-            {/* Wyświetlanie kredytów */}
-
-            <div className="flex items-center gap-2 rounded-lg border border-orange-600 px-3 py-2">
+            <div className="flex items-center gap-2 rounded-lg border border-orange-600 bg-orange-200 px-3 py-2">
               <Flame className="h-5 w-5 text-orange-600" />
               <span className="font-bold text-orange-700">{answerStreak}</span>
-              <span className="text-sm text-orange-600">seria</span>
+              <span className="text-sm font-bold text-orange-600">seria</span>
             </div>
 
             <div className="flex items-center gap-2 text-lg font-semibold">
@@ -315,10 +318,10 @@ export default function RandomQuestionGame({
         <CardContent>
           <p className="mb-6 text-lg">{currentQuestion.question}</p>
 
-          {currentQuestion.imageUrl && (
+          {getFileUrl(currentQuestion.attachmentId, "a")?.raw && (
             <div className="mb-6">
               <img
-                src={currentQuestion.imageUrl || "/placeholder.svg"}
+                src={getFileUrl(currentQuestion.attachmentId, "a")?.raw.href}
                 alt="Obrazek do pytania"
                 className="h-auto max-w-full rounded-lg border"
               />

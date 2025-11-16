@@ -160,7 +160,7 @@ export const getRandomQuestion = query({
         correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
         explanation: randomQuestion.explanation,
         year: randomQuestion.year,
-        imageUrl: randomQuestion.attachmentId,
+        attachmentId: randomQuestion.attachmentId,
         answerLabels: sortedAnswers.map((answer) => answer.label),
       },
     }
