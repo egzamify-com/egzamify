@@ -1,24 +1,41 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import { toast } from "sonner"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Badge } from "~/components/ui/badge"
+import { Button } from "~/components/ui/button"
+import { useReactToQuizInvite } from "./invite-card"
 
 export default function OnlineInvitesSidebarBadge() {
   const { data } = useQuery(api.pvp_quiz.query.getOnlineInvites)
 
-  function render() {
-    if (!data) return null
+  const { acceptQuiz, isAccepting } = useReactToQuizInvite(
+    data?.[data.length - 1]?._id,
+  )
 
-    if (data?.length === 0) {
-      return null
-    }
-
-    if (data.length > 20) {
-      return <Badge>20+</Badge>
-    } else {
-      toast.success("Otrzymano zaproszenie do quizu online!")
-      return <Badge>{data.length}</Badge>
-    }
+  if (data && data.length > 0) {
+    toast.info("Otrzymaleś zaproszenie do quizu!", {
+      action: (
+        <Button
+          onClick={async () => {
+            await acceptQuiz()
+            toast.dismiss()
+          }}
+        >
+          {isAccepting ? <SpinnerLoading /> : <>Rozpocznij</>}
+        </Button>
+      ),
+    })
   }
-  return <>{render()}</>
+
+  return (
+    <>
+      {data && data.length !== 0 && (
+        <>
+          {data.length > 20 && <Badge>20+</Badge>}
+          {data.length < 20 && <Badge>{data.length}</Badge>}
+        </>
+      )}
+    </>
+  )
 }

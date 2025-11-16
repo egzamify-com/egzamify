@@ -6,7 +6,9 @@ import type { FunctionReturnType } from "convex/server"
 import { motion } from "framer-motion"
 import { Calendar, Check, List, X } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import SemanticDate from "~/components/semantic-date"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 
@@ -28,7 +30,10 @@ export default function QuizInviteCard({
     error,
   } = useQuery(api.users.query.getUserFromId, { userId })
 
-  const updateQuizStatus = useMutation(api.pvp_quiz.mutate.updateQuizStatus)
+  const { isAccepting, acceptQuiz, declineQuiz } = useReactToQuizInvite(
+    quizInvite._id,
+  )
+  // const updateQuizStatus = useMutation(api.pvp_quiz.mutate.updateQuizStatus)
 
   if (isPending) return null
   if (error) return null
@@ -106,29 +111,43 @@ export default function QuizInviteCard({
         <div className="border-border/50 flex items-center gap-3 border-t pt-4">
           <Button
             onClick={async () => {
-              await updateQuizStatus({
-                newStatus: "quiz_pending",
-                quizId: quizInvite._id,
-              })
-              router.push(`/dashboard/online/pvp-quiz/game/${quizInvite._id}`)
+              await acceptQuiz()
+              // await updateQuizStatus({
+              //   newStatus: "quiz_pending",
+              //   quizId: quizInvite._id,
+              // })
+              // router.push(`/dashboard/online/pvp-quiz/game/${quizInvite._id}`)
             }}
             className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1 gap-2 font-semibold"
           >
-            <Check className="h-5 w-5" />
-            Rozpocznij quiz
+            {isAccepting ? (
+              <SpinnerLoading />
+            ) : (
+              <>
+                <Check className="h-5 w-5" />
+                Rozpocznij quiz
+              </>
+            )}
           </Button>
           <Button
             onClick={async () => {
-              await updateQuizStatus({
-                newStatus: "opponent_declined",
-                quizId: quizInvite._id,
-              })
+              await declineQuiz()
+              // await updateQuizStatus({
+              //   newStatus: "opponent_declined",
+              //   quizId: quizInvite._id,
+              // })
             }}
             variant="outline"
             className="border-border hover:bg-muted text-destructive gap-2 bg-transparent"
           >
-            <X className="h-5 w-5" />
-            Odrzuc
+            {isAccepting ? (
+              <SpinnerLoading />
+            ) : (
+              <>
+                <X className="h-5 w-5" />
+                Odrzuc
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -144,4 +163,27 @@ export default function QuizInviteCard({
       </motion.div>
     </motion.div>
   )
+}
+
+export function useReactToQuizInvite(quizId: Id<"pvpQuizzes"> | undefined) {
+  const router = useRouter()
+  const updateQuizStatus = useMutation(api.pvp_quiz.mutate.updateQuizStatus)
+  const [isMutating, setIsMutating] = useState(false)
+
+  return {
+    acceptQuiz: async () => {
+      if (!quizId) return
+      setIsMutating(true)
+      await updateQuizStatus({ quizId, newStatus: "quiz_pending" })
+      router.push(`/dashboard/online/pvp-quiz/game/${quizId}`)
+      setIsMutating(false)
+    },
+    isAccepting: isMutating,
+    declineQuiz: async () => {
+      if (!quizId) return
+      setIsMutating(true)
+      await updateQuizStatus({ quizId, newStatus: "opponent_declined" })
+      setIsMutating(false)
+    },
+  }
 }
