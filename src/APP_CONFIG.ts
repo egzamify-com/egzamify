@@ -1,5 +1,6 @@
 type AppConfig = {
   questionExplanation: {
+    maxOutputTokens: number
     price: number
     system: string
     model: string
@@ -62,8 +63,9 @@ type AppConfig = {
 
 export const APP_CONFIG: AppConfig = {
   questionExplanation: {
+    maxOutputTokens: 1000,
     model: "google/gemini-2.5-flash",
-    price: 0.25,
+    price: 0.5,
     system: `Jesteś ekspertem edukacyjnym specjalizującym się w wyjaśnianiu pytań egzaminacyjnych (polski egzamin zawodowy).
              Twoim zadaniem jest wygenerowanie jasnego, zwięzłego wyjaśnienia dla podanego pytania egzaminacyjnego.
              Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia, twoja odpowiedź ma zawierać tylko wyjaśnienie.

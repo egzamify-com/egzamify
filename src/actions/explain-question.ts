@@ -89,7 +89,7 @@ export async function explainQuestion(
     console.log("starting ai gen")
     const aiResponse = await generateText({
       model: APP_CONFIG.questionExplanation.model,
-      maxOutputTokens: 1000,
+      maxOutputTokens: APP_CONFIG.questionExplanation.maxOutputTokens,
       messages,
     })
     console.log("ai gen completed")

@@ -139,6 +139,7 @@ export default function ExplainQuestionBtn({
                     nonInteractive: true,
                     showQuestionMetadata: true,
                     showExplanationBtn: false,
+                    showCorrectAnswer: true,
                   }}
                 />
               </ScrollArea>
