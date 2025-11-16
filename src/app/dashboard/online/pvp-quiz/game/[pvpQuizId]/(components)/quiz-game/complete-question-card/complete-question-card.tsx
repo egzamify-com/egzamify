@@ -1,6 +1,6 @@
 import type { VariantProps } from "class-variance-authority"
 import { api } from "convex/_generated/api"
-import type { Doc } from "convex/_generated/dataModel"
+import type { Doc, Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
 import { Calendar, Check, ListIcon } from "lucide-react"
@@ -19,7 +19,7 @@ import { cn } from "~/lib/utils"
 import ExplainQuestionBtn from "./explain-question-btn"
 
 export type FullQuestionPlayerData = {
-  userData: Doc<"pvpQuizzes">["creatorData"] | null
+  userAnswersIds: Id<"userAnswers">[] | undefined
   userProfile: Doc<"users"> | null
 }
 
@@ -132,15 +132,16 @@ function Answer({
   answer: QuizAnswersType
   questionComponentProps: CompleteQuestionCardProps
 }) {
+  const userQuery = useQuery(api.users.query.getCurrentUser)
   function makeDidUserSelectThisAnswer(userData: Doc<"answers">[] | undefined) {
     return userData?.map((a) => a._id).includes(answer._id)
   }
 
   const { data } = useQuery(api.pvp_quiz.query.getAnswersFromUserAnswers, {
     currentUserAnswersIds:
-      questionComponentProps.currentUserQuizData?.userData?.answersIds,
+      questionComponentProps.currentUserQuizData?.userAnswersIds,
     otherUserAnswersIds:
-      questionComponentProps.otherUserQuizData?.userData?.answersIds,
+      questionComponentProps.otherUserQuizData?.userAnswersIds,
   })
 
   const currentUserProfile =
@@ -156,10 +157,15 @@ function Answer({
     data?.otherUsers,
   )
 
-  const showCorrectAnswer =
+  const shouldShowCorrectAnswer =
     answer.isCorrect &&
     questionComponentProps.nonInteractive &&
     questionComponentProps.showCorrectAnswer
+
+  const shouldIndicateBadUserAnswer =
+    questionComponentProps.nonInteractive &&
+    !answer.isCorrect &&
+    (didCurrentUserSelectThisAnswer || didOtherUserSelectThisAnswer)
 
   return (
     <div
@@ -171,16 +177,21 @@ function Answer({
         )
       }}
       className={cn(
-        `border-border bg-card hover:border-foreground/50 relative flex w-full cursor-auto cursor-pointer flex-row items-center justify-between gap-2 rounded-lg border p-4 text-left transition-all ease-in-out`,
+        `border-border bg-card hover:border-foreground/50 relative flex w-full cursor-auto flex-row items-center justify-between gap-2 rounded-lg border p-4 text-left transition-all ease-in-out`,
         answer.isSelected &&
           !questionComponentProps.nonInteractive &&
           "bg-muted",
-        showCorrectAnswer &&
-          "border-green-500 bg-green-500/10 text-green-500 hover:bg-green-500/10",
+        shouldShowCorrectAnswer &&
+          "border-green-500 bg-green-500/10 text-green-500",
+        shouldIndicateBadUserAnswer && "bg-destructive/10 border-destructive",
+        !questionComponentProps.nonInteractive && "cursor-pointer",
       )}
     >
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start justify-start gap-2">
+          {didCurrentUserSelectThisAnswer && (
+            <Badge className="-top-3">{"Twoja odpowiedź"}</Badge>
+          )}
           <span className="text-foreground text-md leading-relaxed text-pretty">
             <MarkdownRenderer
               markdownText={answer.content}
@@ -202,7 +213,7 @@ function Answer({
           )}
       </div>
       <div className="flex flex-row gap-2">
-        {showCorrectAnswer && <Check />}
+        {shouldShowCorrectAnswer && <Check />}
         <p>{answer.label}</p>
       </div>
     </div>

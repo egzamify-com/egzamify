@@ -90,8 +90,14 @@ export default function QuizCompleted({
                   nonInteractive: true,
                   question: question,
                   answers: answers,
-                  currentUserQuizData,
-                  otherUserQuizData,
+                  currentUserQuizData: {
+                    userProfile: currentUserQuizData.userProfile,
+                    userAnswersIds: currentUserQuizData.userAnswersIds,
+                  },
+                  otherUserQuizData: {
+                    userProfile: otherUserQuizData.userProfile,
+                    userAnswersIds: otherUserQuizData.userAnswersIds,
+                  },
                   showExplanationBtn: true,
                   showCorrectAnswer: true,
                 }}
@@ -110,29 +116,29 @@ function calcRoles(
 ) {
   let currentUserQuizData: FullQuestionPlayerData = {
     userProfile: data.currentUser,
-    userData: null,
+    userAnswersIds: undefined,
   }
   let otherUserQuizData: FullQuestionPlayerData = {
     userProfile: null,
-    userData: null,
+    userAnswersIds: undefined,
   }
   if (data.currentUser._id === quizData.creatorUserId) {
     currentUserQuizData = {
       ...currentUserQuizData,
-      userData: quizData.creatorData,
+      userAnswersIds: quizData.creatorData?.answersIds,
     }
     otherUserQuizData = {
       userProfile: quizData.opponentUser,
-      userData: quizData.opponentData,
+      userAnswersIds: quizData.opponentData?.answersIds,
     }
   } else {
     currentUserQuizData = {
       ...currentUserQuizData,
-      userData: quizData.opponentData,
+      userAnswersIds: quizData.opponentData?.answersIds,
     }
     otherUserQuizData = {
       userProfile: quizData.creatorUser,
-      userData: quizData.creatorData,
+      userAnswersIds: quizData.creatorData?.answersIds,
     }
   }
   return { currentUserQuizData, otherUserQuizData }
