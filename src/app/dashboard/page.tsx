@@ -154,7 +154,7 @@ export default function DashboardPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="group-hover:text-primary transition-colors">
-                    Egzamin praktyczny
+                    Egzamin praktycznyy
                   </CardTitle>
                   <FileCheck className="h-8 w-8" />
                 </div>
