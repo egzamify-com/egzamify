@@ -62,7 +62,6 @@ export const submitQuiz = mutation({
     )
 
     const isCurrentUserQuizCreator = currentUserId === quiz.creatorUserId
-    console.log({ isCurrentUserQuizCreator })
 
     const newPlayerData: Doc<"pvpQuizzes">["creatorData"] = {
       submittedAt: Date.now(),
@@ -75,6 +74,7 @@ export const submitQuiz = mutation({
       await ctx.db.patch(quizId, {
         creatorData: {
           ...newPlayerData,
+          startedAt: quiz.creatorData?.startedAt,
           time: calcQuizTime(quiz.creatorData!.startedAt!, submittedAt),
         },
       })
@@ -82,6 +82,7 @@ export const submitQuiz = mutation({
       await ctx.db.patch(quizId, {
         opponentData: {
           ...newPlayerData,
+          startedAt: quiz.opponentData?.startedAt,
           time: calcQuizTime(quiz.opponentData!.startedAt!, submittedAt),
         },
       })
@@ -97,6 +98,7 @@ export const submitQuiz = mutation({
       console.log("quiz is not completed by both users, going next")
       return
     }
+    console.log({ isQuizCompletedByBothUsers })
     console.log(
       "both creator and opp data status is set to done, here should set quiz to completed, and calc winner",
     )

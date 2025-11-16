@@ -156,14 +156,17 @@ export function calcQuizWinner(quiz: Doc<"pvpQuizzes">): {
   winnerUserId: Doc<"pvpQuizzes">["winnerUserId"]
 } {
   if (
-    !quiz.creatorData?.score ||
-    !quiz.opponentData?.score ||
-    !quiz.creatorData?.time ||
-    !quiz.opponentData?.time
+    quiz.creatorData?.score === undefined ||
+    quiz.opponentData?.score === undefined ||
+    quiz.creatorData?.time === undefined ||
+    quiz.opponentData?.time === undefined
   ) {
     console.log("no data found (?)")
     console.log("creator score - ", quiz.creatorData?.score)
     console.log("opp score - ", quiz.opponentData?.score)
+
+    console.log("creator time - ", quiz.creatorData?.time)
+    console.log("opp time - ", quiz.opponentData?.time)
     return { winnerType: undefined, winnerUserId: undefined }
   }
 

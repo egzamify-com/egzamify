@@ -93,6 +93,7 @@ export default function QuizCompleted({
                   currentUserQuizData,
                   otherUserQuizData,
                   showExplanationBtn: true,
+                  showCorrectAnswer: true,
                 }}
               />
             )
