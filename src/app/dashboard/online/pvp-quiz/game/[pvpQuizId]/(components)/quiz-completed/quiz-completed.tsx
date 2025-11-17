@@ -94,10 +94,12 @@ export default function QuizCompleted({
                     userProfile: currentUserQuizData.userProfile,
                     userAnswersIds: currentUserQuizData.userAnswersIds,
                   },
-                  otherUserQuizData: {
-                    userProfile: otherUserQuizData.userProfile,
-                    userAnswersIds: otherUserQuizData.userAnswersIds,
-                  },
+                  otherUsersQuizData: [
+                    {
+                      userProfile: otherUserQuizData.userProfile,
+                      userAnswersIds: otherUserQuizData.userAnswersIds,
+                    },
+                  ],
                   showExplanationBtn: true,
                   showCorrectAnswer: true,
                 }}
@@ -119,7 +121,7 @@ function calcRoles(
     userAnswersIds: undefined,
   }
   let otherUserQuizData: FullQuestionPlayerData = {
-    userProfile: null,
+    userProfile: undefined,
     userAnswersIds: undefined,
   }
   if (data.currentUser._id === quizData.creatorUserId) {

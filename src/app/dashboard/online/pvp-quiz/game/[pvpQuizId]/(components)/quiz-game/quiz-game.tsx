@@ -114,7 +114,6 @@ export default function QuizGame({
                       questionNumber: index + 1,
                     },
                     showQuestionMetadata: true,
-                    questionNumber: 1,
                     question: question,
                     answers: question.answers,
                     handleSelectingNewAnswer,

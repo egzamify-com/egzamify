@@ -1,7 +1,8 @@
 import { asyncMap } from "convex-helpers"
-import { ConvexError, v } from "convex/values"
-import { query } from "../_generated/server"
+import { ConvexError, v, type Infer } from "convex/values"
+import { query, type QueryCtx } from "../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
+import { vv } from "../schema"
 import { authUserToAccessQuizOrThrow, getQuizOrThrow } from "./helpers"
 
 export const getPvpQuiz = query({
@@ -181,7 +182,12 @@ export const getAnswersFromUserAnswers = query({
       async (userAnswerId) => {
         const userAnswer = await ctx.db.get(userAnswerId)
         if (!userAnswer) return null
-        return await ctx.db.get(userAnswer.answerId)
+        const answer = await ctx.db.get(userAnswer.answerId)
+        if (!answer) return null
+        return {
+          userAnswer,
+          answer,
+        }
       },
     )
 
@@ -190,7 +196,15 @@ export const getAnswersFromUserAnswers = query({
       async (userAnswerId) => {
         const userAnswer = await ctx.db.get(userAnswerId)
         if (!userAnswer) return null
-        return await ctx.db.get(userAnswer.answerId)
+        const answer = await ctx.db.get(userAnswer.answerId)
+        if (!answer) return null
+        const user = await ctx.db.get(userAnswer.userId)
+        if (!user) return null
+        return {
+          answer,
+          userAnswer,
+          user,
+        }
       },
     )
     return {
@@ -199,3 +213,73 @@ export const getAnswersFromUserAnswers = query({
     }
   },
 })
+
+// userAnswersIds: Id<"userAnswers">[] | undefined
+// userProfile: Doc<"users"> | null
+
+const userAnswersData = v.object({
+  userAnswersIds: v.optional(v.array(v.id("userAnswers"))),
+  userProfile: v.optional(vv.doc("users")),
+})
+
+const parseUsersAnswersIdsValidator = v.object({
+  currentUserAnswersIds: v.optional(v.array(userAnswersData)),
+  otherUsersAnswersIds: v.optional(v.array(userAnswersData)),
+})
+
+export const parseUsersAnswersIds = query({
+  args: parseUsersAnswersIdsValidator,
+  handler: async (ctx, { currentUserAnswersIds, otherUsersAnswersIds }) => {
+    if (!currentUserAnswersIds) return null
+    if (!otherUsersAnswersIds) return null
+
+    const currentUserData = await getAnswerDataForUsers(
+      ctx,
+      currentUserAnswersIds,
+    )
+
+    const otherUsersAnswersData = await getAnswerDataForUsers(
+      ctx,
+      otherUsersAnswersIds,
+    )
+
+    return {
+      currentUserData,
+      otherUsersAnswersData,
+    }
+  },
+})
+
+async function getAnswerDataForUsers(
+  ctx: QueryCtx,
+  data: Infer<typeof userAnswersData>[],
+) {
+  const wholeList = await asyncMap(data, async (itemForUser) => {
+    if (!itemForUser) return
+    if (!itemForUser.userAnswersIds) return
+    const dataForUser = await asyncMap(
+      itemForUser.userAnswersIds,
+      async (answerIdForUser) => {
+        const userAnswerDoc = await ctx.db.get(answerIdForUser)
+        if (!userAnswerDoc) return null
+
+        const answerDoc = await ctx.db.get(userAnswerDoc.answerId)
+        if (!answerDoc) return null
+
+        return {
+          userAnswerDoc,
+          answerDoc,
+        }
+      },
+    )
+
+    const withoutNulls = dataForUser.filter((a) => a !== null)
+    return {
+      userProfile: itemForUser.userProfile,
+      userAnswerData: withoutNulls,
+    }
+  })
+
+  const mainDataWithoutNulls = wholeList.filter((a) => a !== undefined)
+  return mainDataWithoutNulls
+}

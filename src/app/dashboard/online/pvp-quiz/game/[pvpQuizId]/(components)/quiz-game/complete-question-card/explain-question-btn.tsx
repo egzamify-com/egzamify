@@ -35,13 +35,12 @@ export default function ExplainQuestionBtn({
   answers: CompleteQuestionCardProps["answers"]
 }) {
   const currentUser = useQuery(api.users.query.getCurrentUser)
-  console.log(currentUser.data?.credits)
   const questionStore = useStore(questionDialogStore)
   const questionDialogState = questionStore.get(question._id)
   const canUserAfford =
     !currentUser.isPending &&
     (currentUser.data?.credits ?? 0) > APP_CONFIG.questionExplanation.price
-  console.log({ canUserAfford })
+
   async function fetchExplanation() {
     if (questionDialogState?.explanation) {
       updateQuestionDialog(question._id, { isOpen: true })
@@ -50,7 +49,6 @@ export default function ExplainQuestionBtn({
 
     updateQuestionDialog(question._id, { isPending: true })
     const [res, err] = await tryCatch(explainQuestion(question, answers))
-    console.log({ res })
 
     if (err) {
       console.error(err)
