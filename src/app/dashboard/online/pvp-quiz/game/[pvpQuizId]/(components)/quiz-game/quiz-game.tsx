@@ -6,6 +6,7 @@ import { Send } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
+import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
 import {
   Card,
@@ -127,8 +128,13 @@ export default function QuizGame({
               className="w-full"
               onClick={async () => await handleSubmitQuiz()}
             >
-              <Send />
-              {"Prześlij quiz"}
+              {submitStatus === "pending" && <SpinnerLoading />}
+              {submitStatus === "idle" && (
+                <>
+                  <Send />
+                  {"Prześlij quiz"}
+                </>
+              )}
             </Button>
           </div>
         </CardContent>
