@@ -24,6 +24,9 @@ export default function RandomQuestionGame({
     null,
   )
 
+  const [submittedAnswerId, setSubmittedAnswerId] =
+    useState<Id<"userAnswers"> | null>(null)
+
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationName,
     _refreshKey: refreshKey,
@@ -101,7 +104,7 @@ export default function RandomQuestionGame({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handleAnswerSelect = (selectedAnswer: QuizAnswersType) => {
+  const handleAnswerSelect = async (selectedAnswer: QuizAnswersType) => {
     if (showResult || !currentQuestion) return
 
     // await saveUserAnswer({
@@ -117,6 +120,13 @@ export default function RandomQuestionGame({
         return { ...prevAnswers, isSelected: false }
       })
     })
+    const { isSelected, ...answer } = selectedAnswer
+
+    const userAnswerId = await saveUserAnswer({
+      answer,
+      wasUserCorrect: isSelected && answer.isCorrect,
+    })
+    setSubmittedAnswerId(userAnswerId)
     setShowResult(true)
   }
 
@@ -198,7 +208,16 @@ export default function RandomQuestionGame({
             nonInteractive: showResult,
             showCorrectAnswer: showResult,
             handleSelectingNewAnswer: handleAnswerSelect,
-            currentUserQuizData: { userProfile: user.data, userAnswersIds: [] },
+            currentUserQuizData:
+              showResult && submittedAnswerId
+                ? {
+                    userProfile: user.data,
+                    userAnswersIds: [submittedAnswerId],
+                  }
+                : undefined,
+            otherUsersQuizData: [],
+            showExplanationBtn: showResult,
+            showQuestionMetadata: true,
           }}
         />
       )}
