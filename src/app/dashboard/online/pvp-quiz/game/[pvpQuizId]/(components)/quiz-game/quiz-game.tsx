@@ -54,7 +54,7 @@ export default function QuizGame({
     toast.success("Przeslano quiz!")
   }
 
-  function handleSelectingNewAnswer(
+  async function handleSelectingNewAnswer(
     selectedAnswer: QuizAnswersType,
     question: Doc<"questions">,
   ) {

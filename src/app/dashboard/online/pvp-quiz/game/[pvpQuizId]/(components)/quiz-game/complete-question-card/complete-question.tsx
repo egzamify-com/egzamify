@@ -30,7 +30,7 @@ export type CompleteQuestionProps = {
   handleSelectingNewAnswer?: (
     answerSelected: QuizAnswersType,
     question: Doc<"questions">,
-  ) => void
+  ) => Promise<void>
   showQuestionMetadata?: boolean
   questionAdditionalMetadata?: {
     questionNumber?: number
