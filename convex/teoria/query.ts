@@ -153,7 +153,10 @@ export const getRandomQuestion = query({
     const sortedAnswers = answers.sort((a, b) => a.label.localeCompare(b.label))
 
     return {
-      question: {
+      randomQuestion,
+      answers: sortedAnswers,
+
+      questionold: {
         id: randomQuestion._id,
         question: randomQuestion.content,
         answers: sortedAnswers.map((answer) => answer.content),
