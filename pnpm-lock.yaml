@@ -162,7 +162,7 @@ importers:
         specifier: ^1.280.0
         version: 1.289.0
       posthog-node:
-        specifier: ^5.10.3
+        specifier: ^5.11.2
         version: 5.11.2
       react:
         specifier: ^19.2.0

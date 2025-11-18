@@ -28,6 +28,7 @@ export function Footer() {
             </AuthLoading>
             <Unauthenticated>
               <LogInBtn />
+              <GetCreditsBtn />
             </Unauthenticated>
 
             <Authenticated>

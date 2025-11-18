@@ -28,6 +28,7 @@ export function Hero() {
           </AuthLoading>
           <Unauthenticated>
             <LogInBtn />
+            <GetCreditsBtn />
           </Unauthenticated>
 
           <Authenticated>

@@ -7,6 +7,8 @@ import { Authenticated, AuthLoading, Unauthenticated } from "convex/react"
 import { LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import posthog from "posthog-js"
+import { useEffect } from "react"
 import { toast } from "sonner"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import {
@@ -26,7 +28,23 @@ import { Skeleton } from "./ui/skeleton"
 import ActivityStatusAvatar from "./users/activity-status-avatar"
 
 export default function Navbar() {
+  const user = useQuery(api.users.query.getCurrentUser)
+
+  useEffect(() => {
+    console.log("this should run once ever")
+    if (!user.data) {
+      posthog.reset(true)
+      return
+    }
+
+    posthog.identify(user.data._id, {
+      name: user.data.name,
+      email: user.data.email,
+    })
+  }, [user.data?._id])
+
   const pathname = usePathname()
+
   if (
     APP_CONFIG.navbarDisplay.blockNavbarSitesArr.some((segment: string) =>
       pathname.includes(segment),
@@ -37,7 +55,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-background sticky top-0 z-50 flex h-16 w-[100vw] flex-row items-center justify-between px-4`}
+      className={`bg-background sticky top-0 z-50 flex h-16 w-screen flex-row items-center justify-between px-4`}
     >
       <Link href={"/"}>
         <div className="relative flex flex-row items-start justify-start gap-2">
@@ -72,7 +90,12 @@ export default function Navbar() {
 }
 
 function SignedOut() {
-  return <LogInBtn size="sm" className="h-9" />
+  return (
+    <div className="flex flex-row gap-4">
+      <GetCreditsBtn />
+      <LogInBtn size="sm" className="h-9" />
+    </div>
+  )
 }
 
 export function NavSignedIn() {

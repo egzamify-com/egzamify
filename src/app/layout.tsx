@@ -6,7 +6,6 @@ import Navbar from "~/components/main-navbar"
 import { ThemeProvider } from "~/components/theme/theme-provider"
 import { Toaster } from "~/components/ui/sonner"
 import { ConvexClientProvider } from "~/providers/convex-provider"
-import { PostHogProvider } from "~/providers/posthog-provider"
 import MyQueryProvider from "~/providers/query-client"
 import UserActivity from "~/providers/user-activity-provier"
 import "~/styles/globals.css"
@@ -40,21 +39,19 @@ export default function RootLayout({
               disableTransitionOnChange
               enableSystem={false}
             >
-              <PostHogProvider>
-                <ConvexClientProvider>
-                  <ConvexQueryCacheProvider>
-                    <UserActivity>
-                      <div className="flex min-h-screen flex-col">
-                        <Navbar />
-                        <main className="flex flex-1 flex-col">
-                          {children}
-                          <Toaster />
-                        </main>
-                      </div>
-                    </UserActivity>
-                  </ConvexQueryCacheProvider>
-                </ConvexClientProvider>
-              </PostHogProvider>
+              <ConvexClientProvider>
+                <ConvexQueryCacheProvider>
+                  <UserActivity>
+                    <div className="flex min-h-screen flex-col">
+                      <Navbar />
+                      <main className="flex flex-1 flex-col">
+                        {children}
+                        <Toaster />
+                      </main>
+                    </div>
+                  </UserActivity>
+                </ConvexQueryCacheProvider>
+              </ConvexClientProvider>
             </ThemeProvider>
           </body>
         </html>

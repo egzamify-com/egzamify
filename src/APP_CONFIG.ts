@@ -1,4 +1,30 @@
 type AppConfig = {
+  phEvents: {
+    online: {
+      PvpQuizCreated: {
+        name: "PvpQuizCreated"
+      }
+      PvpQuizCompleted: {
+        name: "PvpQuizCompleted"
+        questionCount: number
+        qualificationName: string
+      }
+    }
+    aiChat: {
+      aiChatMessage: {
+        name: "aiChatMessage"
+        type: string
+      }
+    }
+    practicalExam: {
+      pracitcalExamCheck: {
+        checkCompleted: {
+          name: "checkCompleted"
+          type: "standard" | "complete"
+        }
+      }
+    }
+  }
   questionExplanation: {
     maxOutputTokens: number
     price: number
@@ -62,6 +88,32 @@ type AppConfig = {
 }
 
 export const APP_CONFIG: AppConfig = {
+  phEvents: {
+    online: {
+      PvpQuizCreated: {
+        name: "PvpQuizCreated",
+      },
+      PvpQuizCompleted: {
+        name: "PvpQuizCompleted",
+        qualificationName: "",
+        questionCount: 0,
+      },
+    },
+    aiChat: {
+      aiChatMessage: {
+        name: "aiChatMessage",
+        type: "normal",
+      },
+    },
+    practicalExam: {
+      pracitcalExamCheck: {
+        checkCompleted: {
+          name: "checkCompleted",
+          type: "standard",
+        },
+      },
+    },
+  },
   questionExplanation: {
     maxOutputTokens: 1000,
     model: "google/gemini-2.5-flash",

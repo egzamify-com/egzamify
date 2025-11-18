@@ -46,10 +46,11 @@ export function NavUser() {
             <CardContent className="w-full p-0">
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
+                  asChild
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-"
                 >
-                  <>
+                  <div>
                     <ActivityStatusAvatar userToShow={user} />
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-medium">
@@ -59,7 +60,7 @@ export function NavUser() {
                         {user.email}
                       </span>
                     </div>
-                  </>
+                  </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
             </CardContent>

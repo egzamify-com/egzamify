@@ -8,8 +8,8 @@ import {
   getNextjsUserOrThrow,
   refundCredits,
 } from "~/actions/actions"
-import { PostHogClient } from "~/actions/posthog"
 import { APP_CONFIG } from "~/APP_CONFIG"
+import { captureAitMessage } from "~/lib/posthog-server"
 
 type MyMessageMetadata = {
   mode: string
@@ -66,15 +66,11 @@ export async function POST(req: Request) {
           messages: toOriginalMessagesWithoutMode(messages) as MyUIMessage[],
         })
         try {
-          const posthog = PostHogClient()
+          const lastMessage = messages[messages.length - 1]
+          if (!lastMessage) return
+          if (!lastMessage.metadata?.mode) return
           const user = await getNextjsUserOrThrow()
-          posthog.capture({
-            event: "ai chat message",
-            distinctId: crypto.randomUUID(),
-            properties: {
-              userId: user._id,
-            },
-          })
+          await captureAitMessage({ type: lastMessage.metadata?.mode }, user)
         } catch (e) {
           console.error("[AI CHAT] Failed to capture posthog event - ", e)
         }

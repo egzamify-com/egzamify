@@ -2,10 +2,8 @@
 
 import { useAuthActions } from "@convex-dev/auth/react"
 import type { Providers } from "convex/auth"
-import { useConvexAuth } from "convex/react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useState, type ReactNode } from "react"
 import SpinnerLoading from "~/components/spinner-loading"
 import { ModeToggle } from "~/components/theme/theme-toggle"
@@ -21,12 +19,8 @@ import {
 import { cn } from "~/lib/utils"
 
 export default function Page() {
-  const { isAuthenticated } = useConvexAuth()
-  const router = useRouter()
   const { signIn } = useAuthActions()
-  if (isAuthenticated) {
-    router.replace("/")
-  }
+
   async function handleSignIn(provider: Providers) {
     await signIn(provider)
   }

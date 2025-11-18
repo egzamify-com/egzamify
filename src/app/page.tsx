@@ -1,9 +1,8 @@
-"use client"
 import { FeatureCard } from "~/components/landing-page/feature-showcase"
 import { Footer } from "~/components/landing-page/footer"
 import { Hero } from "~/components/landing-page/hero"
 
-export default function Page() {
+export default async function Page() {
   return (
     <main className="min-h-screen">
       <Hero />

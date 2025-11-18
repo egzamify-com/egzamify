@@ -23,6 +23,19 @@ const config = {
       { protocol: "https", hostname: "precise-bobcat-903.convex.site" },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/relay-HCT4/static/:path*",
+        destination: "https://eu-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/relay-HCT4/:path*",
+        destination: "https://eu.i.posthog.com/:path*",
+      },
+    ]
+  },
+  skipTrailingSlashRedirect: true,
 }
 
 export default config
