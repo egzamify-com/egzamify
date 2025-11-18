@@ -75,7 +75,13 @@ export default function Answer({
           "border-green-500 bg-green-500/10 text-green-500",
       )}
     >
-      <div className="space-y-4">
+      <div
+        className={cn(
+          didCurrentUserSelectThisAnswer &&
+            isThereAnyOtherUserAnswer &&
+            "space-y-2",
+        )}
+      >
         <div className="flex flex-col items-start justify-start gap-2">
           {didCurrentUserSelectThisAnswer && (
             <Badge className="-top-2">{"Twoja odpowiedź"}</Badge>

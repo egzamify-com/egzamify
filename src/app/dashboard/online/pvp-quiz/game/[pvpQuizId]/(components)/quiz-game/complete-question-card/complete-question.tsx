@@ -2,7 +2,7 @@ import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
-import { Calendar } from "lucide-react"
+import { Calendar, Loader2 } from "lucide-react"
 import Image from "next/image"
 import MarkdownRenderer from "~/components/markdown-rendered"
 import {
@@ -38,6 +38,7 @@ export type CompleteQuestionProps = {
   currentUserQuizData?: CompleteQuestionPlayerData
   otherUsersQuizData?: CompleteQuestionPlayerData[]
   showExplanationBtn?: boolean
+  showLoadingState?: boolean
 }
 
 export default function CompleteQuestion(props: CompleteQuestionProps) {
@@ -71,7 +72,22 @@ export default function CompleteQuestion(props: CompleteQuestionProps) {
 
   return (
     <div className="w-full">
-      <Card className="w-full overflow-hidden">
+      <Card
+        className={cn(
+          "relative w-full overflow-hidden",
+          props.showLoadingState && "opacity-15",
+        )}
+      >
+        {props.showLoadingState && (
+          <div
+            className={cn(
+              props.showLoadingState &&
+                "absolute top-0 z-999 flex h-full w-full cursor-no-drop flex-col items-center justify-center opacity-100",
+            )}
+          >
+            <Loader2 className="z-99999 animate-spin" size={80} />
+          </div>
+        )}
         <CardHeader className="gap-2">
           {props.showQuestionMetadata && (
             <CardTitle>
@@ -80,12 +96,6 @@ export default function CompleteQuestion(props: CompleteQuestionProps) {
                   "text-muted-foreground flex w-full flex-row items-center justify-between gap-2 text-sm font-medium",
                 )}
               >
-                {/* {props.questionAdditionalMetadata?.questionNumber && ( */}
-                {/*   <div className="flex flex-row items-center justify-center gap-2"> */}
-                {/*     <ListIcon size={16} /> */}
-                {/*     Pytanie {props.questionAdditionalMetadata?.questionNumber} */}
-                {/*   </div> */}
-                {/* )} */}
                 <div className="flex flex-row gap-2">
                   <QuestionBadge>
                     <Calendar size={16} />

@@ -118,6 +118,7 @@ export default function QuizGame({
                     question: question,
                     answers: question.answers,
                     handleSelectingNewAnswer,
+                    showLoadingState: true,
                   }}
                 />
               )
