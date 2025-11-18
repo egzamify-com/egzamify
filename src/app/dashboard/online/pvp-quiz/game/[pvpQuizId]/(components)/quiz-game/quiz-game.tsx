@@ -17,7 +17,7 @@ import {
 } from "~/components/ui/card"
 import { tryCatch } from "~/lib/tryCatch"
 import type { PvpQuizQueryReturnType } from "../../page"
-import FullQuestionCard from "./complete-question-card/complete-question-card"
+import FullQuestionCard from "./complete-question-card/complete-question"
 import QuizSubmitted from "./quiz-submitted"
 
 export default function QuizGame({

@@ -14,6 +14,14 @@ const config = {
   // typescript: {
   //   ignoreBuildErrors: true,
   // },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "formal-jay-146.convex.site",
+      },
+    ],
+  },
 }
 
 export default config

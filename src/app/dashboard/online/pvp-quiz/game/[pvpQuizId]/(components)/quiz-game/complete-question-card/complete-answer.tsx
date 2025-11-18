@@ -6,7 +6,7 @@ import MarkdownRenderer from "~/components/markdown-rendered"
 import { Badge } from "~/components/ui/badge"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 import { cn } from "~/lib/utils"
-import type { CompleteQuestionCardProps } from "./complete-question-card"
+import type { CompleteQuestionProps } from "./complete-question"
 
 export default function Answer({
   answer,
@@ -14,7 +14,7 @@ export default function Answer({
   usersDataQuery,
 }: {
   answer: QuizAnswersType
-  questionComponentProps: CompleteQuestionCardProps
+  questionComponentProps: CompleteQuestionProps
   usersDataQuery:
     | FunctionReturnType<typeof api.pvp_quiz.query.parseUsersAnswersIds>
     | null

@@ -2,7 +2,8 @@ import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
-import { Calendar, ListIcon } from "lucide-react"
+import { Calendar } from "lucide-react"
+import Image from "next/image"
 import MarkdownRenderer from "~/components/markdown-rendered"
 import {
   Card,
@@ -11,17 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
-import { cn } from "~/lib/utils"
+import { cn, getFileUrl } from "~/lib/utils"
 import Answer from "./complete-answer"
 import ExplainQuestionBtn from "./explain-question-btn"
 import QuestionBadge from "./question-badge"
 
-export type FullQuestionPlayerData = {
+export type CompleteQuestionPlayerData = {
   userAnswersIds: Id<"userAnswers">[] | undefined
   userProfile: Doc<"users"> | undefined
 }
 
-export type CompleteQuestionCardProps = {
+export type CompleteQuestionProps = {
   question: Doc<"questions">
   answers: QuizAnswersType[]
   nonInteractive?: boolean
@@ -34,12 +35,23 @@ export type CompleteQuestionCardProps = {
   questionAdditionalMetadata?: {
     questionNumber?: number
   }
-  currentUserQuizData?: FullQuestionPlayerData
-  otherUsersQuizData?: FullQuestionPlayerData[]
+  currentUserQuizData?: CompleteQuestionPlayerData
+  otherUsersQuizData?: CompleteQuestionPlayerData[]
   showExplanationBtn?: boolean
 }
 
-export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
+export default function CompleteQuestion(props: CompleteQuestionProps) {
+  const questionAttachment = getFileUrl(
+    props.question.attachmentId,
+    "image",
+  )?.raw
+
+  const questionContentToRender =
+    props.showQuestionMetadata &&
+    props.questionAdditionalMetadata?.questionNumber
+      ? `${props.questionAdditionalMetadata.questionNumber}.   ${props.question.content}`
+      : `${props.question.content}`
+
   const qualificationQuery = useQuery(api.teoria.query.getQualificationFromId, {
     qualificationId: props.question.qualificationId,
   })
@@ -65,31 +77,15 @@ export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
             <CardTitle>
               <div
                 className={cn(
-                  "text-muted-foreground flex flex-col items-start justify-start gap-2 text-sm font-medium",
+                  "text-muted-foreground flex w-full flex-row items-center justify-between gap-2 text-sm font-medium",
                 )}
               >
-                {!props.questionAdditionalMetadata?.questionNumber &&
-                !props.showExplanationBtn ? null : (
-                  <div className="flex w-full flex-row items-center justify-between">
-                    {props.questionAdditionalMetadata?.questionNumber && (
-                      <div className="flex flex-row items-center justify-center gap-2">
-                        <ListIcon size={16} />
-                        Pytanie{" "}
-                        {props.questionAdditionalMetadata?.questionNumber}
-                      </div>
-                    )}
-                    <div>
-                      {props.showExplanationBtn && (
-                        <ExplainQuestionBtn
-                          {...{
-                            question: props.question,
-                            answers: props.answers,
-                          }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
+                {/* {props.questionAdditionalMetadata?.questionNumber && ( */}
+                {/*   <div className="flex flex-row items-center justify-center gap-2"> */}
+                {/*     <ListIcon size={16} /> */}
+                {/*     Pytanie {props.questionAdditionalMetadata?.questionNumber} */}
+                {/*   </div> */}
+                {/* )} */}
                 <div className="flex flex-row gap-2">
                   <QuestionBadge>
                     <Calendar size={16} />
@@ -106,21 +102,47 @@ export default function CompleteQuestionCard(props: CompleteQuestionCardProps) {
                         key={crypto.randomUUID()}
                         variant={"secondary"}
                       >
+                        {"#"}
                         {tag}
                       </QuestionBadge>
                     )
                   })}
                 </div>
+
+                {!props.questionAdditionalMetadata?.questionNumber &&
+                !props.showExplanationBtn ? null : (
+                  <div className="flex flex-row items-center justify-between gap-4">
+                    {props.showExplanationBtn && (
+                      <ExplainQuestionBtn
+                        {...{
+                          question: props.question,
+                          answers: props.answers,
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             </CardTitle>
           )}
-          <CardDescription>
+          <CardDescription className="space-y-4">
             <div className="flex items-start justify-start">
               <MarkdownRenderer
-                markdownText={props.question.content}
+                markdownText={questionContentToRender}
                 textSize="prose-lg"
               />
             </div>
+            {questionAttachment && (
+              <div className="flex w-full flex-row items-center justify-center">
+                <Image
+                  alt="Obraz do pytania"
+                  width={400}
+                  height={200}
+                  src={questionAttachment.href}
+                  className="shadow-background w-3/5 rounded-2xl border shadow-2xl"
+                />
+              </div>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-start justify-start gap-2">

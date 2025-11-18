@@ -24,15 +24,15 @@ import { ScrollArea } from "~/components/ui/scroll-area"
 import { Tooltip, TooltipContent } from "~/components/ui/tooltip"
 import { tryCatch } from "~/lib/tryCatch"
 import { questionDialogStore, updateQuestionDialog } from "../../../store"
-import type { CompleteQuestionCardProps } from "./complete-question-card"
-import CompleteQuestionCard from "./complete-question-card"
+import type { CompleteQuestionProps } from "./complete-question"
+import CompleteQuestion from "./complete-question"
 
 export default function ExplainQuestionBtn({
   question,
   answers,
 }: {
-  question: CompleteQuestionCardProps["question"]
-  answers: CompleteQuestionCardProps["answers"]
+  question: CompleteQuestionProps["question"]
+  answers: CompleteQuestionProps["answers"]
 }) {
   const currentUser = useQuery(api.users.query.getCurrentUser)
   const questionStore = useStore(questionDialogStore)
@@ -93,7 +93,7 @@ export default function ExplainQuestionBtn({
         <TooltipTrigger>
           {canUserAfford ? (
             <Button
-              variant={"ghost"}
+              variant={"outline"}
               size={"sm"}
               onClick={async () => {
                 await fetchExplanation()
@@ -130,7 +130,7 @@ export default function ExplainQuestionBtn({
             </DialogTitle>
             <Card className="bg-transparent p-6">
               <ScrollArea className="h-[300px] w-full">
-                <CompleteQuestionCard
+                <CompleteQuestion
                   {...{
                     question: question,
                     answers: answers,

@@ -7,9 +7,9 @@ import FullScreenLoading from "~/components/full-screen-loading"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
 import { parseConvexError } from "~/lib/utils"
 import type { PvpQuizQueryReturnType } from "../../page"
-import FullQuestionCard, {
-  type FullQuestionPlayerData,
-} from "../quiz-game/complete-question-card/complete-question-card"
+import CompleteQuestion, {
+  type CompleteQuestionPlayerData,
+} from "../quiz-game/complete-question-card/complete-question"
 import { transformQuizDataToQuizState } from "../quiz-game/quiz-game"
 import QuizCompletedResultHeader from "./quiz-completed-result-header"
 import { QuizCompletedPlayerStatsCard } from "./quiz-completed-user-card"
@@ -80,7 +80,7 @@ export default function QuizCompleted({
             )
 
             return (
-              <FullQuestionCard
+              <CompleteQuestion
                 key={crypto.randomUUID()}
                 {...{
                   questionAdditionalMetadata: {
@@ -116,11 +116,11 @@ function calcRoles(
   data: FunctionReturnType<typeof api.pvp_quiz.query.getUsersFromQuiz>,
   quizData: PvpQuizQueryReturnType,
 ) {
-  let currentUserQuizData: FullQuestionPlayerData = {
+  let currentUserQuizData: CompleteQuestionPlayerData = {
     userProfile: data.currentUser,
     userAnswersIds: undefined,
   }
-  let otherUserQuizData: FullQuestionPlayerData = {
+  let otherUserQuizData: CompleteQuestionPlayerData = {
     userProfile: undefined,
     userAnswersIds: undefined,
   }
