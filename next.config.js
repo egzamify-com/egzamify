@@ -20,6 +20,7 @@ const config = {
         protocol: "https",
         hostname: "formal-jay-146.convex.site",
       },
+      { protocol: "https", hostname: "precise-bobcat-903.convex.site" },
     ],
   },
 }

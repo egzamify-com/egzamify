@@ -1,41 +1,24 @@
 import { v } from "convex/values"
 import { mutation } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
+import { vv } from "../schema"
 
 export const saveUserAnswer = mutation({
   args: {
-    questionId: v.id("questions"),
-    answer_index: v.number(),
-    isCorrect: v.boolean(),
+    answer: vv.doc("answers"),
+    wasUserCorrect: v.boolean(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { answer, wasUserCorrect }) => {
     const userId = await getUserIdOrThrow(ctx)
 
-    const question = await ctx.db.get(args.questionId)
-    if (!question) {
-      throw new Error("Question not found")
-    }
-
-    const answers = await ctx.db
-      .query("answers")
-      .withIndex("by_question", (q) => q.eq("questionId", args.questionId))
-      .collect()
-
-    const sortedAnswers = answers.sort((a, b) => a.label.localeCompare(b.label))
-    const selectedAnswer = sortedAnswers[args.answer_index]
-
-    if (!selectedAnswer) {
-      throw new Error("Answer not found")
-    }
-
-    await ctx.db.insert("userAnswers", {
+    const userAnswerId = await ctx.db.insert("userAnswers", {
       userId,
-      questionId: args.questionId,
-      answerId: selectedAnswer._id,
-      isCorrect: args.isCorrect,
+      answerId: answer._id,
+      isCorrect: wasUserCorrect,
+      questionId: answer.questionId,
     })
 
-    return { success: true }
+    return userAnswerId
   },
 })
 
