@@ -4,6 +4,7 @@ import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import { usePaginatedQuery } from "convex/react"
 import { History } from "lucide-react"
+import FullScreenError from "~/components/full-screen-error"
 import LoadMoreBtn from "~/components/load-more"
 import PageHeaderWrapper from "~/components/page-header-wrapper"
 import {
@@ -11,6 +12,10 @@ import {
   OnlineModeCardSkeleton,
 } from "../(components)/quiz-game-card"
 import { pvpQuizCardProps } from "../page"
+
+const title = "Historia aktywności"
+const description = "Twoja aktywność w trybach online."
+const icon = <History />
 
 export default function Page() {
   const { data: user } = useQuery(api.users.query.getCurrentUser)
@@ -22,7 +27,7 @@ export default function Page() {
 
   if (status === "LoadingFirstPage") {
     return (
-      <PageHeaderWrapper isPending={status === "LoadingFirstPage"}>
+      <PageHeaderWrapper {...{ title, description, icon }}>
         <div className="flex w-full flex-col items-center justify-center gap-4">
           {[1, 2, 3, 4].map(() => {
             return (
@@ -35,13 +40,16 @@ export default function Page() {
       </PageHeaderWrapper>
     )
   }
+  if (results.length === 0) {
+    return (
+      <PageHeaderWrapper {...{ title, description, icon }}>
+        <FullScreenError type="warning" errorMessage="Brak wyników." />
+      </PageHeaderWrapper>
+    )
+  }
 
   return (
-    <PageHeaderWrapper
-      title="Historia aktywności"
-      description="Twoja aktywność w trybach online."
-      icon={<History />}
-    >
+    <PageHeaderWrapper {...{ title, description, icon }}>
       <div className="flex w-full flex-col items-center justify-center gap-4">
         {results.map((quiz) => {
           if (!user) return
