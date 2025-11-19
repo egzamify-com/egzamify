@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button"
 import { useReactToQuizInvite } from "./invite-card"
 
 export default function OnlineInvitesSidebarBadge() {
-  const { data } = useQuery(api.pvp_quiz.query.getOnlineInvites)
+  const { data } = useQuery(api.online.pvp_quiz.query.getOnlineInvites)
 
   const { acceptQuiz, isAccepting } = useReactToQuizInvite(
     data?.[data.length - 1]?._id,

@@ -66,6 +66,11 @@ const navMain: NavbarItem[] = [
         url: "/dashboard/online/pvp-quiz/invites",
         badgeComponent: <OnlineInvitesSidebarBadge />,
       },
+      {
+        title: "Historia aktywności",
+        url: "/dashboard/online/history",
+        icon: <History size={SIDEBAR_ICON_SIZE} />,
+      },
     ],
   },
 

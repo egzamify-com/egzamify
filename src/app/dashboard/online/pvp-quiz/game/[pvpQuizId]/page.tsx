@@ -16,13 +16,13 @@ import QuizGame from "./(components)/quiz-game/quiz-game"
 import WaitForOpponent from "./(components)/wait-for-opponent"
 
 export type PvpQuizQueryReturnType = FunctionReturnType<
-  typeof api.pvp_quiz.query.getPvpQuiz
+  typeof api.online.pvp_quiz.query.getPvpQuiz
 >
 
 export default function Page() {
   const { pvpQuizId }: { pvpQuizId: string } = useParams()
 
-  const pvpQuizQuery = useQuery(api.pvp_quiz.query.getPvpQuiz, {
+  const pvpQuizQuery = useQuery(api.online.pvp_quiz.query.getPvpQuiz, {
     pvpQuizId: pvpQuizId as Id<"pvpQuizzes">,
   })
 

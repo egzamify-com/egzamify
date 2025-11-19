@@ -1,6 +1,9 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
-import type { QuizAnswersType, QuizGameState } from "convex/pvp_quiz/helpers"
+import type {
+  QuizAnswersType,
+  QuizGameState,
+} from "convex/online/pvp_quiz/helpers"
 import { useMutation } from "convex/react"
 import { Send } from "lucide-react"
 import { useState } from "react"
@@ -28,7 +31,7 @@ export default function QuizGame({
   const [quizGameState, setQuizGameState] = useState<QuizGameState>(
     transformQuizDataToQuizState(quizData),
   )
-  const submitQuiz = useMutation(api.pvp_quiz.mutate.submitQuiz)
+  const submitQuiz = useMutation(api.online.pvp_quiz.mutate.submitQuiz)
   const [submitStatus, setSubmitStatus] = useState<
     "pending" | "submitted" | "idle"
   >("idle")

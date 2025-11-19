@@ -20,7 +20,7 @@ export default function QuizCompleted({
   quizData: PvpQuizQueryReturnType
 }) {
   const { data, isPending, error } = useQuery(
-    api.pvp_quiz.query.getUsersFromQuiz,
+    api.online.pvp_quiz.query.getUsersFromQuiz,
     { quizId: quizData._id },
   )
 
@@ -113,7 +113,7 @@ export default function QuizCompleted({
 }
 
 function calcRoles(
-  data: FunctionReturnType<typeof api.pvp_quiz.query.getUsersFromQuiz>,
+  data: FunctionReturnType<typeof api.online.pvp_quiz.query.getUsersFromQuiz>,
   quizData: PvpQuizQueryReturnType,
 ) {
   let currentUserQuizData: CompleteQuestionPlayerData = {

@@ -21,7 +21,7 @@ export default function WaitForOpponent({
 }) {
   const router = useRouter()
   const playerData = quizData.opponentUser
-  const deleteQuiz = useMutation(api.pvp_quiz.mutate.deleteQuiz)
+  const deleteQuiz = useMutation(api.online.pvp_quiz.mutate.deleteQuiz)
 
   return (
     <div className="from-background via-background to-muted/20 flex min-h-screen items-center justify-center bg-gradient-to-br p-4">

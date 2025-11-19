@@ -1,7 +1,7 @@
 import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
-import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
+import type { QuizAnswersType } from "convex/online/pvp_quiz/helpers"
 import { Calendar, Loader2 } from "lucide-react"
 import Image from "next/image"
 import MarkdownRenderer from "~/components/markdown-rendered"
@@ -57,18 +57,21 @@ export default function CompleteQuestion(props: CompleteQuestionProps) {
     qualificationId: props.question.qualificationId,
   })
 
-  const usersDataQuery = useQuery(api.pvp_quiz.query.parseUsersAnswersIds, {
-    currentUserAnswersIds: [
-      {
-        userProfile:
-          props.currentUserQuizData?.userProfile === null
-            ? undefined
-            : props.currentUserQuizData?.userProfile,
-        userAnswersIds: props.currentUserQuizData?.userAnswersIds,
-      },
-    ],
-    otherUsersAnswersIds: props.otherUsersQuizData,
-  })
+  const usersDataQuery = useQuery(
+    api.online.pvp_quiz.query.parseUsersAnswersIds,
+    {
+      currentUserAnswersIds: [
+        {
+          userProfile:
+            props.currentUserQuizData?.userProfile === null
+              ? undefined
+              : props.currentUserQuizData?.userProfile,
+          userAnswersIds: props.currentUserQuizData?.userAnswersIds,
+        },
+      ],
+      otherUsersAnswersIds: props.otherUsersQuizData,
+    },
+  )
 
   return (
     <div className="w-full">

@@ -3,7 +3,7 @@
 import { api } from "convex/_generated/api"
 import type { Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
-import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
+import type { QuizAnswersType } from "convex/online/pvp_quiz/helpers"
 import { useMutation } from "convex/react"
 import { Clock, Flame, Loader2, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"

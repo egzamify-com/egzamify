@@ -15,7 +15,7 @@ import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 interface QuizInviteCardProps {
   userId: Id<"users">
   quizInvite: FunctionReturnType<
-    typeof api.pvp_quiz.query.getOnlineInvites
+    typeof api.online.pvp_quiz.query.getOnlineInvites
   >[number]
 }
 
@@ -23,7 +23,6 @@ export default function QuizInviteCard({
   userId,
   quizInvite,
 }: QuizInviteCardProps) {
-  const router = useRouter()
   const {
     data: quizCreatorUser,
     isPending,
@@ -33,7 +32,6 @@ export default function QuizInviteCard({
   const { isAccepting, acceptQuiz, declineQuiz } = useReactToQuizInvite(
     quizInvite._id,
   )
-  // const updateQuizStatus = useMutation(api.pvp_quiz.mutate.updateQuizStatus)
 
   if (isPending) return null
   if (error) return null
@@ -112,11 +110,6 @@ export default function QuizInviteCard({
           <Button
             onClick={async () => {
               await acceptQuiz()
-              // await updateQuizStatus({
-              //   newStatus: "quiz_pending",
-              //   quizId: quizInvite._id,
-              // })
-              // router.push(`/dashboard/online/pvp-quiz/game/${quizInvite._id}`)
             }}
             className="bg-primary hover:bg-primary/90 text-primary-foreground flex-1 gap-2 font-semibold"
           >
@@ -132,10 +125,6 @@ export default function QuizInviteCard({
           <Button
             onClick={async () => {
               await declineQuiz()
-              // await updateQuizStatus({
-              //   newStatus: "opponent_declined",
-              //   quizId: quizInvite._id,
-              // })
             }}
             variant="outline"
             className="border-border hover:bg-muted text-destructive gap-2 bg-transparent"
@@ -152,7 +141,6 @@ export default function QuizInviteCard({
         </div>
       </div>
 
-      {/* Decorative VS element */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 0.08 }}
@@ -167,7 +155,9 @@ export default function QuizInviteCard({
 
 export function useReactToQuizInvite(quizId: Id<"pvpQuizzes"> | undefined) {
   const router = useRouter()
-  const updateQuizStatus = useMutation(api.pvp_quiz.mutate.updateQuizStatus)
+  const updateQuizStatus = useMutation(
+    api.online.pvp_quiz.mutate.updateQuizStatus,
+  )
   const [isMutating, setIsMutating] = useState(false)
 
   return {

@@ -2,7 +2,7 @@
 
 import { generateText, type ModelMessage } from "ai"
 import type { Doc } from "convex/_generated/dataModel"
-import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
+import type { QuizAnswersType } from "convex/online/pvp_quiz/helpers"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import { getFileUrl } from "~/lib/utils"
 import { chargeCredits, refundCredits } from "./actions"

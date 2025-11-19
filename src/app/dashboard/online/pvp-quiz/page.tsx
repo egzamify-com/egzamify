@@ -30,7 +30,7 @@ import SelectQuestionCount from "./(components)/select-question-count"
 export default function Page() {
   const router = useRouter()
   const [selectedUser, setSelectedUser] = useState<Doc<"users"> | null>(null)
-  const createQuiz = useMutation(api.pvp_quiz.mutate.createPvpQuiz)
+  const createQuiz = useMutation(api.online.pvp_quiz.mutate.createPvpQuiz)
   const [isCreatingQuiz, setIsCreatingQuiz] = useState(false)
   const [selectedQualification, setSelectedQualifaction] = useState<string[]>(
     [],

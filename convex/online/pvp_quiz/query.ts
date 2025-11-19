@@ -1,8 +1,8 @@
 import { asyncMap } from "convex-helpers"
 import { ConvexError, v, type Infer } from "convex/values"
-import { query, type QueryCtx } from "../_generated/server"
-import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
-import { vv } from "../schema"
+import { query, type QueryCtx } from "../../_generated/server"
+import { getUserIdOrThrow, getUserProfileOrThrow } from "../../custom_helpers"
+import { vv } from "../../schema"
 import { authUserToAccessQuizOrThrow, getQuizOrThrow } from "./helpers"
 
 export const getPvpQuiz = query({
@@ -13,7 +13,7 @@ export const getPvpQuiz = query({
     const quiz = await ctx.db.get(pvpQuizId)
 
     if (!quiz) {
-      const errMessage = "Nie znaleziono bitwy"
+      const errMessage = "Nie znaleziono quizu"
       console.error(errMessage)
       throw new ConvexError(errMessage)
     }
@@ -24,7 +24,7 @@ export const getPvpQuiz = query({
     const opponentUser = await ctx.db.get(quiz.opponentUserId)
 
     if (!creatorUser || !opponentUser) {
-      const errMessage = "Nie znaleziono profilu uczestnika bitwy!"
+      const errMessage = "Nie znaleziono profilu uczestnika quizu!"
       console.error("Creator Id - ", quiz.creatorUserId)
       console.error("Opponent Id - ", quiz.opponentUserId)
       console.error(errMessage)
@@ -67,7 +67,7 @@ export const getQuizUsers = query({
     const opponentUser = await ctx.db.get(quiz.opponentUserId)
 
     if (!creatorUser || !opponentUser) {
-      const errMessage = "Nie znaleziono profilu uczestnika bitwy!"
+      const errMessage = "Nie znaleziono profilu uczestnika quizu!"
       console.error("Creator Id - ", quiz.creatorUserId)
       console.error("Opponent Id - ", quiz.opponentUserId)
       console.error(errMessage)
@@ -213,9 +213,6 @@ export const getAnswersFromUserAnswers = query({
     }
   },
 })
-
-// userAnswersIds: Id<"userAnswers">[] | undefined
-// userProfile: Doc<"users"> | null
 
 const userAnswersData = v.object({
   userAnswersIds: v.optional(v.array(v.id("userAnswers"))),

@@ -1,5 +1,5 @@
 import type { api } from "convex/_generated/api"
-import type { QuizAnswersType } from "convex/pvp_quiz/helpers"
+import type { QuizAnswersType } from "convex/online/pvp_quiz/helpers"
 import type { FunctionReturnType } from "convex/server"
 import { Check } from "lucide-react"
 import MarkdownRenderer from "~/components/markdown-rendered"
@@ -16,7 +16,7 @@ export default function Answer({
   answer: QuizAnswersType
   questionComponentProps: CompleteQuestionProps
   usersDataQuery:
-    | FunctionReturnType<typeof api.pvp_quiz.query.parseUsersAnswersIds>
+    | FunctionReturnType<typeof api.online.pvp_quiz.query.parseUsersAnswersIds>
     | null
     | undefined
 }) {

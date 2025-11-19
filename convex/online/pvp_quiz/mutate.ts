@@ -1,8 +1,8 @@
 import type { Doc } from "convex/_generated/dataModel"
 import { ConvexError, v } from "convex/values"
-import { mutation } from "../_generated/server"
-import { getUserIdOrThrow, getUserProfileOrThrow } from "../custom_helpers"
-import { vv } from "../schema"
+import { mutation } from "../../_generated/server"
+import { getUserIdOrThrow, getUserProfileOrThrow } from "../../custom_helpers"
+import { vv } from "../../schema"
 import {
   authUserToAccessQuizOrThrow,
   calcQuizScore,

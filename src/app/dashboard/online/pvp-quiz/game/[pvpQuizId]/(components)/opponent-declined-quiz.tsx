@@ -20,7 +20,7 @@ export default function OpponentDeclinedQuiz({
   quizData: PvpQuizQueryReturnType
 }) {
   const router = useRouter()
-  const deleteQuiz = useMutation(api.pvp_quiz.mutate.deleteQuiz)
+  const deleteQuiz = useMutation(api.online.pvp_quiz.mutate.deleteQuiz)
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-lg">

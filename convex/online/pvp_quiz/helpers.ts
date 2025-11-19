@@ -2,7 +2,7 @@ import { asyncMap } from "convex-helpers"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import type { MutationCtx, QueryCtx } from "convex/_generated/server"
 import { ConvexError, v, type Infer } from "convex/values"
-import { vv } from "../schema"
+import { vv } from "../../schema"
 
 export const quizAnswerValidator = v.object({
   ...vv.doc("answers").fields,
