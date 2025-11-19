@@ -6,14 +6,12 @@ import { BellRing } from "lucide-react"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import { parseConvexError } from "~/lib/utils"
 import InviteItemCard from "./(components)/invite-card"
 
 const title = "Zaproszenia"
-const icon = <BellRing size={pageHeaderWrapperIconSize} />
+const icon = <BellRing />
 
 export default function Page() {
   const { data, isPending, error } = useQuery(

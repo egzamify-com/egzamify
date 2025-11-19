@@ -1,8 +1,6 @@
 import { SquareCheck } from "lucide-react"
 import { Suspense } from "react"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import AllQualificationsList from "~/components/teoria/all-qualification-list"
 
 import { Card, CardContent } from "~/components/ui/card"
@@ -13,7 +11,7 @@ export default function TeoriaPage() {
       title="Egzamin Teoretyczny"
       description="Wybierz kwalifikację i rozpocznij naukę. Dostępne są różne tryby nauki
           i testowania wiedzy."
-      icon={<SquareCheck size={pageHeaderWrapperIconSize} />}
+      icon={<SquareCheck />}
     >
       <div className="container mx-auto px-4 py-8">
         <Suspense fallback={<LoadingGrid />}>

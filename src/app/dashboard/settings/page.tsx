@@ -6,9 +6,7 @@ import type { Doc } from "convex/_generated/dataModel"
 import { Settings, User } from "lucide-react"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import UpdateQualifications from "~/components/settings/update-qualifications"
 import UpdateUsername from "~/components/settings/update-username"
 import {
@@ -30,7 +28,7 @@ export default function SettingsPage() {
     <PageHeaderWrapper
       title="Ustawienia"
       description="Zarządzaj konfiguracją swojego konta."
-      icon={<Settings size={pageHeaderWrapperIconSize} />}
+      icon={<Settings />}
     >
       <div className="bg-background min-h-screen">
         <ProfileSection {...{ user }} />

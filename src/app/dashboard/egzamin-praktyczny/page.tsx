@@ -15,9 +15,7 @@ import EnhancedExamSkeleton, {
   LoadingMore,
 } from "~/components/egzamin-praktyczny/loadings"
 import LoadMoreBtn from "~/components/load-more"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 
 export default function PraktykaPage() {
@@ -49,7 +47,7 @@ export default function PraktykaPage() {
     <PageHeaderWrapper
       title="Egzamin praktyczny"
       description="Przeglądaj dostępne egzaminy praktyczne. Prześlij swoją pracę, błyskawicznie otrzymaj wyniki."
-      icon={<Cpu size={pageHeaderWrapperIconSize} />}
+      icon={<Cpu />}
       isPending={status === "LoadingFirstPage"}
     >
       <PracticalExamsFilters

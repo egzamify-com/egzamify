@@ -1,9 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import type { ReactNode } from "react"
+import { cloneElement, type ReactElement, type ReactNode } from "react"
 import { Skeleton } from "./ui/skeleton"
-export const pageHeaderWrapperIconSize = 40
 
 export default function PageHeaderWrapper({
   children,
@@ -13,7 +12,7 @@ export default function PageHeaderWrapper({
   isPending = false,
 }: {
   children: ReactNode
-  icon?: ReactNode
+  icon?: ReactElement
   title?: string
   description?: string
   isPending?: boolean
@@ -33,7 +32,12 @@ export default function PageHeaderWrapper({
                 </>
               ) : (
                 <>
-                  <div className="flex items-center gap-2 text-sm">{icon}</div>
+                  {icon && (
+                    <div className="flex items-center gap-2 text-sm">
+                      {/* @ts-expect-error fdsjkl  */}
+                      {cloneElement(icon, { size: 40 })}
+                    </div>
+                  )}
                   <div>
                     {title && <h1 className="text-3xl font-bold">{title}</h1>}
                     {description && <p className="mt-1">{description}</p>}

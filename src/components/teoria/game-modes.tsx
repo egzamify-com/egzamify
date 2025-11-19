@@ -13,9 +13,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import { Card } from "~/components/ui/card"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "../page-header-wrapper"
+import PageHeaderWrapper from "../page-header-wrapper"
 
 interface GameModesProps {
   qualificationName: string
@@ -67,7 +65,7 @@ export default function GameModes({ qualificationName }: GameModesProps) {
     <PageHeaderWrapper
       title={`Wybierz tryb gry`}
       description={`${qualificationName}`}
-      icon={<MousePointer2 size={pageHeaderWrapperIconSize} />}
+      icon={<MousePointer2 />}
     >
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

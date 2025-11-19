@@ -8,9 +8,7 @@ import UserExamCard from "~/components/egzamin-praktyczny/history/user-exam-card
 import { UserExamItemSkeleton } from "~/components/egzamin-praktyczny/loadings"
 import FullScreenError from "~/components/full-screen-error"
 import LoadMoreBtn from "~/components/load-more"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import { Button } from "~/components/ui/button"
 
 const title = "Wykonane egzaminy praktyczne"
@@ -49,10 +47,7 @@ export default function Page() {
       />
     )
   return (
-    <PageHeaderWrapper
-      {...{ title, description }}
-      icon={<History size={pageHeaderWrapperIconSize} />}
-    >
+    <PageHeaderWrapper {...{ title, description }} icon={<History />}>
       <div className="flex flex-col gap-6">
         {results.map((userExam) => (
           <UserExamCard

@@ -10,9 +10,7 @@ import { toast } from "sonner"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import DisplayFriendList from "~/components/friends/display-friend-list"
 import Friend from "~/components/friends/friend"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import SpinnerLoading from "~/components/spinner-loading"
 import { Button } from "~/components/ui/button"
 import {
@@ -86,10 +84,7 @@ export default function Page() {
   }
 
   return (
-    <PageHeaderWrapper
-      title="Konfiguracja Pojedynku"
-      icon={<GamepadIcon size={pageHeaderWrapperIconSize} />}
-    >
+    <PageHeaderWrapper title="Konfiguracja Pojedynku" icon={<GamepadIcon />}>
       <div className="flex flex-1 flex-col items-center justify-center">
         <Card className="w-full xl:w-1/2">
           <CardHeader>

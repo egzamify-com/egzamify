@@ -5,9 +5,7 @@ import { useQuery } from "convex/custom_helpers"
 import { usePaginatedQuery } from "convex/react"
 import { History } from "lucide-react"
 import LoadMoreBtn from "~/components/load-more"
-import PageHeaderWrapper, {
-  pageHeaderWrapperIconSize,
-} from "~/components/page-header-wrapper"
+import PageHeaderWrapper from "~/components/page-header-wrapper"
 import {
   OnlineModeCard,
   OnlineModeCardSkeleton,
@@ -42,7 +40,7 @@ export default function Page() {
     <PageHeaderWrapper
       title="Historia aktywności"
       description="Twoja aktywność w trybach online."
-      icon={<History size={pageHeaderWrapperIconSize} />}
+      icon={<History />}
     >
       <div className="flex w-full flex-col items-center justify-center gap-4">
         {results.map((quiz) => {
