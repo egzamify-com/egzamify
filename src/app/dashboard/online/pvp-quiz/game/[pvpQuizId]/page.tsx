@@ -6,7 +6,7 @@ import { useQuery } from "convex/custom_helpers"
 import { useMutation } from "convex/react"
 import type { FunctionReturnType } from "convex/server"
 import { useParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
@@ -30,14 +30,31 @@ export default function Page() {
 
   const deleteQuiz = useMutation(api.online.pvp_quiz.mutate.deleteQuiz)
 
+  const quizDataRef = useRef(pvpQuizQuery.data)
+
+  useEffect(() => {
+    quizDataRef.current = pvpQuizQuery.data
+  }, [pvpQuizQuery.data])
+
   useEffect(() => {
     return () => {
-      void (async () => {
-        if (!pvpQuizQuery.data?._id) return
-        await deleteQuiz({ quizId: pvpQuizQuery.data._id })
-      })()
+      const latestData = quizDataRef.current
+
+      if (!latestData?._id) {
+        console.log("No quiz ID found in ref on unmount.")
+        return
+      }
+
+      if (latestData.status !== "quiz_completed") {
+        console.log(
+          `Deleting quiz ${latestData._id} because status is ${latestData.status} on unmount.`,
+        )
+        void deleteQuiz({ quizId: latestData._id })
+      } else {
+        console.log("Quiz completed, skipping deletion on unmount.")
+      }
     }
-  }, [pvpQuizQuery.data?._id, deleteQuiz])
+  }, [deleteQuiz])
 
   if (pvpQuizQuery.isPending) {
     return <FullScreenLoading />

@@ -149,6 +149,7 @@ export const getOnlineInvites = query({
       .withIndex("by_status", (q) =>
         q.eq("status", "waiting_for_oponent_accept"),
       )
+      .order("desc")
       .collect()
 
     const quizzes = await asyncMap(pendingQuizzes, async (quiz) => {
