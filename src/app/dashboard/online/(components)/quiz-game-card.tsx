@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { cloneElement, type ReactElement, type ReactNode } from "react"
+import SemanticDate from "~/components/semantic-date"
 import { Card } from "~/components/ui/card"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 import { cn } from "~/lib/utils"
@@ -26,6 +27,7 @@ export interface OnlineModeCardProps {
   historyData?: {
     opponentUser: Doc<"users">
     didCurrentUserWon: boolean
+    creationTime: number
   }
 }
 
@@ -96,9 +98,15 @@ export function OnlineModeCard({
                 <h3 className="text-foreground group-hover:text-primary mb-3 text-3xl font-bold text-balance transition-colors">
                   {title}
                 </h3>
-                <p className="text-muted-foreground text-base leading-relaxed">
-                  {description}
-                </p>
+                {historyData ? (
+                  <>
+                    <SemanticDate withIcon date={historyData.creationTime} />
+                  </>
+                ) : (
+                  <p className="text-muted-foreground text-base leading-relaxed">
+                    {description}
+                  </p>
+                )}
               </div>
 
               <div className="border-border/50 flex items-center justify-between border-t pt-4">

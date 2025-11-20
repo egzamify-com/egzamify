@@ -66,6 +66,7 @@ export default function Page() {
                   historyData: {
                     didCurrentUserWon,
                     opponentUser: oppUserToCurrentUser,
+                    creationTime: quiz.quiz._creationTime,
                   },
                   href: `/dashboard/online/pvp-quiz/game/${quiz.quiz._id}`,
                 }}
