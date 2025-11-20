@@ -1,7 +1,6 @@
 import type { api } from "convex/_generated/api"
 import type { QuizAnswersType } from "convex/online/pvp_quiz/helpers"
 import type { FunctionReturnType } from "convex/server"
-import { Check } from "lucide-react"
 import MarkdownRenderer from "~/components/markdown-rendered"
 import { Badge } from "~/components/ui/badge"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
@@ -75,43 +74,38 @@ export default function Answer({
           "border-green-500 bg-green-500/10 text-green-500",
       )}
     >
-      <div
-        className={cn(
-          didCurrentUserSelectThisAnswer &&
-            isThereAnyOtherUserAnswer &&
-            "space-y-2",
-        )}
-      >
-        <div className="flex flex-col items-start justify-start gap-2">
-          {didCurrentUserSelectThisAnswer && (
-            <Badge className="-top-2">{"Twoja odpowiedź"}</Badge>
-          )}
-          <span className="text-foreground text-md leading-relaxed text-pretty">
-            <MarkdownRenderer
-              markdownText={answer.content}
-              textSize="prose-md"
-            />
-          </span>
-        </div>
-        {questionComponentProps.nonInteractive && (
-          <div className={`flex flex-row gap-2`}>
-            {didCurrentUserSelectThisAnswer && currentUserProfile && (
-              <ActivityStatusAvatar userToShow={currentUserProfile} />
-            )}
-
-            {isThereAnyOtherUserAnswer &&
-              listOfOtherUsersThatSelectedThisAnswer.map((item) => (
-                <ActivityStatusAvatar
-                  userToShow={item.userProfile}
-                  key={crypto.randomUUID()}
-                />
-              ))}
+      {didCurrentUserSelectThisAnswer && currentUserProfile && (
+        <Badge className="absolute -top-3 -left-2">{"Twoja odpowiedź"}</Badge>
+      )}
+      <div className={cn(`w-full flex-row items-center justify-center`)}>
+        <div className={`flex w-full flex-row items-center justify-between`}>
+          <div className="flex flex-row items-center justify-center gap-2">
+            <p className="text-xl">{answer.label}</p>
+            <span className="text-foreground text-md leading-relaxed text-pretty">
+              <MarkdownRenderer
+                markdownText={answer.content}
+                textSize="prose-md"
+              />
+            </span>
           </div>
-        )}
-      </div>
-      <div className="flex flex-row gap-2">
-        {shouldShowCorrectAnswer && <Check />}
-        <p>{answer.label}</p>
+          {questionComponentProps.nonInteractive && (
+            <div
+              className={cn(`flex flex-row items-center justify-center gap-2`)}
+            >
+              {didCurrentUserSelectThisAnswer && currentUserProfile && (
+                <ActivityStatusAvatar userToShow={currentUserProfile} />
+              )}
+
+              {isThereAnyOtherUserAnswer &&
+                listOfOtherUsersThatSelectedThisAnswer.map((item) => (
+                  <ActivityStatusAvatar
+                    userToShow={item.userProfile}
+                    key={crypto.randomUUID()}
+                  />
+                ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

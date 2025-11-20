@@ -1,5 +1,6 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
+import type { QuizGameState } from "convex/online/pvp_quiz/helpers"
 import type { FunctionReturnType } from "convex/server"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import FullScreenError from "~/components/full-screen-error"
@@ -10,14 +11,15 @@ import type { PvpQuizQueryReturnType } from "../../page"
 import CompleteQuestion, {
   type CompleteQuestionPlayerData,
 } from "../quiz-game/complete-question-card/complete-question"
-import { transformQuizDataToQuizState } from "../quiz-game/quiz-game"
 import QuizCompletedResultHeader from "./quiz-completed-result-header"
 import { QuizCompletedPlayerStatsCard } from "./quiz-completed-user-card"
 
 export default function QuizCompleted({
   quizData,
+  quizGameState,
 }: {
-  quizData: PvpQuizQueryReturnType
+  quizData: PvpQuizQueryReturnType["quizData"]
+  quizGameState: QuizGameState
 }) {
   const { data, isPending, error } = useQuery(
     api.online.pvp_quiz.query.getUsersFromQuiz,
@@ -71,7 +73,7 @@ export default function QuizCompleted({
           </div>
         </div>
         <div className="flex w-full flex-col items-center justify-start gap-8">
-          {transformQuizDataToQuizState(quizData).map((questionItem, index) => {
+          {quizGameState.map((questionItem, index) => {
             const { answers, ...question } = questionItem
 
             const { currentUserQuizData, otherUserQuizData } = calcRoles(
@@ -114,7 +116,7 @@ export default function QuizCompleted({
 
 function calcRoles(
   data: FunctionReturnType<typeof api.online.pvp_quiz.query.getUsersFromQuiz>,
-  quizData: PvpQuizQueryReturnType,
+  quizData: PvpQuizQueryReturnType["quizData"],
 ) {
   let currentUserQuizData: CompleteQuestionPlayerData = {
     userProfile: data.currentUser,

@@ -17,7 +17,7 @@ import type { PvpQuizQueryReturnType } from "../page"
 export default function OpponentDeclinedQuiz({
   quizData,
 }: {
-  quizData: PvpQuizQueryReturnType
+  quizData: PvpQuizQueryReturnType["quizData"]
 }) {
   const router = useRouter()
   const deleteQuiz = useMutation(api.online.pvp_quiz.mutate.deleteQuiz)

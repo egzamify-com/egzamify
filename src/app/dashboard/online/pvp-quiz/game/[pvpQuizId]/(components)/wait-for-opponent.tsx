@@ -17,7 +17,7 @@ import type { PvpQuizQueryReturnType } from "../page"
 export default function WaitForOpponent({
   quizData,
 }: {
-  quizData: PvpQuizQueryReturnType
+  quizData: PvpQuizQueryReturnType["quizData"]
 }) {
   const router = useRouter()
   const playerData = quizData.opponentUser

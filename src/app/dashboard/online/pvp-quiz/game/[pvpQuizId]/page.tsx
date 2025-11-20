@@ -30,11 +30,11 @@ export default function Page() {
 
   const deleteQuiz = useMutation(api.online.pvp_quiz.mutate.deleteQuiz)
 
-  const quizDataRef = useRef(pvpQuizQuery.data)
+  const quizDataRef = useRef(pvpQuizQuery.data?.quizData)
 
   useEffect(() => {
-    quizDataRef.current = pvpQuizQuery.data
-  }, [pvpQuizQuery.data])
+    quizDataRef.current = pvpQuizQuery.data?.quizData
+  }, [pvpQuizQuery.data?.quizData])
 
   useEffect(() => {
     return () => {
@@ -73,16 +73,36 @@ export default function Page() {
     <PageHeaderWrapper>
       <div>
         {(() => {
-          switch (pvpQuizQuery.data.status) {
+          switch (pvpQuizQuery.data.quizData.status) {
             case "waiting_for_oponent_accept":
-              return <WaitForOpponent {...{ quizData: pvpQuizQuery.data }} />
+              return (
+                <WaitForOpponent
+                  {...{ quizData: pvpQuizQuery.data.quizData }}
+                />
+              )
             case "quiz_pending":
-              return <QuizGame {...{ quizData: pvpQuizQuery.data }} />
+              return (
+                <QuizGame
+                  {...{
+                    quizData: pvpQuizQuery.data.quizData,
+                    quizGameStateInitial: pvpQuizQuery.data.quizGameState,
+                  }}
+                />
+              )
             case "quiz_completed":
-              return <QuizCompleted {...{ quizData: pvpQuizQuery.data }} />
+              return (
+                <QuizCompleted
+                  {...{
+                    quizData: pvpQuizQuery.data.quizData,
+                    quizGameState: pvpQuizQuery.data.quizGameState,
+                  }}
+                />
+              )
             case "opponent_declined":
               return (
-                <OpponentDeclinedQuiz {...{ quizData: pvpQuizQuery.data }} />
+                <OpponentDeclinedQuiz
+                  {...{ quizData: pvpQuizQuery.data.quizData }}
+                />
               )
           }
         })()}

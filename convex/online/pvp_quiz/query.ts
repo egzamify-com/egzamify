@@ -3,7 +3,12 @@ import { ConvexError, v, type Infer } from "convex/values"
 import { query, type QueryCtx } from "../../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow } from "../../custom_helpers"
 import { vv } from "../../schema"
-import { authUserToAccessQuizOrThrow, getQuizOrThrow } from "./helpers"
+import {
+  authUserToAccessQuizOrThrow,
+  getQuizOrThrow,
+  type QuizAnswersType,
+  type QuizGameState,
+} from "./helpers"
 
 export const getPvpQuiz = query({
   args: { pvpQuizId: v.id("pvpQuizzes") },
@@ -49,12 +54,35 @@ export const getPvpQuiz = query({
 
     const quizQualification = await ctx.db.get(quiz.quizQualificationId)
 
-    return {
+    const quizData = {
       ...quiz,
       quizQuestions: quizQuestions.filter((a) => a !== null),
       quizQualification,
       creatorUser,
       opponentUser,
+    }
+
+    function transformQuizDataToQuizState(): QuizGameState {
+      return quizData.quizQuestions.map((question) => {
+        const transformedAnswers: QuizAnswersType[] = question.answers.map(
+          (answer, index) => {
+            return {
+              ...answer,
+              isSelected: index === 0 ? true : false,
+            }
+          },
+        )
+        console.log("transform had to run")
+        return {
+          ...question,
+          answers: transformedAnswers,
+        }
+      })
+    }
+
+    return {
+      quizData,
+      quizGameState: transformQuizDataToQuizState(),
     }
   },
 })

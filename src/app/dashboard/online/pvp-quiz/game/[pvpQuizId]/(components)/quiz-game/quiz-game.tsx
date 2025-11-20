@@ -25,12 +25,13 @@ import QuizSubmitted from "./quiz-submitted"
 
 export default function QuizGame({
   quizData,
+  quizGameStateInitial,
 }: {
-  quizData: PvpQuizQueryReturnType
+  quizData: PvpQuizQueryReturnType["quizData"]
+  quizGameStateInitial: QuizGameState
 }) {
-  const [quizGameState, setQuizGameState] = useState<QuizGameState>(
-    transformQuizDataToQuizState(quizData),
-  )
+  const [quizGameState, setQuizGameState] =
+    useState<QuizGameState>(quizGameStateInitial)
   const submitQuiz = useMutation(api.online.pvp_quiz.mutate.submitQuiz)
   const [submitStatus, setSubmitStatus] = useState<
     "pending" | "submitted" | "idle"
@@ -144,23 +145,4 @@ export default function QuizGame({
       </Card>
     </PageHeaderWrapper>
   )
-}
-
-export function transformQuizDataToQuizState(
-  quizData: PvpQuizQueryReturnType,
-): QuizGameState {
-  return quizData.quizQuestions.map((question) => {
-    const transformedAnswers: QuizAnswersType[] = question.answers.map(
-      (answer, index) => {
-        return {
-          ...answer,
-          isSelected: index === 0 ? true : false,
-        }
-      },
-    )
-    return {
-      ...question,
-      answers: transformedAnswers,
-    }
-  })
 }
