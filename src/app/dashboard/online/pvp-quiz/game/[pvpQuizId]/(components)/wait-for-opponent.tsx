@@ -29,7 +29,7 @@ export default function WaitForOpponent({
         <Card className="relative overflow-hidden border-2 shadow-xl">
           <div className="from-primary/5 via-primary/10 to-primary/5 pointer-events-none absolute inset-0 animate-pulse bg-gradient-to-r" />
 
-          <CardHeader className="relative z-10 text-center">
+          <CardHeader className="relative text-center">
             <div className="flex justify-center">
               <div className="flex flex-col items-center justify-center gap-2">
                 <ActivityStatusAvatar userToShow={playerData} size={80} />
@@ -47,12 +47,13 @@ export default function WaitForOpponent({
               <p className="text-muted-foreground">{playerData.username}</p>
             </CardTitle>
             <CardDescription className="text-base text-pretty">
-              Wyslano zaproszenie do wspolnego quizu. Poczekaj na zaakceptowanie
-              zaproszenia przez przecinika.
+              {
+                "Wyslano zaproszenie do wspólnego quizu. Poczekaj na zaakceptowanie zaproszenia przez przeciwnika."
+              }
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="relative z-10 space-y-4">
+          <CardContent className="relative space-y-4">
             <div className="space-y-3 rounded-lg bg-transparent p-4">
               <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-semibold tracking-wide uppercase">
                 <InfoIcon className="h-4 w-4" />
@@ -95,11 +96,6 @@ export default function WaitForOpponent({
               <X className="mr-1 h-4 w-4" />
               Anuluj Quiz
             </Button>
-
-            <p className="text-muted-foreground text-center text-xs">
-              Poinformujemy cie gdy przeciwnik przyjmie zaproszenie, mozesz
-              bezpiecznie opuscic ta strone.
-            </p>
           </CardContent>
         </Card>
       </div>
