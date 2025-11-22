@@ -56,58 +56,72 @@ export const getQualificationsList = query({
     }
   },
 })
+//fisher yates shuffle do tablicy
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffledArray = [...array]
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
 
-export const getQuestionsByQualification = query({
-  args: { qualificationName: v.string() },
+    ;[shuffledArray[i]!, shuffledArray[j]!] = [
+      shuffledArray[j]!,
+      shuffledArray[i]!,
+    ]
+  }
+  return shuffledArray
+}
+
+export const getTestQuestions = query({
+  args: {
+    qualificationName: v.string(),
+    numberOfQuestions: v.optional(v.number()),
+    _refreshKey: v.optional(v.number()),
+  },
   handler: async (ctx, args) => {
-    const { qualificationName } = args
+    const { qualificationName, numberOfQuestions } = args
+    const questionsLimit = numberOfQuestions ?? 40
 
     const qualificationId = await getQualificationIdFromNameOrThrow(
       ctx,
       qualificationName,
     )
 
-    const questions = await ctx.db
+    const allQuestions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
         q.eq("qualificationId", qualificationId),
       )
       .collect()
 
-    const questionsWithAnswers = await Promise.all(
-      questions.map(async (question) => {
+    if (allQuestions.length === 0) {
+      return { questions: [] }
+    }
+
+    const shuffledQuestions = shuffleArray(allQuestions)
+    const selectedQuestions = shuffledQuestions.slice(0, questionsLimit)
+
+    const questionsWithDetails = await Promise.all(
+      selectedQuestions.map(async (question) => {
         const answers = await ctx.db
           .query("answers")
           .withIndex("by_question", (q) => q.eq("questionId", question._id))
           .collect()
 
-        // Sortuj odpowiedzi według label
         const sortedAnswers = answers.sort((a, b) =>
           a.label.localeCompare(b.label),
         )
 
         return {
-          id: question._id,
-          question: question.content,
-          answers: sortedAnswers.map((answer) => answer.content),
-          correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
-          explanation: question.explanation,
-          year: question.year,
-          imageUrl: question.attachmentId,
-          answerLabels: sortedAnswers.map((answer) => answer.label),
+          question: question,
+          answers: sortedAnswers,
+          correctAnswerIndex: sortedAnswers.findIndex(
+            (answer) => answer.isCorrect,
+          ),
         }
       }),
     )
 
-    // Sortuj pytania według daty utworzenia
-    questionsWithAnswers.sort((a, b) => {
-      const aTime = questions.find((q) => q._id === a.id)?._creationTime ?? 0
-      const bTime = questions.find((q) => q._id === b.id)?._creationTime ?? 0
-      return aTime - bTime
-    })
-
     return {
-      questions: questionsWithAnswers,
+      questions: questionsWithDetails,
     }
   },
 })
@@ -115,7 +129,7 @@ export const getQuestionsByQualification = query({
 export const getRandomQuestion = query({
   args: {
     qualificationName: v.string(),
-    _refreshKey: v.optional(v.number()), // Parametr do wymuszania nowego zapytania
+    _refreshKey: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const { qualificationName } = args
@@ -135,11 +149,9 @@ export const getRandomQuestion = query({
       return { question: null }
     }
 
-    // Wybierz losowe pytanie
     const randomIndex = Math.floor(Math.random() * questions.length)
     const randomQuestion = questions[randomIndex]
 
-    // DODAJ SPRAWDZENIE - to rozwiąże błąd TypeScript
     if (!randomQuestion) {
       return { question: null }
     }
@@ -149,7 +161,6 @@ export const getRandomQuestion = query({
       .withIndex("by_question", (q) => q.eq("questionId", randomQuestion._id))
       .collect()
 
-    // Sortuj odpowiedzi według label
     const sortedAnswers = answers.sort((a, b) => a.label.localeCompare(b.label))
 
     return {
@@ -191,12 +202,10 @@ export const getBrowseQuestions = query({
       )
       .collect()
 
-    // Filtruj po roku jeśli podano
     if (year) {
       questions = questions.filter((q) => q.year === year)
     }
 
-    // Filtruj po tekście jeśli podano
     if (search && search.trim() !== "") {
       const searchLower = search.toLowerCase()
       questions = questions.filter((q) =>
@@ -204,10 +213,8 @@ export const getBrowseQuestions = query({
       )
     }
 
-    // Sortuj według daty utworzenia (najnowsze pierwsze)
     questions.sort((a, b) => (b._creationTime ?? 0) - (a._creationTime ?? 0))
 
-    // Paginacja
     const paginatedQuestions = questions.slice(offset, offset + limit)
 
     const questionsWithAnswers = await Promise.all(
@@ -217,7 +224,6 @@ export const getBrowseQuestions = query({
           .withIndex("by_question", (q) => q.eq("questionId", question._id))
           .collect()
 
-        // Sortuj odpowiedzi według label
         const sortedAnswers = answers.sort((a, b) =>
           a.label.localeCompare(b.label),
         )
