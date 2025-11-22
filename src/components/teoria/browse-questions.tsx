@@ -21,7 +21,6 @@ export default function BrowseQuestions({
   )
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
 
-  // Pobieranie pytań z Convex
   const questionsData = useQuery(api.teoria.query.getBrowseQuestions, {
     qualificationName,
     search: searchTerm || undefined,
@@ -29,7 +28,6 @@ export default function BrowseQuestions({
     limit: 100,
   })
 
-  // Pobieranie statystyk
   const statsData = useQuery(api.teoria.query.getQuestionsStats, {
     qualificationName,
   })
@@ -75,7 +73,7 @@ export default function BrowseQuestions({
             <div className="relative">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
-                ///notka do naprawy
+                ///notka do naprawy dzieki za notke
                 placeholder="Szukaj pytań..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -116,7 +114,6 @@ export default function BrowseQuestions({
           </CardContent>
         </Card>
 
-        {/* Statystyki */}
         <div className="mb-6">
           <div className="text-muted-foreground flex items-center gap-4 text-sm">
             <span>
@@ -140,7 +137,6 @@ export default function BrowseQuestions({
           </div>
         </div>
 
-        {/* Lista pytań */}
         <div className="space-y-4">
           {questions.map((question) => (
             <Card key={question.id} className="overflow-hidden">
@@ -217,7 +213,6 @@ export default function BrowseQuestions({
           ))}
         </div>
 
-        {/* Brak danych */}
         {questions.length === 0 && (
           <Card>
             <CardContent className="py-12 text-center">
@@ -242,7 +237,6 @@ export default function BrowseQuestions({
           </Card>
         )}
 
-        {/* Powrót */}
         <div className="mt-8 text-center">
           <Button onClick={() => window.history.back()} variant="outline">
             Powrót do trybów gry
