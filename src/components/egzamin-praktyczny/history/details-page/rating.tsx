@@ -23,7 +23,7 @@ export function ExamRating({
           <CardTitle className="text-center text-3xl font-bold">
             Ocena egzaminu
           </CardTitle>
-          <CardDescription className="mt-2 text-center">
+          <CardDescription className="text-center">
             {`Oto szczegółowe zestawienie Twoich wyników.`}
           </CardDescription>
         </CardHeader>
@@ -33,8 +33,8 @@ export function ExamRating({
           {aiRating?.details ? (
             <RequirementsTable aiRating={userExam.aiRating} />
           ) : (
-            <div className="flex items-center justify-center rounded-lg border p-5">
-              <h1 className="">
+            <div className="flex items-center justify-center rounded-lg p-5">
+              <h1 className="font-semibold">
                 Kup kompletną ocenę AI, aby zapoznać się ze szczegółowymi
                 wymaganiami.
               </h1>

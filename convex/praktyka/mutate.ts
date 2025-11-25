@@ -13,10 +13,26 @@ export const startExam = mutation({
       examId: examId,
       status: "user_pending",
       userId: userId,
+      wasSeenByUser: false,
     })
   },
 })
+export const updateUserExamData = mutation({
+  args: {
+    userExamId: v.id("usersPracticalExams"),
+    submittedAt: v.optional(v.number()),
+  },
+  handler: async (ctx, { userExamId, submittedAt }) => {
+    const userId = await getUserIdOrThrow(ctx)
 
+    const userExam = await ctx.db.get(userExamId)
+    if (!userExam) throw new ConvexError("Nie znaleziono twojego egzaminu")
+    if (userExam.userId !== userId)
+      throw new ConvexError("Nie masz dostępu do tego egzaminu")
+
+    await ctx.db.patch(userExamId, { submittedAt: submittedAt })
+  },
+})
 export const updateUserExamStatus = mutation({
   args: {
     userExamId: v.id("usersPracticalExams"),
@@ -120,5 +136,14 @@ export const saveRatingData = mutation({
     await ctx.db.patch(userExamId, {
       aiRating: ratingData,
     })
+  },
+})
+
+export const markExamAsSeen = mutation({
+  args: {
+    userExamId: v.id("usersPracticalExams"),
+  },
+  handler: async (ctx, { userExamId }) => {
+    return await ctx.db.patch(userExamId, { wasSeenByUser: true })
   },
 })

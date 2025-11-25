@@ -21,10 +21,12 @@ export default function UserExamBadges({
         stat={userExam.baseExam.examDate}
         icon={<Calendar size={18} />}
       />
-      <ExamBadge
-        stat={<SemanticDate date={userExam._creationTime} color="foreground" />}
-        icon={<Calendar size={18} />}
-      />
+      {userExam.submittedAt && (
+        <ExamBadge
+          stat={<SemanticDate date={userExam.submittedAt} color="foreground" />}
+          icon={<Calendar size={18} />}
+        />
+      )}
       <ExamBadge
         stat={`${userExam.aiRating?.score}/${userExam.baseExam.maxPoints}`}
         icon={<Check size={18} />}

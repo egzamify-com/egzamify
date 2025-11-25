@@ -1,12 +1,14 @@
 "use client"
 
 import { api } from "convex/_generated/api"
+import { useQuery } from "convex/custom_helpers"
 import { useMutation } from "convex/react"
-import { Gem } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import type Stripe from "stripe"
 import { createStripeCheckout } from "~/actions/stripe/create-stripe-checkout"
+import CreditIcon from "~/components/credit-icon"
 import SpinnerLoading from "~/components/spinner-loading"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
@@ -24,6 +26,8 @@ export default function Product({
     }
   }
 }) {
+  const router = useRouter()
+  const currentUser = useQuery(api.users.query.getCurrentUser)
   const popular = product.metadata.popular
   const [quantity, setQuantity] = useState(1)
   const [mutationPending, setMutationPending] = useState(false)
@@ -31,6 +35,7 @@ export default function Product({
     api.payments.mutate.updatePendingCredits,
   )
   const stripePromise = useStripe()
+
   async function handleCheckout() {
     console.log("[STRIPE] Checkout handler started")
     setMutationPending(true)
@@ -39,13 +44,20 @@ export default function Product({
     )
     if (checkoutIdErr) {
       console.error("[STRIPE] Error creating checkout session", checkoutIdErr)
-      toast.error("Failed to create checkout session, please try again")
+      if (!currentUser.data) {
+        router.push("/sign-in")
+      } else {
+        toast.error("Nie udalo sie zakupić produktu, przepraszamy!")
+      }
+      setMutationPending(false)
       return
     }
+
     const stripe = await stripePromise()
+
     if (!stripe) {
       console.error("[STRIPE] Stripe on client not initialized")
-      toast.error("Failed to create checkout session, please try again")
+      toast.error("Nie udalo sie zakupić produktu, przepraszamy!")
       return
     }
 
@@ -56,7 +68,7 @@ export default function Product({
     )
     if (err) {
       console.error("[STRIPE] Error creating checkout session", err)
-      toast.error("Failed to create checkout session, please try again")
+      toast.error("Nie udalo sie zakupić produktu, przepraszamy!")
       return
     }
     console.log("[STRIPE] storing pending credits")
@@ -66,6 +78,7 @@ export default function Product({
     setMutationPending(false)
     console.log("[STRIPE] redirected user to stripe checkout")
   }
+
   return (
     <Card
       key={crypto.randomUUID()}
@@ -91,9 +104,9 @@ export default function Product({
           )}
         </CardTitle>
         <div className="mt-2 flex items-baseline justify-center gap-1">
-          <span className="text-primary flex flex-row items-center justify-center gap-2 text-4xl font-bold">
-            <Gem className="h-9 w-9" />
-            {parseInt(product.name) * quantity}
+          <span className="text-primary flex flex-row items-center justify-center gap-2 text-3xl font-bold">
+            <CreditIcon />
+            {product.name}
           </span>
         </div>
         <div className="text-accent-foreground mt-2 text-xl font-semibold">

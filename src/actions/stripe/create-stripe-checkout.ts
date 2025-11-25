@@ -10,6 +10,10 @@ export async function createStripeCheckout(
   product: Stripe.Product,
   quantity: number,
 ) {
+  if (!product.metadata.credit_amount) {
+    console.error("[STRIPE] Brak danych o produkcie")
+    throw new Error("Brak danych o produkcie!")
+  }
   const user = await getNextjsUserOrThrow()
   console.log("[STRIPE] Started reating new checkout for - ", user._id)
 
@@ -48,7 +52,8 @@ export async function createStripeCheckout(
   const randomUUID = crypto.randomUUID()
   const checkoutMetadata = {
     mySessionId: randomUUID,
-    creditsPurchased: quantity * parseInt(product.name),
+    // creditsPurchased: quantity * parseInt(product.name),
+    creditsPurchased: quantity * parseInt(product.metadata.credit_amount),
   }
 
   const checkout = await stripe.checkout.sessions.create({

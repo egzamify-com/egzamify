@@ -5,7 +5,7 @@ import type { Id } from "convex/_generated/dataModel"
 import { useQuery } from "convex/custom_helpers"
 import { useMutation } from "convex/react"
 import Link from "next/link"
-import { use } from "react"
+import { use, useEffect } from "react"
 import AttachmentsCard from "~/components/egzamin-praktyczny/details-page/attachments/attachments-card"
 import { Instructions } from "~/components/egzamin-praktyczny/details-page/instructions"
 import UserExamCheckHeader from "~/components/egzamin-praktyczny/history/details-page/header"
@@ -14,6 +14,7 @@ import { ExamLoadingScreen } from "~/components/egzamin-praktyczny/history/detai
 import { MainContentLoading } from "~/components/egzamin-praktyczny/loadings"
 import FullScreenError from "~/components/full-screen-error"
 import { Button } from "~/components/ui/button"
+import { parseConvexError } from "~/lib/utils"
 
 export default function PraktykaPage({
   params,
@@ -29,15 +30,18 @@ export default function PraktykaPage({
   } = useQuery(api.praktyka.query.getUserExamDetails, {
     userExamId,
   })
+  const markAsSeen = useMutation(api.praktyka.mutate.markExamAsSeen)
   const updateStatus = useMutation(api.praktyka.mutate.updateUserExamStatus)
 
-  if (isError)
-    return (
-      <FullScreenError
-        errorMessage="Wystąpił nieoczekiwany problem."
-        errorDetail={error.message}
-      />
-    )
+  useEffect(() => {
+    void (async () => {
+      if (userExam?.status === "done") {
+        await markAsSeen({ userExamId: userExamId })
+      }
+    })()
+  }, [userExamId, markAsSeen, userExam])
+
+  if (isError) return <FullScreenError errorDetail={parseConvexError(error)} />
 
   if (!isPending && !userExam)
     return <FullScreenError errorMessage="Nie udało się pobrać wyników." />

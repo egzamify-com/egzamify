@@ -159,12 +159,25 @@ export const getLatestUserPendingExam = query({
     const latestPendingUserExam = await ctx.db
       .query("usersPracticalExams")
       .withIndex("by_user_id", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("status"), "ai_pending"))
+      .filter((q) =>
+        q.or(
+          q.eq(q.field("status"), "ai_pending"),
+          q.eq(q.field("status"), "parsing_exam"),
+          q.eq(q.field("status"), "done"),
+        ),
+      )
       .order("desc")
       .collect()
 
-    const exams = await asyncMap(latestPendingUserExam, async (userExam) => {
-      const baseExam = await getExamDetailsFunc(userExam.examId, ctx)
+    const filtered = latestPendingUserExam.filter((a) => !a.wasSeenByUser)
+
+    const exams = await asyncMap(filtered, async (userExam) => {
+      const baseExam = await ctx.db
+        .query("basePracticalExams")
+        .withIndex("by_id", (q) => q.eq("_id", userExam.examId))
+        .first()
+
+      if (!baseExam) throw new ConvexError("Nie znaleziono egzaminu")
 
       return {
         ...userExam,

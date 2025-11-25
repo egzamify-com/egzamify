@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
+import CreditIcon from "./credit-icon"
 import { Button } from "./ui/button"
 
 export default function GetCreditsAlert({ children }: { children: ReactNode }) {
@@ -28,11 +29,11 @@ export default function GetCreditsAlert({ children }: { children: ReactNode }) {
         </div>
 
         <AlertDialogHeader className="relative">
-          <div className="mb-4 flex justify-center">
+          <div className="mb-0 flex justify-center">
             <div className="relative">
               <div className="bg-primary/20 absolute inset-0 animate-pulse rounded-full blur-xl" />
-              <div className="from-primary to-primary/80 animate-bounce-slow relative rounded-full bg-gradient-to-br p-4">
-                <Sparkles className="text-primary-foreground h-8 w-8" />
+              <div className="from-primary to-primary/80 animate-bounce-slow relative rounded-full bg-gradient-to-br">
+                <CreditIcon className="h-12 w-12" />
               </div>
             </div>
           </div>
@@ -56,7 +57,10 @@ export default function GetCreditsAlert({ children }: { children: ReactNode }) {
 
           <Link href="/pricing" className="sm:flex-1">
             <AlertDialogAction className="w-full" asChild>
-              <Button>Kup kredyty</Button>
+              <Button>
+                <CreditIcon flipTheme className="h-5 w-5" />
+                Kup kredyty
+              </Button>
             </AlertDialogAction>
           </Link>
         </AlertDialogFooter>

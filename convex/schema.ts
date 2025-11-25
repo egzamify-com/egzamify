@@ -137,6 +137,8 @@ const schema = defineSchema({
     userId: v.id("users"),
     examId: v.id("basePracticalExams"),
     attachments: v.optional(practicalExamAttachmentValidator),
+    submittedAt: v.optional(v.number()),
+    wasSeenByUser: v.optional(v.boolean()),
     status: v.union(
       v.literal("user_pending"),
       v.literal("parsing_exam"),

@@ -24,7 +24,7 @@ export default function AttachmentItem({
 
   return (
     <div className="grid gap-4">
-      <div className="flex items-center rounded-lg border p-4 transition-colors">
+      <div className="flex items-center rounded-lg border p-4 py-2 transition-colors">
         <div className="flex flex-1 flex-row items-center justify-start gap-2">
           <h4 className="font-medium">{attachmentName}</h4>
         </div>

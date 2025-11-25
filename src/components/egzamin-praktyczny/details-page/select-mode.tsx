@@ -1,7 +1,8 @@
-import { Check, CircleDot } from "lucide-react"
+import { Check } from "lucide-react"
 import type { Dispatch, SetStateAction } from "react"
 import type { PracticalExamCheckMode } from "~/actions/request-practical-exam-check-action"
 import { APP_CONFIG } from "~/APP_CONFIG"
+import CreditIcon from "~/components/credit-icon"
 import { Card } from "~/components/ui/card"
 import { Label } from "~/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
@@ -18,7 +19,7 @@ export default function SelectMode({
       <div className="mx-auto">
         <div className="mb-4">
           <h1 className="mb-2 flex flex-row items-center justify-start gap-1 font-semibold">
-            <CircleDot className="mr-2 h-5 w-5" /> Wybierz tryb sprawdzenia AI
+            <CreditIcon className="mr-2 h-5 w-5" /> Wybierz tryb sprawdzenia AI
           </h1>
           <p className="text-muted-foreground text-sm">
             Wybierz tryb, który bardziej ci odpowiada.
@@ -99,14 +100,12 @@ function ModeCard({
 
           <div className="mt-auto flex flex-row items-center justify-between">
             <div>
-              <div className="flex items-baseline gap-1">
+              <div className="flex items-baseline items-center gap-2">
+                <CreditIcon />
                 <span className="text-foreground text-3xl font-bold">
                   {mode === "complete"
                     ? APP_CONFIG.practicalExamRating.completePrice
                     : APP_CONFIG.practicalExamRating.standardPrice}
-                </span>
-                <span className="text-muted-foreground font-medium">
-                  credits
                 </span>
               </div>
 

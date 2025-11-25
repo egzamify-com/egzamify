@@ -31,6 +31,15 @@ export async function requestPracticalExamCheck(
     await updateUserExamStatus(userExamId, "parsing_exam")
     infoLogger("Updated user exam status to parsing_exam")
 
+    // await new Promise((resolve) => setTimeout(resolve, 5000))
+    // console.log("after promise")
+    //
+    // await updateUserExamData(userExamId, Date.now())
+    // console.log("updates state at submiteed at")
+    // await updateUserExamStatus(userExamId, "done")
+    // console.log("updates state status to done")
+    // return 0
+
     const userExam = await getUserExamDetails(userExamId)
     infoLogger(`Fetched user exam - ${userExam._id}`)
 
@@ -110,6 +119,9 @@ export async function requestPracticalExamCheck(
 
     await updateUserExamStatus(userExamId, "done")
     infoLogger("updated user exam status")
+
+    await updateUserExamData(userExamId, Date.now())
+    infoLogger("updated user exam state with submitted at value")
   } catch (e) {
     console.error("[EXAM CHECK] Error occured, refunding credits ", e)
     await refundCredits(getModePrice(mode))
@@ -119,6 +131,7 @@ export async function requestPracticalExamCheck(
     infoLogger("Updated status to unknown_error_credits_refunded")
   }
 }
+
 function getModePrice(mode: PracticalExamCheckMode) {
   switch (mode) {
     case "standard":
@@ -128,6 +141,21 @@ function getModePrice(mode: PracticalExamCheckMode) {
   }
 }
 
+async function updateUserExamData(
+  userExamId: Id<"usersPracticalExams">,
+  submittedAt: number,
+) {
+  await fetchMutation(
+    api.praktyka.mutate.updateUserExamData,
+    {
+      userExamId,
+      submittedAt,
+    },
+    {
+      token: await convexAuthNextjsToken(),
+    },
+  )
+}
 async function updateUserExamStatus(
   userExamId: Id<"usersPracticalExams">,
   newStatus: Doc<"usersPracticalExams">["status"],

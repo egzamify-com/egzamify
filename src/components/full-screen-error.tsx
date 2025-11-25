@@ -4,7 +4,7 @@ import { OctagonX, RotateCcw, TriangleAlert } from "lucide-react"
 import { Button } from "./ui/button"
 
 export default function FullScreenError({
-  errorMessage = "Unexpected error occurred",
+  errorMessage = "Coś poszło nie tak.",
   errorDetail = "",
   actionButton,
   type = "error",

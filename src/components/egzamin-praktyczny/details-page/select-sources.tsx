@@ -3,7 +3,7 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import type { BaseExam, UserExam } from "convex/praktyka/helpers"
-import { Files, Gem } from "lucide-react"
+import { Files } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -12,6 +12,7 @@ import {
   type PracticalExamCheckMode,
 } from "~/actions/request-practical-exam-check-action"
 import { APP_CONFIG } from "~/APP_CONFIG"
+import CreditIcon from "~/components/credit-icon"
 import FullScreenError from "~/components/full-screen-error"
 import GetCreditsAlert from "~/components/get-credits-alert"
 import SpinnerLoading from "~/components/spinner-loading"
@@ -126,7 +127,8 @@ export default function SelectSources({
 function SubmitButtonContent() {
   return (
     <>
-      <Gem /> Sprawdź swoją prace z AI
+      <CreditIcon className="h-5 w-5" flipTheme />
+      <p>Sprawdź swoją prace z AI</p>
     </>
   )
 }

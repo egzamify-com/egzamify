@@ -14,12 +14,12 @@ export default function SummaryAndScore({
   return (
     <div className="grid items-start gap-6 md:grid-cols-2">
       <div className="space-y-2">
-        <h3 className="text-xl font-semibold">Podsumowanie wyniku</h3>
+        <h3 className="text-xl font-semibold">Podsumowanie</h3>
         <p className="text-muted-foreground leading-relaxed">
           {aiRating?.summary}
         </p>
       </div>
-      <div className="flex flex-col items-center justify-center rounded-lg p-4 shadow-sm">
+      <div className="flex flex-col items-center justify-center rounded-lg p-4">
         <div className="text-primary text-5xl font-extrabold">
           {aiRating?.score && (
             <p>{parseExamScore(aiRating.score, baseExam.maxPoints)}</p>
