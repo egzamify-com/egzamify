@@ -19,7 +19,7 @@ type AppConfig = {
     practicalExam: {
       pracitcalExamCheck: {
         checkCompleted: {
-          name: "checkCompleted"
+          name: "practicalExamCheckCompleted"
           type: "standard" | "complete"
         }
       }
@@ -108,7 +108,7 @@ export const APP_CONFIG: AppConfig = {
     practicalExam: {
       pracitcalExamCheck: {
         checkCompleted: {
-          name: "checkCompleted",
+          name: "practicalExamCheckCompleted",
           type: "standard",
         },
       },

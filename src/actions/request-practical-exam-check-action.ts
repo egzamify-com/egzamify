@@ -11,8 +11,9 @@ import type { Infer } from "convex/values"
 import mime from "mime"
 import { z } from "zod/v4"
 import { APP_CONFIG } from "~/APP_CONFIG"
+import { capturePracticalExamCheck } from "~/lib/posthog-server"
 import { getFileUrl } from "~/lib/utils"
-import { chargeCredits, refundCredits } from "./actions"
+import { chargeCredits, getNextjsUserOrThrow, refundCredits } from "./actions"
 
 export type PracticalExamCheckMode = "standard" | "complete"
 
@@ -20,6 +21,7 @@ export async function requestPracticalExamCheck(
   userExamId: Id<"usersPracticalExams">,
   mode: "standard" | "complete",
 ) {
+  const currentUser = await getNextjsUserOrThrow()
   const gotCharged = await chargeCredits(getModePrice(mode))
 
   if (!gotCharged) {
@@ -122,13 +124,25 @@ export async function requestPracticalExamCheck(
 
     await updateUserExamData(userExamId, Date.now())
     infoLogger("updated user exam state with submitted at value")
-  } catch (e) {
-    console.error("[EXAM CHECK] Error occured, refunding credits ", e)
+
+    await capturePracticalExamCheck(
+      { type: mode, result: "success" },
+      currentUser,
+    )
+  } catch (error) {
+    console.error("[EXAM CHECK] Error occured, refunding credits ", error)
     await refundCredits(getModePrice(mode))
     infoLogger("Refunded credits")
 
     await updateUserExamStatus(userExamId, "unknown_error_credits_refunded")
     infoLogger("Updated status to unknown_error_credits_refunded")
+
+    if (error instanceof Error) {
+      await capturePracticalExamCheck(
+        { type: mode, result: "error", errorCouse: error.message },
+        currentUser,
+      )
+    }
   }
 }
 
