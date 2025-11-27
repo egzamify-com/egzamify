@@ -21,8 +21,20 @@ export const getTheoryUserByEmail = query({
 })
 
 export const getQualificationsList = query({
-  handler: async (ctx) => {
-    const qualifications = await ctx.db.query("qualifications").collect()
+  args: {
+    search: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { search } = args
+
+    let qualifications = await ctx.db.query("qualifications").collect()
+
+    if (search && search.trim() !== "") {
+      const searchLower = search.toLowerCase()
+      qualifications = qualifications.filter((q) =>
+        q.name.toLowerCase().includes(searchLower),
+      )
+    }
 
     const qualificationsWithQuestions = await Promise.all(
       qualifications.map(async (qualification) => {
@@ -41,14 +53,15 @@ export const getQualificationsList = query({
           .collect()
 
         return {
-          id: qualification._id,
-          name: qualification.name,
-          label: qualification.label,
-          created_at: qualification.created_at ?? Date.now(),
+          qualification: qualification,
           questionsCount: questions.length,
-          baseExams,
+          baseExams: baseExams,
         }
       }),
+    )
+
+    qualificationsWithQuestions.sort((a, b) =>
+      a.qualification.name.localeCompare(b.qualification.name),
     )
 
     return {
@@ -57,57 +70,72 @@ export const getQualificationsList = query({
   },
 })
 
-export const getQuestionsByQualification = query({
-  args: { qualificationName: v.string() },
+//fisher yates shuffle do tablicy
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffledArray = [...array]
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+
+    ;[shuffledArray[i]!, shuffledArray[j]!] = [
+      shuffledArray[j]!,
+      shuffledArray[i]!,
+    ]
+  }
+  return shuffledArray
+}
+
+export const getTestQuestions = query({
+  args: {
+    qualificationName: v.string(),
+    numberOfQuestions: v.optional(v.number()),
+    _refreshKey: v.optional(v.number()),
+  },
   handler: async (ctx, args) => {
-    const { qualificationName } = args
+    const { qualificationName, numberOfQuestions } = args
+    const questionsLimit = numberOfQuestions ?? 40
 
     const qualificationId = await getQualificationIdFromNameOrThrow(
       ctx,
       qualificationName,
     )
 
-    const questions = await ctx.db
+    const allQuestions = await ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
         q.eq("qualificationId", qualificationId),
       )
       .collect()
 
-    const questionsWithAnswers = await Promise.all(
-      questions.map(async (question) => {
+    if (allQuestions.length === 0) {
+      return { questions: [] }
+    }
+
+    const shuffledQuestions = shuffleArray(allQuestions)
+    const selectedQuestions = shuffledQuestions.slice(0, questionsLimit)
+
+    const questionsWithDetails = await Promise.all(
+      selectedQuestions.map(async (question) => {
         const answers = await ctx.db
           .query("answers")
           .withIndex("by_question", (q) => q.eq("questionId", question._id))
           .collect()
 
-        // Sortuj odpowiedzi według label
         const sortedAnswers = answers.sort((a, b) =>
           a.label.localeCompare(b.label),
         )
 
         return {
-          id: question._id,
-          question: question.content,
-          answers: sortedAnswers.map((answer) => answer.content),
-          correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
-          explanation: question.explanation,
-          year: question.year,
-          imageUrl: question.attachmentId,
-          answerLabels: sortedAnswers.map((answer) => answer.label),
+          question: question,
+          answers: sortedAnswers,
+          correctAnswerIndex: sortedAnswers.findIndex(
+            (answer) => answer.isCorrect,
+          ),
         }
       }),
     )
 
-    // Sortuj pytania według daty utworzenia
-    questionsWithAnswers.sort((a, b) => {
-      const aTime = questions.find((q) => q._id === a.id)?._creationTime ?? 0
-      const bTime = questions.find((q) => q._id === b.id)?._creationTime ?? 0
-      return aTime - bTime
-    })
-
     return {
-      questions: questionsWithAnswers,
+      questions: questionsWithDetails,
     }
   },
 })
@@ -115,7 +143,7 @@ export const getQuestionsByQualification = query({
 export const getRandomQuestion = query({
   args: {
     qualificationName: v.string(),
-    _refreshKey: v.optional(v.number()), // Parametr do wymuszania nowego zapytania
+    _refreshKey: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const { qualificationName } = args
@@ -132,16 +160,14 @@ export const getRandomQuestion = query({
       .collect()
 
     if (questions.length === 0) {
-      return { question: null }
+      return { randomQuestion: null, answers: [] }
     }
 
-    // Wybierz losowe pytanie
     const randomIndex = Math.floor(Math.random() * questions.length)
     const randomQuestion = questions[randomIndex]
 
-    // DODAJ SPRAWDZENIE - to rozwiąże błąd TypeScript
     if (!randomQuestion) {
-      return { question: null }
+      return { randomQuestion: null, answers: [] }
     }
 
     const answers = await ctx.db
@@ -149,23 +175,11 @@ export const getRandomQuestion = query({
       .withIndex("by_question", (q) => q.eq("questionId", randomQuestion._id))
       .collect()
 
-    // Sortuj odpowiedzi według label
     const sortedAnswers = answers.sort((a, b) => a.label.localeCompare(b.label))
 
     return {
-      randomQuestion,
+      randomQuestion: randomQuestion,
       answers: sortedAnswers,
-
-      questionold: {
-        id: randomQuestion._id,
-        question: randomQuestion.content,
-        answers: sortedAnswers.map((answer) => answer.content),
-        correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
-        explanation: randomQuestion.explanation,
-        year: randomQuestion.year,
-        attachmentId: randomQuestion.attachmentId,
-        answerLabels: sortedAnswers.map((answer) => answer.label),
-      },
     }
   },
 })
@@ -177,26 +191,28 @@ export const getBrowseQuestions = query({
     year: v.optional(v.number()),
     limit: v.optional(v.number()),
     offset: v.optional(v.number()),
+    _refreshKey: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const { qualificationName, search, year, limit = 50, offset = 0 } = args
+
     const qualificationId = await getQualificationIdFromNameOrThrow(
       ctx,
       qualificationName,
     )
-    let questions = await ctx.db
+
+    let questionsQuery = ctx.db
       .query("questions")
       .withIndex("by_qualification", (q) =>
         q.eq("qualificationId", qualificationId),
       )
-      .collect()
 
-    // Filtruj po roku jeśli podano
+    let questions = await questionsQuery.collect()
+
     if (year) {
       questions = questions.filter((q) => q.year === year)
     }
 
-    // Filtruj po tekście jeśli podano
     if (search && search.trim() !== "") {
       const searchLower = search.toLowerCase()
       questions = questions.filter((q) =>
@@ -204,42 +220,36 @@ export const getBrowseQuestions = query({
       )
     }
 
-    // Sortuj według daty utworzenia (najnowsze pierwsze)
     questions.sort((a, b) => (b._creationTime ?? 0) - (a._creationTime ?? 0))
 
-    // Paginacja
+    const totalFilteredQuestions = questions.length
+
     const paginatedQuestions = questions.slice(offset, offset + limit)
 
-    const questionsWithAnswers = await Promise.all(
+    const questionsWithDetails = await Promise.all(
       paginatedQuestions.map(async (question) => {
         const answers = await ctx.db
           .query("answers")
           .withIndex("by_question", (q) => q.eq("questionId", question._id))
           .collect()
 
-        // Sortuj odpowiedzi według label
         const sortedAnswers = answers.sort((a, b) =>
           a.label.localeCompare(b.label),
         )
 
         return {
-          id: question._id,
-          question: question.content,
-          answers: sortedAnswers.map((answer) => answer.content),
-          correctAnswer: sortedAnswers.findIndex((answer) => answer.isCorrect),
-          explanation: question.explanation,
-          year: question.year,
-          imageUrl: question.attachmentId,
-          answerLabels: sortedAnswers.map((answer) => answer.label),
-          category: `Rok ${question.year}`,
-          difficulty: "Średni",
+          question: question,
+          answers: sortedAnswers,
+          correctAnswerIndex: sortedAnswers.findIndex(
+            (answer) => answer.isCorrect,
+          ),
         }
       }),
     )
 
     return {
-      questions: questionsWithAnswers,
-      total: questions.length,
+      questions: questionsWithDetails,
+      total: totalFilteredQuestions,
     }
   },
 })

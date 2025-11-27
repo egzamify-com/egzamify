@@ -1,15 +1,19 @@
 "use client"
 
 import { api } from "convex/_generated/api"
-import type { Id } from "convex/_generated/dataModel"
-import { useQuery } from "convex/custom_helpers"
-import type { QuizAnswersType } from "convex/online/pvp_quiz/helpers"
-import { useMutation } from "convex/react"
+import type { Doc, Id } from "convex/_generated/dataModel"
+import { useMutation, useQuery } from "convex/react"
 import { Clock, Flame, Loader2, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import CompleteQuestion from "~/app/dashboard/online/pvp-quiz/game/[pvpQuizId]/(components)/quiz-game/complete-question-card/complete-question"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent } from "~/components/ui/card"
+
+type QuizAnswersType = Doc<"answers">
+
+interface AnswerWithSelection extends QuizAnswersType {
+  isSelected: boolean
+}
 
 export default function RandomQuestionGame({
   qualificationName,
@@ -27,17 +31,23 @@ export default function RandomQuestionGame({
   const [submittedAnswerId, setSubmittedAnswerId] =
     useState<Id<"userAnswers"> | null>(null)
 
+  const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false)
+
   const questionData = useQuery(api.teoria.query.getRandomQuestion, {
     qualificationName,
     _refreshKey: refreshKey,
   })
 
   const user = useQuery(api.users.query.getCurrentUser)
-  const currentQuestion = questionData?.data?.randomQuestion
-  const currentQuestionAnswers = questionData.data?.answers?.map((answer) => {
-    return { ...answer, isSelected: false }
-  })
-  const [answers, setAnswers] = useState(currentQuestionAnswers)
+
+  const currentQuestion: Doc<"questions"> | null | undefined =
+    questionData?.randomQuestion
+  const currentQuestionConvexAnswers: Doc<"answers">[] | undefined =
+    questionData?.answers
+
+  const [answers, setAnswers] = useState<AnswerWithSelection[] | undefined>(
+    undefined,
+  )
 
   const saveUserAnswer = useMutation(api.statistics.mutations.saveUserAnswer)
   const startStudySession = useMutation(
@@ -61,6 +71,21 @@ export default function RandomQuestionGame({
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (currentQuestionConvexAnswers) {
+      setAnswers(
+        currentQuestionConvexAnswers.map((answer) => ({
+          ...answer,
+          isSelected: false,
+        })),
+      )
+      setShowResult(false)
+      setSubmittedAnswerId(null)
+      setTimeLeft(120)
+      setIsSubmittingAnswer(false)
+    }
+  }, [currentQuestionConvexAnswers])
 
   const getStreakFromStorage = (): number => {
     if (typeof window === "undefined") return 0
@@ -90,13 +115,13 @@ export default function RandomQuestionGame({
   }, [])
 
   useEffect(() => {
-    if (timeLeft > 0 && !showResult && currentQuestion) {
+    if (timeLeft > 0 && !showResult && currentQuestion && !isSubmittingAnswer) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
       return () => clearTimeout(timer)
     } else if (timeLeft === 0 && !showResult && currentQuestion) {
       handleTimeUp()
     }
-  }, [timeLeft, showResult, currentQuestion])
+  }, [timeLeft, showResult, currentQuestion, isSubmittingAnswer])
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -104,33 +129,43 @@ export default function RandomQuestionGame({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handleAnswerSelect = async (selectedAnswer: QuizAnswersType) => {
-    if (showResult || !currentQuestion) return
+  const handleAnswerSelect = async (
+    selectedAnswerWithSelection: AnswerWithSelection,
+  ) => {
+    if (showResult || !currentQuestion || !answers || isSubmittingAnswer) return
 
-    // await saveUserAnswer({
-    //   questionId: currentQuestion.id as Id<"questions">,
-    //   answer_index: selectedAnswer,
-    //   isCorrect: correct,
-    // })
+    setIsSubmittingAnswer(true)
+
     setAnswers((prevAnswers) => {
-      return prevAnswers?.map((prevAnswers) => {
-        if (prevAnswers._id === selectedAnswer._id) {
-          return { ...prevAnswers, isSelected: true }
+      return prevAnswers?.map((ans) => {
+        if (ans._id === selectedAnswerWithSelection._id) {
+          return { ...ans, isSelected: true }
         }
-        return { ...prevAnswers, isSelected: false }
+        return { ...ans, isSelected: false }
       })
     })
-    const { isSelected, ...answer } = selectedAnswer
 
-    const userAnswerId = await saveUserAnswer({
-      answer,
-      wasUserCorrect: isSelected && answer.isCorrect,
-    })
-    setSubmittedAnswerId(userAnswerId)
-    setShowResult(true)
+    const wasUserCorrect = selectedAnswerWithSelection.isCorrect
+    const { isSelected, ...answerForConvex } = selectedAnswerWithSelection
+
+    try {
+      const userAnswerId = await saveUserAnswer({
+        answer: answerForConvex,
+        wasUserCorrect: wasUserCorrect,
+      })
+      setSubmittedAnswerId(userAnswerId)
+
+      updateStreak(wasUserCorrect)
+      setShowResult(true)
+    } catch (error) {
+      console.error("Błąd podczas zapisywania odpowiedzi:", error)
+    } finally {
+      setIsSubmittingAnswer(false)
+    }
   }
 
   const handleTimeUp = () => {
+    if (isSubmittingAnswer) return
     setShowResult(true)
     updateStreak(false)
   }
@@ -139,7 +174,11 @@ export default function RandomQuestionGame({
     setRefreshKey((prev) => prev + 1)
   }
 
-  if (questionData === undefined || user === undefined) {
+  if (
+    questionData === undefined ||
+    user === undefined ||
+    answers === undefined
+  ) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <Card className="mx-auto max-w-2xl">
@@ -205,13 +244,14 @@ export default function RandomQuestionGame({
           {...{
             question: currentQuestion,
             answers: answers,
-            nonInteractive: showResult,
+
+            nonInteractive: showResult || isSubmittingAnswer,
             showCorrectAnswer: showResult,
             handleSelectingNewAnswer: handleAnswerSelect,
             currentUserQuizData:
-              showResult && submittedAnswerId
+              showResult && submittedAnswerId && user
                 ? {
-                    userProfile: user.data,
+                    userProfile: user,
                     userAnswersIds: [submittedAnswerId],
                   }
                 : undefined,
@@ -222,15 +262,30 @@ export default function RandomQuestionGame({
         />
       )}
 
+      {isSubmittingAnswer && (
+        <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
-        <Button onClick={() => window.history.back()} variant="outline">
+        <Button
+          onClick={() => window.history.back()}
+          variant="outline"
+          disabled={isSubmittingAnswer}
+        >
+          {" "}
           Powrót do trybów
         </Button>
 
         <div className="flex gap-2">
           {showResult && (
             <>
-              <Button onClick={handleNewQuestion} variant="outline">
+              <Button
+                onClick={handleNewQuestion}
+                variant="outline"
+                disabled={isSubmittingAnswer}
+              >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 Nowe pytanie
               </Button>

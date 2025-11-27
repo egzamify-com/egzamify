@@ -1,77 +1,112 @@
 "use client"
 
 import { api } from "convex/_generated/api"
-import { useQuery } from "convex/custom_helpers"
-import { Calendar, HelpCircle } from "lucide-react"
+import type { Doc } from "convex/_generated/dataModel"
+import { useQuery } from "convex/react"
 import Link from "next/link"
-import { Card, CardContent } from "~/components/ui/card"
-import FullScreenError from "../full-screen-error"
-import FullScreenLoading from "../full-screen-loading"
+import { Button } from "~/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
 
-export default function AllQualificationsList() {
-  const {
-    data: qualificationsData,
-    isPending,
-    error,
-  } = useQuery(api.teoria.query.getQualificationsList)
+interface QualificationData {
+  qualification: Doc<"qualifications">
+  questionsCount: number
+  baseExams: Doc<"basePracticalExams">[]
+}
 
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp)
-    return date.toLocaleDateString("pl-PL", {
-      year: "numeric",
-      month: "short",
-    })
+export default function AllQualificationsList({
+  searchTerm,
+}: {
+  searchTerm: string
+}) {
+  const qualificationsData = useQuery(api.teoria.query.getQualificationsList, {
+    search: searchTerm,
+  })
+
+  const qualifications: QualificationData[] =
+    qualificationsData?.qualifications || []
+
+  if (qualificationsData === undefined) {
+    return (
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {[...Array(6)].map((_, i) => (
+          <Card key={i} className="flex flex-col overflow-hidden">
+            <div className="relative h-40 animate-pulse bg-gray-200" />
+            <CardContent className="flex-grow pt-4">
+              <div className="mb-2 h-6 animate-pulse rounded bg-gray-200" />
+              <div className="mb-4 h-4 animate-pulse rounded bg-gray-200" />
+              <div className="flex items-center gap-4">
+                <div className="h-4 flex-1 animate-pulse rounded bg-gray-200" />
+                <div className="h-4 flex-1 animate-pulse rounded bg-gray-200" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    )
   }
 
-  if (isPending) <FullScreenLoading />
-
-  if (qualificationsData?.qualifications.length === 0 || error) {
-    console.error("[QUALIFICATIONS] Brak kwalifikacji (?)")
+  if (qualifications.length === 0 && searchTerm) {
     return (
-      <FullScreenError
-        type="warning"
-        errorDetail={error?.message}
-        errorMessage="Brak kwalifikacji, przepraszamy."
-      />
+      <Card className="col-span-full">
+        <CardContent className="py-12 text-center">
+          <h2 className="mb-2 text-xl font-bold">Brak wyników</h2>
+          <p className="text-muted-foreground">
+            Nie znaleziono kwalifikacji pasujących do "
+            <strong>{searchTerm}</strong>".
+          </p>
+          <Button
+            onClick={() => window.location.reload()}
+            variant="outline"
+            className="mt-4"
+          >
+            Odśwież
+          </Button>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (qualifications.length === 0) {
+    return (
+      <Card className="col-span-full">
+        <CardContent className="py-12 text-center">
+          <h2 className="mb-2 text-xl font-bold">
+            Brak dostępnych kwalifikacji
+          </h2>
+          <p className="text-muted-foreground">
+            Przepraszamy, ale aktualnie nie ma dostępnych kwalifikacji do nauki.
+          </p>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {qualificationsData?.qualifications.map((qualification) => (
-        <Link
-          href={`/dashboard/egzamin-teoretyczny/${qualification.name}/game-modes`}
-          key={crypto.randomUUID()}
-        >
-          <Card className="flex cursor-pointer flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-            <div className="relative h-40 bg-gray-200">
-              <img
-                src={"/placeholder.svg"}
-                alt={qualification.name}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <CardContent className="flex-grow pt-4">
-              <h3 className="hover:text-muted-foreground text-lg font-semibold transition-colors">
-                {qualification.name}
-              </h3>
-              <p className="text-muted-foreground mt-1 text-sm">
-                {qualification.label}
-              </p>
-
-              <div className="text-muted-foreground mt-3 flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-1">
-                  <HelpCircle className="h-4 w-4" />
-                  <span>{qualification.questionsCount} pytań</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formatDate(qualification.created_at)}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
+      {qualifications.map((data: QualificationData) => (
+        <Card key={data.qualification._id} className="flex flex-col">
+          <CardHeader>
+            <CardTitle>{data.qualification.name}</CardTitle>
+            <p className="text-muted-foreground mt-2 text-sm">
+              Pytania: {data.questionsCount}
+            </p>
+          </CardHeader>
+          <CardFooter className="mt-auto flex justify-end">
+            <Link
+              href={{
+                pathname: `/dashboard/egzamin-teoretyczny/${data.qualification.name}/game-modes`,
+              }}
+            >
+              <Button>Rozpocznij naukę</Button>
+            </Link>
+          </CardFooter>
+        </Card>
       ))}
     </div>
   )
