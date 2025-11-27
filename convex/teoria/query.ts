@@ -20,6 +20,43 @@ export const getTheoryUserByEmail = query({
   },
 })
 
+export const getQualificationsListPractical = query({
+  handler: async (ctx) => {
+    const qualifications = await ctx.db.query("qualifications").collect()
+
+    const qualificationsWithQuestions = await Promise.all(
+      qualifications.map(async (qualification) => {
+        const questions = await ctx.db
+          .query("questions")
+          .withIndex("by_qualification", (q) =>
+            q.eq("qualificationId", qualification._id),
+          )
+          .collect()
+
+        const baseExams = await ctx.db
+          .query("basePracticalExams")
+          .withIndex("qualificationId", (q) =>
+            q.eq("qualificationId", qualification._id),
+          )
+          .collect()
+
+        return {
+          id: qualification._id,
+          name: qualification.name,
+          label: qualification.label,
+          created_at: qualification.created_at ?? Date.now(),
+          questionsCount: questions.length,
+          baseExams,
+        }
+      }),
+    )
+
+    return {
+      qualifications: qualificationsWithQuestions,
+    }
+  },
+})
+
 export const getQualificationsList = query({
   args: {
     search: v.optional(v.string()),

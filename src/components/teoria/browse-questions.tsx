@@ -231,7 +231,7 @@ export default function BrowseQuestions({
                       })),
                       nonInteractive: true,
                       showCorrectAnswer: true,
-                      handleSelectingNewAnswer: async () => {},
+
                       currentUserQuizData: undefined,
                       otherUsersQuizData: [],
                       showExplanationBtn: true,

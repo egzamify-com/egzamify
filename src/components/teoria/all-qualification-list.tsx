@@ -57,8 +57,9 @@ export default function AllQualificationsList({
         <CardContent className="py-12 text-center">
           <h2 className="mb-2 text-xl font-bold">Brak wyników</h2>
           <p className="text-muted-foreground">
-            Nie znaleziono kwalifikacji pasujących do "
-            <strong>{searchTerm}</strong>".
+            Nie znaleziono kwalifikacji pasujących do {`"`}
+            <strong>{searchTerm}</strong>
+            {`"`}.
           </p>
           <Button
             onClick={() => window.location.reload()}

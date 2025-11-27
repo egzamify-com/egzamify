@@ -35,7 +35,11 @@ export default function PracticalExamsFilters({
   } = useDebouncedSearch({
     time: 350,
   })
-  const { data, isPending } = useQuery(api.teoria.query.getQualificationsList)
+  const { data, isPending } = useQuery(
+    api.teoria.query.getQualificationsListPractical,
+  )
+  console.log(data)
+
   const qualifications = data?.qualifications
 
   useEffect(() => {
