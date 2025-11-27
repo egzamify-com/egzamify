@@ -5,10 +5,11 @@ import { useStore } from "@tanstack/react-store"
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import { motion } from "framer-motion"
-import { Gem, Stars } from "lucide-react"
+import { Stars } from "lucide-react"
 import { toast } from "sonner"
 import { explainQuestion } from "~/actions/explain-question"
 import { APP_CONFIG } from "~/APP_CONFIG"
+import CreditIcon from "~/components/credit-icon"
 import GetCreditsAlert from "~/components/get-credits-alert"
 import MarkdownRenderer from "~/components/markdown-rendered"
 import SpinnerLoading from "~/components/spinner-loading"
@@ -103,14 +104,14 @@ export default function ExplainQuestionBtn({
             </Button>
           ) : (
             <GetCreditsAlert>
-              <Button variant={"ghost"} size={"sm"}>
+              <Button variant={"outline"} size={"sm"}>
                 <SubmitBtnMarkup />
               </Button>
             </GetCreditsAlert>
           )}
         </TooltipTrigger>
         <TooltipContent className="flex flex-row items-center justify-center gap-2">
-          <Gem size={16} />{" "}
+          <CreditIcon flipTheme className="h-5 w-5" />{" "}
           <p className="text-md">{APP_CONFIG.questionExplanation.price}</p>
         </TooltipContent>
       </Tooltip>
@@ -126,7 +127,7 @@ export default function ExplainQuestionBtn({
           <DialogHeader className="space-y-4">
             <DialogTitle className="flex flex-row items-center justify-start gap-2">
               <Stars />
-              <p className="text-xl">{"Wyjaśnijmy to pytanie z AI"}</p>
+              <p className="text-xl">{"Wyjaśnienie pytania z AI"}</p>
             </DialogTitle>
             <Card className="bg-transparent p-6">
               <ScrollArea className="h-[300px] w-full">

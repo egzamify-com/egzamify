@@ -22,14 +22,14 @@ export function FeatureCard({
     >
       <div
         className={cn(
-          "bg-card relative aspect-[4/3] w-full overflow-hidden",
+          "bg-card relative w-full overflow-hidden",
           "rounded-t-3xl lg:rounded-t-none",
           reverse ? "lg:order-2 lg:rounded-r-3xl" : "lg:rounded-l-3xl",
         )}
       >
         <Image
-          width={700}
-          height={700}
+          width={1200}
+          height={1200}
           src={imageUrl || "/placeholder.svg"}
           alt={title}
           className="h-full w-full object-cover"

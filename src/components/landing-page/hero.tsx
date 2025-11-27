@@ -32,8 +32,8 @@ export function Hero() {
           </Unauthenticated>
 
           <Authenticated>
-            <DashboardBtn />
             <GetCreditsBtn />
+            <DashboardBtn />
           </Authenticated>
         </div>
       </div>

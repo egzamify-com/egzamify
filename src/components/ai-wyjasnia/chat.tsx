@@ -52,7 +52,7 @@ export default function Chat({
   }, [id, deleteThread])
 
   return (
-    <div className="mx-auto flex h-full w-[70%] flex-col items-center justify-between">
+    <div className="mx-auto flex h-full w-[95%] flex-col items-center justify-between 2xl:w-3/4">
       <div className="w-full overflow-y-auto p-4">
         {messages?.length === 0 ? (
           <NoMessages />

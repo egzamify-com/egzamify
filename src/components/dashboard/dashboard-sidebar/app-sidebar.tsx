@@ -127,12 +127,12 @@ const navMain: NavbarItem[] = [
     ],
   },
   {
-    title: "AI wyjasnia",
+    title: "Czat AI",
     icon: <MessageCircle size={SIDEBAR_ICON_SIZE} />,
     url: "/dashboard/ai-wyjasnia",
     childrenItems: [
       {
-        title: "Rozpocznij czat z AI",
+        title: "Rozpocznij nowy czat",
         url: "/dashboard/ai-wyjasnia",
         icon: <Calendar size={SIDEBAR_ICON_SIZE} />,
       },
