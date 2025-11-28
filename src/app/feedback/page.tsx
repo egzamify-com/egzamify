@@ -129,6 +129,9 @@ export default function Page() {
                 </InputGroup>
               </div>
             </div>
+            <p className="text-muted-foreground">
+              Support: egzamify-admin@proton.me
+            </p>
           </div>
         </div>
       </Authenticated>

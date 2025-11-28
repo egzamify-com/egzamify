@@ -62,11 +62,15 @@ export default function Page() {
               handleSignIn={handleSignIn}
               name="Google"
             />
-
-            <p className="text-muted-foreground px-4 text-center text-xs">
-              Logując się, akceptujesz nasze warunki korzystania z usługi oraz
-              politykę prywatności.
-            </p>
+            <div className="flex flex-col gap-0">
+              <p className="text-muted-foreground px-4 text-center text-xs">
+                Logując się, akceptujesz nasze warunki korzystania z usługi oraz
+                politykę prywatności.
+              </p>
+              <p className="text-muted-foreground px-4 text-center text-xs">
+                Support: egzamify-admin@proton.me
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

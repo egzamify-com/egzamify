@@ -43,7 +43,8 @@ export function Footer() {
       <div className="border-border border-t">
         <div className="mx-auto max-w-7xl px-6 py-8">
           <p className="text-muted-foreground text-center text-sm">
-            © 2025 Egzamify. <PrivacyUrl /> <WebsiteRegulation />
+            © 2025 Egzamify. <PrivacyUrl />, <WebsiteRegulation />, Support:
+            egzamify-admin@proton.me
           </p>
         </div>
       </div>

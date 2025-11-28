@@ -31,7 +31,7 @@ export default function Navbar() {
   const user = useQuery(api.users.query.getCurrentUser)
 
   useEffect(() => {
-    console.log("this should run once ever")
+    // console.log("this should run once ever")
     if (!user.data) {
       posthog.reset(true)
       return
@@ -41,7 +41,7 @@ export default function Navbar() {
       name: user.data.name,
       email: user.data.email,
     })
-  }, [user.data?._id])
+  }, [user.data])
 
   const pathname = usePathname()
 
@@ -118,8 +118,10 @@ export function NavSignedIn() {
       <GetCreditsBtn />
       <DashboardBtn />
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <ActivityStatusAvatar userToShow={user} />
+        <DropdownMenuTrigger asChild>
+          <div>
+            <ActivityStatusAvatar userToShow={user} />
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem

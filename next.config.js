@@ -6,14 +6,8 @@ import "./src/env.js"
 
 /** @type {import("next").NextConfig} */
 const config = {
-  // api: {
-  //   bodyParser: false,
-  // },
   reactStrictMode: false,
   typedRoutes: true,
-  // typescript: {
-  //   ignoreBuildErrors: true,
-  // },
   images: {
     remotePatterns: [
       {
@@ -21,8 +15,10 @@ const config = {
         hostname: "formal-jay-146.convex.site",
       },
       { protocol: "https", hostname: "precise-bobcat-903.convex.site" },
+      { protocol: "https", hostname: "confident-aardvark-526.convex.site" },
     ],
   },
+  // posthog proxy
   async rewrites() {
     return [
       {
