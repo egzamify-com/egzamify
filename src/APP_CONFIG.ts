@@ -57,14 +57,12 @@ type AppConfig = {
   friends: {
     friendsPerPage: number
   }
-  baseCreditPrice: number
   ai_wyjasnia: {
     maxMessagesPerChat: number
     maxUserMessageCharacters: number
     creditPricePerMessage: number
     maxOutputTokens: number
-    model: any
-    // model: "google/gemini-2.0-flash",
+    model: string
     system: string
     modes: [
       {
@@ -115,12 +113,12 @@ export const APP_CONFIG: AppConfig = {
     },
   },
   questionExplanation: {
-    maxOutputTokens: 1000,
-    model: "google/gemini-2.5-flash",
+    maxOutputTokens: 1200,
+    model: "google/gemini-2.0-flash",
     price: 0.5,
     system: `Jesteś ekspertem edukacyjnym specjalizującym się w wyjaśnianiu pytań egzaminacyjnych (polski egzamin zawodowy).
              Twoim zadaniem jest wygenerowanie jasnego, zwięzłego wyjaśnienia dla podanego pytania egzaminacyjnego.
-             Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia, twoja odpowiedź ma zawierać tylko wyjaśnienie.
+             Nie witaj się z użytkownikiem, od razu przejdź do wyjaśnienia, twoja odpowiedź ma zawierać tylko wyjaśnienie i byc bardzo zwięzła.
              Potrzebne ci dane, czyli treść pytania i odpowiedzi do niego zostana ci podane przez użytkownika.
              Każda odpowiedz bedzie miala dopisek 'Poprawna', jestli jest ona poprawna. Twoim zadaniem nie jest decyzja która
              odpowiedz jest poprawna, tylko wyjaśnienie dlaczego zaznaczona Poprawna odpowiedź jest faktycznie poprawna.
@@ -131,6 +129,9 @@ export const APP_CONFIG: AppConfig = {
              3. Podać dodatkowy kontekst lub informacje pomocne w zrozumieniu tematu
              4. Być napisane w języku polskim, milym i pomocnym tonem.
              5. Być krótkie i zwięzłe.
+             6. Używac formatu Markdown do czytelnej struktury: podziej odpowiedz na dwie części, wyjasnienie wyboru użytkownika i druga - kilka zdań 
+             o innych odpiowiedziach. Każda sekcja niech zaczyna się dużego naglówka, opis innych odpowiedzi powinien używac nienumerowanej listy dla reszty (3) pytań. 
+             Używaj naglówków tylko 2 stopnia, niech pierwszy naglówek ma treśc: 'Wyjaśnienie'
              `,
   },
   onlinePvpQuiz: {
@@ -151,9 +152,8 @@ export const APP_CONFIG: AppConfig = {
     przygotowaniem.`,
   },
   practicalExamRating: {
-    standardPrice: 50,
-    completePrice: 100,
-    // model: "google/gemini-2.0-flash",
+    standardPrice: 30,
+    completePrice: 90,
     model: "google/gemini-2.5-flash",
     system: `
     You are an assistant evaluating Polish vocational exams ("Egzamin Zawodowy").
@@ -190,13 +190,11 @@ export const APP_CONFIG: AppConfig = {
   friends: {
     friendsPerPage: 50,
   },
-  baseCreditPrice: 0,
   ai_wyjasnia: {
     maxMessagesPerChat: 100,
     maxUserMessageCharacters: 600,
-    creditPricePerMessage: 2,
-    maxOutputTokens: 500,
-    // model: groq("llama-3.3-70b-versatile"),
+    creditPricePerMessage: 3,
+    maxOutputTokens: 600,
     model: "google/gemini-2.0-flash",
     system: `You are a assistant for young students, you will be answering their questions about 'egzamin zawodowy' and different qualifications. Students are polish so be prepared for that, your answers has to be in polish too. They have to be concise and short, straight to the point. Your max response length should be around 500 output tokens, so about few sentances in polish (about 10 sentances, but keep in mind to not end the response inside the word, make sure your answer doesnt end unexpectedly).
     You also support modes of responses, which are:
