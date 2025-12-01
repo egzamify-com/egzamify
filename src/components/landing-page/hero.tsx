@@ -11,7 +11,7 @@ export function Hero() {
   return (
     <section className="relative flex flex-1 items-center justify-center px-2 py-24">
       <div className="mx-auto max-w-5xl text-center">
-        <h1 className="text-foreground mb-6 font-sans text-5xl leading-tight font-bold tracking-tight text-balance md:text-6xl lg:text-7xl">
+        <h1 className="text-foreground from-foreground to-foreground/60 mb-6 bg-gradient-to-r bg-clip-text font-sans text-5xl leading-tight font-bold tracking-tight text-balance text-transparent md:text-6xl lg:text-7xl">
           {APP_CONFIG.landingPage.mainTitle}
         </h1>
 
