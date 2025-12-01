@@ -1,9 +1,11 @@
+"use client"
+
 import type { ChatRequestOptions, CreateUIMessage } from "ai"
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import { OctagonX, Plus, Stars } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import type { MyUIMessage } from "~/app/api/chat/route"
 import { APP_CONFIG } from "~/APP_CONFIG"
@@ -36,6 +38,7 @@ export function ChatInputWithModeSelection({
   const [isMessageLimitReached, setIsMessageLimitReached] = useState(false)
   const [input, setInput] = useState("")
   const { data: user } = useQuery(api.users.query.getCurrentUser)
+  const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
     if (
@@ -50,6 +53,13 @@ export function ChatInputWithModeSelection({
       return
     }
   }, [messages.length])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && formRef.current) {
+      e.preventDefault()
+      formRef.current.requestSubmit()
+    }
+  }
 
   return (
     <>
@@ -100,8 +110,13 @@ export function ChatInputWithModeSelection({
         </div>
 
         <form
+          ref={formRef}
           onSubmit={(e) => {
             e.preventDefault()
+
+            if (input.trim().length === 0) {
+              return
+            }
 
             if (
               input.length > APP_CONFIG.ai_wyjasnia.maxUserMessageCharacters
@@ -131,6 +146,7 @@ export function ChatInputWithModeSelection({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={`Zapytaj o cokolwiek ...`}
+              onKeyDown={handleKeyDown}
             />
             <InputGroupAddon align="block-end">
               {user &&
