@@ -82,7 +82,8 @@ export default function BrowseQuestions({
   return (
     <PageHeaderWrapper
       title={"Baza pytań"}
-      description={"      Przeglądaj wszystkie dostępne pytania i odpowiedzi"}
+      description={"Przeglądaj wszystkie dostępne pytania i odpowiedzi"}
+      icon={<Search />}
     >
       <div className="container mx-auto px-4 py-8">
         <Card className="mb-6">

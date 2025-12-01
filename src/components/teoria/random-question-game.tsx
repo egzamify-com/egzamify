@@ -3,11 +3,12 @@
 import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
-import { Clock, Flame, Loader2, RotateCcw } from "lucide-react"
+import { Clock, Flame, Loader2, RotateCcw, Shuffle } from "lucide-react"
 import { useEffect, useState } from "react"
 import CompleteQuestion from "~/app/dashboard/online/pvp-quiz/game/[pvpQuizId]/(components)/quiz-game/complete-question-card/complete-question"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent } from "~/components/ui/card"
+import PageHeaderWrapper from "../page-header-wrapper"
 
 type QuizAnswersType = Doc<"answers">
 
@@ -217,77 +218,85 @@ export default function RandomQuestionGame({
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      <div className="mb-6">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">Losowe pytanie</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-lg border border-orange-600 bg-orange-200 px-3 py-2">
-              <Flame className="h-5 w-5 text-orange-600" />
-              <span className="font-bold text-orange-700">{answerStreak}</span>
-              <span className="text-sm font-bold text-orange-600">seria</span>
+    <PageHeaderWrapper
+      title={"1 losowe pytanie"}
+      description={"Szybki test z jednym losowym pytaniem."}
+      icon={<Shuffle />}
+    >
+      <div className="container mx-auto max-w-4xl px-4 py-8">
+        <div className="mb-6">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">Losowe pytanie</h1>
             </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 rounded-lg border border-orange-600 bg-orange-200 px-3 py-2">
+                <Flame className="h-5 w-5 text-orange-600" />
+                <span className="font-bold text-orange-700">
+                  {answerStreak}
+                </span>
+                <span className="text-sm font-bold text-orange-600">seria</span>
+              </div>
 
-            <div className="flex items-center gap-2 text-lg font-semibold">
-              <Clock className="h-5 w-5" />
-              <span className={timeLeft < 30 ? "text-red-600" : ""}>
-                {formatTime(timeLeft)}
-              </span>
+              <div className="flex items-center gap-2 text-lg font-semibold">
+                <Clock className="h-5 w-5" />
+                <span className={timeLeft < 30 ? "text-red-600" : ""}>
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {currentQuestion && answers && (
-        <CompleteQuestion
-          {...{
-            question: currentQuestion,
-            answers: answers,
+        {currentQuestion && answers && (
+          <CompleteQuestion
+            {...{
+              question: currentQuestion,
+              answers: answers,
 
-            nonInteractive: showResult || isSubmittingAnswer,
-            showCorrectAnswer: showResult,
-            handleSelectingNewAnswer: handleAnswerSelect,
-            currentUserQuizData:
-              showResult && submittedAnswerId && user
-                ? {
-                    userProfile: user,
-                    userAnswersIds: [submittedAnswerId],
-                  }
-                : undefined,
-            otherUsersQuizData: [],
-            showExplanationBtn: showResult,
-            showQuestionMetadata: true,
-          }}
-        />
-      )}
+              nonInteractive: showResult || isSubmittingAnswer,
+              showCorrectAnswer: showResult,
+              handleSelectingNewAnswer: handleAnswerSelect,
+              currentUserQuizData:
+                showResult && submittedAnswerId && user
+                  ? {
+                      userProfile: user,
+                      userAnswersIds: [submittedAnswerId],
+                    }
+                  : undefined,
+              otherUsersQuizData: [],
+              showExplanationBtn: showResult,
+              showQuestionMetadata: true,
+            }}
+          />
+        )}
 
-      {isSubmittingAnswer && (
-        <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
-          <Loader2 className="text-primary h-8 w-8 animate-spin" />
-        </div>
-      )}
+        {isSubmittingAnswer && (
+          <div className="bg-background/80 absolute inset-0 z-10 flex items-center justify-center">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          </div>
+        )}
 
-      <div className="mt-8 flex justify-between">
-        <Button
-          onClick={() => window.history.back()}
-          variant="outline"
-          disabled={isSubmittingAnswer}
-        >
-          Powrót do trybów
-        </Button>
-
-        {showResult && (
+        <div className="mt-8 flex justify-between">
           <Button
-            onClick={handleNewQuestion}
-            variant="default"
+            onClick={() => window.history.back()}
+            variant="outline"
             disabled={isSubmittingAnswer}
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Nowe pytanie
+            Powrót do trybów
           </Button>
-        )}
+
+          {showResult && (
+            <Button
+              onClick={handleNewQuestion}
+              variant="default"
+              disabled={isSubmittingAnswer}
+            >
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Nowe pytanie
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
+    </PageHeaderWrapper>
   )
 }
