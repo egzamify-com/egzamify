@@ -70,8 +70,8 @@ export default function DashboardPage() {
         <div className="space-y-4">
           {" "}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
-            <Card className="group relative h-full overflow-hidden border-2 transition-all duration-300 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10">
-              <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl transition-all duration-500 group-hover:scale-150" />
+            <Card className="group relative h-full overflow-hidden border-2 transition-all duration-100 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10">
+              <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl transition-all duration-100 group-hover:scale-150" />
               <CardHeader className="relative space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
@@ -114,8 +114,8 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="group hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-              <div className="bg-muted/30 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-all duration-500 group-hover:scale-125" />
+            <Card className="group hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+              <div className="bg-muted/30 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-all duration-100 group-hover:scale-125" />
               <CardHeader className="relative space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
@@ -155,11 +155,11 @@ export default function DashboardPage() {
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Link href="/dashboard/egzamin-teoretyczny" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-500 group-hover:scale-125" />
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
 
                 <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
                     <BookOpen className="text-muted-foreground h-7 w-7" />
                   </div>
 
@@ -187,11 +187,11 @@ export default function DashboardPage() {
             </Link>
 
             <Link href="/dashboard/egzamin-praktyczny" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -bottom-20 -left-20 h-64 w-64 rounded-full blur-3xl transition-all duration-500 group-hover:scale-125" />
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -bottom-20 -left-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
 
                 <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
                     <FileCheck className="text-muted-foreground h-7 w-7" />
                   </div>
 
@@ -223,11 +223,11 @@ export default function DashboardPage() {
             </Link>
 
             <Link href="/dashboard/online" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-500 group-hover:scale-125" />
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
 
                 <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
                     <Wifi className="text-muted-foreground h-7 w-7" />
                   </div>
 
@@ -259,97 +259,108 @@ export default function DashboardPage() {
             </Link>
 
             <Link href="/dashboard/konto" className="group">
-              <Card className="hover:border-border h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-                <CardHeader className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="text-2xl font-bold">
-                        Statystyki
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        Analizuj swoje wyniki i postępy w nauce. Zobacz
-                        szczegółowe dane o poprawnych i błędnych odpowiedziach.
-                        Wykorzystaj statystyki, by efektywniej się uczyć.
-                      </CardDescription>
-                    </div>
-                    <div className="bg-muted ring-border rounded-lg p-3 ring-1">
-                      <Award className="text-muted-foreground h-5 w-5" />
-                    </div>
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
+
+                <CardHeader className="relative space-y-4">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
+                    <Award className="text-muted-foreground h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Statystyki
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Analizuj swoje wyniki i postępy w nauce. Zobacz
+                      szczegółowe dane o poprawnych i błędnych odpowiedziach.
+                      Wykorzystaj statystyki, by efektywniej się uczyć.
+                    </CardDescription>
                   </div>
                 </CardHeader>
-                <CardContent>
+
+                <CardContent className="relative">
                   <Button
-                    variant="outline"
                     size="lg"
-                    className="group/link w-full bg-transparent"
+                    variant="outline"
+                    className="group/btn w-full bg-transparent transition-all"
                   >
-                    Zobacz więcej
-                    <ArrowRight className="ml-auto h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                    <span className="flex items-center gap-2">
+                      Zobacz więcej
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
                   </Button>
                 </CardContent>
               </Card>
             </Link>
 
             <Link href="/dashboard/friends" className="group">
-              <Card className="hover:border-border h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-                <CardHeader className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="text-2xl font-bold">
-                        Znajomi
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        Ucz się razem z innymi i motywujcie się wzajemnie.
-                        Dodawaj znajomych i porównuj swoje wyniki. Nauka w
-                        grupie staje się prostsza i przyjemniejsza.
-                      </CardDescription>
-                    </div>
-                    <div className="bg-muted ring-border rounded-lg p-3 ring-1">
-                      <Users className="text-muted-foreground h-5 w-5" />
-                    </div>
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -bottom-20 -left-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
+
+                <CardHeader className="relative space-y-4">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
+                    <Users className="text-muted-foreground h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Znajomi
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Ucz się razem z innymi i motywujcie się wzajemnie. Dodawaj
+                      znajomych i porównuj swoje wyniki. Nauka w grupie staje
+                      się prostsza i przyjemniejsza.
+                    </CardDescription>
                   </div>
                 </CardHeader>
-                <CardContent>
+
+                <CardContent className="relative">
                   <Button
-                    variant="outline"
                     size="lg"
-                    className="group/link w-full bg-transparent"
+                    variant="outline"
+                    className="group/btn w-full bg-transparent transition-all"
                   >
-                    Otwórz
-                    <ArrowRight className="ml-auto h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                    <span className="flex items-center gap-2">
+                      Otwórz
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
                   </Button>
                 </CardContent>
               </Card>
             </Link>
 
             <Link href="/dashboard/ai-wyjasnia" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -right-10 -bottom-10 h-32 w-32 rounded-full blur-2xl transition-all duration-500 group-hover:scale-125" />
-                <CardHeader className="relative space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="flex items-center gap-2 text-2xl font-bold">
-                        Czat AI
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        Korzystaj z pomocy inteligentnego asystenta. Zadawaj
-                        pytania i otrzymuj szybkie wyjaśnienia. AI pomoże Ci
-                        zrozumieć trudniejsze zagadnienia.
-                      </CardDescription>
-                    </div>
-                    <div className="bg-muted ring-border rounded-lg p-3 ring-1">
-                      <Sparkles className="text-muted-foreground h-5 w-5" />
-                    </div>
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -right-10 -bottom-10 h-32 w-32 rounded-full blur-2xl transition-all duration-100 group-hover:scale-125" />
+
+                <CardHeader className="relative space-y-4">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
+                    <Sparkles className="text-muted-foreground h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+                      Czat AI
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Korzystaj z pomocy inteligentnego asystenta. Zadawaj
+                      pytania i otrzymuj szybkie wyjaśnienia. AI pomoże Ci
+                      zrozumieć trudniejsze zagadnienia.
+                    </CardDescription>
                   </div>
                 </CardHeader>
+
                 <CardContent className="relative">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="group/link w-full bg-transparent transition-all"
+                    className="group/btn w-full bg-transparent transition-all"
                   >
-                    Rozpocznij chat
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                    <span className="flex items-center gap-2">
+                      Rozpocznij chat
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
                   </Button>
                 </CardContent>
               </Card>
@@ -357,8 +368,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <Card className="hover:border-border relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl md:col-span-2 lg:col-span-3">
-          <div className="bg-muted/20 absolute top-0 right-0 h-64 w-64 rounded-full blur-3xl" />
+        <Card className="group hover:border-border relative overflow-hidden border-2 transition-all duration-100 hover:shadow-xl md:col-span-2 lg:col-span-3">
+          <div className="bg-muted/20 absolute -top-10 -left-10 h-40 w-40 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
+          <div className="bg-muted/20 absolute -right-10 -bottom-10 h-40 w-40 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
+
           <CardHeader className="relative">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
@@ -369,8 +382,8 @@ export default function DashboardPage() {
                   Ostatnie 7 dni aktywności
                 </CardDescription>
               </div>
-              <div className="bg-muted ring-border rounded-xl p-3 ring-1">
-                <TrendingUp className="text-muted-foreground h-6 w-6" />
+              <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
+                <TrendingUp className="text-muted-foreground h-7 w-7" />
               </div>
             </div>
           </CardHeader>
