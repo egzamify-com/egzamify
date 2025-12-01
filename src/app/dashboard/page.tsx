@@ -3,14 +3,17 @@
 import { api } from "convex/_generated/api"
 import { useQuery } from "convex/custom_helpers"
 import {
+  ArrowRight,
   Award,
   BookOpen,
   Coins,
   FileCheck,
   Flame,
-  MessageSquare,
+  Sparkles,
   TrendingUp,
   Users,
+  Wifi,
+  Zap,
 } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -46,198 +49,319 @@ export default function DashboardPage() {
   const userCredits = user.credits ?? 0
 
   return (
-    <div className="bg-background min-h-screen p-4 md:p-6">
-      <div className="mx-auto max-w-7xl space-y-4">
-        {/* Powitanie */}
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">
-            Witaj z powrotem, {user.username}! 👋
+    <div className="bg-background relative min-h-screen overflow-hidden p-4 md:p-8">
+      <div className="relative mx-auto max-w-[1600px] space-y-8">
+        <div className="space-y-3">
+          <div className="border-border bg-muted text-muted-foreground inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium">
+            <Zap className="h-3.5 w-3.5" />
+            Dashboard
+          </div>
+          <h1 className="text-5xl font-bold tracking-tight text-balance md:text-6xl lg:text-7xl">
+            Cześć,{" "}
+            <span className="from-foreground to-foreground/60 bg-gradient-to-r bg-clip-text text-transparent">
+              {user.username}
+            </span>
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Kontynuuj swoją przygodę z przygotowaniami do egzaminu zawodowego
+          <p className="text-muted-foreground text-xl text-balance md:text-2xl">
+            Gotowy na kolejny dzień nauki?
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Twoje kredyty</CardTitle>
-                <Coins className="h-8 w-8" />
-              </div>
-              <CardDescription className="pt-4">
-                Dostępnych kredytów
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-4xl font-bold">{userCredits}</p>
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href="/dashboard/konto">Zarządzaj kredytami</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Seria dzienna</CardTitle>
-                <Flame className="h-8 w-8 text-orange-500" />
-              </div>
-              <CardDescription className="pt-4">
-                {currentStreak > 0
-                  ? "Świetna robota! Kontynuuj naukę"
-                  : "Rozpocznij swoją serię już dziś!"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-4xl font-bold">
-                  {currentStreak} {currentStreak === 1 ? "dzień" : "dni"}
-                </p>
+        <div className="space-y-4">
+          {" "}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
+            <Card className="group relative h-full overflow-hidden border-2 transition-all duration-300 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/10">
+              <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl transition-all duration-500 group-hover:scale-150" />
+              <CardHeader className="relative space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Seria dzienna
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      {currentStreak > 0
+                        ? "Niesamowite! Tak trzymaj"
+                        : "Zacznij dzisiaj swoją serię"}
+                    </CardDescription>
+                  </div>
+                  <div className="rounded-xl bg-orange-500/10 p-3 ring-1 ring-orange-500/20">
+                    <Flame className="h-5 w-5 text-orange-500" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="relative space-y-4">
+                <div className="space-y-2">
+                  <p className="text-6xl font-bold tracking-tighter">
+                    {currentStreak}
+                  </p>
+                  <p className="text-muted-foreground text-base">
+                    {currentStreak === 1 ? "dzień" : "dni z rzędu"}
+                  </p>
+                </div>
 
                 {currentStreak > 0 && (
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {[...Array(Math.min(currentStreak, 7))].map((_, i) => (
                       <div
                         key={i}
-                        className="flex h-10 w-10 items-center justify-center rounded-lg border-2"
+                        className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-orange-500/20 bg-orange-500/5 text-orange-500 transition-all hover:scale-110 hover:border-orange-500/40 hover:bg-orange-500/10"
                       >
-                        <span className="text-lg">✓</span>
+                        <Flame className="h-4 w-4" />
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Link href="/dashboard/egzamin-teoretyczny" className="group">
-            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    Egzamin teoretyczny
-                  </CardTitle>
-                  <BookOpen className="h-8 w-8" />
-                </div>
-                <CardDescription className="pt-4">
-                  Pytania testowe
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="secondary">
-                  Rozpocznij
-                </Button>
               </CardContent>
             </Card>
-          </Link>
 
-          <Card className="lg:col-span-2 lg:row-span-2">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Twoje postępy</CardTitle>
-                <TrendingUp className="h-8 w-8" />
-              </div>
-              <CardDescription className="pt-2">
-                Statystyki z ostatnich 7 dni
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-full">
-              <StatsChart weeklyData={weeklyProgress} totalStats={userStats} />
-            </CardContent>
-          </Card>
-
-          <Link href="/dashboard/egzamin-praktyczny" className="group">
-            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    Egzamin praktycznyy
-                  </CardTitle>
-                  <FileCheck className="h-8 w-8" />
+            <Card className="group hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+              <div className="bg-muted/30 absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl transition-all duration-500 group-hover:scale-125" />
+              <CardHeader className="relative space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Kredyty
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Dostępne środki
+                    </CardDescription>
+                  </div>
+                  <div className="bg-muted ring-border rounded-xl p-3 ring-1">
+                    <Coins className="text-muted-foreground h-5 w-5" />
+                  </div>
                 </div>
-                <CardDescription className="pt-4">
-                  Projekty egzaminacyjne
-                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="secondary">
-                  Rozpocznij
-                </Button>
+              <CardContent className="relative">
+                <div className="flex items-end justify-between">
+                  <p className="text-5xl font-bold tracking-tighter">
+                    {userCredits}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="group/link"
+                    asChild
+                  >
+                    <Link href="/dashboard/konto">
+                      Zarządzaj
+                      <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/link:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
-          </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Link href="/dashboard/egzamin-teoretyczny" className="group">
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-500 group-hover:scale-125" />
+
+                <CardHeader className="relative space-y-4">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110">
+                    <BookOpen className="text-muted-foreground h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Egzamin teoretyczny
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Pytania testowe z wszystkich kwalifikacji zawodowych
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="relative">
+                  <Button size="lg" className="group/btn w-full transition-all">
+                    <span className="flex items-center gap-2">
+                      Rozpocznij naukę
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/dashboard/egzamin-praktyczny" className="group">
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -bottom-20 -left-20 h-64 w-64 rounded-full blur-3xl transition-all duration-500 group-hover:scale-125" />
+
+                <CardHeader className="relative space-y-4">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110">
+                    <FileCheck className="text-muted-foreground h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Egzamin praktyczny
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Projekty egzaminacyjne z poprzednich lat
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="relative">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="group/btn w-full bg-transparent transition-all"
+                  >
+                    <span className="flex items-center gap-2">
+                      Przejdź do projektów
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/dashboard/online" className="group">
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-500 group-hover:scale-125" />
+
+                <CardHeader className="relative space-y-4">
+                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110">
+                    <Wifi className="text-muted-foreground h-7 w-7" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <CardTitle className="text-2xl font-bold">
+                      Tryby Online
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Rywalizuj z innymi w czasie rzeczywistym
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="relative">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="group/btn w-full bg-transparent transition-all"
+                  >
+                    <span className="flex items-center gap-2">
+                      Dołącz do gry
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/dashboard/konto" className="group">
+              <Card className="hover:border-border h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+                <CardHeader className="space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <CardTitle className="text-2xl font-bold">
+                        Statystyki
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Szczegóły konta
+                      </CardDescription>
+                    </div>
+                    <div className="bg-muted ring-border rounded-lg p-3 ring-1">
+                      <Award className="text-muted-foreground h-5 w-5" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="group/link w-full bg-transparent"
+                  >
+                    Zobacz więcej
+                    <ArrowRight className="ml-auto h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/dashboard/friends" className="group">
+              <Card className="hover:border-border h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+                <CardHeader className="space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <CardTitle className="text-2xl font-bold">
+                        Znajomi
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Nauka w grupie
+                      </CardDescription>
+                    </div>
+                    <div className="bg-muted ring-border rounded-lg p-3 ring-1">
+                      <Users className="text-muted-foreground h-5 w-5" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="group/link w-full bg-transparent"
+                  >
+                    Otwórz
+                    <ArrowRight className="ml-auto h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/dashboard/ai-wyjasnia" className="group">
+              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-muted/30 absolute -right-10 -bottom-10 h-32 w-32 rounded-full blur-2xl transition-all duration-500 group-hover:scale-125" />
+                <CardHeader className="relative space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+                        <Sparkles className="h-5 w-5" />
+                        AI Wyjaśnia
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Zapytaj asystenta AI
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="relative">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="group/link w-full bg-transparent transition-all"
+                  >
+                    Rozpocznij chat
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* AI WYJAŚNIA */}
-          <Link href="/dashboard/ai-wyjasnia" className="group">
-            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    AI Wyjaśnia
-                  </CardTitle>
-                  <MessageSquare className="h-8 w-8" />
-                </div>
-                <CardDescription className="pt-4">
-                  Zadaj pytanie AI
+        <Card className="hover:border-border relative overflow-hidden border-2 transition-all duration-300 hover:shadow-xl md:col-span-2 lg:col-span-3">
+          <div className="bg-muted/20 absolute top-0 right-0 h-64 w-64 rounded-full blur-3xl" />
+          <CardHeader className="relative">
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <CardTitle className="text-3xl font-bold">
+                  Twoje postępy
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Ostatnie 7 dni aktywności
                 </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="secondary">
-                  Rozpocznij chat
-                </Button>
-              </CardContent>
-            </Card>
-          </Link>
-
-          {/* STATYSTYKI */}
-          <Link href="/dashboard/konto" className="group">
-            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    Statystyki
-                  </CardTitle>
-                  <Award className="h-8 w-8" />
-                </div>
-                <CardDescription className="pt-4">
-                  Szczegółowe wyniki
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="secondary">
-                  Zobacz statystyki
-                </Button>
-              </CardContent>
-            </Card>
-          </Link>
-
-          {/* ZNAJOMI */}
-          <Link href="/dashboard/friends" className="group">
-            <Card className="hover:border-primary h-full transition-all hover:shadow-lg">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    Znajomi
-                  </CardTitle>
-                  <Users className="h-8 w-8" />
-                </div>
-                <CardDescription className="pt-4">
-                  Ucz się razem
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full" variant="secondary">
-                  Zobacz znajomych
-                </Button>
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
+              </div>
+              <div className="bg-muted ring-border rounded-xl p-3 ring-1">
+                <TrendingUp className="text-muted-foreground h-6 w-6" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative h-[300px]">
+            <StatsChart weeklyData={weeklyProgress} totalStats={userStats} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
