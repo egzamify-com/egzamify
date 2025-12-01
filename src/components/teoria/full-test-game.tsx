@@ -322,7 +322,7 @@ export default function FullTestGame({
         />
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between py-8">
         <Button
           onClick={handlePrevQuestion}
           disabled={currentQuestionIndex === 0 || isTestFinished}
@@ -354,7 +354,7 @@ export default function FullTestGame({
         </div>
       </div>
 
-      <Card className="mt-6">
+      <Card className="container mx-auto max-w-4xl py-8">
         <CardHeader>
           <CardTitle className="text-sm">Mapa pytań</CardTitle>
         </CardHeader>

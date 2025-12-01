@@ -268,7 +268,7 @@ export default function RandomQuestionGame({
         </div>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="container mx-auto max-w-4xl py-8">
         <Button
           onClick={() => window.history.back()}
           variant="outline"
