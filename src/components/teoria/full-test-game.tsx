@@ -250,8 +250,7 @@ export default function FullTestGame({
                   setIsTestFinished(false)
                   setShowResults(false)
                 }}
-                className="flex-1"
-                variant={"outline"}
+                className="flex-1 bg-white"
               >
                 Spróbuj ponownie
               </Button>
@@ -335,7 +334,8 @@ export default function FullTestGame({
           {currentQuestionIndex === questions.length - 1 ? (
             <Button
               onClick={handleFinishTest}
-              className="bg-green-600 hover:bg-green-600"
+              className=""
+              variant={"outline"}
               disabled={isTestFinished}
             >
               <Flag className="mr-2 h-4 w-4" />
@@ -370,7 +370,7 @@ export default function FullTestGame({
                   index === currentQuestionIndex
                     ? "border-blue-500 bg-blue-500 text-white"
                     : selectedAnswersIndices[index] !== null
-                      ? "border-green-500 text-green-500"
+                      ? "border-muted-foreground text-muted-foreground"
                       : "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 border-gray-300"
                 } ${isTestFinished ? "cursor-not-allowed opacity-70" : ""}`}
                 disabled={isTestFinished}
