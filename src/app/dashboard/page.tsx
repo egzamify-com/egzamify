@@ -168,7 +168,9 @@ export default function DashboardPage() {
                       Egzamin teoretyczny
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Pytania testowe z wszystkich kwalifikacji zawodowych
+                      Przećwicz pytania testowe ze wszystkich kwalifikacji
+                      zawodowych. Nauka odbywa się w wygodnej formie quizów.
+                      Sprawdzaj postępy i wzmacniaj słabsze obszary.
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -198,7 +200,9 @@ export default function DashboardPage() {
                       Egzamin praktyczny
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Projekty egzaminacyjne z poprzednich lat
+                      Rozwiązuj zadania projektowe z poprzednich lat. To świetny
+                      sposób na przygotowanie się do realnych wymagań egzaminu.
+                      Ucz się na praktycznych przykładach.
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -210,7 +214,7 @@ export default function DashboardPage() {
                     className="group/btn w-full bg-transparent transition-all"
                   >
                     <span className="flex items-center gap-2">
-                      Przejdź do projektów
+                      Przejdź do egzaminów
                       <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                     </span>
                   </Button>
@@ -232,7 +236,9 @@ export default function DashboardPage() {
                       Tryby Online
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Rywalizuj z innymi w czasie rzeczywistym
+                      Rywalizuj z innymi użytkownikami w czasie rzeczywistym.
+                      Sprawdzaj swoją wiedzę pod presją czasu. Dołącz do gry i
+                      zdobywaj kolejne miejsca w rankingu.
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -261,7 +267,9 @@ export default function DashboardPage() {
                         Statystyki
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        Szczegóły konta
+                        Analizuj swoje wyniki i postępy w nauce. Zobacz
+                        szczegółowe dane o poprawnych i błędnych odpowiedziach.
+                        Wykorzystaj statystyki, by efektywniej się uczyć.
                       </CardDescription>
                     </div>
                     <div className="bg-muted ring-border rounded-lg p-3 ring-1">
@@ -291,7 +299,9 @@ export default function DashboardPage() {
                         Znajomi
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        Nauka w grupie
+                        Ucz się razem z innymi i motywujcie się wzajemnie.
+                        Dodawaj znajomych i porównuj swoje wyniki. Nauka w
+                        grupie staje się prostsza i przyjemniejsza.
                       </CardDescription>
                     </div>
                     <div className="bg-muted ring-border rounded-lg p-3 ring-1">
@@ -322,7 +332,9 @@ export default function DashboardPage() {
                         Czat AI
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        Zapytaj asystenta AI
+                        Korzystaj z pomocy inteligentnego asystenta. Zadawaj
+                        pytania i otrzymuj szybkie wyjaśnienia. AI pomoże Ci
+                        zrozumieć trudniejsze zagadnienia.
                       </CardDescription>
                     </div>
                     <div className="bg-muted ring-border rounded-lg p-3 ring-1">
