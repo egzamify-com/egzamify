@@ -79,22 +79,6 @@ export default function BrowseQuestions({
   const isLoading =
     !questionsData || !statsData || (isTyping && questionsData === undefined)
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="mx-auto max-w-2xl">
-          <CardContent className="py-12 text-center">
-            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
-            <h1 className="mb-4 text-2xl font-bold">Ładowanie pytań...</h1>
-            <p className="text-muted-foreground">
-              Pobieranie pytań z bazy danych
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
   return (
     <PageHeaderWrapper
       title={"Baza pytań"}
