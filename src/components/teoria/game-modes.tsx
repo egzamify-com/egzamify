@@ -73,6 +73,22 @@ export default function GameModes({ qualificationName }: GameModesProps) {
           {gameModes.map((mode) => {
             const IconComponent = mode.icon
 
+            const getQuestionText = (
+              modeId: number,
+              questions: number | string,
+            ) => {
+              switch (modeId) {
+                case 1:
+                  return `${questions} pytań`
+                case 2:
+                  return `${questions} pytanie`
+                case 3:
+                  return `${questions} pytania`
+                default:
+                  return `${questions} pyt.`
+              }
+            }
+
             return (
               <Link
                 key={crypto.randomUUID()}
@@ -116,7 +132,9 @@ export default function GameModes({ qualificationName }: GameModesProps) {
                     <div className="bg-border h-4 w-px" />
                     <div className="group-hover:text-foreground flex items-center gap-2 transition-colors duration-300">
                       <CircleQuestionMark className="h-4 w-4" />
-                      <span className="font-medium">{mode.questions} pyt.</span>
+                      <span className="font-medium">
+                        {getQuestionText(mode.id, mode.questions)}
+                      </span>
                     </div>
                   </div>
 

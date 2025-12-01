@@ -268,30 +268,25 @@ export default function RandomQuestionGame({
         </div>
       )}
 
-      <div className="container mx-auto max-w-4xl py-8">
+      <div className="mt-8 flex justify-between">
         <Button
           onClick={() => window.history.back()}
           variant="outline"
           disabled={isSubmittingAnswer}
         >
-          {" "}
           Powrót do trybów
         </Button>
 
-        <div className="flex gap-2">
-          {showResult && (
-            <>
-              <Button
-                onClick={handleNewQuestion}
-                variant="outline"
-                disabled={isSubmittingAnswer}
-              >
-                <RotateCcw className="mr-2 h-4 w-4" />
-                Nowe pytanie
-              </Button>
-            </>
-          )}
-        </div>
+        {showResult && (
+          <Button
+            onClick={handleNewQuestion}
+            variant="default"
+            disabled={isSubmittingAnswer}
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Nowe pytanie
+          </Button>
+        )}
       </div>
     </div>
   )

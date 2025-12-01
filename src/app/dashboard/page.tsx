@@ -6,7 +6,6 @@ import {
   ArrowRight,
   Award,
   BookOpen,
-  Coins,
   FileCheck,
   Flame,
   Sparkles,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import CreditIcon from "~/components/credit-icon"
 import { StatsChart } from "~/components/dashboard/stats-chart"
 import FullScreenLoading from "~/components/full-screen-loading"
 import { Button } from "~/components/ui/button"
@@ -127,27 +127,29 @@ export default function DashboardPage() {
                     </CardDescription>
                   </div>
                   <div className="bg-muted ring-border rounded-xl p-3 ring-1">
-                    <Coins className="text-muted-foreground h-5 w-5" />
+                    <CreditIcon className="text-muted-foreground h-5 w-5" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="relative">
-                <div className="flex items-end justify-between">
-                  <p className="text-5xl font-bold tracking-tighter">
-                    {userCredits}
-                  </p>
+              <CardContent className="relative flex h-full flex-col justify-between">
+                {" "}
+                <p className="mb-4 text-5xl font-bold tracking-tighter">
+                  {" "}
+                  {userCredits}
+                </p>
+                <Link href="/pricing" className="mt-auto">
+                  {" "}
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    className="group/link"
-                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="group/btn w-full bg-transparent transition-all"
                   >
-                    <Link href="/pricing">
+                    <span className="flex items-center gap-2">
                       Zarządzaj
-                      <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/link:translate-x-1" />
-                    </Link>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </span>
                   </Button>
-                </div>
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -317,12 +319,14 @@ export default function DashboardPage() {
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
                       <CardTitle className="flex items-center gap-2 text-2xl font-bold">
-                        <Sparkles className="h-5 w-5" />
-                        AI Wyjaśnia
+                        Czat AI
                       </CardTitle>
                       <CardDescription className="text-sm">
                         Zapytaj asystenta AI
                       </CardDescription>
+                    </div>
+                    <div className="bg-muted ring-border rounded-lg p-3 ring-1">
+                      <Sparkles className="text-muted-foreground h-5 w-5" />
                     </div>
                   </div>
                 </CardHeader>
