@@ -142,7 +142,7 @@ export default function DashboardPage() {
                     className="group/link"
                     asChild
                   >
-                    <Link href="/dashboard/konto">
+                    <Link href="/pricing">
                       Zarządzaj
                       <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/link:translate-x-1" />
                     </Link>
