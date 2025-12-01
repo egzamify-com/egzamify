@@ -1,13 +1,14 @@
 "use client"
 
 import {
+  ArrowRight,
   BookOpen,
+  CircleQuestionMark,
   Clock,
   Database,
   MousePointer2,
   Search,
   Shuffle,
-  Target,
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -68,7 +69,7 @@ export default function GameModes({ qualificationName }: GameModesProps) {
       icon={<MousePointer2 />}
     >
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {gameModes.map((mode) => {
             const IconComponent = mode.icon
 
@@ -77,40 +78,66 @@ export default function GameModes({ qualificationName }: GameModesProps) {
                 key={crypto.randomUUID()}
                 // @ts-expect-error next.js routing ?
                 href={`/dashboard/egzamin-teoretyczny/${qualificationName}/game-modes/${mode.route}`}
+                className="group"
               >
-                <Card className="flex h-full flex-col items-center p-8 transition-shadow hover:shadow-lg">
-                  <div className="mb-6">
-                    <IconComponent className="h-16 w-16" />
+                <Card className="from-card/80 via-card to-card/60 relative flex h-full flex-col overflow-hidden bg-gradient-to-br p-8 shadow-lg shadow-black/5 backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/10">
+                  <div className="from-primary/5 to-primary/3 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                  <div className="from-primary/10 to-primary/5 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="bg-card absolute inset-[1px] rounded-lg" />
+
+                  <div className="relative z-10 mb-8">
+                    <div className="relative mx-auto w-fit">
+                      <div className="absolute inset-0 opacity-20 blur-xl transition-all duration-500 group-hover:opacity-40" />
+                      <div className="from-background to-muted/50 relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <IconComponent className="text-muted-foreground group-hover:text-foreground h-10 w-10 transition-colors duration-500" />
+                      </div>
+                    </div>
                   </div>
 
-                  <h3 className="mb-4 text-center text-xl font-semibold">
+                  <h3 className="group-hover:text-primary relative z-10 mb-4 text-center text-2xl font-bold tracking-tight text-balance transition-colors duration-300">
                     {mode.title}
                   </h3>
 
-                  <p className="text-muted-foreground mb-8 flex-grow text-center text-sm">
+                  <p className="text-muted-foreground relative z-10 mb-8 flex-grow text-center text-sm leading-relaxed text-pretty">
                     {mode.description}
                   </p>
 
-                  <div className="text-muted-foreground mb-6 flex items-center justify-center gap-4 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      <span>{mode.duration}</span>
+                  <div className="relative z-10 mx-auto mb-6 h-px w-24">
+                    <div className="via-border absolute inset-0 bg-gradient-to-r from-transparent to-transparent" />
+                    <div className="via-primary/30 absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  </div>
+
+                  <div className="text-muted-foreground relative z-10 mb-8 flex items-center justify-center gap-6 text-sm">
+                    <div className="group-hover:text-foreground flex items-center gap-2 transition-colors duration-300">
+                      <Clock className="h-4 w-4" />
+                      <span className="font-medium">{mode.duration}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Target className="h-3 w-3" />
-                      <span>{mode.questions} pyt.</span>
+                    <div className="bg-border h-4 w-px" />
+                    <div className="group-hover:text-foreground flex items-center gap-2 transition-colors duration-300">
+                      <CircleQuestionMark className="h-4 w-4" />
+                      <span className="font-medium">{mode.questions} pyt.</span>
                     </div>
                   </div>
 
-                  <Button className="w-full" variant="outline">
-                    {mode.id === 3 ? (
-                      <>
-                        <Search className="mr-2 h-4 w-4" />
-                        Przeglądaj
-                      </>
-                    ) : (
-                      "Rozpocznij"
-                    )}
+                  <Button
+                    className="group/btn from-primary to-primary/90 shadow-primary/20 hover:shadow-primary/30 relative z-10 w-full overflow-hidden bg-gradient-to-r shadow-lg transition-all duration-300 hover:shadow-xl"
+                    variant="default"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2 font-semibold">
+                      {mode.id === 3 ? (
+                        <>
+                          <Search className="h-4 w-4 transition-transform duration-300 group-hover/btn:scale-110" />
+                          Przeglądaj
+                        </>
+                      ) : (
+                        <>
+                          Rozpocznij
+                          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                        </>
+                      )}
+                    </span>
+                    <div className="from-primary/0 via-primary-foreground/10 to-primary/0 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
                   </Button>
                 </Card>
               </Link>
@@ -118,10 +145,11 @@ export default function GameModes({ qualificationName }: GameModesProps) {
           })}
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-12 text-center">
           <Button
             variant="outline"
             onClick={() => router.push("/dashboard/egzamin-teoretyczny")}
+            className="gap-2 shadow-sm transition-all duration-300 hover:shadow-md"
           >
             Powrót do kwalifikacji
           </Button>
