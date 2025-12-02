@@ -16,8 +16,6 @@ export const generateExplanation = action({
     answerLabels: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    console.log("ACTION generateExplanation WYWOŁANA!")
-
     const userId = await getAuthUserId(ctx)
     if (!userId)
       throw new Error("Musisz być zalogowany aby generować wyjaśnienia")
@@ -30,13 +28,7 @@ export const generateExplanation = action({
       answerLabels,
     } = args
 
-    console.log("📝 Dane wejściowe:")
-    console.log("- Pytanie:", questionContent)
-    console.log("- Odpowiedzi:", answers)
-    console.log("- Poprawna odpowiedź:", answers[correctAnswerIndex])
-
     const groqApiKey = process.env.GROQ_API_KEY
-    console.log("GROQ_API_KEY dostępny:", groqApiKey ? "TAK" : "NIE")
 
     if (!groqApiKey) {
       throw new Error(
@@ -78,8 +70,6 @@ Poprawna odpowiedź: ${correctLabel}. ${correctAnswer}
 
 Wygeneruj wyjaśnienie dla tego pytania.`
 
-    console.log("Wysyłam zapytanie do Groq...")
-
     try {
       const result = await generateText({
         model: groq("llama-3.3-70b-versatile"),
@@ -88,15 +78,11 @@ Wygeneruj wyjaśnienie dla tego pytania.`
         prompt: prompt,
       })
 
-      console.log("Otrzymano odpowiedź z Groq:", result.text)
-      console.log(result.totalUsage)
-      console.log(result.usage)
       try {
         await ctx.runMutation(api.teoria.mutate.saveExplanation, {
           questionId,
           explanation: result.text,
         })
-        console.log("Wyjaśnienie zapisane do bazy danych")
       } catch (error) {
         console.error("Błąd podczas zapisywania wyjaśnienia:", error)
       }

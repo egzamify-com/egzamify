@@ -13,7 +13,7 @@ export default function Page() {
     ;(async () => {
       const [createdDbId, err] = await tryCatch(storeNewThread())
       if (err) {
-        console.log("Error creating thread", err)
+        console.error("Error creating thread", err)
         return
       }
       redirect(`/dashboard/ai-wyjasnia/chat/${createdDbId}`)

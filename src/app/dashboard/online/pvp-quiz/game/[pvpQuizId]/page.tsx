@@ -41,7 +41,7 @@ export default function Page() {
       const latestData = quizDataRef.current
 
       if (!latestData?._id) {
-        console.log("No quiz ID found in ref on unmount.")
+        console.error("No quiz ID found in ref on unmount.")
         return
       }
 
@@ -50,8 +50,6 @@ export default function Page() {
           `Deleting quiz ${latestData._id} because status is ${latestData.status} on unmount.`,
         )
         void deleteQuiz({ quizId: latestData._id })
-      } else {
-        console.log("Quiz completed, skipping deletion on unmount.")
       }
     }
   }, [deleteQuiz])

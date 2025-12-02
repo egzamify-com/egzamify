@@ -62,12 +62,10 @@ export default function RandomQuestionGame({
     startStudySession().then((result) => {
       currentSessionId = result.sessionId
       setSessionId(result.sessionId)
-      console.log("Sesja nauki rozpoczęta:", result.sessionId)
     })
 
     return () => {
       if (currentSessionId) {
-        console.log("Kończenie sesji nauki:", currentSessionId)
         endStudySession({ sessionId: currentSessionId })
       }
     }

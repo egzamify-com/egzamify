@@ -118,8 +118,6 @@ export default function ExplainQuestionBtn({
       <Dialog
         open={questionDialogState?.isOpen}
         onOpenChange={(newValue: boolean) => {
-          console.log({ newValue })
-          console.log("on open change")
           updateQuestionDialog(question._id, { isOpen: newValue })
         }}
       >

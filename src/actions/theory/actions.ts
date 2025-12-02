@@ -19,13 +19,8 @@ interface GenerateExplanationArgs {
 export async function generateExplanationWithCharge(
   args: GenerateExplanationArgs,
 ): Promise<{ explanation: string; success: boolean; error?: string }> {
-  console.log(
-    "Rozpoczynam generowanie NOWEGO wyjaśnienia z pobraniem kredytów...",
-  )
-
   const gotCharged = await chargeCredits(EXPLANATION_COST)
   if (!gotCharged) {
-    console.log("Brak wystarczających kredytów")
     return {
       explanation: "",
       success: false,
@@ -35,8 +30,6 @@ export async function generateExplanationWithCharge(
   }
 
   try {
-    console.log("Generuję wyjaśnienie z Groq...")
-
     const result = await fetchAction(
       api.teoria.actions.generateExplanation,
       {
@@ -51,14 +44,12 @@ export async function generateExplanationWithCharge(
       },
     )
 
-    console.log("Wyjaśnienie wygenerowane pomyślnie!")
     return {
       explanation: result.explanation,
       success: true,
     }
   } catch (error) {
     console.error("Błąd podczas generowania wyjaśnienia:", error)
-    console.log("Zwracam kredyty użytkownikowi...")
 
     await refundCredits(EXPLANATION_COST)
 
@@ -74,11 +65,8 @@ export async function generateExplanationWithCharge(
 export async function showExplanationWithCharge(
   explanation: string,
 ): Promise<{ success: boolean; error?: string }> {
-  console.log("Pobieranie 0.25 kredyta za pokazanie wyjaśnienia...")
-
   const gotCharged = await chargeCredits(EXPLANATION_COST)
   if (!gotCharged) {
-    console.log("Brak wystarczających kredytów")
     return {
       success: false,
       error:
@@ -86,7 +74,6 @@ export async function showExplanationWithCharge(
     }
   }
 
-  console.log("Kredyty pobrane, pokazuję wyjaśnienie")
   return {
     success: true,
   }
