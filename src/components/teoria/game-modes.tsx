@@ -96,17 +96,17 @@ export default function GameModes({ qualificationName }: GameModesProps) {
                 href={`/dashboard/egzamin-teoretyczny/${qualificationName}/game-modes/${mode.route}`}
                 className="group"
               >
-                <Card className="from-card/80 via-card to-card/60 relative flex h-full flex-col overflow-hidden bg-gradient-to-br p-8 shadow-lg shadow-black/5 backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/10">
-                  <div className="from-primary/5 to-primary/3 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <Card className="from-card/80 via-card to-card/60 relative flex h-full flex-col overflow-hidden bg-gradient-to-br p-8 shadow-lg shadow-black/5 backdrop-blur-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/10">
+                  <div className="from-primary/5 to-primary/3 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
-                  <div className="from-primary/10 to-primary/5 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="from-primary/10 to-primary/5 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
                   <div className="bg-card absolute inset-[1px] rounded-lg" />
 
                   <div className="relative z-10 mb-8">
                     <div className="relative mx-auto w-fit">
-                      <div className="absolute inset-0 opacity-20 blur-xl transition-all duration-500 group-hover:opacity-40" />
-                      <div className="from-background to-muted/50 relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                        <IconComponent className="text-muted-foreground group-hover:text-foreground h-10 w-10 transition-colors duration-500" />
+                      <div className="absolute inset-0 opacity-20 blur-xl transition-all duration-200 group-hover:opacity-40" />
+                      <div className="from-background to-muted/50 relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-all duration-200 group-hover:scale-110 group-hover:rotate-3">
+                        <IconComponent className="text-muted-foreground group-hover:text-foreground h-10 w-10 transition-colors duration-200" />
                       </div>
                     </div>
                   </div>
@@ -121,7 +121,7 @@ export default function GameModes({ qualificationName }: GameModesProps) {
 
                   <div className="relative z-10 mx-auto mb-6 h-px w-24">
                     <div className="via-border absolute inset-0 bg-gradient-to-r from-transparent to-transparent" />
-                    <div className="via-primary/30 absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    <div className="via-primary/30 absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
                   </div>
 
                   <div className="text-muted-foreground relative z-10 mb-8 flex items-center justify-center gap-6 text-sm">
@@ -139,7 +139,7 @@ export default function GameModes({ qualificationName }: GameModesProps) {
                   </div>
 
                   <Button
-                    className="group/btn from-primary to-primary/90 shadow-primary/20 hover:shadow-primary/30 relative z-10 w-full overflow-hidden bg-gradient-to-r shadow-lg transition-all duration-300 hover:shadow-xl"
+                    className="group/btn from-primary to-primary/90 shadow-primary/20 hover:shadow-primary/30 relative z-10 w-full overflow-hidden bg-gradient-to-r shadow-xs transition-all duration-200 hover:shadow-lg"
                     variant="default"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2 font-semibold">

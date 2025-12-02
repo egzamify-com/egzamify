@@ -45,7 +45,7 @@ export default function AllQualificationsList({
             key={i}
             className="group from-card/50 via-card to-card/80 relative overflow-hidden border-0 bg-gradient-to-br backdrop-blur-sm"
           >
-            <div className="from-primary/5 to-accent/5 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="from-primary/5 to-accent/5 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-200" />
             <CardHeader className="space-y-4 pb-4">
               <div className="flex items-start justify-between">
                 <div className="bg-muted/50 h-12 w-12 animate-pulse rounded-xl" />
@@ -120,23 +120,23 @@ export default function AllQualificationsList({
         return (
           <Card
             key={data.qualification._id}
-            className="group from-card/80 via-card to-card/60 relative flex flex-col overflow-hidden bg-gradient-to-br shadow-lg shadow-black/5 backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/10"
+            className="group from-card/80 via-card to-card/60 relative flex flex-col overflow-hidden bg-gradient-to-br shadow-lg shadow-black/5 backdrop-blur-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/10"
           >
-            <div className="from-primary/5 to-primary/3 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="from-primary/5 to-primary/3 absolute inset-0 bg-gradient-to-br via-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-200" />
 
-            <div className="from-primary/10 to-primary/5 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="from-primary/10 to-primary/5 absolute inset-0 rounded-lg bg-gradient-to-br opacity-0 transition-opacity duration-200 group-hover:opacity-200" />
             <div className="bg-card absolute inset-[1px] rounded-lg" />
 
             <CardHeader className="relative z-10 space-y-4 pb-4">
               <div className="flex items-start justify-between">
                 <div className="relative">
-                  <div className="text-muted-foreground absolute inset-0 opacity-20 blur-xl transition-all duration-500 group-hover:opacity-40" />
-                  <div className="from-background to-muted/50 relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                    <BookOpen className="text-muted-foreground group-hover:text-foreground h-6 w-6 transition-colors duration-500" />
+                  <div className="text-muted-foreground absolute inset-0 opacity-20 blur-xl transition-all duration-200 group-hover:opacity-40" />
+                  <div className="from-background to-muted/50 relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br shadow-lg transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3">
+                    <BookOpen className="text-muted-foreground group-hover:text-foreground h-6 w-6 transition-colors duration-200" />
                   </div>
                 </div>
 
-                <div className="from-primary/10 to-primary/5 ring-primary/10 group-hover:ring-primary/20 flex items-center gap-1.5 rounded-full bg-gradient-to-r px-3 py-1.5 shadow-sm ring-1 transition-all duration-300">
+                <div className="from-primary/10 to-primary/5 ring-primary/10 group-hover:ring-primary/20 flex items-center gap-1.5 rounded-full bg-gradient-to-r px-3 py-1.5 shadow-sm ring-1 transition-all duration-200">
                   <CircleQuestionMark className="text-primary h-3.5 w-3.5" />
                   <span className="text-primary text-xs font-semibold">
                     {data.questionsCount}
@@ -145,13 +145,13 @@ export default function AllQualificationsList({
               </div>
 
               <div>
-                <CardTitle className="group-hover:text-primary text-xl leading-tight tracking-tight text-balance transition-colors duration-300">
+                <CardTitle className="group-hover:text-primary text-xl leading-tight tracking-tight text-balance transition-colors duration-200">
                   {data.qualification.name}
                 </CardTitle>
 
                 {data.qualification.label &&
                   data.qualification.label !== data.qualification.name && (
-                    <p className="text-muted-foreground group-hover:text-primary/70 mt-1 text-sm transition-colors duration-300">
+                    <p className="text-muted-foreground group-hover:text-primary/70 mt-1 text-sm transition-colors duration-200">
                       {data.qualification.label}
                     </p>
                   )}
@@ -160,7 +160,7 @@ export default function AllQualificationsList({
 
             <div className="relative mx-6 h-px">
               <div className="via-border absolute inset-0 bg-gradient-to-r from-transparent to-transparent" />
-              <div className="via-primary/20 absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="via-primary/20 absolute inset-0 bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-200" />
             </div>
 
             <CardFooter className="relative z-10 mt-auto flex justify-end pt-6">
@@ -170,12 +170,12 @@ export default function AllQualificationsList({
                 }}
                 className="w-full"
               >
-                <Button className="group/btn from-primary to-primary/90 shadow-primary/20 hover:shadow-primary/30 relative w-full overflow-hidden bg-gradient-to-r shadow-lg transition-all duration-300 hover:shadow-xl">
+                <Button className="group/btn from-primary to-primary/90 shadow-primary/20 hover:shadow-primary/30 relative w-full overflow-hidden bg-gradient-to-r shadow-xs transition-all duration-200 hover:shadow-lg">
                   <span className="relative z-10 flex items-center justify-center gap-2 font-semibold">
                     Rozpocznij naukę
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
                   </span>
-                  <div className="from-primary/0 via-primary-foreground/10 to-primary/0 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100" />
+                  <div className="from-primary/0 via-primary-foreground/10 to-primary/0 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-200 group-hover/btn:opacity-200" />
                 </Button>
               </Link>
             </CardFooter>

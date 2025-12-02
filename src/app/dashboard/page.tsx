@@ -8,7 +8,7 @@ import {
   BookOpen,
   FileCheck,
   Flame,
-  Sparkles,
+  MessageCircleIcon,
   TrendingUp,
   Users,
   Wifi,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { cloneElement, type ReactElement } from "react"
 import CreditIcon from "~/components/credit-icon"
 import { StatsChart } from "~/components/dashboard/stats-chart"
 import FullScreenLoading from "~/components/full-screen-loading"
@@ -78,10 +79,18 @@ export default function DashboardPage() {
                     <CardTitle className="text-2xl font-bold">
                       Seria dzienna
                     </CardTitle>
-                    <CardDescription className="text-sm">
-                      {currentStreak > 0
-                        ? "Niesamowite! Tak trzymaj"
-                        : "Zacznij dzisiaj swoją serię"}
+                    <CardDescription className="space-y-1 text-base">
+                      <p>
+                        {`Codzienne rozwiązywanie krótkiego zestawu pytań z egzaminu
+                      teoretycznego to najlepszy sposób, by na bieżąco sprawdzać
+                      swoje postępy i redukować stres przed właściwym testem.`}
+                      </p>
+
+                      <p className="font-semibold">
+                        {currentStreak > 0
+                          ? "Niesamowite! Tak trzymaj"
+                          : "Już dziś zacznij swoją serię!"}
+                      </p>
                     </CardDescription>
                   </div>
                   <div className="rounded-xl bg-orange-500/10 p-3 ring-1 ring-orange-500/20">
@@ -119,26 +128,26 @@ export default function DashboardPage() {
               <CardHeader className="relative space-y-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                      Kredyty
+                    <CardTitle className="flex w-full flex-row justify-between text-2xl font-bold">
+                      <h1>Kredyty Egzamify</h1>
+                      <CreditIcon className="h-8 w-8" />
                     </CardTitle>
-                    <CardDescription className="text-sm">
-                      Dostępne środki
+                    <CardDescription>
+                      <p>
+                        {`
+                       Kredyty to niezbędne środki, dzięki którym możesz korzystać z zaawansowanych funkcji AI, takich jak szczegółowe wyjaśnianie pytań, analiza Twoich odpowiedzi, a także automatyczne sprawdzanie zadań z egzaminów praktycznych. 
+                        `}
+                      </p>
                     </CardDescription>
-                  </div>
-                  <div className="bg-muted ring-border rounded-xl p-3 ring-1">
-                    <CreditIcon className="text-muted-foreground h-5 w-5" />
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="relative flex h-full flex-col justify-between">
-                {" "}
-                <p className="mb-4 text-5xl font-bold tracking-tighter">
-                  {" "}
-                  {userCredits}
-                </p>
+                <div className="flex flex-row items-center justify-start gap-2">
+                  <p className="text-5xl font-bold">{userCredits}</p>
+                  <CreditIcon className="h-10 w-10" />
+                </div>
                 <Link href="/pricing" className="mt-auto">
-                  {" "}
                   <Button
                     size="lg"
                     variant="outline"
@@ -154,217 +163,79 @@ export default function DashboardPage() {
             </Card>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <Link href="/dashboard/egzamin-teoretyczny" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
-
-                <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
-                    <BookOpen className="text-muted-foreground h-7 w-7" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                      Egzamin teoretyczny
-                    </CardTitle>
-                    <CardDescription className="text-sm">
+            <DashboardCard
+              {...{
+                title: "Egzamin teoretyczny",
+                description: `
                       Przećwicz pytania testowe ze wszystkich kwalifikacji
-                      zawodowych. Nauka odbywa się w wygodnej formie quizów.
-                      Sprawdzaj postępy i wzmacniaj słabsze obszary.
-                    </CardDescription>
-                  </div>
-                </CardHeader>
+                      zawodowych. Nauka odbywa się w wygodnej formie quizów, trybu losowego pytania, ale możesz również spokojnie przeglądac naszą bazę pytań.
+                      Sprawdzaj postępy i wzmacniaj słabsze obszary.`,
+                href: "/dashboard/egzamin-teoretyczny",
+                buttonText: `Rozpocznij nauke`,
+                icon: <BookOpen />,
+              }}
+            />
 
-                <CardContent className="relative">
-                  <Button size="lg" className="group/btn w-full transition-all">
-                    <span className="flex items-center gap-2">
-                      Rozpocznij naukę
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
+            <DashboardCard
+              {...{
+                title: "Egzamin praktyczny",
+                description: `
+To najszybsza droga do nauki na realnych przykładach – AI precyzyjnie sprawdzi Twoją pracę, wykryje błędy i zasugeruje poprawki zgodnie z kluczem egzaminacyjnym. Ucz się na praktycznych przykładach i poznaj moc natychmiastowej oceny!`,
+                href: "/dashboard/egzamin-praktyczny",
+                buttonText: `Rozpocznij nauke`,
+                icon: <FileCheck />,
+              }}
+            />
 
-            <Link href="/dashboard/egzamin-praktyczny" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -bottom-20 -left-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
-
-                <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
-                    <FileCheck className="text-muted-foreground h-7 w-7" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                      Egzamin praktyczny
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      Rozwiązuj zadania projektowe z poprzednich lat. To świetny
-                      sposób na przygotowanie się do realnych wymagań egzaminu.
-                      Ucz się na praktycznych przykładach.
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="relative">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="group/btn w-full bg-transparent transition-all"
-                  >
-                    <span className="flex items-center gap-2">
-                      Przejdź do egzaminów
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/dashboard/online" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
-
-                <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
-                    <Wifi className="text-muted-foreground h-7 w-7" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                      Tryby Online
-                    </CardTitle>
-                    <CardDescription className="text-sm">
+            <DashboardCard
+              {...{
+                title: "Tryby online",
+                description: `
                       Rywalizuj z innymi użytkownikami w czasie rzeczywistym.
-                      Sprawdzaj swoją wiedzę pod presją czasu. Dołącz do gry i
-                      zdobywaj kolejne miejsca w rankingu.
-                    </CardDescription>
-                  </div>
-                </CardHeader>
+                      Sprawdzaj swoją wiedzę pod presją czasu. Dołącz do gry z znajomym i połączcie przyjemne z pożytecznym.
+                      `,
+                href: "/dashboard/online",
+                buttonText: "Dołącz do gry",
+                icon: <Wifi />,
+              }}
+            />
 
-                <CardContent className="relative">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="group/btn w-full bg-transparent transition-all"
-                  >
-                    <span className="flex items-center gap-2">
-                      Dołącz do gry
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/dashboard/konto" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -top-20 -right-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
-
-                <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
-                    <Award className="text-muted-foreground h-7 w-7" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                      Statystyki
-                    </CardTitle>
-                    <CardDescription className="text-sm">
+            <DashboardCard
+              {...{
+                title: "Statystyki",
+                description: `
                       Analizuj swoje wyniki i postępy w nauce. Zobacz
                       szczegółowe dane o poprawnych i błędnych odpowiedziach.
-                      Wykorzystaj statystyki, by efektywniej się uczyć.
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="relative">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="group/btn w-full bg-transparent transition-all"
-                  >
-                    <span className="flex items-center gap-2">
-                      Zobacz więcej
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/dashboard/friends" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -bottom-20 -left-20 h-64 w-64 rounded-full blur-3xl transition-all duration-100 group-hover:scale-125" />
-
-                <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
-                    <Users className="text-muted-foreground h-7 w-7" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <CardTitle className="text-2xl font-bold">
-                      Znajomi
-                    </CardTitle>
-                    <CardDescription className="text-sm">
+                      Wykorzystaj statystyki, by efektywniej się uczyć.`,
+                href: "/dashboard/konto",
+                buttonText: "Zobacz więcej",
+                icon: <Award />,
+              }}
+            />
+            <DashboardCard
+              {...{
+                title: "Znajomi",
+                description: `
                       Ucz się razem z innymi i motywujcie się wzajemnie. Dodawaj
                       znajomych i porównuj swoje wyniki. Nauka w grupie staje
-                      się prostsza i przyjemniejsza.
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="relative">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="group/btn w-full bg-transparent transition-all"
-                  >
-                    <span className="flex items-center gap-2">
-                      Otwórz
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/dashboard/ai-wyjasnia" className="group">
-              <Card className="hover:border-border relative h-full overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
-                <div className="bg-muted/30 absolute -right-10 -bottom-10 h-32 w-32 rounded-full blur-2xl transition-all duration-100 group-hover:scale-125" />
-
-                <CardHeader className="relative space-y-4">
-                  <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
-                    <Sparkles className="text-muted-foreground h-7 w-7" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <CardTitle className="flex items-center gap-2 text-2xl font-bold">
-                      Czat AI
-                    </CardTitle>
-                    <CardDescription className="text-sm">
+                      się prostsza i przyjemniejsza.`,
+                href: "/dashboard/friends",
+                buttonText: "Otwórz",
+                icon: <Users />,
+              }}
+            />
+            <DashboardCard
+              {...{
+                title: "Czat AI",
+                description: `
                       Korzystaj z pomocy inteligentnego asystenta. Zadawaj
                       pytania i otrzymuj szybkie wyjaśnienia. AI pomoże Ci
-                      zrozumieć trudniejsze zagadnienia.
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="relative">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="group/btn w-full bg-transparent transition-all"
-                  >
-                    <span className="flex items-center gap-2">
-                      Rozpocznij chat
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </span>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
+                      zrozumieć trudniejsze zagadnienia.`,
+                href: "/dashboard/ai-wyjasnia",
+                buttonText: "Rozpocznij czat",
+                icon: <MessageCircleIcon />,
+              }}
+            />
           </div>
         </div>
 
@@ -393,5 +264,58 @@ export default function DashboardPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+function DashboardCard({
+  href,
+  icon,
+  title,
+  description,
+  buttonText,
+}: {
+  href: string
+  icon: ReactElement
+  title: string
+  description: string
+  buttonText: string
+}) {
+  return (
+    // @ts-expect-error blah blah next.js
+    <Link href={href} className="group">
+      <Card className="hover:border-border relative flex h-full flex-col justify-between overflow-hidden border-2 transition-all duration-100 hover:shadow-xl">
+        <div className="bg-muted/30 absolute -right-10 -bottom-10 h-32 w-32 rounded-full blur-2xl transition-all duration-100 group-hover:scale-125" />
+
+        <CardHeader className="relative space-y-4">
+          <div className="bg-muted ring-border inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-200 group-hover:scale-110">
+            {cloneElement(icon, {
+              // @ts-expect-error blah blah, this works
+              size: 40,
+              className: "text-muted-foreground h-7 w-7",
+            })}
+          </div>
+
+          <div className="space-y-2">
+            <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+              {title}
+            </CardTitle>
+            <CardDescription className="text-sm">{description}</CardDescription>
+          </div>
+        </CardHeader>
+
+        <CardContent className="relative">
+          <Button
+            variant="outline"
+            size="lg"
+            className="group/btn w-full bg-transparent transition-all"
+          >
+            <span className="flex items-center gap-2">
+              {buttonText}
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+            </span>
+          </Button>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }
