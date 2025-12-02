@@ -26,7 +26,8 @@ interface StatsChartProps {
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
+  //naprawiony eeror
+  if (active && payload?.length) {
     return (
       <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
         <p className="text-foreground text-sm font-medium">
