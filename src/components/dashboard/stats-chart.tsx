@@ -46,21 +46,21 @@ export function StatsChart({ weeklyData, totalStats }: StatsChartProps) {
         <div className="space-y-1">
           <p className="text-muted-foreground text-sm">Rozwiązane pytania</p>
           <p className="text-2xl font-bold">
-            {totalStats?.totalQuestions || 0}
+            {totalStats?.totalQuestions ?? 0}
           </p>
           <p className="text-muted-foreground text-xs">Wszystkie odpowiedzi</p>
         </div>
         <div className="space-y-1">
           <p className="text-muted-foreground text-sm">Poprawne odpowiedzi</p>
           <p className="text-2xl font-bold">
-            {totalStats?.correctAnswers || 0}
+            {totalStats?.correctAnswers ?? 0}
           </p>
           <p className="text-muted-foreground text-xs">Bezbłędne</p>
         </div>
         <div className="space-y-1">
           <p className="text-muted-foreground text-sm">Skuteczność nauki</p>
           <p className="text-2xl font-bold">
-            {totalStats?.averageAccuracy || 0}%
+            {totalStats?.averageAccuracy ?? 0}%
           </p>
           <p className="text-muted-foreground text-xs">Średnia trafność</p>
         </div>
@@ -72,22 +72,22 @@ export function StatsChart({ weeklyData, totalStats }: StatsChartProps) {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            stroke="hsl(var(--muted-foreground))"
+            stroke="var(--muted-foreground)"
           />
           <YAxis
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            stroke="hsl(var(--muted-foreground))"
+            stroke="var(--muted-foreground)"
           />
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ fill: "hsl(var(--muted))" }}
+            cursor={{ fill: "var(--muted)" }}
           />
           <Bar
             dataKey="questions"
             radius={[8, 8, 0, 0]}
-            fill="hsl(var(--muted-foreground))"
+            fill="var(--foreground)"
           />
         </BarChart>
       </ResponsiveContainer>
