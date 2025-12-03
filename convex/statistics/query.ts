@@ -18,12 +18,12 @@ interface QualificationStatsData {
   accuracy: number
 }
 
-interface MonthlyTrendData {
-  month: string
-  fullMonth: string
-  questions: number
-  accuracy: number
-}
+// interface MonthlyTrendData {
+//   month: string
+//   fullMonth: string
+//   questions: number
+//   accuracy: number
+// }
 
 interface StudyPatternsData {
   time: string
@@ -209,85 +209,85 @@ export const getQualificationStats = query({
   },
 })
 
-export const getMonthlyTrends = query({
-  handler: async (ctx): Promise<MonthlyTrendData[]> => {
-    const userId = await getUserIdOrThrow(ctx)
+// export const getMonthlyTrends = query({
+//   handler: async (ctx): Promise<MonthlyTrendData[]> => {
+//     const userId = await getUserIdOrThrow(ctx)
 
-    const userAnswers = await getUserAnswersFromTimePeriod(
-      ctx,
-      userId,
-      "sixMonthsAgo",
-    )
+//     const userAnswers = await getUserAnswersFromTimePeriod(
+//       ctx,
+//       userId,
+//       "sixMonthsAgo",
+//     )
 
-    const fullMonthNamesMap: { [key: string]: string } = {
-      Sty: "Styczeń",
-      Lut: "Luty",
-      Mar: "Marzec",
-      Kwi: "Kwiecień",
-      Maj: "Maj",
-      Cze: "Czerwiec",
-      Lip: "Lipiec",
-      Sie: "Sierpień",
-      Wrz: "Wrzesień",
-      Paź: "Październik",
-      Lis: "Listopad",
-      Gru: "Grudzień",
-    }
+//     const fullMonthNamesMap: { [key: string]: string } = {
+//       Sty: "Styczeń",
+//       Lut: "Luty",
+//       Mar: "Marzec",
+//       Kwi: "Kwiecień",
+//       Maj: "Maj",
+//       Cze: "Czerwiec",
+//       Lip: "Lipiec",
+//       Sie: "Sierpień",
+//       Wrz: "Wrzesień",
+//       Paź: "Październik",
+//       Lis: "Listopad",
+//       Gru: "Grudzień",
+//     }
 
-    const orderedMonths = [
-      "Sty",
-      "Lut",
-      "Mar",
-      "Kwi",
-      "Maj",
-      "Cze",
-      "Lip",
-      "Sie",
-      "Wrz",
-      "Paź",
-      "Lis",
-      "Gru",
-    ]
+//     const orderedMonths = [
+//       "Sty",
+//       "Lut",
+//       "Mar",
+//       "Kwi",
+//       "Maj",
+//       "Cze",
+//       "Lip",
+//       "Sie",
+//       "Wrz",
+//       "Paź",
+//       "Lis",
+//       "Gru",
+//     ]
 
-    const monthlyMap = new Map<
-      string,
-      {
-        questions: number
-        correct: number
-      }
-    >()
+//     const monthlyMap = new Map<
+//       string,
+//       {
+//         questions: number
+//         correct: number
+//       }
+//     >()
 
-    userAnswers.forEach((answer) => {
-      const monthKey = getDateKey(answer._creationTime, "month")
-      if (!monthlyMap.has(monthKey)) {
-        monthlyMap.set(monthKey, { questions: 0, correct: 0 })
-      }
-      const stats = monthlyMap.get(monthKey)!
-      stats.questions++
-      if (answer.isCorrect) stats.correct++
-    })
+//     userAnswers.forEach((answer) => {
+//       const monthKey = getDateKey(answer._creationTime, "month")
+//       if (!monthlyMap.has(monthKey)) {
+//         monthlyMap.set(monthKey, { questions: 0, correct: 0 })
+//       }
+//       const stats = monthlyMap.get(monthKey)!
+//       stats.questions++
+//       if (answer.isCorrect) stats.correct++
+//     })
 
-    const rawResult = Array.from(monthlyMap.entries()).map(
-      ([monthAbbr, stats]) => ({
-        month: monthAbbr,
-        fullMonth: fullMonthNamesMap[monthAbbr] as string,
-        questions: stats.questions,
-        accuracy:
-          stats.questions > 0
-            ? Math.round((stats.correct / stats.questions) * 100 * 10) / 10
-            : 0,
-      }),
-    )
+//     const rawResult = Array.from(monthlyMap.entries()).map(
+//       ([monthAbbr, stats]) => ({
+//         month: monthAbbr,
+//         fullMonth: fullMonthNamesMap[monthAbbr] as string,
+//         questions: stats.questions,
+//         accuracy:
+//           stats.questions > 0
+//             ? Math.round((stats.correct / stats.questions) * 100 * 10) / 10
+//             : 0,
+//       }),
+//     )
 
-    const sortedResult = orderedMonths
-      .map((monthAbbr) => rawResult.find((item) => item.month === monthAbbr))
-      .filter((item): item is MonthlyTrendData => item !== undefined)
+//     const sortedResult = orderedMonths
+//       .map((monthAbbr) => rawResult.find((item) => item.month === monthAbbr))
+//       .filter((item): item is MonthlyTrendData => item !== undefined)
 
-    console.log("Dane z getMonthlyTrends:", sortedResult)
+//     console.log("Dane z getMonthlyTrends:", sortedResult)
 
-    return sortedResult.slice(-6)
-  },
-})
+//     return sortedResult.slice(-6)
+//   },
+// })
 
 export const getStudyPatterns = query({
   handler: async (ctx): Promise<StudyPatternsData[]> => {

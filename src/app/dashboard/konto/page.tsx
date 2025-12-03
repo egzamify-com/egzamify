@@ -5,7 +5,6 @@ import { useQuery } from "convex/react"
 import {
   Award,
   BookOpen,
-  Calendar,
   CheckCircle,
   Clock,
   Lightbulb,
@@ -24,8 +23,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -87,34 +84,35 @@ const QualificationStatsCustomTooltip = ({ active, payload, label }: any) => {
   return null
 }
 
-interface MonthlyTrendData {
-  month: string
-  fullMonth: string
-  questions: number
-  accuracy: number
-}
+// interface MonthlyTrendData {
+//   month: string
+//   fullMonth: string
+//   questions: number
+//   accuracy: number
+// }
 
-const MonthlyTrendsCustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload?.length) {
-    const data = payload[0].payload as MonthlyTrendData
-    const fullMonthName = data.fullMonth || label
+// const MonthlyTrendsCustomTooltip = ({ active, payload, label }: any) => {
+//   if (active && payload?.length) {
+//     const data = payload[0].payload as MonthlyTrendData
+//     const fullMonthName = data.fullMonth || label
 
-    return (
-      <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
-        <p className="text-foreground mb-1 text-sm font-bold">
-          {fullMonthName}
-        </p>
-        <p className="text-foreground text-sm">
-          Pytania: <span className="font-bold">{data.questions}</span>
-        </p>
-        <p className="text-foreground text-sm">
-          Skuteczność: <span className="font-bold">{data.accuracy}%</span>
-        </p>
-      </div>
-    )
-  }
-  return null
-}
+//   }}
+//     return (
+//       <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
+//         <p className="text-foreground mb-1 text-sm font-bold">
+//           {fullMonthName}
+//         </p>
+//         <p className="text-foreground text-sm">
+//           Pytania: <span className="font-bold">{data.questions}</span>
+//         </p>
+//         <p className="text-foreground text-sm">
+//           Skuteczność: <span className="font-bold">{data.accuracy}%</span>
+//         </p>
+//       </div>
+//     )
+//   }
+//   return null
+// }
 
 interface StudyPatternsData {
   time: string
@@ -147,7 +145,7 @@ export default function StatisticsPage() {
   const qualificationStats = useQuery(
     api.statistics.query.getQualificationStats,
   )
-  const monthlyTrend = useQuery(api.statistics.query.getMonthlyTrends)
+  // const monthlyTrend = useQuery(api.statistics.query.getMonthlyTrends)
   const studyPatterns = useQuery(api.statistics.query.getStudyPatterns)
   const skillRadar = useQuery(api.statistics.query.getSkillRadar)
   const difficultyBreakdown = useQuery(
@@ -165,7 +163,7 @@ export default function StatisticsPage() {
     userStats === undefined ||
     weeklyProgress === undefined ||
     qualificationStats === undefined ||
-    monthlyTrend === undefined ||
+    // monthlyTrend === undefined ||
     studyPatterns === undefined ||
     skillRadar === undefined ||
     difficultyBreakdown === undefined
@@ -312,135 +310,6 @@ export default function StatisticsPage() {
               </ResponsiveContainer>
             </CardContent>
           </Card>
-
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
-            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="text-muted-foreground h-5 w-5" />
-                  Wyniki na kwalifikacje
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={qualificationStats}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      className="stroke-border/40"
-                    />
-                    <XAxis dataKey="name" className="text-muted-foreground" />
-                    <YAxis className="text-muted-foreground" />
-                    <Tooltip
-                      content={<QualificationStatsCustomTooltip />}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <Bar
-                      dataKey="accuracy"
-                      fill="hsl(var(--muted-foreground))"
-                      radius={[8, 8, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="border-border/40 bg-card/50 hover:border-border/60 mt-8 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="text-muted-foreground h-5 w-5" />
-                Trendy miesięczne
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart
-                  data={monthlyTrend}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    className="stroke-border/40"
-                  />
-                  <XAxis dataKey="month" className="text-muted-foreground" />
-
-                  <YAxis yAxisId="left" className="text-muted-foreground" />
-
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    className="text-muted-foreground"
-                    domain={[0, 100]}
-                  />
-                  <Tooltip
-                    content={<MonthlyTrendsCustomTooltip />}
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="questions"
-                    stroke="hsl(var(--muted-foreground))"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="accuracy"
-                    stroke="hsl(var(--foreground))"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/40 bg-card/50 hover:border-border/60 mt-8 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="text-muted-foreground h-5 w-5" />
-                Wzorce nauki (godziny)
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={studyPatterns}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    className="stroke-border/40"
-                  />
-                  <XAxis dataKey="time" className="text-muted-foreground" />
-                  <YAxis className="text-muted-foreground" />
-                  <Tooltip
-                    content={<StudyPatternsCustomTooltip />}
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="sessions"
-                    stroke="hsl(var(--muted-foreground))"
-                    fill="hsl(var(--muted-foreground))"
-                    fillOpacity={0.3}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
@@ -537,6 +406,134 @@ export default function StatisticsPage() {
               </CardContent>
             </Card>
           </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
+            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="text-muted-foreground h-5 w-5" />
+                  Wyniki na kwalifikacje
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={qualificationStats}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-border/40"
+                    />
+                    <XAxis dataKey="name" className="text-muted-foreground" />
+                    <YAxis className="text-muted-foreground" />
+                    <Tooltip
+                      content={<QualificationStatsCustomTooltip />}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <Bar
+                      dataKey="accuracy"
+                      fill="hsl(var(--muted-foreground))"
+                      radius={[8, 8, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* <Card className="border-border/40 bg-card/50 hover:border-border/60 mt-8 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="text-muted-foreground h-5 w-5" />
+                Trendy miesięczne
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
+                  data={monthlyTrend}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border/40"
+                  />
+                  <XAxis dataKey="month" className="text-muted-foreground" />
+
+                  <YAxis yAxisId="left" className="text-muted-foreground" />
+
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    className="text-muted-foreground"
+                    domain={[0, 100]}
+                  />
+                  <Tooltip
+                    content={<MonthlyTrendsCustomTooltip />}
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="questions"
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="accuracy"
+                    stroke="hsl(var(--foreground))"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card> */}
+
+          <Card className="border-border/40 bg-card/50 hover:border-border/60 mt-8 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="text-muted-foreground h-5 w-5" />
+                Wzorce nauki (godziny)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={studyPatterns}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border/40"
+                  />
+                  <XAxis dataKey="time" className="text-muted-foreground" />
+                  <YAxis className="text-muted-foreground" />
+                  <Tooltip
+                    content={<StudyPatternsCustomTooltip />}
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="sessions"
+                    stroke="hsl(var(--muted-foreground))"
+                    fill="hsl(var(--muted-foreground))"
+                    fillOpacity={0.3}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </>
       ) : (
         <Card className="border-border/40 bg-card/50 backdrop-blur-sm">

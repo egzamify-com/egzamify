@@ -64,9 +64,13 @@ export default function Page() {
             />
             <div className="flex flex-col gap-0">
               <p className="text-muted-foreground px-4 text-center text-xs">
-                Logując się, akceptujesz nasze warunki korzystania z usługi oraz
-                politykę prywatności.
+                Logując się, akceptujesz nasze warunki korzystania z usługi oraz{" "}
+                <Link href="/polityka-prywatnosci" className="underline">
+                  politykę prywatności
+                </Link>{" "}
+                i pliki cookie.
               </p>
+
               <p className="text-muted-foreground px-4 text-center text-xs">
                 Support: egzamify-admin@proton.me
               </p>

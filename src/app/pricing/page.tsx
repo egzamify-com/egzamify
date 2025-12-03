@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query"
 import FullScreenError from "~/components/full-screen-error"
 import FullScreenLoading from "~/components/full-screen-loading"
+import PricingFaqSection from "~/components/pricing-faq-section"
 import { env } from "~/env"
 import type { GetProductsResponse } from "../api/stripe/get-stripe-products/route"
 import Product from "./product"
@@ -57,6 +58,8 @@ export default function Page() {
             <Product key={crypto.randomUUID()} {...{ product }} />
           ))}
         </div>
+        <div className="py-12"></div>
+        <PricingFaqSection />
       </div>
     </div>
   )
