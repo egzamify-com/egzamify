@@ -22,6 +22,7 @@ import {
 import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+
 export function ChatInputWithModeSelection({
   selectedMode,
   setSelectedMode,
@@ -173,7 +174,7 @@ export function ChatInputWithModeSelection({
 function SendButton({ ...props }: ButtonProps) {
   return (
     <Tooltip>
-      <TooltipTrigger className="ml-auto">
+      <TooltipTrigger className="ml-auto" asChild>
         <InputGroupButton
           {...props}
           className="ml-auto"
