@@ -1,5 +1,6 @@
 import type { Doc } from "convex/_generated/dataModel"
 import { ConvexError, v } from "convex/values"
+import { internal } from "../../_generated/api"
 import { mutation } from "../../_generated/server"
 import { getUserIdOrThrow, getUserProfileOrThrow } from "../../custom_helpers"
 import { vv } from "../../schema"
@@ -109,6 +110,13 @@ export const submitQuiz = mutation({
       status: "quiz_completed",
       winnerUserId,
       winnerType,
+    })
+
+    await ctx.scheduler.runAfter(0, internal.events.sendQuizCompletedEvent, {
+      userId: updatedQuizState.creatorUserId,
+      oppId: updatedQuizState.opponentUserId,
+      qualificationId: updatedQuizState.quizQualificationId,
+      questionCount: updatedQuizState.quizQuestionsIds.length,
     })
   },
 })
