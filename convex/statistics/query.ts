@@ -3,6 +3,14 @@ import { query } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
 import { getDateKey, getHourKey, getUserAnswersFromTimePeriod } from "./helpers"
 
+interface WeeklyDataItem {
+  day: string
+  fullDay: string
+  questions: number
+  correct: number
+  time: number
+}
+
 export const getUserStatistics = query({
   handler: async (ctx) => {
     const userId = await getUserIdOrThrow(ctx)
@@ -44,7 +52,7 @@ export const getUserStatistics = query({
 })
 
 export const getWeeklyProgress = query({
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<WeeklyDataItem[]> => {
     const userId = await getUserIdOrThrow(ctx)
 
     const userAnswers = await getUserAnswersFromTimePeriod(
@@ -61,35 +69,53 @@ export const getWeeklyProgress = query({
       )
       .collect()
 
-    const weekDays = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nie"]
-    const weeklyData = weekDays.map((day) => ({
-      day,
-      questions: 0,
-      correct: 0,
-      time: 0,
-    }))
+    const fullDayNamesMap: { [key: string]: string } = {
+      Pon: "Poniedziałek",
+      Wt: "Wtorek",
+      Śr: "Środa",
+      Czw: "Czwartek",
+      Pt: "Piątek",
+      Sob: "Sobota",
+      Nie: "Niedziela",
+    }
+
+    const orderedWeekDays = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nie"]
+
+    const tempWeeklyData: { [key: string]: WeeklyDataItem } = {}
+
+    orderedWeekDays.forEach((dayAbbr) => {
+      tempWeeklyData[dayAbbr] = {
+        day: dayAbbr,
+        fullDay: fullDayNamesMap[dayAbbr] as string,
+        questions: 0,
+        correct: 0,
+        time: 0,
+      }
+    })
 
     userAnswers.forEach((answer) => {
       const dayKey = getDateKey(answer._creationTime, "week")
-      const dayIndex = weekDays.indexOf(dayKey)
-      if (dayIndex !== -1 && weeklyData[dayIndex]) {
-        weeklyData[dayIndex].questions++
+      if (tempWeeklyData[dayKey]) {
+        tempWeeklyData[dayKey].questions++
         if (answer.isCorrect) {
-          weeklyData[dayIndex].correct++
+          tempWeeklyData[dayKey].correct++
         }
       }
     })
 
     activityHistory.forEach((activity) => {
       const dayKey = getDateKey(activity.start_date, "week")
-      const dayIndex = weekDays.indexOf(dayKey)
-      if (dayIndex !== -1 && weeklyData[dayIndex]) {
+      if (tempWeeklyData[dayKey]) {
         const duration = (activity.stop_date - activity.start_date) / 1000 / 60
-        weeklyData[dayIndex].time += Math.round(duration)
+        tempWeeklyData[dayKey].time += Math.round(duration)
       }
     })
 
-    return weeklyData
+    const finalWeeklyData: WeeklyDataItem[] = orderedWeekDays.map(
+      (dayAbbr) => tempWeeklyData[dayAbbr]!,
+    )
+
+    return finalWeeklyData
   },
 })
 

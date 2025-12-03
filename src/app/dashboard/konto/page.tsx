@@ -39,6 +39,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Progress } from "~/components/ui/progress"
 import ActivityStatusAvatar from "~/components/users/activity-status-avatar"
 
+interface WeeklyProgressData {
+  day: string
+  fullDay: string
+  questions: number
+  correct: number
+  time: number
+}
+
+const WeeklyProgressCustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload as WeeklyProgressData
+    const fullDayName = data.fullDay || label
+
+    return (
+      <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
+        <p className="text-foreground mb-1 text-sm font-bold">{fullDayName}</p>
+        <p className="text-foreground text-sm">
+          Pytania: <span className="font-bold">{data.questions}</span>
+        </p>
+        <p className="text-foreground text-sm">
+          Poprawne: <span className="font-bold">{data.correct}</span>
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
 export default function StatisticsPage() {
   const user = useQuery(api.users.query.getCurrentUser)
   const userStats = useQuery(api.statistics.query.getUserStatistics)
@@ -71,7 +99,7 @@ export default function StatisticsPage() {
   ) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
       </div>
     )
   }
@@ -80,27 +108,28 @@ export default function StatisticsPage() {
 
   return (
     <div className="space-y-6 px-10 pt-10 pb-16">
-      <Card className="w-full">
+      <Card className="group border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
         <CardContent className="p-6">
           <div className="flex items-center space-x-4">
-            {/*<div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-600">
-              <span className="text-lg font-medium text-white">
-                {user.username?.charAt(0).toUpperCase() || "U"}
-              </span>
-            </div>*/}
             <ActivityStatusAvatar size={55} />
             <div className="flex-1">
               <h1 className="text-2xl font-bold">{user.username}</h1>
-              <p className="text-muted-foreground mt-1">{user.email}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{user.email}</p>
             </div>
 
             <Link href={`/user/${user.username}`}>
-              <Button variant={"outline"}>
+              <Button
+                variant="outline"
+                className="border-border/40 hover:border-border/60 bg-transparent transition-all duration-300"
+              >
                 <User className="mr-2 h-4 w-4" /> Public profile
               </Button>
             </Link>
-            <Link href={"/dashboard/settings"}>
-              <Button variant={"outline"}>
+            <Link href="/dashboard/settings">
+              <Button
+                variant="outline"
+                className="border-border/40 hover:border-border/60 bg-transparent transition-all duration-300"
+              >
                 <Settings className="mr-2 h-4 w-4" /> Settings
               </Button>
             </Link>
@@ -111,82 +140,100 @@ export default function StatisticsPage() {
       {userStats ? (
         <>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="w-full">
+            <Card className="group border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground text-sm font-medium">
                       Rozwiązane pytania
                     </p>
-                    <p className="text-2xl font-bold">
+                    <p className="mt-2 text-3xl font-bold">
                       {userStats.totalQuestions.toLocaleString()}
                     </p>
                   </div>
-                  <BookOpen className="h-8 w-8 text-blue-500" />
+                  <div className="bg-muted/50 group-hover:bg-muted flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300">
+                    <BookOpen className="text-muted-foreground group-hover:text-foreground h-6 w-6 transition-colors duration-300" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="w-full">
+            <Card className="group border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground text-sm font-medium">
                       Skuteczność
                     </p>
-                    <p className="text-2xl font-bold">
+                    <p className="mt-2 text-3xl font-bold">
                       {userStats.averageAccuracy}%
                     </p>
                   </div>
-                  <Target className="h-8 w-8 text-green-500" />
+                  <div className="bg-muted/50 group-hover:bg-muted flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300">
+                    <Target className="text-muted-foreground group-hover:text-foreground h-6 w-6 transition-colors duration-300" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="w-full">
+            <Card className="group border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-muted-foreground text-sm font-medium">
                       Czas nauki
                     </p>
-                    <p className="text-2xl font-bold">
+                    <p className="mt-2 text-3xl font-bold">
                       {formatTime(userStats.totalStudyTime)}
                     </p>
                   </div>
-                  <Clock className="h-8 w-8 text-purple-500" />
+                  <div className="bg-muted/50 group-hover:bg-muted flex h-12 w-12 items-center justify-center rounded-xl transition-colors duration-300">
+                    <Clock className="text-muted-foreground group-hover:text-foreground h-6 w-6 transition-colors duration-300" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="w-full">
+          <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
+                <TrendingUp className="text-muted-foreground h-5 w-5" />
                 Postęp w tym tygodniu
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={weeklyProgress}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border/40"
+                  />
+                  <XAxis dataKey="day" className="text-muted-foreground" />
+                  <YAxis className="text-muted-foreground" />
+                  <Tooltip
+                    content={<WeeklyProgressCustomTooltip />}
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                    }}
+                  />
                   <Area
                     type="monotone"
                     dataKey="questions"
                     stackId="1"
-                    stroke="#8884d8"
-                    fill="#8884d8"
+                    stroke="hsl(var(--muted-foreground))"
+                    fill="hsl(var(--muted-foreground))"
+                    fillOpacity={0.3}
                   />
                   <Area
                     type="monotone"
                     dataKey="correct"
                     stackId="2"
-                    stroke="#82ca9d"
-                    fill="#82ca9d"
+                    stroke="hsl(var(--foreground))"
+                    fill="hsl(var(--foreground))"
+                    fillOpacity={0.3}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -194,30 +241,43 @@ export default function StatisticsPage() {
           </Card>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <Card className="w-full">
+            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Wyniki per kwalifikacja
+                  <Award className="text-muted-foreground h-5 w-5" />
+                  Wyniki na kwalifikacje
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={qualificationStats}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="accuracy" fill="#8884d8" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-border/40"
+                    />
+                    <XAxis dataKey="name" className="text-muted-foreground" />
+                    <YAxis className="text-muted-foreground" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <Bar
+                      dataKey="accuracy"
+                      fill="hsl(var(--muted-foreground))"
+                      radius={[8, 8, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
 
-            <Card className="w-full">
+            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5" />
+                  <Target className="text-muted-foreground h-5 w-5" />
                   Rozkład trudności pytań
                 </CardTitle>
               </CardHeader>
@@ -233,73 +293,104 @@ export default function StatisticsPage() {
                         `${name} ${(percent * 100).toFixed(0)}%`
                       }
                       outerRadius={80}
-                      fill="#8884d8"
+                      fill="hsl(var(--muted-foreground))"
                       dataKey="value"
                     >
                       {difficultyBreakdown.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
 
-          <Card className="w-full">
+          <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <Calendar className="text-muted-foreground h-5 w-5" />
                 Trendy miesięczne
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={monthlyTrend}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
-                  <Tooltip />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border/40"
+                  />
+                  <XAxis dataKey="month" className="text-muted-foreground" />
+                  <YAxis yAxisId="left" className="text-muted-foreground" />
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    className="text-muted-foreground"
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                    }}
+                  />
                   <Line
                     yAxisId="left"
                     type="monotone"
                     dataKey="questions"
-                    stroke="#8884d8"
+                    stroke="hsl(var(--muted-foreground))"
                     strokeWidth={2}
+                    dot={{ r: 4 }}
                   />
                   <Line
                     yAxisId="right"
                     type="monotone"
                     dataKey="accuracy"
-                    stroke="#82ca9d"
+                    stroke="hsl(var(--foreground))"
                     strokeWidth={2}
+                    dot={{ r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          <Card className="w-full">
+          <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
+                <Clock className="text-muted-foreground h-5 w-5" />
                 Wzorce nauki (godziny)
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={studyPatterns}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-border/40"
+                  />
+                  <XAxis dataKey="time" className="text-muted-foreground" />
+                  <YAxis className="text-muted-foreground" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                    }}
+                  />
                   <Area
                     type="monotone"
                     dataKey="sessions"
-                    stroke="#8884d8"
-                    fill="#8884d8"
+                    stroke="hsl(var(--muted-foreground))"
+                    fill="hsl(var(--muted-foreground))"
+                    fillOpacity={0.3}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -307,36 +398,48 @@ export default function StatisticsPage() {
           </Card>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="w-full">
+            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg">Osiągnięcia</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Award className="text-muted-foreground h-5 w-5" />
+                  Osiągnięcia
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Wyjaśnienia AI</span>
-                  <span className="font-bold">
+                <div className="border-border/40 bg-muted/30 flex items-center justify-between rounded-lg border p-4">
+                  <span className="text-sm font-medium">Wyjaśnienia AI</span>
+                  <span className="text-2xl font-bold">
                     {userStats.aiExplanationsUsed}
                   </span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="w-full">
+            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg">Postęp do celu</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Target className="text-muted-foreground h-5 w-5" />
+                  Postęp do celu
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <div className="mb-2 flex justify-between text-sm">
-                    <span>Skuteczność 80%</span>
-                    <span>{userStats.averageAccuracy}%</span>
+                    <span className="text-muted-foreground">
+                      Skuteczność 80%
+                    </span>
+                    <span className="font-semibold">
+                      {userStats.averageAccuracy}%
+                    </span>
                   </div>
                   <Progress value={userStats.averageAccuracy} className="h-2" />
                 </div>
                 <div>
                   <div className="mb-2 flex justify-between text-sm">
-                    <span>1000 pytań</span>
-                    <span>{userStats.totalQuestions}</span>
+                    <span className="text-muted-foreground">1000 pytań</span>
+                    <span className="font-semibold">
+                      {userStats.totalQuestions}
+                    </span>
                   </div>
                   <Progress
                     value={(userStats.totalQuestions / 1000) * 100}
@@ -346,34 +449,43 @@ export default function StatisticsPage() {
               </CardContent>
             </Card>
 
-            <Card className="w-full">
+            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg">Aktywność</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <TrendingUp className="text-muted-foreground h-5 w-5" />
+                  Aktywność
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <div>
+                <div className="border-border/40 bg-muted/30 flex items-center gap-3 rounded-lg border p-3">
+                  <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-lg">
+                    <CheckCircle className="text-muted-foreground h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium">Poprawne odpowiedzi</p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-xl font-bold">
                       {userStats.correctAnswers}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <XCircle className="h-5 w-5 text-red-500" />
-                  <div>
+                <div className="border-border/40 bg-muted/30 flex items-center gap-3 rounded-lg border p-3">
+                  <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-lg">
+                    <XCircle className="text-muted-foreground h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium">Błędne odpowiedzi</p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-xl font-bold">
                       {userStats.totalQuestions - userStats.correctAnswers}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Lightbulb className="h-5 w-5 text-blue-500" />
-                  <div>
+                <div className="border-border/40 bg-muted/30 flex items-center gap-3 rounded-lg border p-3">
+                  <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-lg">
+                    <Lightbulb className="text-muted-foreground h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium">Użyte wyjaśnienia</p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-xl font-bold">
                       {userStats.aiExplanationsUsed}
                     </p>
                   </div>
@@ -383,7 +495,7 @@ export default function StatisticsPage() {
           </div>
         </>
       ) : (
-        <Card className="w-full">
+        <Card className="border-border/40 bg-card/50 backdrop-blur-sm">
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground text-lg">
               Brak danych statystycznych. Zacznij rozwiązywać pytania!
