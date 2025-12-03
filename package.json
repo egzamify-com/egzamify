@@ -70,7 +70,7 @@
     "posthog-js": "^1.280.0",
     "posthog-node": "^5.11.2",
     "react": "^19.2.1",
-    "react-dom": "^19.2.0",
+    "react-dom": "^19.2.1",
     "react-error-boundary": "^6.0.0",
     "react-syntax-highlighter": "^16.1.0",
     "recharts": "^2.15.4",
