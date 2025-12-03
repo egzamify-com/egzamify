@@ -193,7 +193,7 @@ export default function StatisticsPage() {
                 variant="outline"
                 className="border-border/40 hover:border-border/60 bg-transparent transition-all duration-300"
               >
-                <User className="mr-2 h-4 w-4" /> Public profile
+                <User className="mr-2 h-4 w-4" /> Profil publiczny
               </Button>
             </Link>
             <Link href="/dashboard/settings">
@@ -201,7 +201,7 @@ export default function StatisticsPage() {
                 variant="outline"
                 className="border-border/40 hover:border-border/60 bg-transparent transition-all duration-300"
               >
-                <Settings className="mr-2 h-4 w-4" /> Settings
+                <Settings className="mr-2 h-4 w-4" /> Ustawienia
               </Button>
             </Link>
           </div>

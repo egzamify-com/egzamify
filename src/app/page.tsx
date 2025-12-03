@@ -24,9 +24,22 @@ export default async function Page() {
         <FeatureCard
           title="Błyskawicznie uzyskaj jasne odpowiedzi"
           description="
-Nigdy więcej niejasnych pojęć! Wbudowany czat AI jest dostępny pod ręką.
+          Nigdy więcej niejasnych pojęć! Wbudowany czat AI jest dostępny pod ręką.
           Nasza sztuczna inteligencja jest gotowa dostosować odpowiedź do Twoich potrzeb, oferując trzy tryby wyjaśniania: Normalny (zwięzły i rzeczowy), ELI5 (proste, obrazowe analogie) oraz Szczegółowy (dokładny i głęboki). Wiedza w zasięgu ręki, dostosowana do ciebie."
           imageUrl="/czat.jpg"
+        />
+
+        <FeatureCard
+          title="Egzamin Teoretyczny – Sprawdź się przed testem!"
+          description="Przygotuj się do egzaminu teoretycznego z naszą bazą pytań. Rozwiązuj testy w trybie symulacji, śledź swoje postępy i znajdź swoje szanse na zdanie za pierwszym razem!"
+          imageUrl="/teoriass.png"
+        />
+
+        <FeatureCard
+          title="Wyjaśnienia AI na Eksperckim Poziomie"
+          description="Zanurz się w głębi wiedzy! Nasza sztuczna inteligencja dostarcza encyklopedyczne wyjaśnienia do każdego pytania. Uzyskaj pełną analizę, powiązania między pojęciami i kontekstem, bez kompromisów w szczegółowości."
+          imageUrl="/aidialogexplanationss.png"
+          reverse={true}
         />
       </div>
 
