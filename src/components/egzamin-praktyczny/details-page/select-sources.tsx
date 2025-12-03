@@ -100,8 +100,6 @@ export default function SelectSources({
                 router.push(
                   `/dashboard/egzamin-praktyczny/historia/${userExam._id}`,
                 )
-
-                setIsSubmittingExamCheck(false)
               }}
             >
               {isSubmittingExamCheck ? (

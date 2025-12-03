@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import type { MyUIMessage } from "~/app/api/chat/route"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import { cn } from "~/lib/utils"
+import CreditIcon from "../credit-icon"
 import GetCreditsAlert from "../get-credits-alert"
 import { Button, type ButtonProps } from "../ui/button"
 import {
@@ -20,6 +21,7 @@ import {
 } from "../ui/input-group"
 import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 export function ChatInputWithModeSelection({
   selectedMode,
   setSelectedMode,
@@ -170,14 +172,21 @@ export function ChatInputWithModeSelection({
 
 function SendButton({ ...props }: ButtonProps) {
   return (
-    <InputGroupButton
-      {...props}
-      className="ml-auto"
-      size="sm"
-      variant="default"
-    >
-      <Stars />
-      Wyślij
-    </InputGroupButton>
+    <Tooltip>
+      <TooltipTrigger className="ml-auto">
+        <InputGroupButton
+          {...props}
+          className="ml-auto"
+          size="sm"
+          variant="default"
+        >
+          <Stars />
+          Wyślij
+        </InputGroupButton>
+      </TooltipTrigger>
+      <TooltipContent className="flex flex-row items-center justify-center gap-1">
+        0.5 <CreditIcon className="h-4 w-4" flipTheme />
+      </TooltipContent>
+    </Tooltip>
   )
 }
