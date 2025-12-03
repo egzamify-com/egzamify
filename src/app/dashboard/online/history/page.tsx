@@ -55,8 +55,12 @@ export default function Page() {
           if (!user) return
           const didCurrentUserWon = quiz.quiz.winnerUserId === user._id
 
-          const oppUserToCurrentUser =
-            quiz.quiz.creatorUserId === user._id ? user : quiz.users.creatorUser
+          const userToShowAsOpp =
+            user._id === quiz.quiz.creatorUserId
+              ? quiz.users.opponentUser
+              : quiz.users.creatorUser
+
+          if (!userToShowAsOpp) return null
 
           return (
             <div key={crypto.randomUUID()} className="w-1/2">
@@ -65,7 +69,7 @@ export default function Page() {
                   ...pvpQuizCardProps(),
                   historyData: {
                     didCurrentUserWon,
-                    opponentUser: oppUserToCurrentUser,
+                    opponentUser: userToShowAsOpp,
                     creationTime: quiz.quiz._creationTime,
                   },
                   href: `/dashboard/online/pvp-quiz/game/${quiz.quiz._id}`,
