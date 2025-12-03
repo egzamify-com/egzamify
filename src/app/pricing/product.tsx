@@ -80,51 +80,53 @@ export default function Product({
   }
 
   return (
-    <Card
-      key={crypto.randomUUID()}
-      className={cn(
-        `relative flex flex-col gap-0 transition-all duration-300 hover:shadow-lg`,
-        popular
-          ? "border-primary hover:border-muted-foreground scale-105 shadow-lg"
-          : "border-border hover:border-muted-foreground",
-      )}
-    >
-      {popular && (
-        <Badge className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 transform">
-          Popularne
-        </Badge>
-      )}
+    <div>
+      <Card
+        key={crypto.randomUUID()}
+        className={cn(
+          `relative flex flex-col gap-0 transition-all duration-300 hover:shadow-lg`,
+          popular
+            ? "border-primary hover:border-muted-foreground scale-105 shadow-lg"
+            : "border-border hover:border-muted-foreground",
+        )}
+      >
+        {popular && (
+          <Badge className="bg-primary text-primary-foreground absolute -top-3 left-1/2 -translate-x-1/2 transform">
+            Popularne
+          </Badge>
+        )}
 
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">
-          {product.metadata.label && (
-            <Badge variant={"outline"} className="text-lg font-bold">
-              {product.metadata.label}
-            </Badge>
-          )}
-        </CardTitle>
-        <div className="mt-2 flex items-baseline justify-center gap-1">
-          <span className="text-primary flex flex-row items-center justify-center gap-2 text-3xl font-bold">
-            <CreditIcon />
-            {product.name}
-          </span>
-        </div>
-        <div className="text-accent-foreground mt-2 text-xl font-semibold">
-          {product.price.transformed_amount * quantity} PLN
-        </div>
-      </CardHeader>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">
+            {product.metadata.label && (
+              <Badge variant={"outline"} className="text-lg font-bold">
+                {product.metadata.label}
+              </Badge>
+            )}
+          </CardTitle>
+          <div className="mt-2 flex items-baseline justify-center gap-1">
+            <span className="text-primary flex flex-row items-center justify-center gap-2 text-3xl font-bold">
+              <CreditIcon />
+              {product.name}
+            </span>
+          </div>
+          <div className="text-accent-foreground mt-2 text-xl font-semibold">
+            {product.price.transformed_amount * quantity} PLN
+          </div>
+        </CardHeader>
 
-      <CardFooter className="pt-6">
-        <Button
-          variant={popular ? "default" : "outline"}
-          className={`h-14 w-full text-lg font-semibold`}
-          size="lg"
-          onClick={async () => await handleCheckout()}
-          disabled={mutationPending}
-        >
-          {mutationPending ? <SpinnerLoading /> : <>Zakup</>}
-        </Button>
-      </CardFooter>
-    </Card>
+        <CardFooter className="pt-6">
+          <Button
+            variant={popular ? "default" : "outline"}
+            className={`h-14 w-full text-lg font-semibold`}
+            size="lg"
+            onClick={async () => await handleCheckout()}
+            disabled={mutationPending}
+          >
+            {mutationPending ? <SpinnerLoading /> : <>Zakup</>}
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }
