@@ -1,7 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server"
 import { query } from "../_generated/server"
 import { getUserIdOrThrow } from "../custom_helpers"
-import { getDateKey, getHourKey, getUserAnswersFromTimePeriod } from "./helpers"
+import { getDateKey, getUserAnswersFromTimePeriod } from "./helpers"
 
 interface WeeklyDataItem {
   day: string
@@ -9,6 +9,26 @@ interface WeeklyDataItem {
   questions: number
   correct: number
   time: number
+}
+
+interface QualificationStatsData {
+  name: string
+  completed: number
+  correct: number
+  accuracy: number
+}
+
+interface MonthlyTrendData {
+  month: string
+  fullMonth: string
+  questions: number
+  accuracy: number
+}
+
+interface StudyPatternsData {
+  time: string
+  rawHour: number
+  sessions: number
 }
 
 export const getUserStatistics = query({
@@ -120,7 +140,7 @@ export const getWeeklyProgress = query({
 })
 
 export const getQualificationStats = query({
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<QualificationStatsData[]> => {
     const userId = await getUserIdOrThrow(ctx)
 
     const userAnswers = await getUserAnswersFromTimePeriod(
@@ -130,7 +150,10 @@ export const getQualificationStats = query({
     )
 
     const questionIds = [...new Set(userAnswers.map((a) => a.questionId))]
+
     const questions = await Promise.all(questionIds.map((id) => ctx.db.get(id)))
+
+      .then((res) => res.filter((q) => q !== null && q !== undefined))
 
     const qualificationMap = new Map<
       string,
@@ -146,10 +169,11 @@ export const getQualificationStats = query({
       const answer = userAnswers[i]
       if (!answer) continue
 
-      const question = questions.find((q) => q?._id === answer.questionId)
+      const question = questions.find((q) => q._id === answer.questionId)
       if (!question) continue
 
       const qualificationId = question.qualificationId
+
       const qualification = await ctx.db.get(qualificationId)
       if (!qualification) continue
 
@@ -169,7 +193,9 @@ export const getQualificationStats = query({
       }
     }
 
-    const result = Array.from(qualificationMap.values()).map((stat) => ({
+    const result: QualificationStatsData[] = Array.from(
+      qualificationMap.values(),
+    ).map((stat) => ({
       name: stat.name,
       completed: stat.completed,
       correct: stat.correct,
@@ -184,7 +210,7 @@ export const getQualificationStats = query({
 })
 
 export const getMonthlyTrends = query({
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<MonthlyTrendData[]> => {
     const userId = await getUserIdOrThrow(ctx)
 
     const userAnswers = await getUserAnswersFromTimePeriod(
@@ -192,6 +218,36 @@ export const getMonthlyTrends = query({
       userId,
       "sixMonthsAgo",
     )
+
+    const fullMonthNamesMap: { [key: string]: string } = {
+      Sty: "Styczeń",
+      Lut: "Luty",
+      Mar: "Marzec",
+      Kwi: "Kwiecień",
+      Maj: "Maj",
+      Cze: "Czerwiec",
+      Lip: "Lipiec",
+      Sie: "Sierpień",
+      Wrz: "Wrzesień",
+      Paź: "Październik",
+      Lis: "Listopad",
+      Gru: "Grudzień",
+    }
+
+    const orderedMonths = [
+      "Sty",
+      "Lut",
+      "Mar",
+      "Kwi",
+      "Maj",
+      "Cze",
+      "Lip",
+      "Sie",
+      "Wrz",
+      "Paź",
+      "Lis",
+      "Gru",
+    ]
 
     const monthlyMap = new Map<
       string,
@@ -211,21 +267,30 @@ export const getMonthlyTrends = query({
       if (answer.isCorrect) stats.correct++
     })
 
-    const result = Array.from(monthlyMap.entries()).map(([month, stats]) => ({
-      month,
-      questions: stats.questions,
-      accuracy:
-        stats.questions > 0
-          ? Math.round((stats.correct / stats.questions) * 100 * 10) / 10
-          : 0,
-    }))
+    const rawResult = Array.from(monthlyMap.entries()).map(
+      ([monthAbbr, stats]) => ({
+        month: monthAbbr,
+        fullMonth: fullMonthNamesMap[monthAbbr] as string,
+        questions: stats.questions,
+        accuracy:
+          stats.questions > 0
+            ? Math.round((stats.correct / stats.questions) * 100 * 10) / 10
+            : 0,
+      }),
+    )
 
-    return result.slice(-6)
+    const sortedResult = orderedMonths
+      .map((monthAbbr) => rawResult.find((item) => item.month === monthAbbr))
+      .filter((item): item is MonthlyTrendData => item !== undefined)
+
+    console.log("Dane z getMonthlyTrends:", sortedResult)
+
+    return sortedResult.slice(-6)
   },
 })
 
 export const getStudyPatterns = query({
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<StudyPatternsData[]> => {
     const userId = await getAuthUserId(ctx)
     if (!userId) return []
 
@@ -234,18 +299,24 @@ export const getStudyPatterns = query({
       .withIndex("by_user", (q) => q.eq("user_id", userId))
       .collect()
 
-    const hourlyMap = new Map<string, number>()
+    const hourlyMap = new Map<number, number>()
 
     activityHistory.forEach((activity) => {
-      const hourKey = getHourKey(activity.start_date)
-      hourlyMap.set(hourKey, (hourlyMap.get(hourKey) ?? 0) + 1)
+      const date = new Date(activity.start_date)
+      const hour = date.getHours()
+      hourlyMap.set(hour, (hourlyMap.get(hour) ?? 0) + 1)
     })
 
-    const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`)
-    const result = hours.map((hour) => ({
-      time: hour,
-      sessions: hourlyMap.get(hour) ?? 0,
-    }))
+    const result: StudyPatternsData[] = Array.from({ length: 24 }, (_, i) => {
+      const startHour = i.toString().padStart(2, "0")
+      const endHour = (i + 1).toString().padStart(2, "0")
+
+      return {
+        time: `${startHour}:00 - ${endHour}:00`,
+        rawHour: i,
+        sessions: hourlyMap.get(i) ?? 0,
+      }
+    })
 
     return result
   },

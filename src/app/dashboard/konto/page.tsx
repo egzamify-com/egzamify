@@ -24,11 +24,8 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   Line,
   LineChart,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -60,6 +57,82 @@ const WeeklyProgressCustomTooltip = ({ active, payload, label }: any) => {
         </p>
         <p className="text-foreground text-sm">
           Poprawne: <span className="font-bold">{data.correct}</span>
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
+interface QualificationStatsData {
+  name: string
+  completed: number
+  correct: number
+  accuracy: number
+}
+
+const QualificationStatsCustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload as QualificationStatsData
+
+    return (
+      <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
+        <p className="text-foreground mb-1 text-sm font-bold">{label}</p>
+        <p className="text-foreground text-sm">
+          Skuteczność: <span className="font-bold">{data.accuracy}%</span>
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
+interface MonthlyTrendData {
+  month: string
+  fullMonth: string
+  questions: number
+  accuracy: number
+}
+
+const MonthlyTrendsCustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload as MonthlyTrendData
+    const fullMonthName = data.fullMonth || label
+
+    return (
+      <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
+        <p className="text-foreground mb-1 text-sm font-bold">
+          {fullMonthName}
+        </p>
+        <p className="text-foreground text-sm">
+          Pytania: <span className="font-bold">{data.questions}</span>
+        </p>
+        <p className="text-foreground text-sm">
+          Skuteczność: <span className="font-bold">{data.accuracy}%</span>
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
+interface StudyPatternsData {
+  time: string
+  rawHour: number
+  sessions: number
+}
+
+const StudyPatternsCustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload as StudyPatternsData
+
+    return (
+      <div className="border-border bg-card rounded-lg border p-3 shadow-lg">
+        <p className="text-foreground mb-1 text-sm font-bold">
+          Godzina: <span className="font-normal">{data.time}</span>{" "}
+        </p>
+        <p className="text-foreground text-sm">
+          Sesje: <span className="font-bold">{data.sessions}</span>
         </p>
       </div>
     )
@@ -240,7 +313,7 @@ export default function StatisticsPage() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
             <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -258,6 +331,7 @@ export default function StatisticsPage() {
                     <XAxis dataKey="name" className="text-muted-foreground" />
                     <YAxis className="text-muted-foreground" />
                     <Tooltip
+                      content={<QualificationStatsCustomTooltip />}
                       contentStyle={{
                         backgroundColor: "hsl(var(--card))",
                         border: "1px solid hsl(var(--border))",
@@ -273,47 +347,9 @@ export default function StatisticsPage() {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-
-            <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="text-muted-foreground h-5 w-5" />
-                  Rozkład trudności pytań
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={difficultyBreakdown}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
-                      fill="hsl(var(--muted-foreground))"
-                      dataKey="value"
-                    >
-                      {difficultyBreakdown.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
           </div>
 
-          <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+          <Card className="border-border/40 bg-card/50 hover:border-border/60 mt-8 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="text-muted-foreground h-5 w-5" />
@@ -322,19 +358,26 @@ export default function StatisticsPage() {
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={monthlyTrend}>
+                <LineChart
+                  data={monthlyTrend}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid
                     strokeDasharray="3 3"
                     className="stroke-border/40"
                   />
                   <XAxis dataKey="month" className="text-muted-foreground" />
+
                   <YAxis yAxisId="left" className="text-muted-foreground" />
+
                   <YAxis
                     yAxisId="right"
                     orientation="right"
                     className="text-muted-foreground"
+                    domain={[0, 100]}
                   />
                   <Tooltip
+                    content={<MonthlyTrendsCustomTooltip />}
                     contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
@@ -362,7 +405,7 @@ export default function StatisticsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/40 bg-card/50 hover:border-border/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+          <Card className="border-border/40 bg-card/50 hover:border-border/60 mt-8 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="text-muted-foreground h-5 w-5" />
@@ -379,6 +422,7 @@ export default function StatisticsPage() {
                   <XAxis dataKey="time" className="text-muted-foreground" />
                   <YAxis className="text-muted-foreground" />
                   <Tooltip
+                    content={<StudyPatternsCustomTooltip />}
                     contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
