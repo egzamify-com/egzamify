@@ -45,7 +45,7 @@ interface WeeklyProgressData {
 }
 
 const WeeklyProgressCustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const data = payload[0].payload as WeeklyProgressData
     const fullDayName = data.fullDay || label
 
@@ -72,7 +72,7 @@ interface QualificationStatsData {
 }
 
 const QualificationStatsCustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const data = payload[0].payload as QualificationStatsData
 
     return (
@@ -95,7 +95,7 @@ interface MonthlyTrendData {
 }
 
 const MonthlyTrendsCustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const data = payload[0].payload as MonthlyTrendData
     const fullMonthName = data.fullMonth || label
 
@@ -123,7 +123,7 @@ interface StudyPatternsData {
 }
 
 const StudyPatternsCustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     const data = payload[0].payload as StudyPatternsData
 
     return (
