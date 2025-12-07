@@ -146,14 +146,17 @@ export default function CompleteQuestion(props: CompleteQuestionProps) {
               />
             </div>
             {questionAttachment && (
-              <div className="flex w-full flex-row items-center justify-center">
-                <Image
-                  alt="Obraz do pytania"
-                  width={400}
-                  height={200}
-                  src={questionAttachment.href}
-                  className="shadow-background w-3/5 rounded-2xl border shadow-2xl"
-                />
+              <div className="mx-auto max-w-md overflow-hidden rounded-xl md:max-w-2xl">
+                <div className="md:flex">
+                  <div className="relative mx-auto flex max-h-[36rem] min-h-[16rem] w-full max-w-xl min-w-[16rem] items-center justify-center overflow-hidden rounded-lg">
+                    <Image
+                      alt="Obraz do pytania"
+                      fill
+                      src={questionAttachment.href}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </CardDescription>
