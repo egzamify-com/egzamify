@@ -1,13 +1,19 @@
 const secret = ""
-// PROD
-// const contentFileId = "kg271g65s39bkq16xf9bjt721h7tzd4g"
-// const ratingFileId = "kg2bz9mteap5v8zh00129cdem97tzmt8"
 
-// DEV
-const contentFileId = "kg27mdymmc4m83y1x6jeffhzh57wvywh"
-const ratingFileId = "kg26pexxgt1jr425ft2e0yh0w97wt1ts"
-const qualificationId = "kn70hd791arfasty6tnnz2r2dh7tacbw"
-const year = "2025"
+// PROD
+// const contentFileId = "kg298sqc2tb5b1qgakwkhekxqh7wv4eb"
+// const ratingFileId = "kg2dxhyxespgf1g6g1cjd4qaj17wvfx4"
+// const qualificationId = "kd724prs7yx7pp9rh70zp46yzx7wvmhe"
+// const year = "2024"
+// const month = "Czerwiec"
+//
+//
+//
+// dev
+const contentFileId = "kg239pa970k0r4fxgxmhwdtsmn7wvkc0"
+const ratingFileId = "kg2av3d3psn6528qtngwwmev4d7wt3p6"
+const qualificationId = "kn7937kjdtnwvce6rzack6q8h17tajt6"
+const year = "2024"
 const month = "Czerwiec"
 
 async function main() {

@@ -105,6 +105,8 @@ export async function POST(request: NextRequest) {
     const { storageId } = await response.json()
     return {
       storageId: storageId as Id<"_storage">,
+      base64Data: buffer.toString("base64"),
+      contentType: contentType,
     }
   })
 
@@ -113,6 +115,9 @@ export async function POST(request: NextRequest) {
   //
   const fileMessages: ModelMessage[] = insertImages.map((image) => {
     const url = getFileUrl(image.storageId, `image-${image.storageId}`)!.raw
+
+    // Create a data URI for the LLM
+    const dataUri = `data:${image.contentType};base64,${image.base64Data}`
 
     return {
       role: "user",
@@ -123,7 +128,7 @@ export async function POST(request: NextRequest) {
         },
         {
           type: "image",
-          image: url,
+          image: dataUri,
         },
       ],
     }
@@ -210,6 +215,7 @@ Exam content guidelines:
   })
 
   console.log("generation done")
+  console.dir(response, { depth: null })
   console.dir(object, { depth: null })
 
   const readyData = object.map((question) => {
