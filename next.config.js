@@ -8,7 +8,7 @@ import "./src/env.js"
 const config = {
   reactStrictMode: false,
   typedRoutes: true,
-  serverExternalPackages: ["pdf-parse"],
+  serverExternalPackages: ["pdf-parse", "@napi-rs/canvas"],
   images: {
     remotePatterns: [
       {

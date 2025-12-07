@@ -1,5 +1,6 @@
 // import { CanvasFactory } from "pdf-parse/worker"
-
+import "pdf-parse/worker"
+import { CanvasFactory } from "pdf-parse/worker"
 // Get the Node.js require function (useful in ESM modules for resolution)
 // This is often needed in Next.js Server Components/Routes
 // where 'require' isn't natively available, but `createRequire` is.
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
   }
 
   const link = new URL(contentPdf.raw.href)
-  const parser = new PDFParse({ url: link })
+  const parser = new PDFParse({ url: link, CanvasFactory })
   const result = await parser.getImage()
   await parser.destroy()
 

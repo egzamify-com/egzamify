@@ -22,7 +22,7 @@ async function main() {
   data.set("month", month)
 
   const uploadRequest = await fetch(
-    "https://egzamify.com/api/seed-db/seed-teoria",
+    "http://localhost:3000/api/seed-db/seed-teoria",
     {
       method: "POST",
       body: data,
