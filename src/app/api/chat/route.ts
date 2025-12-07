@@ -21,6 +21,7 @@ export type MyUIMessage = UIMessage<MyMessageMetadata>
 export const maxDuration = 30
 
 export async function POST(req: Request) {
+  console.log(await convexAuthNextjsToken())
   const body = await req.json()
   const { messages, id } = body
 

@@ -2,16 +2,13 @@ const secret = ""
 // PROD
 // const contentFileId = "kg271g65s39bkq16xf9bjt721h7tzd4g"
 // const ratingFileId = "kg2bz9mteap5v8zh00129cdem97tzmt8"
-//
-// DEV
-const contentFileId = "kg23dkejhpd5tgd2pb1p99hrbn7tzvkp"
-const ratingFileId = "kg2avhm7a9mqq4pavrrqmmd6kh7tyhn6"
-const qualificationId = "kn70hd791arfasty6tnnz2r2dh7tacbw"
 
-// PROD EE.09
-// const qualificationId = "kd72bqykqqyaypdnyzt1p06rm97sd6t4"
+// DEV
+const contentFileId = "kg27mdymmc4m83y1x6jeffhzh57wvywh"
+const ratingFileId = "kg26pexxgt1jr425ft2e0yh0w97wt1ts"
+const qualificationId = "kn70hd791arfasty6tnnz2r2dh7tacbw"
 const year = "2025"
-const month = "Styczeń"
+const month = "Czerwiec"
 
 async function main() {
   console.log({ secret })
@@ -24,61 +21,15 @@ async function main() {
   data.set("year", year)
   data.set("month", month)
 
-  // Use this async function to get the full size
-  async function getFormDataPayloadSize(formData: FormData) {
-    // Create a dummy Response object from the FormData
-    const response = new Response(formData)
-
-    // Read its contents into a Blob (the raw request body)
-    const blob = await response.blob()
-
-    // The blob.size property gives the total size in bytes
-    return blob.size
-  }
-  const MAX_MB_LIMIT = 4.5 // Set your maximum size limit here (e.g., 10MB)
-  const BYTES_PER_MB = 1024 * 1024
-  const MAX_SIZE_BYTES = MAX_MB_LIMIT * BYTES_PER_MB
-
-  // --- Execution and Validation ---
-  getFormDataPayloadSize(data)
-    .then((sizeInBytes) => {
-      // Convert bytes to MB, rounded to two decimal places
-      const sizeInMB = (sizeInBytes / BYTES_PER_MB).toFixed(2)
-
-      // Log the human-readable size
-      console.log(
-        `📦 Total Request Body Size (approx): **${sizeInMB} MB** (${sizeInBytes} bytes)`,
-      )
-
-      // --- Validation Check ---
-      if (sizeInBytes > MAX_SIZE_BYTES) {
-        console.error(
-          `🚨 **ERROR:** The request body exceeds the maximum limit of ${MAX_MB_LIMIT} MB!`,
-        )
-        // Here is where you would **abort** the fetch operation or notify the user.
-        // e.g., return; // Stop execution if this is inside an async function
-      } else {
-        console.log(
-          `✅ Size is within the ${MAX_MB_LIMIT} MB limit. Ready to send.`,
-        )
-        // If valid, proceed with your upload:
-        // const uploadRequest = await fetch(...)
-      }
-    })
-    .catch((error) => {
-      console.error(
-        "❌ Could not calculate payload size. Proceeding with caution or stopping.",
-        error,
-      )
-      // Handle the failure case (e.g., inform the user there was a size calculation issue)
-    })
-
   const uploadRequest = await fetch(
-    "http://localhost:3000/api/seed-db/seed-teoria",
+    "https://egzamify.com/api/seed-db/seed-teoria",
     {
       method: "POST",
       body: data,
-      headers: { Authorization: `Bearer ${secret}` },
+      headers: {
+        Authorization: `Bearer ${secret}`,
+        // Cookie: `__convexAuthJWT=eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJtNTczanFlZjZobTAwZGpxNTR6N2NiYTgyOTd3NXdwc3xqbjc3OWN5eGpybTgxZXd4NWN3MzRobWh3OTd3bnMwOCIsImlhdCI6MTc2NTEyMTY4MiwiaXNzIjoiaHR0cHM6Ly9mb3JtYWwtamF5LTE0Ni5jb252ZXguc2l0ZSIsImF1ZCI6ImNvbnZleCIsImV4cCI6MTc2NTEyNTI4Mn0.mYL-m6320fy5WZDXwauSTPpuCnZ4fTc0z5Bb2_f2KQfse7qsXrfEkY1EvEl2ylp7rVCXgMmNoJs5LrtzAYkd4crvPDxsVq3abWhh2zLs1uOZjUdPbAB_sLtoUfnx1OvpQ1X-jDXdS6Xl2KTce2-PQ27aHYaW3Em1JAHSSSwCMR_7Z1o0-r4igEEBhc6gs8Zc6h2qehJuELQ9VouJIJdPf5sAfSk0aq7fB6Sh7NEOcy2uiAibuZ4oAbYrN70JftE8xEEFxd1bCeANJ76fvncoRkiQ1db7uCr_SXRXVTpfblNb_tjQ7VFp7UymizFbhws1NmwpL6AkruV21uByAsBMMg`,
+      },
     },
   )
   console.log({ uploadRequest })

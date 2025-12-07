@@ -73,7 +73,6 @@ export const deleteUserExam = mutation({
 
 export const generateUploadUrl = mutation({
   handler: async (ctx) => {
-    await getUserIdOrThrow(ctx)
     return await ctx.storage.generateUploadUrl()
   },
 })
