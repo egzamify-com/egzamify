@@ -6,6 +6,7 @@ import { useQuery } from "convex/custom_helpers"
 import { useMutation } from "convex/react"
 import type { FunctionReturnType } from "convex/server"
 import { parseInt } from "lodash"
+import { XIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, type ChangeEvent } from "react"
 import { toast } from "sonner"
@@ -14,6 +15,14 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
 import { env } from "~/env"
 
 const ALLOWED_USER_IDS = [
@@ -73,6 +82,7 @@ function FileHandlerQuestion({
 }) {
   const { uploadFile } = useUploader()
   const updateQuestion = useMutation(api.seed.updateQuestion)
+  const disMiss = useMutation(api.seed.disMissQuestion)
   const [isPending, setIsPending] = useState(false)
 
   async function startAction(file: File) {
@@ -123,9 +133,22 @@ function FileHandlerQuestion({
     }
   }
   return (
-    <Card className="w-full" onDragOver={handleDragOver} onDrop={handleDrop}>
+    <Card
+      className="w-full border-white"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <CardHeader>
         <CardTitle className="flex flex-col gap-2">
+          <Button
+            variant={"outline"}
+            className="w-1/4"
+            onClick={async () => {
+              await disMiss({ questionId: question._id })
+            }}
+          >
+            <XIcon fill="red" color="red" />
+          </Button>
           <h1 className="text-2xl text-yellow-500">Pytanie</h1>
           <h1>{question.content}</h1>
           <h1 className="text-muted-foreground">
@@ -156,6 +179,7 @@ function FileHandlerAnswer({ answer }: { answer: Doc<"answers"> }) {
   const questionQuery = useQuery(api.seed.getQuestionForAnswer, {
     questionId: answer.questionId,
   })
+  const disMiss = useMutation(api.seed.disMissAnswer)
   const { uploadFile } = useUploader()
   const updateAnswer = useMutation(api.seed.updateAnswer)
   const [isPending, setIsPending] = useState(false)
@@ -208,11 +232,27 @@ function FileHandlerAnswer({ answer }: { answer: Doc<"answers"> }) {
     }
   }
   return (
-    <Card className="w-full" onDragOver={handleDragOver} onDrop={handleDrop}>
+    <Card
+      className="w-full border-white"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <CardHeader>
         <CardTitle className="flex flex-col gap-2">
+          <Button
+            variant={"outline"}
+            className="w-1/4"
+            onClick={async () => {
+              await disMiss({ answerId: answer._id })
+            }}
+          >
+            <XIcon fill="red" color="red" />
+          </Button>
           <h1 className="text-2xl text-yellow-200">Odpowiedz</h1>
           <h1>{answer.content}</h1>
+          <p>{answer._id}</p>
+          <p>{answer.label}</p>
+          <p>{answer.isCorrect && "correct"}</p>
           <h1>{questionQuery.data?.question.content}</h1>
           <h1 className="text-muted-foreground">
             {questionQuery.data?.qualification.nameLabelCombined}
@@ -243,6 +283,10 @@ function FileHandlerAnswer({ answer }: { answer: Doc<"answers"> }) {
 }
 
 function PdfUploader() {
+  const qualificationsQuery = useQuery(api.teoria.query.getQualificationsList, {
+    search: "",
+  })
+  console.log({ qualificationsQuery })
   const { uploadFile } = useUploader()
   const [qualificationId, setQualificationId] = useState("")
   const [year, setYear] = useState(0)
@@ -280,6 +324,7 @@ function PdfUploader() {
       data.set("year", year.toString())
       data.set("month", month)
 
+      toast.info("sending req")
       const uploadRequest = await fetch(
         `${env.NEXT_PUBLIC_BASE_SERVER_URL}/api/seed-db/seed-teoria`,
         {
@@ -290,10 +335,6 @@ function PdfUploader() {
           },
         },
       )
-      setQualificationId("")
-      setMonth("")
-      setYear(0)
-      setAdminKey("")
     } catch (e) {
       console.error("Failed to upload some pdf")
       return
@@ -304,24 +345,76 @@ function PdfUploader() {
     <div className="flex w-full flex-col items-center justify-start">
       <div className="flex w-1/3 flex-col gap-2">
         <Label>qualification id</Label>
-        <Input
-          onChange={(e) => setQualificationId(e.target.value)}
+
+        <Select
+          onValueChange={(value) => setQualificationId(value)}
           value={qualificationId}
-        />
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="qualification" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {qualificationsQuery.data?.qualifications.map((q) => {
+                return (
+                  <SelectItem value={q.qualification._id}>
+                    {q.qualification.name}
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {/* <Input */}
+        {/*   onChange={(e) => setQualificationId(e.target.value)} */}
+        {/*   value={qualificationId} */}
+        {/* /> */}
       </div>
 
       <div className="flex w-1/3 flex-col gap-2">
         <Label>year</Label>
-        <Input
-          type="number"
-          onChange={(e) => setYear(parseInt(e.target.value))}
-          value={year}
-        />
+        <Select
+          onValueChange={(value) => setYear(parseInt(value))}
+          value={year.toString()}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="year" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="2026">2026</SelectItem>
+              <SelectItem value="2025">2025</SelectItem>
+              <SelectItem value="2024">2024</SelectItem>
+              <SelectItem value="2023">2023</SelectItem>
+              <SelectItem value="2022">2022</SelectItem>
+              <SelectItem value="2021">2021</SelectItem>
+              <SelectItem value="2020">2020</SelectItem>
+              <SelectItem value="2019">2019</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {/* <Input */}
+        {/*   type="number" */}
+        {/*   onChange={(e) => setYear(parseInt(e.target.value))} */}
+        {/*   value={year} */}
+        {/* /> */}
       </div>
 
       <div className="flex w-1/3 flex-col gap-2">
         <Label>month</Label>
-        <Input onChange={(e) => setMonth(e.target.value)} value={month} />
+
+        <Select onValueChange={(value) => setMonth(value)} value={month}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="month" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="Czerwiec">Czerwiec</SelectItem>
+              <SelectItem value="Styczeń">Styczeń</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {/* <Input onChange={(e) => setMonth(e.target.value)} value={month} /> */}
       </div>
 
       <div className="flex w-1/3 flex-col gap-2">
@@ -329,30 +422,32 @@ function PdfUploader() {
         <Input onChange={(e) => setAdminKey(e.target.value)} value={adminKey} />
       </div>
 
-      <div>
-        content
-        <input
-          type="file"
-          multiple
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            if (e.target.files?.[0]) {
-              setSelectedContentPdf(e.target.files[0])
-            }
-          }}
-        />
-      </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          content pdf
+          <input
+            type="file"
+            multiple
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              if (e.target.files?.[0]) {
+                setSelectedContentPdf(e.target.files[0])
+              }
+            }}
+          />
+        </div>
 
-      <div>
-        rating
-        <input
-          type="file"
-          multiple
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            if (e.target.files?.[0]) {
-              setSelectedRatingPdf(e.target.files[0])
-            }
-          }}
-        />
+        <div className="flex flex-col gap-2">
+          rating pdf
+          <input
+            type="file"
+            multiple
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              if (e.target.files?.[0]) {
+                setSelectedRatingPdf(e.target.files[0])
+              }
+            }}
+          />
+        </div>
       </div>
       <Button onClick={() => startAction()}>upload </Button>
     </div>

@@ -95,10 +95,24 @@ export const updateQuestion = mutation({
   },
 })
 
+export const disMissQuestion = mutation({
+  args: { questionId: v.id("questions") },
+  handler: async (ctx, { questionId }) => {
+    return await ctx.db.patch(questionId, { containsAttachment: false })
+  },
+})
+
 export const updateAnswer = mutation({
   args: { answerId: v.id("answers"), attachmentId: v.id("_storage") },
   handler: async (ctx, { answerId, attachmentId }) => {
     return await ctx.db.patch(answerId, { attachmentId })
+  },
+})
+
+export const disMissAnswer = mutation({
+  args: { answerId: v.id("answers") },
+  handler: async (ctx, { answerId }) => {
+    return await ctx.db.patch(answerId, { containsAttachment: false })
   },
 })
 
