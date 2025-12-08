@@ -1,12 +1,12 @@
-const secret = ""
+const secret = "bxJ3h6xzPY0p2NJ3RQp0zOsr"
 // PROD
 // const contentFileId = "kg271g65s39bkq16xf9bjt721h7tzd4g"
 // const ratingFileId = "kg2bz9mteap5v8zh00129cdem97tzmt8"
 
 // DEV
-const contentFileId = "kg27mdymmc4m83y1x6jeffhzh57wvywh"
-const ratingFileId = "kg26pexxgt1jr425ft2e0yh0w97wt1ts"
-const qualificationId = "kn70hd791arfasty6tnnz2r2dh7tacbw"
+const contentFileId = "kg2796pzmtfexqpx71sr1d4v6h7wth0h"
+const ratingFileId = "kg22k2zqb2yzfdazd47rk664x97wvkq5"
+const qualificationId = "kn72g5qad2mxj9ccw87k7fg6yh7wv9kk"
 const year = "2025"
 const month = "Czerwiec"
 
@@ -22,7 +22,7 @@ async function main() {
   data.set("month", month)
 
   const uploadRequest = await fetch(
-    "https://egzamify.com/api/seed-db/seed-teoria",
+    "http://localhost:3000/api/seed-db/seed-teoria",
     {
       method: "POST",
       body: data,
