@@ -1,19 +1,10 @@
-// import { CanvasFactory } from "pdf-parse/worker"
-import "pdf-parse/worker"
-import { CanvasFactory } from "pdf-parse/worker"
-// Get the Node.js require function (useful in ESM modules for resolution)
-// This is often needed in Next.js Server Components/Routes
-// where 'require' isn't natively available, but `createRequire` is.
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server"
 import { generateObject, type ModelMessage } from "ai"
-import { asyncMap } from "convex-helpers"
 import { api } from "convex/_generated/api"
 import type { Doc, Id } from "convex/_generated/dataModel"
 import { fetchMutation } from "convex/nextjs"
 import type { WithoutSystemFields } from "convex/server"
-import { fileTypeFromBuffer } from "file-type"
 import type { NextRequest } from "next/server"
-import { PDFParse } from "pdf-parse"
 import z from "zod/v4"
 import { APP_CONFIG } from "~/APP_CONFIG"
 import { env } from "~/env"
@@ -31,7 +22,7 @@ export async function POST(request: NextRequest) {
   const requestData = await request.formData()
 
   const authHeader = request.headers.get("authorization")
-  if (authHeader !== `Bearer ${env.AI_GATEWAY_API_KEY}`) {
+  if (authHeader !== `Bearer ${env.ADMIN_KEY}`) {
     throw new Error("Unauthorized")
   }
 
@@ -68,90 +59,22 @@ export async function POST(request: NextRequest) {
     throw new Error("Failed to do request")
   }
 
-  const link = new URL(contentPdf.raw.href)
-  const parser = new PDFParse({ url: link, CanvasFactory })
-  const result = await parser.getImage()
-  await parser.destroy()
-
-  const imagesData = result.pages
-    .map((page) => {
-      return page.images
-    })
-    .flatMap((a) => a)
-
-  const insertImages = await asyncMap(imagesData, async (image) => {
-    const postUrl = await fetchMutation(
-      api.praktyka.mutate.generateUploadUrl,
-      {},
-      {
-        token: await convexAuthNextjsToken(),
-      },
-    )
-    const buffer = Buffer.from(image.data.buffer)
-    const typeResult = await fileTypeFromBuffer(buffer)
-
-    const contentType = typeResult
-      ? typeResult.mime
-      : "application/octet-stream"
-
-    const response = await fetch(postUrl, {
-      method: "POST",
-      headers: { "Content-Type": contentType },
-      body: buffer as unknown as ArrayBuffer,
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    const { storageId } = await response.json()
-    return {
-      storageId: storageId as Id<"_storage">,
-      base64Data: buffer.toString("base64"),
-      contentType: contentType,
-    }
-  })
-
-  console.log(insertImages)
-
-  //
-  const fileMessages: ModelMessage[] = insertImages.map((image) => {
-    const url = getFileUrl(image.storageId, `image-${image.storageId}`)!.raw
-
-    // Create a data URI for the LLM
-    const dataUri = `data:${image.contentType};base64,${image.base64Data}`
-
-    return {
-      role: "user",
-      content: [
-        {
-          type: "text",
-          text: `Image Reference URL: ${url} \n (Use this URL if a question refers to this image)`,
-        },
-        {
-          type: "image",
-          image: dataUri,
-        },
-      ],
-    }
-  })
-
   const input: TeoriaInput = {
-    qualificationId: qualificationId,
+    qualificationId: qualificationId as Id<"qualifications">,
     year: parseInt(year),
     month: month,
     contentPdf: contentPdf.raw.href,
     ratingPdf: ratingPdf.raw.href,
-    imageMessages: fileMessages,
   }
   console.log({ input })
 
-  // const promises = input.map(async (item) => {
-  //   const readyData = await parsePdfWithAi(item)
-  //   return readyData
-  // })
-
   const readyData = await parsePdfWithAi(input)
 
-  await insertData(readyData)
+  await fetchMutation(
+    api.seed.insertDataTeoria,
+    { data: readyData },
+    { token: await convexAuthNextjsToken() },
+  )
 
   return new Response("Hello, World!")
 }
@@ -162,7 +85,6 @@ export async function parsePdfWithAi({
   qualificationId,
   year,
   month,
-  imageMessages,
 }: TeoriaInput) {
   console.log("Start main func")
 
@@ -184,7 +106,6 @@ export async function parsePdfWithAi({
         },
       ],
     },
-    ...imageMessages,
   ]
 
   console.log("messages created")
@@ -205,6 +126,7 @@ Exam content guidelines:
     - skip the paragraphs that describe the images inside the question content.
     - if you see any images inside skip them, dont recreate them, just skip them. Keep the question content as it is, it will be referencing the images but dont worry i will handle that. Do not try to recrate any images with md tables or anything, just skip the image and continue with exam objectives.
     - focus on the exam questions only, any text that is not relevant for student while taking the exam should be skipped
+    - if any question or answer contains an image mark it in the output.
     - ${codeFormattingPrompt}, but if the question shows some code next to any image, skip it. Only include the code in question content if there is no confusing images next to it. DO NOT FORGET TO CORRECLTY FORAMT THE CODE AS CODE BLOCK.
 
     Exam rating data table guidelines:
@@ -226,27 +148,18 @@ Exam content guidelines:
       month,
       qualificationId,
       answers: question.answers,
-      attachmentId: getStorageId(question.imageUrl),
-    } as ReadyQuestionWithAnswers
+      containsAttachment: question.containsAttachment,
+    }
   })
   return readyData
-}
-
-async function insertData(data: ReadyQuestionWithAnswers[]) {
-  await fetchMutation(
-    api.seed.insertDataTeoria,
-    { dataProp: data },
-    { token: await convexAuthNextjsToken() },
-  )
 }
 
 export type TeoriaInput = {
   contentPdf: string
   ratingPdf: string
-  qualificationId: string
+  qualificationId: Id<"qualifications">
   year: number
   month: string
-  imageMessages: ModelMessage[]
 }
 
 export type ReadyQuestionWithAnswers = WithoutSystemFields<Doc<"questions">> & {
@@ -256,6 +169,11 @@ export type ReadyQuestionWithAnswers = WithoutSystemFields<Doc<"questions">> & {
 export type TeoriaSchema = z.infer<typeof schema>
 
 const answer = z.object({
+  containsAttachment: z
+    .boolean()
+    .describe(
+      "Make this field true if you detected from question and answer context that it requires student to select image as and answer. Simply if this answer contains an image make this true, otherwise false",
+    ),
   content: z
     .string()
     .describe(
@@ -275,11 +193,10 @@ const answer = z.object({
 })
 
 const question = z.object({
-  imageUrl: z
-    .string()
-    .optional()
+  containsAttachment: z
+    .boolean()
     .describe(
-      "This is the field to hold the possible image url. If you understand from the question context that question mentions an image, and tells student to answer the question based on this image, you have to look thru all the provided to you images, and set this field to the image URL orthe image. So all the images you will get are in URL form. If question doesnt require image skip this field. If it happends that image doesnt fit any question skip it.",
+      "Make this field true if you detected from question context that it requires student to look at the provded image to answer the question. Something like 'Czy na tym obrazku...' is example of question that requires image and should be set to true, otherwise to false. This should be true only if the actual question references something with image, if only answers are images, dont put this as true.",
     ),
   content: z
     .string()
@@ -293,13 +210,3 @@ const question = z.object({
 })
 
 const schema = z.array(question)
-
-function getStorageId(url: string | undefined): Id<"_storage"> | undefined {
-  if (!url) return undefined
-  try {
-    const id = new URL(url).searchParams.get("storageId")
-    return id ? (id as Id<"_storage">) : undefined
-  } catch {
-    return undefined
-  }
-}

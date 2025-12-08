@@ -14,6 +14,7 @@ export const env = createEnv({
     AI_GATEWAY_API_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+    ADMIN_KEY: z.string(),
   },
 
   /**
@@ -47,6 +48,7 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_SERVER_URL: process.env.NEXT_PUBLIC_BASE_SERVER_URL,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    ADMIN_KEY: process.env.ADMIN_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

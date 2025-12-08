@@ -88,21 +88,26 @@ const schema = defineSchema({
     year: v.number(),
     month: v.string(),
     attachmentId: v.optional(v.id("_storage")),
+    containsAttachment: v.optional(v.boolean()),
     explanation: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
     category: v.optional(v.string()),
   })
     .index("by_qualification", ["qualificationId"])
     .index("by_year", ["year"])
-    .index("by_qualification_year", ["qualificationId", "year"]),
+    .index("by_qualification_year", ["qualificationId", "year"])
+    .index("by_contains_image", ["containsAttachment", "attachmentId"]),
 
   answers: defineTable({
     questionId: v.id("questions"),
     content: v.string(),
     attachmentId: v.optional(v.id("_storage")),
+    containsAttachment: v.optional(v.boolean()),
     isCorrect: v.boolean(),
     label: v.string(),
-  }).index("by_question", ["questionId"]),
+  })
+    .index("by_question", ["questionId"])
+    .index("by_contains_image", ["containsAttachment", "attachmentId"]),
 
   userAnswers: defineTable({
     userId: v.id("users"),
