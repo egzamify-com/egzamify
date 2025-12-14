@@ -19,6 +19,11 @@ export default async function Page() {
           description="Przygotuj się do egzaminu teoretycznego z naszą bazą pytań. Rozwiązuj testy w trybie symulacji, śledź swoje postępy i zwiększ swoje szanse na zdanie za pierwszym razem!"
           imageUrl="/teoriass.png"
         />
+        <div className="flex w-full flex-col items-center justify-center">
+          <video controls width={1200} className="rounded-2xl">
+            <source src="teoria.mp4" type="video/mp4" />
+          </video>
+        </div>
 
         <FeatureCard
           title="Wyjaśnienia AI na Eksperckim Poziomie"
