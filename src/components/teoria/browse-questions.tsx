@@ -35,7 +35,7 @@ export default function BrowseQuestions({
     useState<Id<"questions"> | null>(null)
 
   const [page, setPage] = useState(0)
-  const itemsPerPage = 10
+  const itemsPerPage = 100
 
   const [isTyping, setIsTyping] = useState(false)
 
