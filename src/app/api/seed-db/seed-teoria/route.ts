@@ -122,6 +122,7 @@ const x: number = 5;
     model: APP_CONFIG.practicalExamRating.model,
     system: `Your only job is to take files as input, read them, and genereate an object that contains info from the file and that matches the schema im providing to you. You are going to be provided with two files, one is for the exam content, the questions and details, other one is the pdf that tells you how to rate the exam, it contains list answers to the questions.  
 Exam content guidelines:
+    - treat tables of data as images and mark questions that have tables as questions with images,
     - skip all the nonsense that is not relevant to the exam objectives (example. "Instrukcja dla zdającego" section is useless, or the metadata that student is required to input at real exam like 'PESEL' or personal data)
     - skip the paragraphs that describe the images inside the question content.
     - if you see any images inside skip them, dont recreate them, just skip them. Keep the question content as it is, it will be referencing the images but dont worry i will handle that. Do not try to recrate any images with md tables or anything, just skip the image and continue with exam objectives.
@@ -196,7 +197,7 @@ const question = z.object({
   containsAttachment: z
     .boolean()
     .describe(
-      "Make this field true if you detected from question context that it requires student to look at the provded image to answer the question. Something like 'Czy na tym obrazku...' is example of question that requires image and should be set to true, otherwise to false. This should be true only if the actual question references something with image, if only answers are images, dont put this as true.",
+      "Make this field true if you detected from question context that it requires student to look at the provded image to answer the question. Something like 'Czy na tym obrazku...' is example of question that requires image and should be set to true, otherwise to false. This should be true only if the actual question references something with image, if only answers are images, dont put this as true. If question contains a table mark this as true too",
     ),
   content: z
     .string()
