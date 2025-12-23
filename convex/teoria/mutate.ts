@@ -24,3 +24,57 @@ export const saveExplanation = mutation({
     }
   },
 })
+
+export const importQuestionsWithAnswers = mutation({
+  args: {
+    data: v.array(
+      v.object({
+        content: v.string(),
+        month: v.string(),
+        year: v.number(),
+        qualificationId: v.string(),
+        answers: v.array(
+          v.object({
+            content: v.string(),
+            isCorrect: v.boolean(),
+            label: v.string(),
+          }),
+        ),
+      }),
+    ),
+  },
+  handler: async (ctx, args) => {
+    // const userId = await getUserIdOrThrow(ctx); // Odkomentuj jeśli import wymaga admina
+
+    const results = []
+
+    for (const item of args.data) {
+      const newQuestionId = await ctx.db.insert("questions", {
+        content: item.content,
+        month: item.month,
+        year: item.year,
+        qualificationId: item.qualificationId as any,
+      })
+
+      for (const answer of item.answers) {
+        await ctx.db.insert("answers", {
+          content: answer.content,
+          isCorrect: answer.isCorrect,
+          label: answer.label,
+          questionId: newQuestionId,
+        })
+      }
+
+      results.push(newQuestionId)
+    }
+
+    return { success: true, count: results.length }
+  },
+})
+
+export const hello = mutation({
+  args: {},
+  handler: async (ctx) => {
+    return "Działa!"
+  },
+})
